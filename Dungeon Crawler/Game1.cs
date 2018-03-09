@@ -12,6 +12,12 @@ namespace Dungeon_Crawler
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+
+        Texture2D rectTexture;
+        Texture2D circleTexture;
+        Circle circle;
+        Rectangle rectangle;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -29,6 +35,8 @@ namespace Dungeon_Crawler
             // TODO: Add your initialization logic here
 
             base.Initialize();
+            rectangle = new Rectangle(300, 140, 60, 60);
+            circle = new Circle(180, 180, 20);
         }
 
         /// <summary>
@@ -41,6 +49,14 @@ namespace Dungeon_Crawler
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+
+            rectTexture = new Texture2D(graphics.GraphicsDevice, 60, 60);
+
+            Color[] data = new Color[60 * 60];
+            for (int i = 0; i < data.Length; ++i) data[i] = Color.Green;
+            rectTexture.SetData(data);
+
+            circleTexture = Content.Load<Texture2D>("circle");
         }
 
         /// <summary>
@@ -63,6 +79,38 @@ namespace Dungeon_Crawler
                 Exit();
 
             // TODO: Add your update logic here
+            KeyboardState state = Keyboard.GetState();
+            if (state.IsKeyDown(Keys.Right))
+            {
+                if (!circle.Intersects(new Rectangle(rectangle.X + 1, rectangle.Y, rectangle.Width, rectangle.Height)))
+                {
+                    rectangle.X += 1;
+                }
+            }
+
+            if (state.IsKeyDown(Keys.Left))
+            {
+                if (!circle.Intersects(new Rectangle(rectangle.X - 1, rectangle.Y, rectangle.Width, rectangle.Height)))
+                {
+                    rectangle.X -= 1;
+                }
+            }
+
+            if (state.IsKeyDown(Keys.Up))
+            {
+                if (!circle.Intersects(new Rectangle(rectangle.X, rectangle.Y - 1, rectangle.Width, rectangle.Height)))
+                {
+                    rectangle.Y -= 1;
+                }
+            }
+
+            if (state.IsKeyDown(Keys.Down))
+            {
+                if (!circle.Intersects(new Rectangle(rectangle.X, rectangle.Y + 1, rectangle.Width, rectangle.Height)))
+                {
+                    rectangle.Y += 1;
+                }
+            }
 
             base.Update(gameTime);
         }
@@ -76,6 +124,12 @@ namespace Dungeon_Crawler
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            spriteBatch.Begin();
+
+            spriteBatch.Draw(rectTexture, rectangle, Color.White);
+            spriteBatch.Draw(circleTexture, circle.Bounds(), Color.White);
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
