@@ -1,0 +1,2 @@
+- poruszanie po planszy
+- zbieranie przedmiotów/interakcja
