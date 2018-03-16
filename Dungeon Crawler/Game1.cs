@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System.Collections.Generic;
 
 namespace Dungeon_Crawler
 {
@@ -18,8 +19,12 @@ namespace Dungeon_Crawler
         Texture2D circleTexture;
         Circle circle;
         Rectangle rectangle;
+        List<Circle> circleList;
+        List<bool> circlestatusesList;
         bool IsCoinTaken;
         Song song;
+        int coinsCollected;
+        SpriteFont spriteFont;
 
         public Game1()
         {
@@ -36,10 +41,26 @@ namespace Dungeon_Crawler
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            circleList = new List<Circle>();
+            circlestatusesList = new List<bool>();
+            coinsCollected = 0;
 
             base.Initialize();
+
+
             rectangle = new Rectangle(300, 140, 60, 60);
-            circle = new Circle(180, 180, 20);
+
+            circleList.Add(new Circle(200, 240, 20));
+            circleList.Add(new Circle(200, 140, 20));
+            circleList.Add(new Circle(400, 140, 20));
+            circleList.Add(new Circle(400, 240, 20));
+
+
+            circlestatusesList.Add(false);
+            circlestatusesList.Add(false);
+            circlestatusesList.Add(false);
+            circlestatusesList.Add(false);
+
         }
 
         /// <summary>
@@ -51,7 +72,7 @@ namespace Dungeon_Crawler
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             this.song = Content.Load<Song>("coinPick");
-            // TODO: use this.Content to load your game content here
+            this.spriteFont = Content.Load<SpriteFont>("spritefont");
 
             rectTexture = new Texture2D(graphics.GraphicsDevice, 60, 60);
 
@@ -81,65 +102,77 @@ namespace Dungeon_Crawler
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
-            KeyboardState state = Keyboard.GetState();
-            if (state.IsKeyDown(Keys.Right))
+            for (int i = 0; i < circleList.Count; i++)
             {
-                if (IsCoinTaken == true || !circle.Intersects(new Rectangle(rectangle.X + 1, rectangle.Y, rectangle.Width, rectangle.Height)))
+
+                // TODO: Add your update logic here
+                KeyboardState state = Keyboard.GetState();
+                if (state.IsKeyDown(Keys.Right))
                 {
-                    rectangle.X += 1;
+                    if (circlestatusesList[i] == true || !circleList[i].Intersects(new Rectangle(rectangle.X + 1, rectangle.Y, rectangle.Width, rectangle.Height)))
+                    {
+                        rectangle.X += 1;
+                    }
+                    else
+                    {
+                        circlestatusesList[i] = true;
+                        MediaPlayer.Play(song);
+                        coinsCollected++;
+                    }
                 }
-                else
+
+                if (state.IsKeyDown(Keys.Left))
                 {
-                    IsCoinTaken = true;
-                    circle = null;
-                    MediaPlayer.Play(song);
+                    if (circlestatusesList[i] == true || !circleList[i].Intersects(new Rectangle(rectangle.X - 1, rectangle.Y, rectangle.Width, rectangle.Height)))
+                    {
+                        rectangle.X -= 1;
+                    }
+                    else
+                    {
+                        circlestatusesList[i] = true;
+                        MediaPlayer.Play(song);
+                        coinsCollected++;
+                    }
                 }
+
+                if (state.IsKeyDown(Keys.Up))
+                {
+                    if (circlestatusesList[i] == true || !circleList[i].Intersects(new Rectangle(rectangle.X, rectangle.Y - 1, rectangle.Width, rectangle.Height)))
+                    {
+                        rectangle.Y -= 1;
+                    }
+                    else
+                    {
+                        circlestatusesList[i] = true;
+                        MediaPlayer.Play(song);
+                        coinsCollected++;
+                    }
+                }
+
+                if (state.IsKeyDown(Keys.Down))
+                {
+                    if (circlestatusesList[i] == true || !circleList[i].Intersects(new Rectangle(rectangle.X, rectangle.Y + 1, rectangle.Width, rectangle.Height)))
+                    {
+                        rectangle.Y += 1;
+                    }
+                    else
+                    {
+                        circlestatusesList[i] = true;
+                        MediaPlayer.Play(song);
+                        coinsCollected++;
+                    }
+                }
+
             }
 
-            if (state.IsKeyDown(Keys.Left))
+            for (int i = 0; i < circlestatusesList.Count; i++)
             {
-                if (IsCoinTaken == true || !circle.Intersects(new Rectangle(rectangle.X - 1, rectangle.Y, rectangle.Width, rectangle.Height)) )
-                {
-                    rectangle.X -= 1;
-                }
-                else
-                {
-                    IsCoinTaken = true;
-                    circle = null;
-                    MediaPlayer.Play(song);
-                }
+                if (circlestatusesList[i] == true)
+                    circleList[i]=null;
+                //circlestatusesList.RemoveAt(i);
             }
 
-            if (state.IsKeyDown(Keys.Up))
-            {
-                if (IsCoinTaken == true ||  !circle.Intersects(new Rectangle(rectangle.X, rectangle.Y - 1, rectangle.Width, rectangle.Height)))
-                {
-                    rectangle.Y -= 1;
-                }
-                else
-                {
-                    IsCoinTaken = true;
-                    circle = null;
-                    MediaPlayer.Play(song);
-                }
-            }
-
-            if (state.IsKeyDown(Keys.Down))
-            {
-                if (IsCoinTaken == true || !circle.Intersects(new Rectangle(rectangle.X, rectangle.Y + 1, rectangle.Width, rectangle.Height)))
-                {
-                    rectangle.Y += 1;
-                }
-                else
-                {
-                    IsCoinTaken = true;
-                    circle = null;
-                    MediaPlayer.Play(song);
-                }
-            }
-
-            base.Update(gameTime);
+                
         }
 
         /// <summary>
@@ -155,11 +188,12 @@ namespace Dungeon_Crawler
 
             spriteBatch.Draw(rectTexture, rectangle, Color.White);
 
-            if (!IsCoinTaken)
+            spriteBatch.DrawString(spriteFont, "Coins collected : " + coinsCollected, new Vector2(300, 20), Color.Black);
+            foreach (Circle circle in circleList)
             {
+                if(circle!=null)
                 spriteBatch.Draw(circleTexture, circle.Bounds(), Color.White);
             }
-
             spriteBatch.End();
 
             base.Draw(gameTime);

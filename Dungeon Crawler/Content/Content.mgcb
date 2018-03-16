@@ -31,3 +31,10 @@
 /processorParam:Quality=Best
 /build:coinPick.mp3
 
+#begin spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:spritefont
+
