@@ -17,6 +17,7 @@ namespace Dungeon_Crawler
         Texture2D circleTexture;
         Circle circle;
         Rectangle rectangle;
+        bool IsCoinTaken;
 
         public Game1()
         {
@@ -56,7 +57,7 @@ namespace Dungeon_Crawler
             for (int i = 0; i < data.Length; ++i) data[i] = Color.Green;
             rectTexture.SetData(data);
 
-            circleTexture = Content.Load<Texture2D>("circle");
+            circleTexture = Content.Load<Texture2D>("coin");
         }
 
         /// <summary>
@@ -82,33 +83,53 @@ namespace Dungeon_Crawler
             KeyboardState state = Keyboard.GetState();
             if (state.IsKeyDown(Keys.Right))
             {
-                if (!circle.Intersects(new Rectangle(rectangle.X + 1, rectangle.Y, rectangle.Width, rectangle.Height)))
+                if (IsCoinTaken == true || !circle.Intersects(new Rectangle(rectangle.X + 1, rectangle.Y, rectangle.Width, rectangle.Height)))
                 {
                     rectangle.X += 1;
+                }
+                else
+                {
+                    IsCoinTaken = true;
+                    circle = null;
                 }
             }
 
             if (state.IsKeyDown(Keys.Left))
             {
-                if (!circle.Intersects(new Rectangle(rectangle.X - 1, rectangle.Y, rectangle.Width, rectangle.Height)))
+                if (IsCoinTaken == true || !circle.Intersects(new Rectangle(rectangle.X - 1, rectangle.Y, rectangle.Width, rectangle.Height)) )
                 {
                     rectangle.X -= 1;
+                }
+                else
+                {
+                    IsCoinTaken = true;
+                    circle = null;
                 }
             }
 
             if (state.IsKeyDown(Keys.Up))
             {
-                if (!circle.Intersects(new Rectangle(rectangle.X, rectangle.Y - 1, rectangle.Width, rectangle.Height)))
+                if (IsCoinTaken == true ||  !circle.Intersects(new Rectangle(rectangle.X, rectangle.Y - 1, rectangle.Width, rectangle.Height)))
                 {
                     rectangle.Y -= 1;
+                }
+                else
+                {
+                    IsCoinTaken = true;
+                    circle = null;
                 }
             }
 
             if (state.IsKeyDown(Keys.Down))
             {
-                if (!circle.Intersects(new Rectangle(rectangle.X, rectangle.Y + 1, rectangle.Width, rectangle.Height)))
+                if (IsCoinTaken == true || !circle.Intersects(new Rectangle(rectangle.X, rectangle.Y + 1, rectangle.Width, rectangle.Height)))
                 {
                     rectangle.Y += 1;
+                }
+                else
+                {
+                    IsCoinTaken = true;
+                    circle = null;
                 }
             }
 
@@ -127,7 +148,11 @@ namespace Dungeon_Crawler
             spriteBatch.Begin();
 
             spriteBatch.Draw(rectTexture, rectangle, Color.White);
-            spriteBatch.Draw(circleTexture, circle.Bounds(), Color.White);
+
+            if (!IsCoinTaken)
+            {
+                spriteBatch.Draw(circleTexture, circle.Bounds(), Color.White);
+            }
 
             spriteBatch.End();
 
