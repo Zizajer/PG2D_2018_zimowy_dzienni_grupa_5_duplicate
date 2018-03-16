@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace Dungeon_Crawler
 {
@@ -18,6 +19,7 @@ namespace Dungeon_Crawler
         Circle circle;
         Rectangle rectangle;
         bool IsCoinTaken;
+        Song song;
 
         public Game1()
         {
@@ -48,7 +50,7 @@ namespace Dungeon_Crawler
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            this.song = Content.Load<Song>("coinPick");
             // TODO: use this.Content to load your game content here
 
             rectTexture = new Texture2D(graphics.GraphicsDevice, 60, 60);
@@ -91,6 +93,7 @@ namespace Dungeon_Crawler
                 {
                     IsCoinTaken = true;
                     circle = null;
+                    MediaPlayer.Play(song);
                 }
             }
 
@@ -104,6 +107,7 @@ namespace Dungeon_Crawler
                 {
                     IsCoinTaken = true;
                     circle = null;
+                    MediaPlayer.Play(song);
                 }
             }
 
@@ -117,6 +121,7 @@ namespace Dungeon_Crawler
                 {
                     IsCoinTaken = true;
                     circle = null;
+                    MediaPlayer.Play(song);
                 }
             }
 
@@ -130,6 +135,7 @@ namespace Dungeon_Crawler
                 {
                     IsCoinTaken = true;
                     circle = null;
+                    MediaPlayer.Play(song);
                 }
             }
 
