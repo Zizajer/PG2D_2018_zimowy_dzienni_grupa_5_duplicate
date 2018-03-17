@@ -15,6 +15,7 @@ namespace Dungeon_Crawler
         private Texture2D _wall;
         private IMap _map;
         private Player _player;
+        private AggressiveEnemy _aggressiveEnemy;
         private float scale = 0.25f;
         private int los = 30;
         private int mapWidth = 50;
@@ -32,7 +33,6 @@ namespace Dungeon_Crawler
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
             IMapCreationStrategy<Map> mapCreationStrategy = new RandomRoomsMapCreationStrategy<Map>(mapWidth, mapHeight, 100, 10, 5);
             _map = Map.Create(mapCreationStrategy);
             _inputState = new InputState();
@@ -53,7 +53,18 @@ namespace Dungeon_Crawler
                 Scale = scale,
                 Sprite = Content.Load<Texture2D>("Player")
             };
+            startingCell = GetRandomEmptyCell();
+            var pathFromAggressiveEnemy = new PathToPlayer(_player, _map, Content.Load<Texture2D>("White"));
+            pathFromAggressiveEnemy.CreateFrom(startingCell.X, startingCell.Y);
+            _aggressiveEnemy = new AggressiveEnemy(pathFromAggressiveEnemy)
+            {
+                X = startingCell.X,
+                Y = startingCell.Y,
+                Scale = 0.25f,
+                Sprite = Content.Load<Texture2D>("Hound")
+            };
             UpdatePlayerFieldOfView();
+            Global.GameState = GameStates.PlayerTurn;
         }
 
         protected override void UnloadContent()
@@ -62,15 +73,35 @@ namespace Dungeon_Crawler
 
         protected override void Update(GameTime gameTime)
         {
+            // TODO: Add your update logic here
+            _inputState.Update();
             if (_inputState.IsExitGame(PlayerIndex.One))
             {
                 Exit();
             }
+            else if (_inputState.IsSpace(PlayerIndex.One))
+            {
+                if (Global.GameState == GameStates.PlayerTurn)
+                {
+                    Global.GameState = GameStates.Debugging;
+                }
+                else if (Global.GameState == GameStates.Debugging)
+                {
+                    Global.GameState = GameStates.PlayerTurn;
+                }
+            }
             else
             {
-                if (_player.HandleInput(_inputState, _map))
+                if (Global.GameState == GameStates.PlayerTurn
+                   && _player.HandleInput(_inputState, _map))
                 {
                     UpdatePlayerFieldOfView();
+                    Global.GameState = GameStates.EnemyTurn;
+                }
+                if (Global.GameState == GameStates.EnemyTurn)
+                {
+                    _aggressiveEnemy.Update();
+                    Global.GameState = GameStates.PlayerTurn;
                 }
             }
 
@@ -87,12 +118,12 @@ namespace Dungeon_Crawler
             foreach (Cell cell in _map.GetAllCells())
             {
                 var position = new Vector2(cell.X * sizeOfSprites * scale, cell.Y * sizeOfSprites * scale);
-                if (!cell.IsExplored)
+                if (!cell.IsExplored && Global.GameState != GameStates.Debugging)
                 {
                     continue;
                 }
                 Color tint = Color.White;
-                if (!cell.IsInFov)
+                if (!cell.IsInFov && Global.GameState != GameStates.Debugging)
                 {
                     tint = Color.Gray;
                 }
@@ -107,7 +138,11 @@ namespace Dungeon_Crawler
                        0.0f, new Vector2(scale, scale), tint, SpriteEffects.None, 0.8f);
                 }
             }
-
+            if (Global.GameState == GameStates.Debugging
+             || _map.IsInFov(_aggressiveEnemy.X, _aggressiveEnemy.Y))
+            {
+                _aggressiveEnemy.Draw(spriteBatch);
+            }
             _player.Draw(spriteBatch);
             _inputState.Update();
             spriteBatch.End();
@@ -121,8 +156,8 @@ namespace Dungeon_Crawler
 
             while (true)
             {
-                int x = random.Next(mapWidth-1);
-                int y = random.Next(mapHeight-1);
+                int x = Global.Random.Next(mapWidth-1);
+                int y = Global.Random.Next(mapHeight-1);
                 if (_map.IsWalkable(x, y))
                 {
                     return _map.GetCell(x, y);

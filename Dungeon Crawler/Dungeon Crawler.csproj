@@ -41,7 +41,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AggresiveEnemy.cs" />
+    <Compile Include="Global.cs" />
     <Compile Include="InputState.cs" />
+    <Compile Include="PathToPlayer.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Program.cs" />
