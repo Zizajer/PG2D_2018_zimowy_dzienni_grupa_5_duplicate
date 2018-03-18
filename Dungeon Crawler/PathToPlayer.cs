@@ -38,19 +38,21 @@ namespace Dungeon_Crawler
             {
 
             }
+            catch (PathNotFoundException)
+            {
+            }
             
             
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (_cells != null && Global.GameState == GameStates.Debugging)
+            if (_cells != null && Global.DebugMode)
             {
                 foreach (Cell cell in _cells)
                 {
                     if (cell != null)
                     {
-                        float multiplier = _sprite.Width;
-                        spriteBatch.Draw(_sprite, new Vector2(cell.X * multiplier, cell.Y * multiplier), null, null, null, 0.0f, Vector2.One, Color.Blue * .2f, SpriteEffects.None, LayerDepth.Paths);
+                        spriteBatch.Draw(_sprite, new Vector2(cell.X * _sprite.Width, cell.Y * _sprite.Height), null, null, null, 0.0f, Vector2.One, Color.Blue * .2f, SpriteEffects.None, LayerDepth.Paths);
                     }
                 }
             }

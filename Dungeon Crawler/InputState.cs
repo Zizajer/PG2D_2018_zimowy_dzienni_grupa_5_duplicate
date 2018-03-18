@@ -7,25 +7,15 @@ namespace Dungeon_Crawler
     {
         public const int MaxInputs = 4;
 
-        public readonly GamePadState[] CurrentGamePadStates;
         public readonly KeyboardState[] CurrentKeyboardStates;
-        public readonly bool[] GamePadWasConnected;
-
-        public readonly GamePadState[] LastGamePadStates;
         public readonly KeyboardState[] LastKeyboardStates;
 
         public InputState()
         {
             CurrentKeyboardStates = new KeyboardState[MaxInputs];
-            CurrentGamePadStates = new GamePadState[MaxInputs];
-
             LastKeyboardStates = new KeyboardState[MaxInputs];
-            LastGamePadStates = new GamePadState[MaxInputs];
-
             CurrentMouseState = new MouseState();
             LastMouseState = new MouseState();
-
-            GamePadWasConnected = new bool[MaxInputs];
         }
 
         public MouseState CurrentMouseState
@@ -48,17 +38,7 @@ namespace Dungeon_Crawler
             for (int i = 0; i < MaxInputs; i++)
             {
                 LastKeyboardStates[i] = CurrentKeyboardStates[i];
-                LastGamePadStates[i] = CurrentGamePadStates[i];
-
-                CurrentKeyboardStates[i] = Keyboard.GetState((PlayerIndex)i);
-                CurrentGamePadStates[i] = GamePad.GetState((PlayerIndex)i);
-
-                // Keep track of whether a gamepad has ever been
-                // connected, so we can detect if it is unplugged.
-                if (CurrentGamePadStates[i].IsConnected)
-                {
-                    GamePadWasConnected[i] = true;
-                }
+                CurrentKeyboardStates[i] = Keyboard.GetState();
             }
 
             LastMouseState = CurrentMouseState;
@@ -126,24 +106,6 @@ namespace Dungeon_Crawler
         ///    If this is null, it will accept input from any player. When a button press
         ///    is detected, the output playerIndex reports which player pressed it.
         /// </summary>
-        public bool IsNewButtonPress(Buttons button, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
-        {
-            if (controllingPlayer.HasValue)
-            {
-                // Read input from the specified player.
-                playerIndex = controllingPlayer.Value;
-
-                var i = (int)playerIndex;
-
-                return (CurrentGamePadStates[i].IsButtonDown(button) && LastGamePadStates[i].IsButtonUp(button));
-            }
-            else
-            {
-                // Accept input from any player.
-                return (IsNewButtonPress(button, PlayerIndex.One, out playerIndex) || IsNewButtonPress(button, PlayerIndex.Two, out playerIndex)
-                         || IsNewButtonPress(button, PlayerIndex.Three, out playerIndex) || IsNewButtonPress(button, PlayerIndex.Four, out playerIndex));
-            }
-        }
 
         public bool IsKeyPressed(Keys key, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
         {
@@ -164,62 +126,39 @@ namespace Dungeon_Crawler
             }
         }
 
-        public bool IsButtonPressed(Buttons button, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
-        {
-            if (controllingPlayer.HasValue)
-            {
-                // Read input from the specified player.
-                playerIndex = controllingPlayer.Value;
-
-                var i = (int)playerIndex;
-
-                return (CurrentGamePadStates[i].IsButtonDown(button));
-            }
-            else
-            {
-                // Accept input from any player.
-                return (IsButtonPressed(button, PlayerIndex.One, out playerIndex) || IsButtonPressed(button, PlayerIndex.Two, out playerIndex)
-                         || IsButtonPressed(button, PlayerIndex.Three, out playerIndex) || IsButtonPressed(button, PlayerIndex.Four, out playerIndex));
-            }
-        }
 
         public bool IsExitGame(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
-            return IsNewKeyPress(Keys.Escape, controllingPlayer, out playerIndex) || IsNewButtonPress(Buttons.Back, controllingPlayer, out playerIndex);
+            return IsNewKeyPress(Keys.Escape, controllingPlayer, out playerIndex);
         }
 
         public bool IsLeft(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
-            return IsNewKeyPress(Keys.Left, controllingPlayer, out playerIndex) || IsNewButtonPress(Buttons.DPadLeft, controllingPlayer, out playerIndex)
-                   || IsNewButtonPress(Buttons.LeftThumbstickLeft, controllingPlayer, out playerIndex);
+            return IsNewKeyPress(Keys.A, controllingPlayer, out playerIndex);
         }
 
         public bool IsRight(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
-            return IsNewKeyPress(Keys.Right, controllingPlayer, out playerIndex) || IsNewButtonPress(Buttons.DPadRight, controllingPlayer, out playerIndex)
-                   || IsNewButtonPress(Buttons.LeftThumbstickRight, controllingPlayer, out playerIndex);
+            return IsNewKeyPress(Keys.D, controllingPlayer, out playerIndex);
         }
 
         public bool IsUp(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
-            return IsNewKeyPress(Keys.Up, controllingPlayer, out playerIndex) || IsNewButtonPress(Buttons.DPadUp, controllingPlayer, out playerIndex)
-                   || IsNewButtonPress(Buttons.LeftThumbstickUp, controllingPlayer, out playerIndex);
+            return IsNewKeyPress(Keys.W, controllingPlayer, out playerIndex);
         }
-
         public bool IsDown(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
-            return IsNewKeyPress(Keys.Down, controllingPlayer, out playerIndex) || IsNewButtonPress(Buttons.DPadDown, controllingPlayer, out playerIndex)
-                   || IsNewButtonPress(Buttons.LeftThumbstickDown, controllingPlayer, out playerIndex);
+            return IsNewKeyPress(Keys.S, controllingPlayer, out playerIndex);
         }
 
         public bool IsSpace(PlayerIndex? controllingPlayer)
@@ -230,22 +169,22 @@ namespace Dungeon_Crawler
         public bool IsScrollLeft(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
-            return IsKeyPressed(Keys.A, controllingPlayer, out playerIndex);
+            return IsKeyPressed(Keys.Left, controllingPlayer, out playerIndex);
         }
         public bool IsScrollRight(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
-            return IsKeyPressed(Keys.D, controllingPlayer, out playerIndex);
+            return IsKeyPressed(Keys.Right, controllingPlayer, out playerIndex);
         }
         public bool IsScrollUp(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
-            return IsKeyPressed(Keys.W, controllingPlayer, out playerIndex);
+            return IsKeyPressed(Keys.Up, controllingPlayer, out playerIndex);
         }
         public bool IsScrollDown(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
-            return IsKeyPressed(Keys.S, controllingPlayer, out playerIndex);
+            return IsKeyPressed(Keys.Down, controllingPlayer, out playerIndex);
         }
         public bool IsZoomOut(PlayerIndex? controllingPlayer)
         {
@@ -257,6 +196,12 @@ namespace Dungeon_Crawler
         {
             PlayerIndex playerIndex;
             return IsNewKeyPress(Keys.OemComma, controllingPlayer, out playerIndex);
+        }
+
+        public bool IsShift(PlayerIndex? controllingPlayer)
+        {
+            PlayerIndex playerIndex;
+            return IsNewKeyPress(Keys.LeftShift, controllingPlayer, out playerIndex);
         }
     }
 }

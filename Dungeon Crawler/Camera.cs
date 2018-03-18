@@ -13,7 +13,7 @@ namespace Dungeon_Crawler
         // Construct a new Camera class with standard zoom (no scaling)
         public Camera()
         {
-            Zoom = 1.0f;
+            Zoom = 0.5f;
         }
 
         // Centered Position of the Camera in pixels.

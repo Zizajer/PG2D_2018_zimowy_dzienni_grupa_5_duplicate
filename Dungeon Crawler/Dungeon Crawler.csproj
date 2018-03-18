@@ -43,6 +43,8 @@
   <ItemGroup>
     <Compile Include="AggresiveEnemy.cs" />
     <Compile Include="Camera.cs" />
+    <Compile Include="Character.cs" />
+    <Compile Include="CombatManager.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="InputState.cs" />
     <Compile Include="LayerDepth.cs" />

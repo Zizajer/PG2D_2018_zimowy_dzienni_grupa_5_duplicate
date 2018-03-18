@@ -2,14 +2,12 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using RogueSharp;
+using System.Collections.Generic;
 
 namespace Dungeon_Crawler
 {
-    public class Player
+    public class Player:Character
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public Texture2D Sprite { get; set; }
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Sprite, new Vector2(X * Sprite.Width, Y * Sprite.Height), null, null, null, 0.0f, Vector2.One, Color.White, SpriteEffects.None, LayerDepth.Figures);
@@ -19,7 +17,7 @@ namespace Dungeon_Crawler
             if (inputState.IsLeft(PlayerIndex.One))
             {
                 int tempX = X - 1;
-                if (map.IsWalkable(tempX, Y))
+                if (map.IsWalkable(tempX, Y) && !Global.CombatManager.IsEnemyAt(tempX, Y))
                 {
                     X = tempX;
                     return true;
@@ -28,7 +26,7 @@ namespace Dungeon_Crawler
             else if (inputState.IsRight(PlayerIndex.One))
             {
                 int tempX = X + 1;
-                if (map.IsWalkable(tempX, Y))
+                if (map.IsWalkable(tempX, Y) && !Global.CombatManager.IsEnemyAt(tempX, Y))
                 {
                     X = tempX;
                     return true;
@@ -37,7 +35,7 @@ namespace Dungeon_Crawler
             else if (inputState.IsUp(PlayerIndex.One))
             {
                 int tempY = Y - 1;
-                if (map.IsWalkable(X, tempY))
+                if (map.IsWalkable(X, tempY) && !Global.CombatManager.IsEnemyAt(X, tempY))
                 {
                     Y = tempY;
                     return true;
@@ -46,9 +44,21 @@ namespace Dungeon_Crawler
             else if (inputState.IsDown(PlayerIndex.One))
             {
                 int tempY = Y + 1;
-                if (map.IsWalkable(X, tempY))
+                if (map.IsWalkable(X, tempY) && !Global.CombatManager.IsEnemyAt(X, tempY))
                 {
                     Y = tempY;
+                    return true;
+                }
+            }
+            else if (inputState.IsShift(PlayerIndex.One))
+            {
+                List<AggressiveEnemy> listOfEnemiesAround = Global.CombatManager.IsEnemyInCellAround(X, Y);
+                if (listOfEnemiesAround.Count > 0)
+                {
+                    foreach (AggressiveEnemy enemy in listOfEnemiesAround)
+                    {
+                        Global.CombatManager.Attack(this, enemy);
+                    }
                     return true;
                 }
             }
