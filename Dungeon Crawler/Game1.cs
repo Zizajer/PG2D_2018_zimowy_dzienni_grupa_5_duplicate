@@ -12,6 +12,15 @@ namespace Dungeon_Crawler
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        Player Player;
+        int speed;
+        Rectangle Block;
+        Texture2D RectangleTexture;
+        Color rotatedRectangleColor;
+        SpriteFont spriteFont;
+
+        bool isCollision = false;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -28,6 +37,7 @@ namespace Dungeon_Crawler
         {
             // TODO: Add your initialization logic here
 
+            speed = 2;
             base.Initialize();
         }
 
@@ -38,7 +48,14 @@ namespace Dungeon_Crawler
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
+
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            this.spriteFont = Content.Load<SpriteFont>("spritefont");
+
+            RectangleTexture = Content.Load<Texture2D>("Block");
+
+            Player = new Player(new Rectangle(100, 200, RectangleTexture.Width*3, RectangleTexture.Height*2), 0.0f);
+            Block = new Rectangle(400, 200, RectangleTexture.Width * 3, RectangleTexture.Height * 4);
 
             // TODO: use this.Content to load your game content here
         }
@@ -62,10 +79,41 @@ namespace Dungeon_Crawler
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            Move();
+            isCollision = Player.Intersects(Block);
 
             base.Update(gameTime);
         }
+       
+        private void Move()
+        {
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+            {
+                Player.CollisionRectangle.Y -= speed;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            {
+                Player.CollisionRectangle.Y += speed;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            {
+                Player.CollisionRectangle.X -= speed;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            {
+                Player.CollisionRectangle.X += speed;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            {
+                Player.Rotation += 0.01f;
+            }
+        }
+
 
         /// <summary>
         /// This is called when the game should draw itself.
@@ -75,7 +123,24 @@ namespace Dungeon_Crawler
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            if (isCollision)
+            {
+                rotatedRectangleColor = Color.Yellow;
+            }
+            else rotatedRectangleColor = Color.Blue;
+
+            spriteBatch.Begin();
+
+            spriteBatch.DrawString(spriteFont, "Space - Rotate ", new Vector2(20, 20), Color.Black);
+            spriteBatch.DrawString(spriteFont, "Arrow Keys - Movement ", new Vector2(20, 40), Color.Black);
+
+
+            spriteBatch.Draw(RectangleTexture, Block, Color.Blue);
+
+            Rectangle positionAdjustedRectangle = new Rectangle(Player.CollisionRectangle.X + (Player.CollisionRectangle.Width / 2), Player.CollisionRectangle.Y + (Player.CollisionRectangle.Height / 2), Player.CollisionRectangle.Width, Player.CollisionRectangle.Height);
+            spriteBatch.Draw(RectangleTexture, positionAdjustedRectangle, new Rectangle(0, 0, 2, 6), rotatedRectangleColor, Player.Rotation, new Vector2(2 / 2, 6 / 2), SpriteEffects.None, 0);
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
