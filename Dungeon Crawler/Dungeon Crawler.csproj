@@ -42,8 +42,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AggresiveEnemy.cs" />
+    <Compile Include="Camera.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="InputState.cs" />
+    <Compile Include="LayerDepth.cs" />
     <Compile Include="PathToPlayer.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Main.cs" />

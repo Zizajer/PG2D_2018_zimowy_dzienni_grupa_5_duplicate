@@ -13,7 +13,6 @@ namespace Dungeon_Crawler
         private readonly PathToPlayer _path;
         public int X { get; set; }
         public int Y { get; set; }
-        public float Scale { get; set; }
         public Texture2D Sprite { get; set; }
         public AggressiveEnemy(PathToPlayer path)
         {
@@ -21,9 +20,7 @@ namespace Dungeon_Crawler
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            float multiplier = Scale * Sprite.Width;
-            spriteBatch.Draw(Sprite, new Vector2(X * multiplier, Y * multiplier), null,
-              null, null, 0.0f, new Vector2(Scale, Scale), Color.White, SpriteEffects.None, 0.5f);
+            spriteBatch.Draw(Sprite, new Vector2(X * Sprite.Width, Y * Sprite.Height), null, null, null, 0.0f, Vector2.One, Color.White, SpriteEffects.None, LayerDepth.Figures);
             _path.Draw(spriteBatch);
         }
         public void Update()
