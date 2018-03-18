@@ -32,7 +32,7 @@ namespace Dungeon_Crawler
 
         protected override void Initialize()
         {
-            IMapCreationStrategy<Map> mapCreationStrategy = new RandomRoomsMapCreationStrategy<Map>(Global.MapWidth, Global.MapHeight, 100, 10, 5);
+            IMapCreationStrategy<Map> mapCreationStrategy = new RandomRoomsMapCreationStrategy<Map>(Global.MapWidth, Global.MapHeight, 100, 5, 5);
             _map = Map.Create(mapCreationStrategy);
             _inputState = new InputState();
             Global.Camera.ViewportWidth = graphics.GraphicsDevice.Viewport.Width;
@@ -46,6 +46,8 @@ namespace Dungeon_Crawler
 
             _floor = Content.Load<Texture2D>("Floor");
             _wall = Content.Load<Texture2D>("Wall");
+            
+
             Cell startingCell = GetRandomEmptyCell();
             Global.Camera.CenterOn(startingCell);
             _player = new Player
@@ -59,6 +61,7 @@ namespace Dungeon_Crawler
             };
             AddAggressiveEnemies(10);
             UpdatePlayerFieldOfView();
+            Global.gui = new GUI(_player,Content.Load<SpriteFont>("spritefont"));
             Global.CombatManager = new CombatManager(_player, _aggressiveEnemies);
             Global.GameState = GameStates.PlayerTurn;
         }
@@ -69,7 +72,6 @@ namespace Dungeon_Crawler
 
         protected override void Update(GameTime gameTime)
         {
-            // TODO: Add your update logic here
             _inputState.Update();
             if (_inputState.IsExitGame(PlayerIndex.One))
             {
@@ -106,6 +108,7 @@ namespace Dungeon_Crawler
                     Global.GameState = GameStates.PlayerTurn;
                 }
             }
+            Global.gui.Update();
             Global.Camera.HandleInput(_inputState, PlayerIndex.One);
             base.Update(gameTime);
         }
@@ -130,11 +133,11 @@ namespace Dungeon_Crawler
                 }
                 if (cell.IsWalkable)
                 {
-                    spriteBatch.Draw(_floor, position, null, null, null, 0.0f, Vector2.One, tint, SpriteEffects.None, LayerDepth.Cells);
+                    spriteBatch.Draw(_floor, position, null, tint, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, LayerDepth.Cells);
                 }
                 else
                 {
-                    spriteBatch.Draw(_wall, position, null, null, null, 0.0f, Vector2.One, tint, SpriteEffects.None, LayerDepth.Cells);
+                    spriteBatch.Draw(_wall, position, null, tint, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, LayerDepth.Cells);
                 }
             }
             foreach (var enemy in _aggressiveEnemies)
@@ -144,9 +147,10 @@ namespace Dungeon_Crawler
                     enemy.Draw(spriteBatch);
                 }
             }
-
+            Global.gui.Draw(spriteBatch);
             _player.Draw(spriteBatch);
             _inputState.Update();
+
             spriteBatch.End();
 
             base.Draw(gameTime);
@@ -190,7 +194,7 @@ namespace Dungeon_Crawler
                     X = enemyCell.X,
                     Y = enemyCell.Y,
                     Sprite = Content.Load<Texture2D>("Hound"),
-                    Damage = 2,
+                    Damage = 8,
                     Health = 15,
                     Name = "Aggresive Hound"
                 };

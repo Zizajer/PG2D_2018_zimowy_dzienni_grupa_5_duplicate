@@ -46,6 +46,7 @@
     <Compile Include="Character.cs" />
     <Compile Include="CombatManager.cs" />
     <Compile Include="Global.cs" />
+    <Compile Include="GUI.cs" />
     <Compile Include="InputState.cs" />
     <Compile Include="LayerDepth.cs" />
     <Compile Include="PathToPlayer.cs" />

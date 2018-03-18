@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dungeon_Crawler
 {
@@ -28,6 +24,8 @@ namespace Dungeon_Crawler
                 defender.Health -= damage;
                 Debug.WriteLine("{0} hit {1} for {2} and he has {3} health remaining.",
                   attacker.Name, defender.Name, damage, defender.Health);
+                string tempString = attacker.Name + " hit " + defender.Name + " for " + damage + " and he has " + defender.Health + " health remaining.";
+                Global.gui.WriteToConsole(tempString);
                 if (defender.Health <= 0)
                 {
                     if (defender is AggressiveEnemy)
@@ -35,16 +33,22 @@ namespace Dungeon_Crawler
                         var enemy = defender as AggressiveEnemy;
                         _aggressiveEnemies.Remove(enemy);
                         Debug.WriteLine("{0} killed {1}", attacker.Name, defender.Name);
+                        tempString = attacker.Name + " killed " + defender.Name;
+                        Global.gui.WriteToConsole(tempString);
                     }
                     if (defender is Player)
                     {
                         Debug.WriteLine("You were killed by {0}", attacker.Name);
+                        tempString = "You were killed by "+attacker.Name;
+                        Global.gui.WriteToConsole(tempString);
                     }  
                 }
             }
             else
             {
                 Debug.WriteLine("{0} missed {1}", attacker.Name, defender.Name);
+                string tempString = attacker.Name + " missed " + defender.Name;
+                Global.gui.WriteToConsole(tempString);
             }
         }
 

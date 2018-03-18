@@ -1,10 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using RogueSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dungeon_Crawler
 {
@@ -13,7 +8,7 @@ namespace Dungeon_Crawler
         // Construct a new Camera class with standard zoom (no scaling)
         public Camera()
         {
-            Zoom = 0.5f;
+            Zoom = 1.0f;
         }
 
         // Centered Position of the Camera in pixels.
@@ -64,6 +59,10 @@ namespace Dungeon_Crawler
             if (Zoom < 0.25f)
             {
                 Zoom = 0.25f;
+            }
+            if (Zoom > 1.75f)
+            {
+                Zoom = 1.75f;
             }
         }
 

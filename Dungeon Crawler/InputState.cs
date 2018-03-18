@@ -31,7 +31,7 @@ namespace Dungeon_Crawler
         }
 
         /// <summary>
-        ///    Reads the latest state of the keyboard and gamepad.
+        ///    Reads the latest state of the keyboard.
         /// </summary>
         public void Update()
         {

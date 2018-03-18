@@ -1,11 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using RogueSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dungeon_Crawler
 {
@@ -21,7 +16,7 @@ namespace Dungeon_Crawler
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Sprite, new Vector2(X * Sprite.Width, Y * Sprite.Height), null, null, null, 0.0f, Vector2.One, Color.White, SpriteEffects.None, LayerDepth.Figures);
+            spriteBatch.Draw(Sprite, new Vector2(X * Sprite.Width, Y * Sprite.Height), null, Color.White, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, LayerDepth.Figures);
             _path.Draw(spriteBatch);
         }
         public void Update()
@@ -47,8 +42,8 @@ namespace Dungeon_Crawler
                     int tempY = _path.FirstCell.Y;
                     if(!Global.CombatManager.IsEnemyAt(tempX, tempY))
                     {
-                        X = _path.FirstCell.X;
-                        Y = _path.FirstCell.Y;
+                        X = tempX;
+                        Y = tempY;
                     }
                     
                 }

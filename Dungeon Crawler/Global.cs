@@ -1,9 +1,4 @@
 ﻿using RogueSharp.Random;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dungeon_Crawler
 {
@@ -24,5 +19,6 @@ namespace Dungeon_Crawler
         public static bool DebugMode { get; set; }
         public static readonly Camera Camera = new Camera();
         public static CombatManager CombatManager;
+        public static GUI gui;
     }
 }
