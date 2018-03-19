@@ -16,7 +16,7 @@ namespace Dungeon_Crawler
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Sprite, new Vector2(X * Sprite.Width, Y * Sprite.Height), null, Color.White, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, LayerDepth.Figures);
+            spriteBatch.Draw(Sprite, new Vector2(X * Sprite.Width, Y * Sprite.Height), null, Color.White, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, Layers.Figures);
             _path.Draw(spriteBatch);
         }
         public void Update()
@@ -32,15 +32,15 @@ namespace Dungeon_Crawler
             { 
 
                 _path.CreateFrom(X, Y);
-                if (Global.CombatManager.IsPlayerAt(_path.FirstCell.X, _path.FirstCell.Y))
+                if (GlobalVariables.CombatManager.IsPlayerAt(_path.FirstCell.X, _path.FirstCell.Y))
                 {
-                    Global.CombatManager.Attack(this,Global.CombatManager.CharacterAt(_path.FirstCell.X, _path.FirstCell.Y));
+                    GlobalVariables.CombatManager.Attack(this,GlobalVariables.CombatManager.CharacterAt(_path.FirstCell.X, _path.FirstCell.Y));
                 }
                 else
                 {
                     int tempX = _path.FirstCell.X;
                     int tempY = _path.FirstCell.Y;
-                    if(!Global.CombatManager.IsEnemyAt(tempX, tempY))
+                    if(!GlobalVariables.CombatManager.IsEnemyAt(tempX, tempY))
                     {
                         X = tempX;
                         Y = tempY;

@@ -17,15 +17,15 @@ namespace Dungeon_Crawler
         public void Attack(Character attacker, Character defender)
         {
             // 80% chance to hit
-            if (Global.Random.Next(10)<8)
+            if (GlobalVariables.Random.Next(10)<8)
             {
                 //(1-attacker.damage)
-                int damage = Global.Random.Next(attacker.Damage)+1;
+                int damage = GlobalVariables.Random.Next(attacker.Damage)+1;
                 defender.Health -= damage;
                 Debug.WriteLine("{0} hit {1} for {2} and he has {3} health remaining.",
                   attacker.Name, defender.Name, damage, defender.Health);
                 string tempString = attacker.Name + " hit " + defender.Name + " for " + damage + " and he has " + defender.Health + " health remaining.";
-                Global.gui.WriteToConsole(tempString);
+                GlobalVariables.Gui.WriteToConsole(tempString);
                 if (defender.Health <= 0)
                 {
                     if (defender is AggressiveEnemy)
@@ -34,13 +34,13 @@ namespace Dungeon_Crawler
                         _aggressiveEnemies.Remove(enemy);
                         Debug.WriteLine("{0} killed {1}", attacker.Name, defender.Name);
                         tempString = attacker.Name + " killed " + defender.Name;
-                        Global.gui.WriteToConsole(tempString);
+                        GlobalVariables.Gui.WriteToConsole(tempString);
                     }
                     if (defender is Player)
                     {
                         Debug.WriteLine("You were killed by {0}", attacker.Name);
                         tempString = "You were killed by "+attacker.Name;
-                        Global.gui.WriteToConsole(tempString);
+                        GlobalVariables.Gui.WriteToConsole(tempString);
                     }  
                 }
             }
@@ -48,7 +48,7 @@ namespace Dungeon_Crawler
             {
                 Debug.WriteLine("{0} missed {1}", attacker.Name, defender.Name);
                 string tempString = attacker.Name + " missed " + defender.Name;
-                Global.gui.WriteToConsole(tempString);
+                GlobalVariables.Gui.WriteToConsole(tempString);
             }
         }
 

@@ -3,10 +3,10 @@ using RogueSharp;
 
 namespace Dungeon_Crawler
 {
-    public class Camera
+    public class CameraManager
     {
         // Construct a new Camera class with standard zoom (no scaling)
-        public Camera()
+        public CameraManager()
         {
             Zoom = 1.0f;
         }
@@ -109,11 +109,11 @@ namespace Dungeon_Crawler
 
         private Vector2 CenteredPosition(Cell cell, bool clampToMap = false)
         {
-            var cameraPosition = new Vector2(cell.X * Global.SpriteWidth,
-               cell.Y * Global.SpriteHeight);
+            var cameraPosition = new Vector2(cell.X * GlobalVariables.SpriteWidth,
+               cell.Y * GlobalVariables.SpriteHeight);
             var cameraCenteredOnTilePosition =
-               new Vector2(cameraPosition.X + Global.SpriteWidth / 2,
-                   cameraPosition.Y + Global.SpriteHeight / 2);
+               new Vector2(cameraPosition.X + GlobalVariables.SpriteWidth / 2,
+                   cameraPosition.Y + GlobalVariables.SpriteHeight / 2);
             if (clampToMap)
             {
                 return MapClampedPosition(cameraCenteredOnTilePosition);
@@ -125,9 +125,9 @@ namespace Dungeon_Crawler
         // Clamp the camera so it never leaves the visible area of the map.
         private Vector2 MapClampedPosition(Vector2 position)
         {
-            var cameraMax = new Vector2(Global.MapWidth * Global.SpriteWidth -
+            var cameraMax = new Vector2(GlobalVariables.MapWidth * GlobalVariables.SpriteWidth -
                 (ViewportWidth / Zoom / 2),
-                Global.MapHeight * Global.SpriteHeight -
+                GlobalVariables.MapHeight * GlobalVariables.SpriteHeight -
                 (ViewportHeight / Zoom / 2));
 
             return Vector2.Clamp(position,
@@ -147,7 +147,7 @@ namespace Dungeon_Crawler
         }
 
         // Move the camera's position based on input
-        public void HandleInput(InputState inputState,
+        public void HandleInput(InputManager inputState,
            PlayerIndex? controllingPlayer)
         {
             Vector2 cameraMovement = Vector2.Zero;

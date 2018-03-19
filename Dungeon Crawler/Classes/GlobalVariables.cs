@@ -8,7 +8,7 @@ namespace Dungeon_Crawler
         PlayerTurn = 1,
         EnemyTurn = 2
     }
-    public class Global
+    public class GlobalVariables
     {
         public static readonly int MapWidth = 50;
         public static readonly int MapHeight = 30;
@@ -17,8 +17,8 @@ namespace Dungeon_Crawler
         public static readonly IRandom Random = new DotNetRandom();
         public static GameStates GameState { get; set; }
         public static bool DebugMode { get; set; }
-        public static readonly Camera Camera = new Camera();
+        public static readonly CameraManager Camera = new CameraManager();
         public static CombatManager CombatManager;
-        public static GUI gui;
+        public static GUI Gui;
     }
 }

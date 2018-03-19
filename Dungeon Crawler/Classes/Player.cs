@@ -9,14 +9,14 @@ namespace Dungeon_Crawler
     {
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Sprite, new Vector2(X * Sprite.Width, Y * Sprite.Height), null, Color.White, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, LayerDepth.Figures);
+            spriteBatch.Draw(Sprite, new Vector2(X * Sprite.Width, Y * Sprite.Height), null, Color.White, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, Layers.Figures);
         }
-        public bool HandleInput(InputState inputState, IMap map)
+        public bool HandleInput(InputManager inputState, IMap map)
         {
             if (inputState.IsLeft(PlayerIndex.One))
             {
                 int tempX = X - 1;
-                if (map.IsWalkable(tempX, Y) && !Global.CombatManager.IsEnemyAt(tempX, Y))
+                if (map.IsWalkable(tempX, Y) && !GlobalVariables.CombatManager.IsEnemyAt(tempX, Y))
                 {
                     X = tempX;
                     return true;
@@ -25,7 +25,7 @@ namespace Dungeon_Crawler
             else if (inputState.IsRight(PlayerIndex.One))
             {
                 int tempX = X + 1;
-                if (map.IsWalkable(tempX, Y) && !Global.CombatManager.IsEnemyAt(tempX, Y))
+                if (map.IsWalkable(tempX, Y) && !GlobalVariables.CombatManager.IsEnemyAt(tempX, Y))
                 {
                     X = tempX;
                     return true;
@@ -34,7 +34,7 @@ namespace Dungeon_Crawler
             else if (inputState.IsUp(PlayerIndex.One))
             {
                 int tempY = Y - 1;
-                if (map.IsWalkable(X, tempY) && !Global.CombatManager.IsEnemyAt(X, tempY))
+                if (map.IsWalkable(X, tempY) && !GlobalVariables.CombatManager.IsEnemyAt(X, tempY))
                 {
                     Y = tempY;
                     return true;
@@ -43,7 +43,7 @@ namespace Dungeon_Crawler
             else if (inputState.IsDown(PlayerIndex.One))
             {
                 int tempY = Y + 1;
-                if (map.IsWalkable(X, tempY) && !Global.CombatManager.IsEnemyAt(X, tempY))
+                if (map.IsWalkable(X, tempY) && !GlobalVariables.CombatManager.IsEnemyAt(X, tempY))
                 {
                     Y = tempY;
                     return true;
@@ -51,12 +51,12 @@ namespace Dungeon_Crawler
             }
             else if (inputState.IsShift(PlayerIndex.One))
             {
-                List<AggressiveEnemy> listOfEnemiesAround = Global.CombatManager.IsEnemyInCellAround(X, Y);
+                List<AggressiveEnemy> listOfEnemiesAround = GlobalVariables.CombatManager.IsEnemyInCellAround(X, Y);
                 if (listOfEnemiesAround.Count > 0)
                 {
                     foreach (AggressiveEnemy enemy in listOfEnemiesAround)
                     {
-                        Global.CombatManager.Attack(this, enemy);
+                        GlobalVariables.CombatManager.Attack(this, enemy);
                     }
                     return true;
                 }

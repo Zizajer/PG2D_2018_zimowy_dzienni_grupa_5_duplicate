@@ -20,7 +20,7 @@ namespace Dungeon_Crawler
         private List<AggressiveEnemy> _aggressiveEnemies = new List<AggressiveEnemy>();
         private int los = 30;
 
-        private InputState _inputState;
+        private InputManager _inputState;
 
         public Main()
            : base()
@@ -32,11 +32,11 @@ namespace Dungeon_Crawler
 
         protected override void Initialize()
         {
-            IMapCreationStrategy<Map> mapCreationStrategy = new RandomRoomsMapCreationStrategy<Map>(Global.MapWidth, Global.MapHeight, 100, 5, 5);
+            IMapCreationStrategy<Map> mapCreationStrategy = new RandomRoomsMapCreationStrategy<Map>(GlobalVariables.MapWidth, GlobalVariables.MapHeight, 100, 4, 4);
             _map = Map.Create(mapCreationStrategy);
-            _inputState = new InputState();
-            Global.Camera.ViewportWidth = graphics.GraphicsDevice.Viewport.Width;
-            Global.Camera.ViewportHeight = graphics.GraphicsDevice.Viewport.Height;
+            _inputState = new InputManager();
+            GlobalVariables.Camera.ViewportWidth = graphics.GraphicsDevice.Viewport.Width;
+            GlobalVariables.Camera.ViewportHeight = graphics.GraphicsDevice.Viewport.Height;
             base.Initialize();
         }
 
@@ -44,12 +44,12 @@ namespace Dungeon_Crawler
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _floor = Content.Load<Texture2D>("Floor");
-            _wall = Content.Load<Texture2D>("Wall");
+            _floor = Content.Load<Texture2D>("Wood");
+            _wall = Content.Load<Texture2D>("Brick");
             
 
             Cell startingCell = GetRandomEmptyCell();
-            Global.Camera.CenterOn(startingCell);
+            GlobalVariables.Camera.CenterOn(startingCell);
             _player = new Player
             {
                 X = startingCell.X,
@@ -61,9 +61,9 @@ namespace Dungeon_Crawler
             };
             AddAggressiveEnemies(10);
             UpdatePlayerFieldOfView();
-            Global.gui = new GUI(_player,Content.Load<SpriteFont>("spritefont"));
-            Global.CombatManager = new CombatManager(_player, _aggressiveEnemies);
-            Global.GameState = GameStates.PlayerTurn;
+            GlobalVariables.Gui = new GUI(_player,Content.Load<SpriteFont>("spritefont"));
+            GlobalVariables.CombatManager = new CombatManager(_player, _aggressiveEnemies);
+            GlobalVariables.GameState = GameStates.PlayerTurn;
         }
 
         protected override void UnloadContent()
@@ -79,37 +79,37 @@ namespace Dungeon_Crawler
             }
             else if (_inputState.IsSpace(PlayerIndex.One))
             {
-                if (Global.GameState == GameStates.PlayerTurn && !Global.DebugMode)
+                if (GlobalVariables.GameState == GameStates.PlayerTurn && !GlobalVariables.DebugMode)
                 {
-                    Global.DebugMode = true;
+                    GlobalVariables.DebugMode = true;
                     Debug.WriteLine("DebugMode on");
                 }
-                else if (Global.GameState == GameStates.PlayerTurn && Global.DebugMode)
+                else if (GlobalVariables.GameState == GameStates.PlayerTurn && GlobalVariables.DebugMode)
                 {
-                    Global.DebugMode = false;
+                    GlobalVariables.DebugMode = false;
                     Debug.WriteLine("DebugMode off");
                 }
             }
             else
             {
-                if (Global.GameState == GameStates.PlayerTurn
+                if (GlobalVariables.GameState == GameStates.PlayerTurn
                    && _player.HandleInput(_inputState, _map))
                 {
                     UpdatePlayerFieldOfView();
-                    Global.Camera.CenterOn(_map.GetCell(_player.X, _player.Y));
-                    Global.GameState = GameStates.EnemyTurn;
+                    GlobalVariables.Camera.CenterOn(_map.GetCell(_player.X, _player.Y));
+                    GlobalVariables.GameState = GameStates.EnemyTurn;
                 }
-                if (Global.GameState == GameStates.EnemyTurn)
+                if (GlobalVariables.GameState == GameStates.EnemyTurn)
                 {
                     foreach (var enemy in _aggressiveEnemies)
                     {
                         enemy.Update();
                     }
-                    Global.GameState = GameStates.PlayerTurn;
+                    GlobalVariables.GameState = GameStates.PlayerTurn;
                 }
             }
-            Global.gui.Update();
-            Global.Camera.HandleInput(_inputState, PlayerIndex.One);
+            GlobalVariables.Gui.Update();
+            GlobalVariables.Camera.HandleInput(_inputState, PlayerIndex.One);
             base.Update(gameTime);
         }
 
@@ -117,37 +117,37 @@ namespace Dungeon_Crawler
         {
             GraphicsDevice.Clear(Color.Black);
 
-            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, GlobalVariables.Camera.TranslationMatrix);
 
             foreach (Cell cell in _map.GetAllCells())
             {
-                var position = new Vector2(cell.X * Global.SpriteWidth, cell.Y * Global.SpriteHeight);
-                if (!cell.IsExplored &&  !Global.DebugMode)
+                var position = new Vector2(cell.X * GlobalVariables.SpriteWidth, cell.Y * GlobalVariables.SpriteHeight);
+                if (!cell.IsExplored &&  !GlobalVariables.DebugMode)
                 {
                     continue;
                 }
                 Color tint = Color.White;
-                if (!cell.IsInFov && !Global.DebugMode)
+                if (!cell.IsInFov && !GlobalVariables.DebugMode)
                 {
                     tint = Color.Gray;
                 }
                 if (cell.IsWalkable)
                 {
-                    spriteBatch.Draw(_floor, position, null, tint, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, LayerDepth.Cells);
+                    spriteBatch.Draw(_floor, position, null, tint, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, Layers.Cells);
                 }
                 else
                 {
-                    spriteBatch.Draw(_wall, position, null, tint, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, LayerDepth.Cells);
+                    spriteBatch.Draw(_wall, position, null, tint, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, Layers.Cells);
                 }
             }
             foreach (var enemy in _aggressiveEnemies)
             {
-                if (Global.DebugMode || _map.IsInFov(enemy.X, enemy.Y))
+                if (GlobalVariables.DebugMode || _map.IsInFov(enemy.X, enemy.Y))
                 {
                     enemy.Draw(spriteBatch);
                 }
             }
-            Global.gui.Draw(spriteBatch);
+            GlobalVariables.Gui.Draw(spriteBatch);
             _player.Draw(spriteBatch);
             _inputState.Update();
 
@@ -162,8 +162,8 @@ namespace Dungeon_Crawler
 
             while (true)
             {
-                int x = Global.Random.Next(Global.MapWidth-1);
-                int y = Global.Random.Next(Global.MapHeight-1);
+                int x = GlobalVariables.Random.Next(GlobalVariables.MapWidth-1);
+                int y = GlobalVariables.Random.Next(GlobalVariables.MapHeight-1);
                 if (_map.IsWalkable(x, y))
                 {
                     return _map.GetCell(x, y);

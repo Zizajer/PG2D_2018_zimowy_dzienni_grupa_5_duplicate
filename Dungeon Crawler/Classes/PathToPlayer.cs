@@ -46,13 +46,13 @@ namespace Dungeon_Crawler
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (_cells != null && Global.DebugMode)
+            if (_cells != null && GlobalVariables.DebugMode)
             {
                 foreach (Cell cell in _cells)
                 {
                     if (cell != null)
                     {
-                        spriteBatch.Draw(_sprite, new Vector2(cell.X * _sprite.Width, cell.Y * _sprite.Height), null, Color.Blue * .2f, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, LayerDepth.Paths);
+                        spriteBatch.Draw(_sprite, new Vector2(cell.X * _sprite.Width, cell.Y * _sprite.Height), null, Color.Blue * .2f, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, Layers.Paths);
                     }
                 }
             }

@@ -3,14 +3,14 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Dungeon_Crawler
 {
-    public class InputState
+    public class InputManager
     {
         public const int MaxInputs = 4;
 
         public readonly KeyboardState[] CurrentKeyboardStates;
         public readonly KeyboardState[] LastKeyboardStates;
 
-        public InputState()
+        public InputManager()
         {
             CurrentKeyboardStates = new KeyboardState[MaxInputs];
             LastKeyboardStates = new KeyboardState[MaxInputs];

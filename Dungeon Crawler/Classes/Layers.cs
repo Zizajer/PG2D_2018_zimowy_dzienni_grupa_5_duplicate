@@ -1,6 +1,6 @@
 ﻿namespace Dungeon_Crawler
 {
-    public static class LayerDepth
+    public static class Layers
     {
         public static readonly float Cells = 0.8f;
         public static readonly float Paths = 0.6f;
