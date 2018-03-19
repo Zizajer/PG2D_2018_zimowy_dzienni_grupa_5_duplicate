@@ -17,7 +17,7 @@ namespace Dungeon_Crawler
         public int Width;
         public int Height;
 
-        private Point center;
+        public Point Center;
 
         public Room(int x, int y, int width, int height)
         {
@@ -25,7 +25,9 @@ namespace Dungeon_Crawler
             X2 = x + width;
             Y1 = y;
             Y2 = y + height;
-            center = new Point((X1 + X2) / 2, (Y1 + Y2) / 2);
+            Width = width;
+            Height = height;
+            Center = new Point((X1 + X2) / 2, (Y1 + Y2) / 2);
         }
 
         public bool Intersects(Room room)
