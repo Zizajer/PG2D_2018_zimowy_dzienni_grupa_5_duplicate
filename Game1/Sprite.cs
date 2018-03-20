@@ -38,11 +38,11 @@ namespace Game1
         {
             if (Keyboard.GetState().IsKeyDown(input.Up))
                 Velocity.Y = -Speed;
-            else if (Keyboard.GetState().IsKeyDown(input.Down))
+            if (Keyboard.GetState().IsKeyDown(input.Down))
                 Velocity.Y = +Speed;
-            else if (Keyboard.GetState().IsKeyDown(input.Left))
+            if (Keyboard.GetState().IsKeyDown(input.Left))
                 Velocity.X = -Speed;
-            else if (Keyboard.GetState().IsKeyDown(input.Right))
+            if (Keyboard.GetState().IsKeyDown(input.Right))
                 Velocity.X = +Speed;
         }
         public Sprite(Texture2D texture)
