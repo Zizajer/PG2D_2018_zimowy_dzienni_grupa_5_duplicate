@@ -25,24 +25,22 @@ namespace Dungeon_Crawler
         {
             get
             {
-                return _cells.First();
+                return _cells.ElementAt(1);
             }
         }
-        public void CreateFrom(int x, int y)
+        public void CreateFrom(int x, int y,GoalMap _goalMap)
         {
+            _goalMap.ClearGoals();
+            _goalMap.AddGoal(_player.X, _player.Y, 1);
             try
             {
-                _cells = _pathFinder.ShortestPath(_map.GetCell(x, y), _map.GetCell(_player.X, _player.Y)).Steps;
-            }
-            catch (System.ArgumentOutOfRangeException)
-            {
-
+                _cells = _goalMap.FindPath(x, y).Steps;
             }
             catch (PathNotFoundException)
             {
+
             }
-            
-            
+             
         }
         public void Draw(SpriteBatch spriteBatch)
         {

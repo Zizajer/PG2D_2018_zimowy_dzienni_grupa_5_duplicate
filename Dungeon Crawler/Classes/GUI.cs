@@ -27,7 +27,6 @@ namespace Dungeon_Crawler
             else
             {
                 spriteBatch.DrawString(font, "Game Over", new Vector2(tempX, tempY), Color.Red, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
-                GlobalVariables.GameState = 0;
             }
             tempY += (int) (0.8 * GlobalVariables.Camera.ViewportWorldBoundry().Height);
             string tempString = console[0] + "\n" + console[1] + "\n" + console[2]+ "\n" + console[3];

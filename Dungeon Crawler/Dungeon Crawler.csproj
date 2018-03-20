@@ -52,6 +52,7 @@
     <Compile Include="Classes\PathToPlayer.cs" />
     <Compile Include="Classes\Player.cs" />
     <Compile Include="Classes\Main.cs" />
+    <Compile Include="Classes\SurroundLogic.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

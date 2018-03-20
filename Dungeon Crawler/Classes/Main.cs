@@ -16,9 +16,10 @@ namespace Dungeon_Crawler
         private Texture2D _floor;
         private Texture2D _wall;
         private IMap _map;
+        private GoalMap _goalMap;
         private Player _player;
         private List<AggressiveEnemy> _aggressiveEnemies = new List<AggressiveEnemy>();
-        private int los = 30;
+        private int los = 8;
 
         private InputManager _inputState;
 
@@ -32,8 +33,9 @@ namespace Dungeon_Crawler
 
         protected override void Initialize()
         {
-            IMapCreationStrategy<Map> mapCreationStrategy = new RandomRoomsMapCreationStrategy<Map>(GlobalVariables.MapWidth, GlobalVariables.MapHeight, 100, 4, 4);
+            IMapCreationStrategy<Map> mapCreationStrategy = new RandomRoomsMapCreationStrategy<Map>(GlobalVariables.MapWidth, GlobalVariables.MapHeight, 100, 2, 2);
             _map = Map.Create(mapCreationStrategy);
+            _goalMap = new GoalMap(_map);
             _inputState = new InputManager();
             GlobalVariables.Camera.ViewportWidth = graphics.GraphicsDevice.Viewport.Width;
             GlobalVariables.Camera.ViewportHeight = graphics.GraphicsDevice.Viewport.Height;
@@ -63,7 +65,6 @@ namespace Dungeon_Crawler
             UpdatePlayerFieldOfView();
             GlobalVariables.Gui = new GUI(_player,Content.Load<SpriteFont>("spritefont"));
             GlobalVariables.CombatManager = new CombatManager(_player, _aggressiveEnemies);
-            GlobalVariables.GameState = GameStates.PlayerTurn;
         }
 
         protected override void UnloadContent()
@@ -79,12 +80,12 @@ namespace Dungeon_Crawler
             }
             else if (_inputState.IsSpace(PlayerIndex.One))
             {
-                if (GlobalVariables.GameState == GameStates.PlayerTurn && !GlobalVariables.DebugMode)
+                if (!GlobalVariables.DebugMode)
                 {
                     GlobalVariables.DebugMode = true;
                     Debug.WriteLine("DebugMode on");
                 }
-                else if (GlobalVariables.GameState == GameStates.PlayerTurn && GlobalVariables.DebugMode)
+                else if (GlobalVariables.DebugMode)
                 {
                     GlobalVariables.DebugMode = false;
                     Debug.WriteLine("DebugMode off");
@@ -92,20 +93,14 @@ namespace Dungeon_Crawler
             }
             else
             {
-                if (GlobalVariables.GameState == GameStates.PlayerTurn
-                   && _player.HandleInput(_inputState, _map))
+                if ( _player.HandleInput(_inputState, _map))
                 {
                     UpdatePlayerFieldOfView();
                     GlobalVariables.Camera.CenterOn(_map.GetCell(_player.X, _player.Y));
-                    GlobalVariables.GameState = GameStates.EnemyTurn;
                 }
-                if (GlobalVariables.GameState == GameStates.EnemyTurn)
+                foreach (var enemy in _aggressiveEnemies)
                 {
-                    foreach (var enemy in _aggressiveEnemies)
-                    {
-                        enemy.Update();
-                    }
-                    GlobalVariables.GameState = GameStates.PlayerTurn;
+                    enemy.Update(gameTime);
                 }
             }
             GlobalVariables.Gui.Update();
@@ -188,8 +183,9 @@ namespace Dungeon_Crawler
                 Cell enemyCell = GetRandomEmptyCell();
                 var pathFromAggressiveEnemy =
                   new PathToPlayer(_player, _map, Content.Load<Texture2D>("White"));
-                pathFromAggressiveEnemy.CreateFrom(enemyCell.X, enemyCell.Y);
-                var enemy = new AggressiveEnemy(_map, pathFromAggressiveEnemy)
+                pathFromAggressiveEnemy.CreateFrom(enemyCell.X, enemyCell.Y, _goalMap);
+                float speed = (float)(GlobalVariables.Random.Next(5) + 8 )/ 10;
+                var enemy = new AggressiveEnemy(_map,_goalMap, pathFromAggressiveEnemy, speed)
                 {
                     X = enemyCell.X,
                     Y = enemyCell.Y,
@@ -198,7 +194,6 @@ namespace Dungeon_Crawler
                     Health = 15,
                     Name = "Aggresive Hound"
                 };
-
                 _aggressiveEnemies.Add(enemy);
             }
         }
