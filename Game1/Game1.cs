@@ -1,8 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
-namespace Dungeon_Crawler
+namespace Game1
 {
     /// <summary>
     /// This is the main type for your game.
@@ -11,6 +12,8 @@ namespace Dungeon_Crawler
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        private List<Sprite> _sprites;
+        private Input input;
 
         public Game1()
         {
@@ -27,7 +30,7 @@ namespace Dungeon_Crawler
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            input = new Input();
             base.Initialize();
         }
 
@@ -39,7 +42,29 @@ namespace Dungeon_Crawler
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            var animations = new Dictionary<string, Animation>()
+            {
+                {"WalkUp",new Animation(Content.Load<Texture2D>("Walkingup"),3 )},
+                {"WalkDown",new Animation(Content.Load<Texture2D>("WalkingDown"),3 )},
+                {"WalkLeft",new Animation(Content.Load<Texture2D>("WalkingLeft"),3 )},
+                {"WalkRight",new Animation(Content.Load<Texture2D>("WalkingRight"),3 )}
+            };
+            _sprites = new List<Sprite>()
+            {
+                new Sprite(animations)
+                {
+                    Position=new Vector2(200,200),
+                    input=new Input()
+                    {
+                        Up=Keys.W,
+                        Down = Keys.S,
+                        Left=Keys.A,
+                        Right=Keys.D
 
+                    }
+                        
+                }
+            };
             // TODO: use this.Content to load your game content here
         }
 
@@ -62,7 +87,9 @@ namespace Dungeon_Crawler
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            foreach (var sprite in _sprites)
+                sprite.Update(gameTime, _sprites);
+
 
             base.Update(gameTime);
         }
@@ -75,8 +102,12 @@ namespace Dungeon_Crawler
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin();
 
+            foreach (var sprite in _sprites)
+                sprite.Draw(spriteBatch);
+
+            spriteBatch.End();
             base.Draw(gameTime);
         }
     }

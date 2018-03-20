@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dungeon_Crawler
+namespace Game1
 {
 #if WINDOWS || LINUX
     /// <summary>
