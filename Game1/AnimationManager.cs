@@ -16,9 +16,9 @@ namespace Game1
         {
             spriteBatch.Draw(_animation.Texture, Position, new Rectangle(_animation.CurrentFrame * _animation.FrameWidth, 0, _animation.FrameWidth, _animation.FrameHeight), Color.White);
         }
-        public Texture2D getCurrentAnimationTexture()
+        public Rectangle getCurrentFrameRectangle()
         {
-            return _animation.Texture;
+            return new Rectangle(_animation.CurrentFrame * _animation.FrameWidth, 0, _animation.FrameWidth, _animation.FrameHeight);
         }
         public void Play(Animation animation)
         {

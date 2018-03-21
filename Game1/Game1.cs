@@ -14,11 +14,12 @@ namespace Game1
         private Player player;
         private SpriteFont font;
         private String collision;
-        private Obstacle obstacle;
+        Texture2D blockTexture;
+        Vector2 blockPosition;
+        Color[] blockTextureData;
 
-        Color[] obstacleTextureData;
-        Color[] playerTextureData;
-        bool areColliding;
+
+        bool personHit = false;
 
         public Game1()
         {
@@ -29,6 +30,8 @@ namespace Game1
         protected override void Initialize()
         {
             base.Initialize();
+            blockPosition = new Vector2(250, 200);
+
         }
 
         protected override void LoadContent()
@@ -46,10 +49,11 @@ namespace Game1
                     Position = new Vector2(200, 200)
                 };
             font = Content.Load<SpriteFont>("Default");
-            obstacle = new Obstacle(new Vector2(250, 200), Content.Load<Texture2D>("obstacle1"));
-            obstacleTextureData =
-                new Color[obstacle.Texture.Width * obstacle.Texture.Height];
-            obstacle.Texture.GetData(obstacleTextureData);
+            blockTexture = Content.Load<Texture2D>("obstacle1");
+
+            blockTextureData =
+                new Color[blockTexture.Width * blockTexture.Height];
+            blockTexture.GetData(blockTextureData);
 
         }
 
@@ -64,29 +68,32 @@ namespace Game1
                 Exit();
 
             player.Update(gameTime, player);
-
-            Texture2D actualPlayerTexture = player._animationManager.getCurrentAnimationTexture();
             
-            playerTextureData =
-               new Color[actualPlayerTexture.Width * actualPlayerTexture.Height];
-            actualPlayerTexture.GetData(playerTextureData);
+            Texture2D actualSpriteTexture = player._animationManager._animation.Texture;
+            Rectangle sourceRectangle = player._animationManager.getCurrentFrameRectangle();
 
-            Animation actualPlayerAnimation = player._animationManager._animation;
+            Texture2D cropTexture = new Texture2D(GraphicsDevice, sourceRectangle.Width, sourceRectangle.Height);
+            Color[] cropTexturedata = new Color[sourceRectangle.Width * sourceRectangle.Height];
+            actualSpriteTexture.GetData(0, sourceRectangle, cropTexturedata, 0, cropTexturedata.Length);
+            cropTexture.SetData(cropTexturedata);
 
-            Rectangle playerRectangle = 
+            Animation actualSpriteAnimation = player._animationManager._animation;
+
+            Rectangle spriteRectangle=
                 new Rectangle((int)player.Position.X, (int)player.Position.Y,
-                actualPlayerAnimation.FrameWidth, actualPlayerAnimation.FrameHeight);
+                actualSpriteAnimation.FrameWidth, actualSpriteAnimation.FrameHeight);
 
-            Rectangle obstacleRectangle = new Rectangle((int)obstacle.Position.X, (int)obstacle.Position.Y, obstacle.Texture.Width, obstacle.Texture.Height);
+            Rectangle blockRectangle = new Rectangle((int)blockPosition.X, (int)blockPosition.Y, blockTexture.Width, blockTexture.Height);
 
-            areColliding = false;
+            personHit = false;
 
-            if (playerRectangle.Intersects(obstacleRectangle))
+            if (spriteRectangle.Intersects(blockRectangle))
             {
-                if (Collision.IntersectPixels(playerRectangle, playerTextureData,
-                                    obstacleRectangle, obstacleTextureData))
+                personHit = true;
+                if (Collision.IntersectPixels(spriteRectangle, cropTexturedata,
+                                    blockRectangle, blockTextureData))
                 {
-                    areColliding = true;
+                    personHit = true;
                 }
             }
 
@@ -97,9 +104,10 @@ namespace Game1
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            if (areColliding)
+            if (personHit)
             {
                 collision = "Collision";
+
             }
             else
             {
@@ -107,9 +115,8 @@ namespace Game1
             }
 
             spriteBatch.Begin();
-
             spriteBatch.DrawString(font,collision, new Vector2(400, 100), Color.Black);
-            spriteBatch.Draw(obstacle.Texture, obstacle.Position, Color.White);
+            spriteBatch.Draw(blockTexture, blockPosition, Color.White);
             player.Draw(spriteBatch);
 
             spriteBatch.End();
