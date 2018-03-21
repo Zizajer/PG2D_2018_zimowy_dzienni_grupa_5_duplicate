@@ -1,14 +1,36 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Dungeon_Crawler
+namespace Game1
 {
     public static class Collision
     {
+
+        public static bool checkCollision(Player player,Obstacle obstacle,GraphicsDevice graphicsDevice)
+        {
+            Texture2D multipleSpriteTexture = player._animationManager._animation.Texture;
+            Rectangle toCropRectangle = player._animationManager.getCurrentFrameRectangle();
+
+            Texture2D singleTexture = new Texture2D(graphicsDevice, toCropRectangle.Width, toCropRectangle.Height);
+            Color[] singleTextureData = new Color[toCropRectangle.Width * toCropRectangle.Height];
+            multipleSpriteTexture.GetData(0, toCropRectangle, singleTextureData, 0, singleTextureData.Length);
+            singleTexture.SetData(singleTextureData);
+
+            Rectangle playerRectangle = player.getRectangle();
+             
+            Rectangle obstacleRectangle = obstacle.getRectangle();
+
+            if (playerRectangle.Intersects(obstacleRectangle))
+            {
+                if (Collision.IntersectPixels(playerRectangle, singleTextureData,
+                                    obstacleRectangle, obstacle.TextureData))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         // source: http://xbox.create.msdn.com/en-US/education/catalog/tutorial/collision_2d_perpixel_transformed
         /// <summary>
         /// Determines if there is overlap of the non-transparent pixels

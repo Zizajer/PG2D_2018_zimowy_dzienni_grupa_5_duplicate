@@ -48,7 +48,6 @@ namespace Game1
         public virtual void Update(GameTime gameTime,Player sprite)
         {
             Move();
-
             SetAnimations();
             _animationManager.Update(gameTime);
             Position += Velocity;
@@ -66,6 +65,15 @@ namespace Game1
             else if (Velocity.Y > 0)
                 _animationManager.Play(_animations["WalkDown"]);
             else _animationManager.Stop();
+        }
+        public Rectangle getRectangle()
+        {
+            return new Rectangle((int)Position.X, (int)Position.Y,
+                _animationManager._animation.FrameWidth, _animationManager._animation.FrameHeight);
+        }
+        public Texture2D getCurrentTextureData()
+        {
+            return null;
         }
     }
 }

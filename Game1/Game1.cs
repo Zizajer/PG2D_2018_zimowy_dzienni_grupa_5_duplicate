@@ -1,5 +1,4 @@
-﻿using Dungeon_Crawler;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -51,7 +50,6 @@ namespace Game1
 
         protected override void UnloadContent()
         {
-
         }
 
         protected override void Update(GameTime gameTime)
@@ -60,32 +58,11 @@ namespace Game1
                 Exit();
 
             player.Update(gameTime, player);
-            
-            Texture2D actualSpriteTexture = player._animationManager._animation.Texture;
-            Rectangle sourceRectangle = player._animationManager.getCurrentFrameRectangle();
-
-            Texture2D cropTexture = new Texture2D(GraphicsDevice, sourceRectangle.Width, sourceRectangle.Height);
-            Color[] cropTexturedata = new Color[sourceRectangle.Width * sourceRectangle.Height];
-            actualSpriteTexture.GetData(0, sourceRectangle, cropTexturedata, 0, cropTexturedata.Length);
-            cropTexture.SetData(cropTexturedata);
-
-            Animation actualSpriteAnimation = player._animationManager._animation;
-
-            Rectangle playerRectangle=
-                new Rectangle((int)player.Position.X, (int)player.Position.Y,
-                actualSpriteAnimation.FrameWidth, actualSpriteAnimation.FrameHeight);
-
-            Rectangle obstacle1Rectangle = obstacle1.getRectangle();
 
             areColliding = false;
-
-            if (playerRectangle.Intersects(obstacle1Rectangle))
+            if (Collision.checkCollision(player, obstacle1, GraphicsDevice))
             {
-                if (Collision.IntersectPixels(playerRectangle, cropTexturedata,
-                                    obstacle1Rectangle, obstacle1.TextureData))
-                {
-                    areColliding = true;
-                }
+                areColliding = true;
             }
 
             base.Update(gameTime);
@@ -105,10 +82,9 @@ namespace Game1
             }
 
             spriteBatch.Begin();
-            spriteBatch.DrawString(font,collision, new Vector2(400, 100), Color.Black);
             obstacle1.Draw(spriteBatch);
             player.Draw(spriteBatch);
-
+            spriteBatch.DrawString(font, collision, new Vector2(400, 100), Color.Black);
             spriteBatch.End();
             base.Draw(gameTime);
         }
