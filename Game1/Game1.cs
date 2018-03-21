@@ -12,14 +12,11 @@ namespace Game1
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         private Player player;
+        private Obstacle obstacle1;
+
         private SpriteFont font;
         private String collision;
-        Texture2D blockTexture;
-        Vector2 blockPosition;
-        Color[] blockTextureData;
-
-
-        bool personHit = false;
+        bool areColliding;
 
         public Game1()
         {
@@ -30,8 +27,6 @@ namespace Game1
         protected override void Initialize()
         {
             base.Initialize();
-            blockPosition = new Vector2(250, 200);
-
         }
 
         protected override void LoadContent()
@@ -48,13 +43,10 @@ namespace Game1
                 new Player(animations){
                     Position = new Vector2(200, 200)
                 };
+            obstacle1 = 
+                new Obstacle(new Vector2(250, 200), Content.Load<Texture2D>("obstacle1"));
+
             font = Content.Load<SpriteFont>("Default");
-            blockTexture = Content.Load<Texture2D>("obstacle1");
-
-            blockTextureData =
-                new Color[blockTexture.Width * blockTexture.Height];
-            blockTexture.GetData(blockTextureData);
-
         }
 
         protected override void UnloadContent()
@@ -79,21 +71,20 @@ namespace Game1
 
             Animation actualSpriteAnimation = player._animationManager._animation;
 
-            Rectangle spriteRectangle=
+            Rectangle playerRectangle=
                 new Rectangle((int)player.Position.X, (int)player.Position.Y,
                 actualSpriteAnimation.FrameWidth, actualSpriteAnimation.FrameHeight);
 
-            Rectangle blockRectangle = new Rectangle((int)blockPosition.X, (int)blockPosition.Y, blockTexture.Width, blockTexture.Height);
+            Rectangle obstacle1Rectangle = obstacle1.getRectangle();
 
-            personHit = false;
+            areColliding = false;
 
-            if (spriteRectangle.Intersects(blockRectangle))
+            if (playerRectangle.Intersects(obstacle1Rectangle))
             {
-                personHit = true;
-                if (Collision.IntersectPixels(spriteRectangle, cropTexturedata,
-                                    blockRectangle, blockTextureData))
+                if (Collision.IntersectPixels(playerRectangle, cropTexturedata,
+                                    obstacle1Rectangle, obstacle1.TextureData))
                 {
-                    personHit = true;
+                    areColliding = true;
                 }
             }
 
@@ -104,10 +95,9 @@ namespace Game1
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            if (personHit)
+            if (areColliding)
             {
                 collision = "Collision";
-
             }
             else
             {
@@ -116,7 +106,7 @@ namespace Game1
 
             spriteBatch.Begin();
             spriteBatch.DrawString(font,collision, new Vector2(400, 100), Color.Black);
-            spriteBatch.Draw(blockTexture, blockPosition, Color.White);
+            obstacle1.Draw(spriteBatch);
             player.Draw(spriteBatch);
 
             spriteBatch.End();
