@@ -1,19 +1,25 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Dungeon_Crawler;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 
 namespace Game1
 {
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        private List<Sprite> _sprites;
-        private Input input;
+        private Sprite sprite;
+        private SpriteFont font;
+        private String collision;
+        Texture2D blockTexture;
+        Vector2 blockPosition;
+        Color[] blockTextureData;
+        Color[] spriteTextureData;
+
+        bool personHit = false;
 
         public Game1()
         {
@@ -21,26 +27,15 @@ namespace Game1
             Content.RootDirectory = "Content";
         }
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-            input = new Input();
             base.Initialize();
+            blockPosition = new Vector2(250, 200);
+
         }
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             var animations = new Dictionary<string, Animation>()
             {
@@ -49,63 +44,74 @@ namespace Game1
                 {"WalkLeft",new Animation(Content.Load<Texture2D>("WalkingLeft"),3 )},
                 {"WalkRight",new Animation(Content.Load<Texture2D>("WalkingRight"),3 )}
             };
-            _sprites = new List<Sprite>()
-            {
-                new Sprite(animations)
-                {
-                    Position=new Vector2(200,200),
-                    input=new Input()
-                    {
-                        Up=Keys.W,
-                        Down = Keys.S,
-                        Left=Keys.A,
-                        Right=Keys.D
+            sprite =
+                new Sprite(animations){
+                    Position = new Vector2(200, 200)
+                };
+            font = Content.Load<SpriteFont>("Default");
+            blockTexture = Content.Load<Texture2D>("RedBlock");
 
-                    }
-                        
-                }
-            };
-            // TODO: use this.Content to load your game content here
+            blockTextureData =
+                new Color[blockTexture.Width * blockTexture.Height];
+            blockTexture.GetData(blockTextureData);
+
         }
 
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// game-specific content.
-        /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+
         }
 
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            foreach (var sprite in _sprites)
-                sprite.Update(gameTime, _sprites);
+            sprite.Update(gameTime, sprite);
 
+            Texture2D actualSpriteTexture = sprite._animationManager._animation.Texture;
+            spriteTextureData =
+               new Color[actualSpriteTexture.Width * actualSpriteTexture.Height];
+            actualSpriteTexture.GetData(spriteTextureData);
+
+            Rectangle spriteRectangle =
+                new Rectangle((int)sprite.Position.X, (int)sprite.Position.Y,
+                actualSpriteTexture.Width/3, actualSpriteTexture.Height);
+
+            Rectangle blockRectangle = new Rectangle((int)blockPosition.X, (int)blockPosition.Y, blockTexture.Width, blockTexture.Height);
+
+            personHit = false;
+
+            if (spriteRectangle.Intersects(blockRectangle))
+            {
+                if (Collision.IntersectPixels(spriteRectangle, spriteTextureData,
+                                    blockRectangle, blockTextureData))
+                {
+                    personHit = true;
+                }
+            }
 
             base.Update(gameTime);
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin();
+            if (personHit)
+            {
+                collision = "Collision";
 
-            foreach (var sprite in _sprites)
-                sprite.Draw(spriteBatch);
+            }
+            else
+            {
+                collision = "No Collision";
+            }
+
+            spriteBatch.Begin();
+            spriteBatch.DrawString(font,collision, new Vector2(400, 100), Color.Black);
+            spriteBatch.Draw(blockTexture, blockPosition, Color.White);
+            sprite.Draw(spriteBatch);
 
             spriteBatch.End();
             base.Draw(gameTime);
