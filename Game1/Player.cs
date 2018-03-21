@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Game1
 {
-    public class Sprite
+    public class Player
     {
         public AnimationManager _animationManager;
         protected Dictionary<String, Animation> _animations;
@@ -40,12 +40,12 @@ namespace Game1
                 Velocity.X = +Speed;
         }
 
-        public Sprite(Dictionary<string,Animation> animations)
+        public Player(Dictionary<string,Animation> animations)
         {
             _animations = animations;
             _animationManager = new AnimationManager(_animations.First().Value);
         }
-        public virtual void Update(GameTime gameTime,Sprite sprite)
+        public virtual void Update(GameTime gameTime,Player sprite)
         {
             Move();
 

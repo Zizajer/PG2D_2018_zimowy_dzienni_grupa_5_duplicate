@@ -20,7 +20,7 @@
 /processorParam:TextureFormat=Compressed
 /build:Default.spritefont
 
-#begin RedBlock.bmp
+#begin obstacle1.bmp
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -30,7 +30,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:RedBlock.bmp
+/build:obstacle1.bmp
 
 #begin WalkingDown.png
 /importer:TextureImporter
