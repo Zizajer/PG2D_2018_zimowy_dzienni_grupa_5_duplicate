@@ -9,13 +9,7 @@ namespace Game1
 
         public static bool checkCollision(Player player,Obstacle obstacle,GraphicsDevice graphicsDevice)
         {
-            Texture2D multipleSpriteTexture = player._animationManager._animation.Texture;
-            Rectangle toCropRectangle = player._animationManager.getCurrentFrameRectangle();
-
-            Texture2D singleTexture = new Texture2D(graphicsDevice, toCropRectangle.Width, toCropRectangle.Height);
-            Color[] singleTextureData = new Color[toCropRectangle.Width * toCropRectangle.Height];
-            multipleSpriteTexture.GetData(0, toCropRectangle, singleTextureData, 0, singleTextureData.Length);
-            singleTexture.SetData(singleTextureData);
+            Color[] singleTextureData = player.getCurrentTextureData(graphicsDevice);
 
             Rectangle playerRectangle = player.getRectangle();
              

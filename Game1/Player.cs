@@ -71,9 +71,16 @@ namespace Game1
             return new Rectangle((int)Position.X, (int)Position.Y,
                 _animationManager._animation.FrameWidth, _animationManager._animation.FrameHeight);
         }
-        public Texture2D getCurrentTextureData()
+        public Color[] getCurrentTextureData(GraphicsDevice graphicsDevice)
         {
-            return null;
+            Texture2D multipleSpriteTexture = _animationManager._animation.Texture;
+
+            Rectangle toCropRectangle = _animationManager.getCurrentFrameRectangle();
+
+            Color[] singleTextureData = new Color[toCropRectangle.Width * toCropRectangle.Height];
+            multipleSpriteTexture.GetData(0, toCropRectangle, singleTextureData, 0, singleTextureData.Length);
+
+            return singleTextureData;
         }
     }
 }
