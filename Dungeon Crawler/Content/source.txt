@@ -1,0 +1,9 @@
+items: https://opengameart.org/content/rpg-itemterraincharacter-sprites-ice-insignia
+
+player :
+https://www.youtube.com/watch?v=OLsiWxgONeM
+https://imgur.com/a/6XguU
+
+floor, walls: https://opengameart.org/content/dungeon-tiles-1
+
+obstacle: https://opengameart.org/content/basic-boulder
