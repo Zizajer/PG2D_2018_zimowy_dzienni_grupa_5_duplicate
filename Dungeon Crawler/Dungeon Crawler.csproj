@@ -41,18 +41,14 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Classes\AggresiveEnemy.cs" />
+    <Compile Include="Classes\Animation.cs" />
+    <Compile Include="Classes\AnimationManager.cs" />
     <Compile Include="Classes\CameraManager.cs" />
-    <Compile Include="Classes\Character.cs" />
-    <Compile Include="Classes\CombatManager.cs" />
-    <Compile Include="Classes\GlobalVariables.cs" />
-    <Compile Include="Classes\GUI.cs" />
-    <Compile Include="Classes\InputManager.cs" />
-    <Compile Include="Classes\Layers.cs" />
-    <Compile Include="Classes\PathToPlayer.cs" />
+    <Compile Include="Classes\Collision.cs" />
+    <Compile Include="Classes\Game1.cs" />
+    <Compile Include="Classes\Item.cs" />
+    <Compile Include="Classes\Obstacle.cs" />
     <Compile Include="Classes\Player.cs" />
-    <Compile Include="Classes\Main.cs" />
-    <Compile Include="Classes\SurroundLogic.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -61,8 +57,7 @@
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="RogueSharp, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RogueSharp.3.0.0\lib\portable-net40+sl50+win+wpa81+wp80\RogueSharp.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>packages\RogueSharp.3.0.0\lib\portable-net40+sl50+win+wpa81+wp80\RogueSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />

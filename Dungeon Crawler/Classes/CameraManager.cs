@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using RogueSharp;
 
 namespace Dungeon_Crawler
@@ -6,11 +7,13 @@ namespace Dungeon_Crawler
     public class CameraManager
     {
         // Construct a new Camera class with standard zoom (no scaling)
-        public CameraManager()
+        public CameraManager(int ViewportWidth,int ViewportHeight)
         {
             Zoom = 1.0f;
+            this.ViewportWidth = ViewportWidth;
+            this.ViewportHeight = ViewportHeight;
         }
-
+        public int mapWidth, mapHeight, cellSize;
         // Centered Position of the Camera in pixels.
         public Vector2 Position { get; private set; }
         // Current Zoom level with 1.0f being standard
@@ -32,6 +35,12 @@ namespace Dungeon_Crawler
             }
         }
 
+        public void setParams(int mapWidth, int mapHeight, int cellSize)
+        {
+            this.mapWidth = mapWidth;
+            this.mapHeight = mapHeight;
+            this.cellSize = cellSize;
+    }
         // Create a matrix for the camera to offset everything we draw,
         // the map and our objects. since the camera coordinates are where
         // the camera is, we offset everything by the negative of that to simulate
@@ -100,7 +109,6 @@ namespace Dungeon_Crawler
         {
             Position = position;
         }
-
         // Center the camera on a specific cell in the map
         public void CenterOn(Cell cell)
         {
@@ -109,11 +117,11 @@ namespace Dungeon_Crawler
 
         private Vector2 CenteredPosition(Cell cell, bool clampToMap = false)
         {
-            var cameraPosition = new Vector2(cell.X * GlobalVariables.SpriteWidth,
-               cell.Y * GlobalVariables.SpriteHeight);
+            var cameraPosition = new Vector2(cell.X * cellSize,
+               cell.Y * cellSize);
             var cameraCenteredOnTilePosition =
-               new Vector2(cameraPosition.X + GlobalVariables.SpriteWidth / 2,
-                   cameraPosition.Y + GlobalVariables.SpriteHeight / 2);
+               new Vector2(cameraPosition.X + cellSize / 2,
+                   cameraPosition.Y + cellSize / 2);
             if (clampToMap)
             {
                 return MapClampedPosition(cameraCenteredOnTilePosition);
@@ -121,13 +129,12 @@ namespace Dungeon_Crawler
 
             return cameraCenteredOnTilePosition;
         }
-
         // Clamp the camera so it never leaves the visible area of the map.
         private Vector2 MapClampedPosition(Vector2 position)
         {
-            var cameraMax = new Vector2(GlobalVariables.MapWidth * GlobalVariables.SpriteWidth -
+            var cameraMax = new Vector2(mapWidth * cellSize -
                 (ViewportWidth / Zoom / 2),
-                GlobalVariables.MapHeight * GlobalVariables.SpriteHeight -
+                mapHeight * cellSize -
                 (ViewportHeight / Zoom / 2));
 
             return Vector2.Clamp(position,
@@ -147,34 +154,33 @@ namespace Dungeon_Crawler
         }
 
         // Move the camera's position based on input
-        public void HandleInput(InputManager inputState,
-           PlayerIndex? controllingPlayer)
+        public virtual void Move()
         {
             Vector2 cameraMovement = Vector2.Zero;
 
-            if (inputState.IsScrollLeft(controllingPlayer))
+            if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
                 cameraMovement.X = -1;
             }
-            else if (inputState.IsScrollRight(controllingPlayer))
+            else if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
                 cameraMovement.X = 1;
             }
-            if (inputState.IsScrollUp(controllingPlayer))
+            if (Keyboard.GetState().IsKeyDown(Keys.Up))
             {
                 cameraMovement.Y = -1;
             }
-            else if (inputState.IsScrollDown(controllingPlayer))
+            if (Keyboard.GetState().IsKeyDown(Keys.Down))
             {
                 cameraMovement.Y = 1;
             }
-            if (inputState.IsZoomIn(controllingPlayer))
+            if (Keyboard.GetState().IsKeyDown(Keys.OemComma))
             {
-                AdjustZoom(0.25f);
+                AdjustZoom(0.05f);
             }
-            else if (inputState.IsZoomOut(controllingPlayer))
+            if (Keyboard.GetState().IsKeyDown(Keys.OemPeriod))
             {
-                AdjustZoom(-0.25f);
+                AdjustZoom(-0.05f);
             }
 
             // When using a controller, to match the thumbstick behavior,
