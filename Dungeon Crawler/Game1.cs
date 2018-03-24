@@ -12,6 +12,12 @@ namespace Dungeon_Crawler
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        SpriteFont font;
+        Texture2D texture;
+        Effect effect;
+
+        float BlockCount = 75.0f;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -39,6 +45,10 @@ namespace Dungeon_Crawler
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            font = Content.Load<SpriteFont>("font");
+            texture = Content.Load<Texture2D>("image");
+            effect = Content.Load<Effect>("Pixelization");
+            effect.Parameters["BlockCount"].SetValue(BlockCount);
 
             // TODO: use this.Content to load your game content here
         }
@@ -64,6 +74,22 @@ namespace Dungeon_Crawler
 
             // TODO: Add your update logic here
 
+            KeyboardState state = Keyboard.GetState();
+
+            if (state.IsKeyDown(Keys.Up))
+            {
+                BlockCount += 1f;
+                effect.Parameters["BlockCount"].SetValue(BlockCount);
+            }
+            if (state.IsKeyDown(Keys.Down))
+            {
+                if(BlockCount > 1f)
+                {
+                    BlockCount -= 1f;
+                }
+                effect.Parameters["BlockCount"].SetValue(BlockCount);
+            }
+
             base.Update(gameTime);
         }
 
@@ -75,7 +101,12 @@ namespace Dungeon_Crawler
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            spriteBatch.DrawString(font, "Blocks: " + BlockCount + "     Controls: Key up, down", new Vector2(0, 420), Color.Black);
+            effect.CurrentTechnique.Passes[0].Apply();
+            spriteBatch.Draw(texture, new Vector2(0, 0), Color.White);
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
