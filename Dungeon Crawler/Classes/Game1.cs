@@ -13,6 +13,7 @@ namespace Dungeon_Crawler
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         private Player player;
+        List<Enemy> enemies;
         private Obstacle obstacle1;
 
         //map
@@ -40,11 +41,12 @@ namespace Dungeon_Crawler
         protected override void Initialize()
         {
             IMapCreationStrategy<Map> mapCreationStrategy =
-                new RandomRoomsMapCreationStrategy<Map>(14, 10, 100, 3, 3);
+                new RandomRoomsMapCreationStrategy<Map>(16, 10, 100, 3, 3);
             map = Map.Create(mapCreationStrategy);
             camera = new CameraManager(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height);
             random = new Random();
             items = new List<Item>();
+            enemies = new List<Enemy>();
             base.Initialize();
         }
 
@@ -79,6 +81,26 @@ namespace Dungeon_Crawler
                 {
                     Position = new Vector2((randomCell.X*cellSize+cellSize/3), (randomCell.Y*cellSize)+ cellSize/3)
                 };
+            var animations2 = new Dictionary<string, Animation>()
+                {
+                    {"WalkUp",new Animation(Content.Load<Texture2D>("EnemyWalkingup"),3 )},
+                    {"WalkDown",new Animation(Content.Load<Texture2D>("EnemyWalkingDown"),3 )},
+                    {"WalkLeft",new Animation(Content.Load<Texture2D>("EnemyWalkingLeft"),3 )},
+                    {"WalkRight",new Animation(Content.Load<Texture2D>("EnemyWalkingRight"),3 )}
+                };
+            for (int i = 0; i < 10; i++)
+            {
+                randomCell = GetRandomEmptyCell(map);
+                float speed = (random.Next(2) + 1) / 0.7f;
+                float timeBetweenActions = (random.Next(2))+1 / 0.7f;
+                Enemy tempEnemy =
+                    new Enemy(animations2, cellSize, speed, timeBetweenActions)
+                    {
+                        Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
+                    };
+                enemies.Add(tempEnemy);
+            }
+
             randomCell = GetRandomEmptyCell(map);
             obstacle1 = 
                 new Obstacle(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("obstacle1"));
@@ -95,7 +117,11 @@ namespace Dungeon_Crawler
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            player.Update(gameTime, player,map);
+            player.Update(gameTime, map);
+            foreach(Enemy enemy in enemies)
+            {
+                enemy.Update(gameTime, map);
+            }
             camera.Move();
             areColliding = false;
             Item[] itemArray = items.ToArray();
@@ -149,6 +175,10 @@ namespace Dungeon_Crawler
 
             obstacle1.Draw(spriteBatch);
             player.Draw(spriteBatch);
+            foreach (var enemy in enemies)
+            {
+                enemy.Draw(spriteBatch);
+            }
 
             spriteBatch.DrawString(font, collision, new Vector2(400, 100), Color.Black);
             spriteBatch.DrawString(font, player.getItems(), new Vector2(400, 130), Color.Black);
