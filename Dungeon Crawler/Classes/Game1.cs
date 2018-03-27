@@ -54,24 +54,24 @@ namespace Dungeon_Crawler
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            floor = Content.Load<Texture2D>("Floor");
-            wall = Content.Load<Texture2D>("Wall");
+            floor = Content.Load<Texture2D>("map/Floor");
+            wall = Content.Load<Texture2D>("map/Wall");
             cellSize = floor.Width;
             camera.setParams(map.Width, map.Height, cellSize);
 
             Cell randomCell = GetRandomEmptyCell(map);
-            items.Add(new Item(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("bow1"), "Bow"));
+            items.Add(new Item(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("items/bow1"), "Bow"));
             randomCell = GetRandomEmptyCell(map);
-            items.Add(new Item(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("sword1"), "Sword"));
+            items.Add(new Item(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("items/sword1"), "Sword"));
             randomCell = GetRandomEmptyCell(map);
-            items.Add(new Item(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("wand1"), "Wand"));
+            items.Add(new Item(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("items/wand1"), "Wand"));
 
             var animations = new Dictionary<string, Animation>()
             {
-                {"WalkUp",new Animation(Content.Load<Texture2D>("Walkingup"),3 )},
-                {"WalkDown",new Animation(Content.Load<Texture2D>("WalkingDown"),3 )},
-                {"WalkLeft",new Animation(Content.Load<Texture2D>("WalkingLeft"),3 )},
-                {"WalkRight",new Animation(Content.Load<Texture2D>("WalkingRight"),3 )}
+                {"WalkUp",new Animation(Content.Load<Texture2D>("player/Walkingup"),3 )},
+                {"WalkDown",new Animation(Content.Load<Texture2D>("player/WalkingDown"),3 )},
+                {"WalkLeft",new Animation(Content.Load<Texture2D>("player/WalkingLeft"),3 )},
+                {"WalkRight",new Animation(Content.Load<Texture2D>("player/WalkingRight"),3 )}
             };
 
             randomCell = GetRandomEmptyCell(map);
@@ -83,12 +83,12 @@ namespace Dungeon_Crawler
                 };
             var animations2 = new Dictionary<string, Animation>()
                 {
-                    {"WalkUp",new Animation(Content.Load<Texture2D>("EnemyWalkingup"),3 )},
-                    {"WalkDown",new Animation(Content.Load<Texture2D>("EnemyWalkingDown"),3 )},
-                    {"WalkLeft",new Animation(Content.Load<Texture2D>("EnemyWalkingLeft"),3 )},
-                    {"WalkRight",new Animation(Content.Load<Texture2D>("EnemyWalkingRight"),3 )}
+                    {"WalkUp",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingup"),3 )},
+                    {"WalkDown",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingDown"),3 )},
+                    {"WalkLeft",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingLeft"),3 )},
+                    {"WalkRight",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingRight"),3 )}
                 };
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 5; i++)
             {
                 randomCell = GetRandomEmptyCell(map);
                 float speed = (random.Next(2) + 1) / 0.7f;
@@ -103,9 +103,9 @@ namespace Dungeon_Crawler
 
             randomCell = GetRandomEmptyCell(map);
             obstacle1 = 
-                new Obstacle(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("obstacle1"));
+                new Obstacle(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("map/obstacle1"));
 
-            font = Content.Load<SpriteFont>("Default");
+            font = Content.Load<SpriteFont>("fonts/Default");
         }
 
         protected override void UnloadContent()
