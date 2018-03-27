@@ -70,11 +70,12 @@ namespace Dungeon_Crawler
                 obstacle.Draw(spriteBatch);
             }
 
-            player.Draw(spriteBatch);
             foreach (var enemy in enemies)
             {
                 enemy.Draw(spriteBatch);
             }
+
+            player.Draw(spriteBatch);
         }
 
     }
