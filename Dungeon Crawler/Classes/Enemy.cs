@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using RogueSharp;
 using System;
@@ -34,12 +35,18 @@ namespace Dungeon_Crawler
         public float Speed;
         public Vector2 Velocity;
 
-        public Enemy(Dictionary<string, Animation> animations, int cellSize, float speed,float timeBetweenActions)
+        public Enemy(ContentManager content, int cellSize, float speed,float timeBetweenActions)
         {
+            _animations = new Dictionary<string, Animation>()
+                {
+                    {"WalkUp",new Animation(content.Load<Texture2D>("enemy/EnemyWalkingup"),3 )},
+                    {"WalkDown",new Animation(content.Load<Texture2D>("enemy/EnemyWalkingDown"),3 )},
+                    {"WalkLeft",new Animation(content.Load<Texture2D>("enemy/EnemyWalkingLeft"),3 )},
+                    {"WalkRight",new Animation(content.Load<Texture2D>("enemy/EnemyWalkingRight"),3 )}
+                };
             this.timeBetweenActions = timeBetweenActions;
             this.Speed = speed;
             this.cellSize = cellSize;
-            _animations = animations;
             _animationManager = new AnimationManager(_animations.First().Value);
 
             rand = new Random();

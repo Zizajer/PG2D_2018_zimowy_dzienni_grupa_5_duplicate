@@ -66,35 +66,22 @@ namespace Dungeon_Crawler
             randomCell = GetRandomEmptyCell(map);
             items.Add(new Item(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("items/wand1"), "Wand"));
 
-            var animations = new Dictionary<string, Animation>()
-            {
-                {"WalkUp",new Animation(Content.Load<Texture2D>("player/Walkingup"),3 )},
-                {"WalkDown",new Animation(Content.Load<Texture2D>("player/WalkingDown"),3 )},
-                {"WalkLeft",new Animation(Content.Load<Texture2D>("player/WalkingLeft"),3 )},
-                {"WalkRight",new Animation(Content.Load<Texture2D>("player/WalkingRight"),3 )}
-            };
-
             randomCell = GetRandomEmptyCell(map);
             camera.CenterOn(randomCell);
+
             player =
-                new Player(animations,camera,cellSize)
+                new Player(this.Content,camera,cellSize)
                 {
                     Position = new Vector2((randomCell.X*cellSize+cellSize/3), (randomCell.Y*cellSize)+ cellSize/3)
                 };
-            var animations2 = new Dictionary<string, Animation>()
-                {
-                    {"WalkUp",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingup"),3 )},
-                    {"WalkDown",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingDown"),3 )},
-                    {"WalkLeft",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingLeft"),3 )},
-                    {"WalkRight",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingRight"),3 )}
-                };
+
             for (int i = 0; i < 5; i++)
             {
                 randomCell = GetRandomEmptyCell(map);
                 float speed = (random.Next(2) + 1) / 0.7f;
                 float timeBetweenActions = (random.Next(2))+1 / 0.7f;
                 Enemy tempEnemy =
-                    new Enemy(animations2, cellSize, speed, timeBetweenActions)
+                    new Enemy(this.Content, cellSize, speed, timeBetweenActions)
                     {
                         Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
                     };

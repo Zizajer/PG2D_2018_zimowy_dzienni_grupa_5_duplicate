@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using RogueSharp;
@@ -33,12 +34,18 @@ namespace Dungeon_Crawler
         public float Speed = 1.0f;
         public Vector2 Velocity;
 
-        public Player(Dictionary<string, Animation> animations, CameraManager camera, int cellSize)
+        public Player(ContentManager content, CameraManager camera, int cellSize)
         {
+            _animations = new Dictionary<string, Animation>()
+            {
+                {"WalkUp",new Animation(content.Load<Texture2D>("player/Walkingup"),3 )},
+                {"WalkDown",new Animation(content.Load<Texture2D>("player/WalkingDown"),3 )},
+                {"WalkLeft",new Animation(content.Load<Texture2D>("player/WalkingLeft"),3 )},
+                {"WalkRight",new Animation(content.Load<Texture2D>("player/WalkingRight"),3 )}
+            };
             this.cellSize = cellSize;
             this.camera = camera;
             inventory = new List<Item>();
-            _animations = animations;
             _animationManager = new AnimationManager(_animations.First().Value);
         }
 
