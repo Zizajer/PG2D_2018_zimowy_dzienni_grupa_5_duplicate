@@ -14,7 +14,7 @@ namespace Dungeon_Crawler
         SpriteBatch spriteBatch;
         private Player player;
         List<Enemy> enemies;
-        private Obstacle obstacle1;
+        List<Obstacle> obstacles;
 
         //map
         private Texture2D floor;
@@ -47,6 +47,7 @@ namespace Dungeon_Crawler
             random = new Random();
             items = new List<Item>();
             enemies = new List<Enemy>();
+            obstacles = new List<Obstacle>();
             base.Initialize();
         }
 
@@ -88,9 +89,14 @@ namespace Dungeon_Crawler
                 enemies.Add(tempEnemy);
             }
 
-            randomCell = GetRandomEmptyCell(map);
-            obstacle1 = 
-                new Obstacle(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("map/obstacle1"));
+            for (int i = 0; i < 3; i++)
+            {
+                randomCell = GetRandomEmptyCell(map);
+
+                Obstacle tempObstacle =
+                    new Obstacle(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("map/obstacle1"));
+                obstacles.Add(tempObstacle);
+            }
 
             font = Content.Load<SpriteFont>("fonts/Default");
         }
@@ -110,7 +116,7 @@ namespace Dungeon_Crawler
                 enemy.Update(gameTime, map);
             }
             camera.Move();
-            areColliding = false;
+            
             Item[] itemArray = items.ToArray();
             for(int i=0; i<items.Count;i++)
             {
@@ -121,10 +127,15 @@ namespace Dungeon_Crawler
                 }
             }
 
-            if (Collision.checkCollision(player, obstacle1, GraphicsDevice))
+            areColliding = false;
+            foreach (Obstacle obstacle in obstacles)
             {
-                areColliding = true;
+                if (Collision.checkCollision(player, obstacle, GraphicsDevice))
+                {
+                    areColliding = true;
+                }
             }
+
             base.Update(gameTime);
         }
 
@@ -160,7 +171,11 @@ namespace Dungeon_Crawler
                 item.Draw(spriteBatch);
             }
 
-            obstacle1.Draw(spriteBatch);
+            foreach (var obstacle in obstacles)
+            {
+                obstacle.Draw(spriteBatch);
+            }
+
             player.Draw(spriteBatch);
             foreach (var enemy in enemies)
             {
