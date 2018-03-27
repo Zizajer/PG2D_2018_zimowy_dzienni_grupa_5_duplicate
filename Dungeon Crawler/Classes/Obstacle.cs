@@ -22,7 +22,7 @@ namespace Dungeon_Crawler
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Position, Color.White);
+            spriteBatch.Draw(Texture, Position, null, Color.White, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, Layers.Items);
         }
     }
 }

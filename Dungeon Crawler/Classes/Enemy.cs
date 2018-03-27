@@ -10,6 +10,9 @@ namespace Dungeon_Crawler
 {
     public class Enemy
     {
+        public int Damage { get; set; }
+        public int Health { get; set; }
+        public string Name { get; set; }
         float actionTimer;
         float timeBetweenActions;
         int lastDirection;
@@ -181,7 +184,7 @@ namespace Dungeon_Crawler
         public Microsoft.Xna.Framework.Rectangle getRectangle()
         {
             return new Microsoft.Xna.Framework.Rectangle((int)Position.X, (int)Position.Y,
-                _animationManager._animation.FrameWidth, _animationManager._animation.FrameHeight);
+                getWidth(), getHeight());
         }
         public Color[] getCurrentTextureData(GraphicsDevice graphicsDevice)
         {

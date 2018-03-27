@@ -53,11 +53,11 @@ namespace Dungeon_Crawler
                 var position = new Vector2(cell.X * cellSize, cell.Y * cellSize);
                 if (cell.IsWalkable)
                 {
-                    spriteBatch.Draw(floor, position, null, Color.White, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, 0.9f);
+                    spriteBatch.Draw(floor, position, null, Color.White, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, Layers.Cells);
                 }
                 else
                 {
-                    spriteBatch.Draw(wall, position, null, Color.White, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, 0.9f);
+                    spriteBatch.Draw(wall, position, null, Color.White, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, Layers.Cells);
                 }
             }
             foreach (var item in items)

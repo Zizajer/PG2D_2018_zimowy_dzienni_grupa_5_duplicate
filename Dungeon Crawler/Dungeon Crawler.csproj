@@ -47,7 +47,10 @@
     <Compile Include="Classes\Collision.cs" />
     <Compile Include="Classes\Enemy.cs" />
     <Compile Include="Classes\Game1.cs" />
+    <Compile Include="Classes\Global.cs" />
+    <Compile Include="Classes\GUI.cs" />
     <Compile Include="Classes\Item.cs" />
+    <Compile Include="Classes\Layers.cs" />
     <Compile Include="Classes\Level.cs" />
     <Compile Include="Classes\LevelManager.cs" />
     <Compile Include="Classes\Obstacle.cs" />

@@ -6,13 +6,6 @@ namespace Dungeon_Crawler
 {
     public class CameraManager
     {
-        // Construct a new Camera class with standard zoom (no scaling)
-        public CameraManager(int ViewportWidth,int ViewportHeight)
-        {
-            Zoom = 1.0f;
-            this.ViewportWidth = ViewportWidth;
-            this.ViewportHeight = ViewportHeight;
-        }
         public int mapWidth, mapHeight, cellSize;
         // Centered Position of the Camera in pixels.
         public Vector2 Position { get; private set; }
@@ -26,6 +19,24 @@ namespace Dungeon_Crawler
         public int ViewportWidth { get; set; }
         public int ViewportHeight { get; set; }
 
+        //custon constructor
+        public CameraManager()
+        {
+            Zoom = 1.0f;
+        }
+        // Construct a new Camera class with standard zoom (no scaling)
+        public CameraManager(int ViewportWidth, int ViewportHeight)
+        {
+            Zoom = 1.0f;
+            this.ViewportWidth = ViewportWidth;
+            this.ViewportHeight = ViewportHeight;
+        }
+
+        public void setViewports(int ViewportWidth, int ViewportHeight)
+        {
+            this.ViewportWidth = ViewportWidth;
+            this.ViewportHeight = ViewportHeight;
+        }
         // Center of the Viewport which does not account for scale
         public Vector2 ViewportCenter
         {

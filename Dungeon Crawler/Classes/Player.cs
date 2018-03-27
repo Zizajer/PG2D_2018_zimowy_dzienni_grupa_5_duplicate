@@ -11,8 +11,10 @@ namespace Dungeon_Crawler
 {
     public class Player
     {
+        public int Damage { get; set; }
+        public int Health { get; set; }
+        public string Name { get; set; }
         public List<Item> inventory { get; set; }
-        public CameraManager camera;
         public int cellSize;
         public AnimationManager _animationManager;
         protected Dictionary<String, Animation> _animations;
@@ -34,8 +36,9 @@ namespace Dungeon_Crawler
         public float Speed = 1.0f;
         public Vector2 Velocity;
 
-        public Player(ContentManager content, CameraManager camera, int cellSize)
+        public Player(ContentManager content, int cellSize)
         {
+            this.Health = 100;
             _animations = new Dictionary<string, Animation>()
             {
                 {"WalkUp",new Animation(content.Load<Texture2D>("player/Walkingup"),3 )},
@@ -44,7 +47,6 @@ namespace Dungeon_Crawler
                 {"WalkRight",new Animation(content.Load<Texture2D>("player/WalkingRight"),3 )}
             };
             this.cellSize = cellSize;
-            this.camera = camera;
             inventory = new List<Item>();
             _animationManager = new AnimationManager(_animations.First().Value);
         }
@@ -70,7 +72,7 @@ namespace Dungeon_Crawler
                     if (fixedPosition.Y > cellAbove.Y * cellSize + cellSize + getHeight() / 2)
                         Velocity.Y = -Speed;
                 }
-                camera.CenterOn(fixedPosition);
+                Global.Camera.CenterOn(fixedPosition);
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.S))
@@ -85,7 +87,7 @@ namespace Dungeon_Crawler
                     if (fixedPosition.Y + 1 < cellBelow.Y * cellSize)
                         Velocity.Y = +Speed;
                 }
-                camera.CenterOn(fixedPosition);
+                Global.Camera.CenterOn(fixedPosition);
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.A))
@@ -100,7 +102,7 @@ namespace Dungeon_Crawler
                     if (fixedPosition.X > cellOnLeft.X * cellSize + cellSize + getWidth() / 2)
                         Velocity.X = -Speed;
                 }
-                camera.CenterOn(fixedPosition);
+                Global.Camera.CenterOn(fixedPosition);
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.D))
@@ -115,7 +117,7 @@ namespace Dungeon_Crawler
                     if (fixedPosition.X + getWidth() / 2 < cellOnRight.X * cellSize)
                         Velocity.X = +Speed;
                 }
-                camera.CenterOn(fixedPosition);
+                Global.Camera.CenterOn(fixedPosition);
             }
         }
         public virtual void Update(GameTime gameTime, Map map)
@@ -152,7 +154,7 @@ namespace Dungeon_Crawler
         public Microsoft.Xna.Framework.Rectangle getRectangle()
         {
             return new Microsoft.Xna.Framework.Rectangle((int)Position.X, (int)Position.Y,
-                _animationManager._animation.FrameWidth, _animationManager._animation.FrameHeight);
+               getWidth(), getHeight());
         }
         public Color[] getCurrentTextureData(GraphicsDevice graphicsDevice)
         {
@@ -168,7 +170,8 @@ namespace Dungeon_Crawler
 
         public string getItems()
         {
-            string temp = "items= ";
+            if (inventory.Count == 0) return "Inventory is empty";
+            string temp = "Inventory: ";
             Item[] itemArray = inventory.ToArray();
             for (int i = 0; i < inventory.Count; i++)
             {

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using RogueSharp;
 using RogueSharp.MapCreation;
+using System.Diagnostics;
 
 namespace Dungeon_Crawler
 {
@@ -15,14 +16,6 @@ namespace Dungeon_Crawler
         private Player player;
         Level level;
 
-        public Random random;
-        public CameraManager camera;
-
-        //gui
-        private SpriteFont font;
-        private String collision;
-        bool areColliding;
-        //gui
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -31,9 +24,7 @@ namespace Dungeon_Crawler
 
         protected override void Initialize()
         {
-            camera = new CameraManager(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height);
-            random = new Random();
-
+            Global.Camera.setViewports(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height);
             base.Initialize();
         }
 
@@ -50,7 +41,7 @@ namespace Dungeon_Crawler
             Texture2D wall = Content.Load<Texture2D>("map/Wall");
             int cellSize = floor.Width;
 
-            camera.setParams(map.Width, map.Height, cellSize);
+            Global.Camera.setParams(map.Width, map.Height, cellSize);
             
 
             List<Enemy> enemies = new List<Enemy>(5);
@@ -65,10 +56,10 @@ namespace Dungeon_Crawler
             items.Add(new Item(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("items/wand1"), "Wand"));
 
             randomCell = GetRandomEmptyCell(map);
-            camera.CenterOn(randomCell);
+            Global.Camera.CenterOn(randomCell);
 
             player =
-                new Player(this.Content,camera,cellSize)
+                new Player(this.Content,cellSize)
                 {
                     Position = new Vector2((randomCell.X*cellSize+cellSize/3), (randomCell.Y*cellSize)+ cellSize/3)
                 };
@@ -76,8 +67,8 @@ namespace Dungeon_Crawler
             for (int i = 0; i < 5; i++)
             {
                 randomCell = GetRandomEmptyCell(map);
-                float speed = (random.Next(2) + 1) / 0.7f;
-                float timeBetweenActions = (random.Next(2))+1 / 0.7f;
+                float speed = (Global.random.Next(2) + 1) / 0.7f;
+                float timeBetweenActions = (Global.random.Next(2))+1 / 0.7f;
                 Enemy tempEnemy =
                     new Enemy(this.Content, cellSize, speed, timeBetweenActions)
                     {
@@ -99,7 +90,9 @@ namespace Dungeon_Crawler
 
             level = new Level(map, enemies, items, obstacles, floor, wall, cellSize, player);
 
-            font = Content.Load<SpriteFont>("fonts/Default");
+            Global.Gui = new GUI(player, Content.Load<SpriteFont>("fonts/Default"));
+            //Global.CombatManager = new CombatManager(player, enemies);
+
         }
 
         protected override void UnloadContent()
@@ -111,9 +104,11 @@ namespace Dungeon_Crawler
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            camera.Move();
+            Global.Camera.Move();
 
             level.Update(gameTime, GraphicsDevice);
+
+            Global.Gui.Update();
             base.Update(gameTime);
         }
 
@@ -121,21 +116,12 @@ namespace Dungeon_Crawler
         {
             GraphicsDevice.Clear(Color.Black);
 
-            if (areColliding)
-            {
-                collision = "Collision";
-            }
-            else
-            {
-                collision = "No Collision";
-            }
-
-            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, camera.TranslationMatrix);
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
 
             level.Draw(gameTime, spriteBatch);
 
-            spriteBatch.DrawString(font, collision, new Vector2(400, 100), Color.Black);
-            spriteBatch.DrawString(font, player.getItems(), new Vector2(400, 130), Color.Black);
+            Global.Gui.Draw(spriteBatch);
+
             spriteBatch.End();
             base.Draw(gameTime);
         }
@@ -143,8 +129,8 @@ namespace Dungeon_Crawler
         {
             while (true)
             {
-                int x = random.Next(map.Width);
-                int y = random.Next(map.Height);
+                int x = Global.random.Next(map.Width);
+                int y = Global.random.Next(map.Height);
                 if (map.IsWalkable(x, y))
                 {
                     return map.GetCell(x, y);
