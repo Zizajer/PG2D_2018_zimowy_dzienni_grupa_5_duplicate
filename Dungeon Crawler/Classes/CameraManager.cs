@@ -107,7 +107,7 @@ namespace Dungeon_Crawler
         // Center the camera on specific pixel coordinates
         public void CenterOn(Vector2 position)
         {
-            Position = position;
+            Position = MapClampedPosition(position);
         }
         // Center the camera on a specific cell in the map
         public void CenterOn(Cell cell)

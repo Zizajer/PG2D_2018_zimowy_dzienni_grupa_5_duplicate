@@ -13,16 +13,7 @@ namespace Dungeon_Crawler
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         private Player player;
-        List<Enemy> enemies;
-        List<Obstacle> obstacles;
-
-        //map
-        private Texture2D floor;
-        private Texture2D wall;
-        private int cellSize;
-        private Map map;
-        List<Item> items;
-        //map
+        Level level;
 
         public Random random;
         public CameraManager camera;
@@ -40,14 +31,9 @@ namespace Dungeon_Crawler
 
         protected override void Initialize()
         {
-            IMapCreationStrategy<Map> mapCreationStrategy =
-                new RandomRoomsMapCreationStrategy<Map>(16, 10, 100, 3, 3);
-            map = Map.Create(mapCreationStrategy);
             camera = new CameraManager(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height);
             random = new Random();
-            items = new List<Item>();
-            enemies = new List<Enemy>();
-            obstacles = new List<Obstacle>();
+
             base.Initialize();
         }
 
@@ -55,10 +41,21 @@ namespace Dungeon_Crawler
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            floor = Content.Load<Texture2D>("map/Floor");
-            wall = Content.Load<Texture2D>("map/Wall");
-            cellSize = floor.Width;
+            //levelManager
+            IMapCreationStrategy<Map> mapCreationStrategy =
+                new RandomRoomsMapCreationStrategy<Map>(16, 10, 100, 3, 3);
+            Map map = Map.Create(mapCreationStrategy);
+
+            Texture2D floor = Content.Load<Texture2D>("map/Floor");
+            Texture2D wall = Content.Load<Texture2D>("map/Wall");
+            int cellSize = floor.Width;
+
             camera.setParams(map.Width, map.Height, cellSize);
+            
+
+            List<Enemy> enemies = new List<Enemy>(5);
+            List<Item> items = new List<Item>(3); 
+            List<Obstacle> obstacles = new List<Obstacle>(3);
 
             Cell randomCell = GetRandomEmptyCell(map);
             items.Add(new Item(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("items/bow1"), "Bow"));
@@ -98,6 +95,10 @@ namespace Dungeon_Crawler
                 obstacles.Add(tempObstacle);
             }
 
+            //levelManager
+
+            level = new Level(map, enemies, items, obstacles, floor, wall, cellSize, player);
+
             font = Content.Load<SpriteFont>("fonts/Default");
         }
 
@@ -110,38 +111,15 @@ namespace Dungeon_Crawler
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            player.Update(gameTime, map);
-            foreach(Enemy enemy in enemies)
-            {
-                enemy.Update(gameTime, map);
-            }
             camera.Move();
-            
-            Item[] itemArray = items.ToArray();
-            for(int i=0; i<items.Count;i++)
-            {
-                if (Collision.checkCollision(player, itemArray[i], GraphicsDevice))
-                {
-                    player.inventory.Add(itemArray[i]);
-                    items.Remove(itemArray[i]);
-                }
-            }
 
-            areColliding = false;
-            foreach (Obstacle obstacle in obstacles)
-            {
-                if (Collision.checkCollision(player, obstacle, GraphicsDevice))
-                {
-                    areColliding = true;
-                }
-            }
-
+            level.Update(gameTime, GraphicsDevice);
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             if (areColliding)
             {
@@ -154,33 +132,7 @@ namespace Dungeon_Crawler
 
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, camera.TranslationMatrix);
 
-            foreach (Cell cell in map.GetAllCells())
-            {
-                var position = new Vector2(cell.X * cellSize, cell.Y * cellSize);
-                if (cell.IsWalkable)
-                {
-                    spriteBatch.Draw(floor, position, null, Color.White, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, 0.9f);
-                }
-                else
-                {
-                    spriteBatch.Draw(wall, position, null, Color.White, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, 0.9f);
-                }
-            }
-            foreach (var item in items)
-            {
-                item.Draw(spriteBatch);
-            }
-
-            foreach (var obstacle in obstacles)
-            {
-                obstacle.Draw(spriteBatch);
-            }
-
-            player.Draw(spriteBatch);
-            foreach (var enemy in enemies)
-            {
-                enemy.Draw(spriteBatch);
-            }
+            level.Draw(gameTime, spriteBatch);
 
             spriteBatch.DrawString(font, collision, new Vector2(400, 100), Color.Black);
             spriteBatch.DrawString(font, player.getItems(), new Vector2(400, 130), Color.Black);
