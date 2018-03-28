@@ -6,18 +6,36 @@ namespace Dungeon_Crawler
 {
     public static class Collision
     {
-
-        public static bool checkCollision(Player player,Obstacle obstacle,GraphicsDevice graphicsDevice)
+        public static bool checkCollision(Character character1, Character character2, GraphicsDevice graphicsDevice)
         {
-            Color[] singleTextureData = player.getCurrentTextureData(graphicsDevice);
+            Rectangle character1Rectangle = character1.getRectangle();
+            Color[] character1TextureData = character1.getCurrentTextureData(graphicsDevice);
 
-            Rectangle playerRectangle = player.getRectangle();
+            Rectangle character2Rectangle = character2.getRectangle();
+            Color[] character2TextureData = character2.getCurrentTextureData(graphicsDevice);
+
+            if (character1Rectangle.Intersects(character2Rectangle))
+            {
+                if (Collision.IntersectPixels(character1Rectangle, character1TextureData,
+                                    character2Rectangle, character2TextureData))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool checkCollision(Character character,Obstacle obstacle,GraphicsDevice graphicsDevice)
+        {
+            Color[] characterTextureData = character.getCurrentTextureData(graphicsDevice);
+
+            Rectangle characterRectangle = character.getRectangle();
              
             Rectangle obstacleRectangle = obstacle.getRectangle();
 
-            if (playerRectangle.Intersects(obstacleRectangle))
+            if (characterRectangle.Intersects(obstacleRectangle))
             {
-                if (Collision.IntersectPixels(playerRectangle, singleTextureData,
+                if (Collision.IntersectPixels(characterRectangle, characterTextureData,
                                     obstacleRectangle, obstacle.TextureData))
                 {
                     return true;
@@ -25,6 +43,7 @@ namespace Dungeon_Crawler
             }
             return false;
         }
+
         // source: http://xbox.create.msdn.com/en-US/education/catalog/tutorial/collision_2d_perpixel_transformed
         /// <summary>
         /// Determines if there is overlap of the non-transparent pixels

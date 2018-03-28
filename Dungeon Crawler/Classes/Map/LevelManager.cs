@@ -11,18 +11,29 @@ namespace Dungeon_Crawler
     {
         private Player player;
         List<Level> levels;
+        int playerCurrentLevel = 0;
+        private int newMapWidth = 16;
+        private int newMapHeight = 10;
+        private int newMapRoomCount = 100;
+        private int newMapRoomWidth = 3;
+        private int newMapRoomHeight = 3;
 
         public LevelManager(ContentManager Content)
         {
             levels = new List<Level>();
 
-            Map map = CreateMap(16, 10, 100, 3, 3);
+            Map map = CreateMap(newMapWidth, newMapHeight, newMapRoomCount, newMapRoomWidth, newMapRoomHeight);
+            //List<Cell> takenCells = new List<Cell>();
+
+            incrementMapParameters(2);
+            randomizeRooms(10,3,3);
+
             Texture2D floor = LoadFloorTexture(Content);
             Texture2D wall = LoadWallTexture(Content);
 
-            List<Enemy> enemies = CreateEnemiesList(Content, map, floor.Width);
-            List<Item> items = CreateItemsList(Content, map, floor.Width);
-            List<Obstacle> obstacles = CreateObstaclesList(Content, map, floor.Width);
+            List<Enemy> enemies = CreateEnemiesList(Content, map, floor.Width,5);
+            List<Item> items = CreateItemsList(Content, map, floor.Width,3);
+            List<Obstacle> obstacles = CreateObstaclesList(Content, map, floor.Width,3);
 
             Global.Camera.setParams(map.Width, map.Height, floor.Width);
 
@@ -42,16 +53,30 @@ namespace Dungeon_Crawler
 
             this.levels.Add(level);
         }
-
+        public void nextPlayerLevel()
+        {
+            playerCurrentLevel++;
+        }
+        public void incrementMapParameters(int increaseValue)
+        {
+            newMapWidth = newMapWidth+ increaseValue;
+            newMapHeight = newMapWidth+ increaseValue;
+        }
+        public void randomizeRooms(int lowestNumberOfRoomsAddidtionsTries, int lowestRoomWidth, int lowestRoomHeight)
+        {
+            newMapRoomCount = Global.random.Next(100) + lowestNumberOfRoomsAddidtionsTries;
+            newMapRoomWidth = Global.random.Next(10) + lowestRoomWidth;
+            newMapRoomHeight = Global.random.Next(10) + lowestRoomHeight;
+        }
         public void CreateLevel(ContentManager Content)
         {
-            Map map = CreateMap(16, 10, 100, 3, 3);
+            Map map = CreateMap(newMapWidth, newMapHeight, newMapRoomCount, newMapRoomWidth, newMapRoomHeight);
             Texture2D floor = LoadFloorTexture(Content);
             Texture2D wall = LoadWallTexture(Content);
 
-            List<Enemy> enemies = CreateEnemiesList(Content,map,floor.Width);
-            List<Item> items = CreateItemsList(Content,map, floor.Width);
-            List<Obstacle> obstacles = CreateObstaclesList(Content,map, floor.Width);
+            List<Enemy> enemies = CreateEnemiesList(Content,map,floor.Width,5);
+            List<Item> items = CreateItemsList(Content,map, floor.Width,3);
+            List<Obstacle> obstacles = CreateObstaclesList(Content,map, floor.Width,3);
 
             Global.Camera.setParams(map.Width, map.Height, floor.Width);
 
@@ -72,11 +97,11 @@ namespace Dungeon_Crawler
             return floor;
         }
 
-        private List<Obstacle> CreateObstaclesList(ContentManager Content, Map map, int cellSize)
+        private List<Obstacle> CreateObstaclesList(ContentManager Content, Map map, int cellSize, int obstacleCount)
         {
-            List<Obstacle> obstacles = new List<Obstacle>(3);
+            List<Obstacle> obstacles = new List<Obstacle>(obstacleCount);
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < obstacleCount; i++)
             {
                 Cell randomCell = GetRandomEmptyCell(map);
 
@@ -88,9 +113,9 @@ namespace Dungeon_Crawler
             return obstacles;
         }
 
-        private List<Item> CreateItemsList(ContentManager Content, Map map, int cellSize)
+        private List<Item> CreateItemsList(ContentManager Content, Map map, int cellSize, int itemCount)
         {
-            List<Item> items = new List<Item>(3);
+            List<Item> items = new List<Item>(itemCount);
 
             Cell randomCell = GetRandomEmptyCell(map);
             items.Add(new Item(new Vector2(randomCell.X * cellSize + cellSize / 3, randomCell.Y * cellSize + cellSize / 3), Content.Load<Texture2D>("items/bow1"), "Bow"));
@@ -102,11 +127,11 @@ namespace Dungeon_Crawler
             return items;
         }
 
-        private List<Enemy> CreateEnemiesList(ContentManager Content, Map map, int cellSize)
+        private List<Enemy> CreateEnemiesList(ContentManager Content, Map map, int cellSize, int enemyCount)
         {
-            List<Enemy> enemies = new List<Enemy>(5);
+            List<Enemy> enemies = new List<Enemy>(enemyCount);
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < enemyCount; i++)
             {
                 Cell randomCell = GetRandomEmptyCell(map);
                 float speed = (Global.random.Next(2) + 1) / 0.7f;
@@ -132,18 +157,12 @@ namespace Dungeon_Crawler
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            foreach(Level level in levels)
-            {
-                level.Draw(gameTime, spriteBatch);
-            }
+            levels[playerCurrentLevel].Draw(gameTime, spriteBatch);
         }
 
         public void Update(GameTime gameTime, GraphicsDevice graphicsDevice)
         {
-            foreach (Level level in levels)
-            {
-                level.Update(gameTime, graphicsDevice);
-            }
+            levels[playerCurrentLevel].Update(gameTime, graphicsDevice);
         }
 
         private Cell GetRandomEmptyCell(Map map)

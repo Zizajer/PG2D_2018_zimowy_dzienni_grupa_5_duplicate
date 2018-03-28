@@ -5,16 +5,16 @@ using Microsoft.Xna.Framework;
 
 namespace Dungeon_Crawler
 {
-    class Level
+    public class Level
     {
-        private Map map;
-        List<Item> items;
-        List<Enemy> enemies;
-        List<Obstacle> obstacles;
+        public Map map;
+        public List<Item> items;
+        public List<Enemy> enemies;
+        public List<Obstacle> obstacles;
 
-        private Texture2D floor;
-        private Texture2D wall;
-        private Player player;
+        public Texture2D floor;
+        public Texture2D wall;
+        public Player player;
         public Level(Map map, List<Enemy> enemies, List<Item> items, List<Obstacle> obstacles, Texture2D floor, Texture2D wall,Player player)
         {
             this.map = map;
@@ -29,7 +29,7 @@ namespace Dungeon_Crawler
         {
             foreach (Enemy enemy in enemies)
             {
-                enemy.Update(gameTime, map);
+                enemy.Update(gameTime, this, graphicsDevice);
             }
             player.Update(gameTime, map);
         
