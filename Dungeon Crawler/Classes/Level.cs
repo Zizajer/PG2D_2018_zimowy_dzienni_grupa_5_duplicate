@@ -14,9 +14,8 @@ namespace Dungeon_Crawler
 
         private Texture2D floor;
         private Texture2D wall;
-        private int cellSize;
         private Player player;
-        public Level(Map map, List<Enemy> enemies, List<Item> items, List<Obstacle> obstacles, Texture2D floor, Texture2D wall,int cellSize,Player player)
+        public Level(Map map, List<Enemy> enemies, List<Item> items, List<Obstacle> obstacles, Texture2D floor, Texture2D wall,Player player)
         {
             this.map = map;
             this.enemies = enemies;
@@ -24,7 +23,6 @@ namespace Dungeon_Crawler
             this.obstacles = obstacles;
             this.floor = floor;
             this.wall = wall;
-            this.cellSize = cellSize;
             this.player = player;
         }
         public void Update(GameTime gameTime, GraphicsDevice graphicsDevice)
@@ -50,7 +48,7 @@ namespace Dungeon_Crawler
         {
             foreach (Cell cell in map.GetAllCells())
             {
-                var position = new Vector2(cell.X * cellSize, cell.Y * cellSize);
+                var position = new Vector2(cell.X * floor.Width, cell.Y * floor.Width);
                 if (cell.IsWalkable)
                 {
                     spriteBatch.Draw(floor, position, null, Color.White, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, Layers.Cells);

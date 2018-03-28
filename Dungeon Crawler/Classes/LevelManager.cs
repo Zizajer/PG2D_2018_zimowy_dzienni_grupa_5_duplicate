@@ -15,40 +15,100 @@ namespace Dungeon_Crawler
         public LevelManager(ContentManager Content)
         {
             levels = new List<Level>();
-            IMapCreationStrategy<Map> mapCreationStrategy =
-                new RandomRoomsMapCreationStrategy<Map>(16, 10, 100, 3, 3);
-            Map map = Map.Create(mapCreationStrategy);
 
-            Texture2D floor = Content.Load<Texture2D>("map/Floor");
-            Texture2D wall = Content.Load<Texture2D>("map/Wall");
-            int cellSize = floor.Width;
+            Map map = CreateMap(16, 10, 100, 3, 3);
+            Texture2D floor = LoadFloorTexture(Content);
+            Texture2D wall = LoadWallTexture(Content);
 
-            Global.Camera.setParams(map.Width, map.Height, cellSize);
+            List<Enemy> enemies = CreateEnemiesList(Content, map, floor.Width);
+            List<Item> items = CreateItemsList(Content, map, floor.Width);
+            List<Obstacle> obstacles = CreateObstaclesList(Content, map, floor.Width);
 
-
-            List<Enemy> enemies = new List<Enemy>(5);
-            List<Item> items = new List<Item>(3);
-            List<Obstacle> obstacles = new List<Obstacle>(3);
+            Global.Camera.setParams(map.Width, map.Height, floor.Width);
 
             Cell randomCell = GetRandomEmptyCell(map);
-            items.Add(new Item(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("items/bow1"), "Bow"));
-            randomCell = GetRandomEmptyCell(map);
-            items.Add(new Item(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("items/sword1"), "Sword"));
-            randomCell = GetRandomEmptyCell(map);
-            items.Add(new Item(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("items/wand1"), "Wand"));
-
-            randomCell = GetRandomEmptyCell(map);
             Global.Camera.CenterOn(randomCell);
 
             this.player =
-                new Player(Content, cellSize)
+                new Player(Content, floor.Width)
                 {
-                    Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
+                    Position = new Vector2((randomCell.X * floor.Width + floor.Width / 3), (randomCell.Y * floor.Width) + floor.Width / 3)
                 };
+
+            Global.Gui = new GUI(player, Content.Load<SpriteFont>("fonts/Default"));
+            //Global.CombatManager = new CombatManager(player, enemies); 
+
+            Level level = new Level(map, enemies, items, obstacles, floor, wall, player);
+
+            this.levels.Add(level);
+        }
+
+        public void CreateLevel(ContentManager Content)
+        {
+            Map map = CreateMap(16, 10, 100, 3, 3);
+            Texture2D floor = LoadFloorTexture(Content);
+            Texture2D wall = LoadWallTexture(Content);
+
+            List<Enemy> enemies = CreateEnemiesList(Content,map,floor.Width);
+            List<Item> items = CreateItemsList(Content,map, floor.Width);
+            List<Obstacle> obstacles = CreateObstaclesList(Content,map, floor.Width);
+
+            Global.Camera.setParams(map.Width, map.Height, floor.Width);
+
+            Level level = new Level(map, enemies, items, obstacles, floor, wall, player);
+
+            this.levels.Add(level);
+        }
+
+        private Texture2D LoadWallTexture(ContentManager Content)
+        {
+            Texture2D wall = Content.Load<Texture2D>("map/Wall");
+            return wall;
+        }
+
+        private Texture2D LoadFloorTexture(ContentManager Content)
+        {
+            Texture2D floor = Content.Load<Texture2D>("map/Floor");
+            return floor;
+        }
+
+        private List<Obstacle> CreateObstaclesList(ContentManager Content, Map map, int cellSize)
+        {
+            List<Obstacle> obstacles = new List<Obstacle>(3);
+
+            for (int i = 0; i < 3; i++)
+            {
+                Cell randomCell = GetRandomEmptyCell(map);
+
+                Obstacle tempObstacle =
+                    new Obstacle(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("map/obstacle1"));
+                obstacles.Add(tempObstacle);
+            }
+
+            return obstacles;
+        }
+
+        private List<Item> CreateItemsList(ContentManager Content, Map map, int cellSize)
+        {
+            List<Item> items = new List<Item>(3);
+
+            Cell randomCell = GetRandomEmptyCell(map);
+            items.Add(new Item(new Vector2(randomCell.X * cellSize + cellSize / 3, randomCell.Y * cellSize + cellSize / 3), Content.Load<Texture2D>("items/bow1"), "Bow"));
+            randomCell = GetRandomEmptyCell(map);
+            items.Add(new Item(new Vector2(randomCell.X * cellSize + cellSize / 3, randomCell.Y * cellSize + cellSize / 3), Content.Load<Texture2D>("items/sword1"), "Sword"));
+            randomCell = GetRandomEmptyCell(map);
+            items.Add(new Item(new Vector2(randomCell.X * cellSize + cellSize / 3, randomCell.Y * cellSize + cellSize / 3), Content.Load<Texture2D>("items/wand1"), "Wand"));
+
+            return items;
+        }
+
+        private List<Enemy> CreateEnemiesList(ContentManager Content, Map map, int cellSize)
+        {
+            List<Enemy> enemies = new List<Enemy>(5);
 
             for (int i = 0; i < 5; i++)
             {
-                randomCell = GetRandomEmptyCell(map);
+                Cell randomCell = GetRandomEmptyCell(map);
                 float speed = (Global.random.Next(2) + 1) / 0.7f;
                 float timeBetweenActions = (Global.random.Next(2)) + 1 / 0.7f;
                 Enemy tempEnemy =
@@ -59,23 +119,15 @@ namespace Dungeon_Crawler
                 enemies.Add(tempEnemy);
             }
 
-            for (int i = 0; i < 3; i++)
-            {
-                randomCell = GetRandomEmptyCell(map);
+            return enemies;
+        }
 
-                Obstacle tempObstacle =
-                    new Obstacle(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("map/obstacle1"));
-                obstacles.Add(tempObstacle);
-            }
-
-            //levelManager
-
-            Level level = new Level(map, enemies, items, obstacles, floor, wall, cellSize, player);
-
-            this.levels.Add(level);
-
-            Global.Gui = new GUI(player, Content.Load<SpriteFont>("fonts/Default"));
-            //Global.CombatManager = new CombatManager(player, enemies);
+        private Map CreateMap(int mapWidth,int mapHeight,int roomCount, int roomWidth, int roomHeight)
+        {
+            IMapCreationStrategy<Map> mapCreationStrategy =
+                new RandomRoomsMapCreationStrategy<Map>(mapWidth, mapHeight, roomCount, roomWidth, roomHeight);
+            Map map = Map.Create(mapCreationStrategy);
+            return map;
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
