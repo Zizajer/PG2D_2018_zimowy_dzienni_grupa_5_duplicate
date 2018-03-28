@@ -23,41 +23,79 @@ namespace Dungeon_Crawler
                 {"WalkLeft",new Animation(content.Load<Texture2D>("player/WalkingLeft"),3 )},
                 {"WalkRight",new Animation(content.Load<Texture2D>("player/WalkingRight"),3 )}
             };
+            Speed = 5.0f;
             this.cellSize = cellSize;
             inventory = new List<Item>();
             _animationManager = new AnimationManager(_animations.First().Value);
         }
 
-        public virtual void Move(Map map)
+        public virtual void Move(Level level, GraphicsDevice graphicsDevice)
         {
             int x = (int)Math.Floor(fixedPosition.X / cellSize);
             int y = (int)Math.Floor(fixedPosition.Y / cellSize);
+            Map map = level.map;
             Cell playerCell = map.GetCell(x, y);
+            int pixelPerfectTolerance = 4;
             if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
-                moveUp(map, x, y);
+                _position.Y = _position.Y - pixelPerfectTolerance;
+                if (isColliding(this, level, graphicsDevice))
+                    moveUp(map, x, y);
+                _position.Y = _position.Y + pixelPerfectTolerance;
+
                 Global.Camera.CenterOn(fixedPosition);
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
+            else if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
-                moveDown(map, x, y);
+
+                _position.Y = _position.Y + pixelPerfectTolerance;
+                if (isColliding(this, level, graphicsDevice))
+                    moveDown(map, x, y);
+                _position.Y = _position.Y - pixelPerfectTolerance;
+
                 Global.Camera.CenterOn(fixedPosition);
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.A))
             {
-                moveLeft(map, x, y);
+                _position.X = _position.X - pixelPerfectTolerance;
+                if (isColliding(this, level, graphicsDevice))
+                    moveLeft(map, x, y);
+                _position.X = _position.X + pixelPerfectTolerance;
+
                 Global.Camera.CenterOn(fixedPosition);
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
+            else if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
-                moveRight(map, x, y);
+                _position.X = _position.X + pixelPerfectTolerance;
+                if (isColliding(this, level, graphicsDevice))
+                    moveRight(map, x, y);
+                _position.X = _position.X - pixelPerfectTolerance;
+
                 Global.Camera.CenterOn(fixedPosition);
             }
         }
 
+        public bool isColliding(Character character, Level level, GraphicsDevice graphicsDevice)
+        {
+            bool collision = false;
+            foreach (Enemy enemy in level.enemies)
+            {
+                if (Collision.checkCollision(this, enemy, graphicsDevice))
+                    collision = true;
+            }
+            foreach (Obstacle obstacle in level.obstacles)
+            {
+                if (Collision.checkCollision(this, obstacle, graphicsDevice))
+                    collision = true;
+            }
+            if (!collision)
+                return true;
+            else
+                return false;
+        }
         public void moveUp(Map map, int x, int y)
         {
             Cell cellAbove = map.GetCell(x, y - 1);
@@ -67,7 +105,7 @@ namespace Dungeon_Crawler
             }
             else
             {
-                if (fixedPosition.Y > cellAbove.Y * cellSize + cellSize + getHeight() / 2)
+                if (fixedPosition.Y> cellAbove.Y * cellSize + cellSize + getHeight() / 2)
                     Velocity.Y = -Speed;
             }
         }
@@ -114,9 +152,9 @@ namespace Dungeon_Crawler
             }
         }
 
-        public virtual void Update(GameTime gameTime, Map map)
+        public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
-            Move(map);
+            Move(level,graphicsDevice);
 
             SetAnimations();
             _animationManager.Update(gameTime);

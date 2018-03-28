@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using RogueSharp;
 using RogueSharp.MapCreation;
+using System;
 using System.Collections.Generic;
 
 namespace Dungeon_Crawler
@@ -23,7 +24,7 @@ namespace Dungeon_Crawler
             levels = new List<Level>();
 
             Map map = CreateMap(newMapWidth, newMapHeight, newMapRoomCount, newMapRoomWidth, newMapRoomHeight);
-            //List<Cell> takenCells = new List<Cell>();
+            List<Cell> occupiedCells = new List<Cell>();
 
             incrementMapParameters(2);
             randomizeRooms(10,3,3);
@@ -31,13 +32,13 @@ namespace Dungeon_Crawler
             Texture2D floor = LoadFloorTexture(Content);
             Texture2D wall = LoadWallTexture(Content);
 
-            List<Enemy> enemies = CreateEnemiesList(Content, map, floor.Width,5);
-            List<Item> items = CreateItemsList(Content, map, floor.Width,3);
-            List<Obstacle> obstacles = CreateObstaclesList(Content, map, floor.Width,3);
+            List<Enemy> enemies = CreateEnemiesList(Content, map, floor.Width, 5, occupiedCells);
+            List<Item> items = CreateItemsList(Content, map, floor.Width, 3, occupiedCells);
+            List<Obstacle> obstacles = CreateObstaclesList(Content, map, floor.Width, 3, occupiedCells);
 
             Global.Camera.setParams(map.Width, map.Height, floor.Width);
 
-            Cell randomCell = GetRandomEmptyCell(map);
+            Cell randomCell = GetRandomEmptyCell(map, occupiedCells);
             Global.Camera.CenterOn(randomCell);
 
             this.player =
@@ -49,7 +50,7 @@ namespace Dungeon_Crawler
             Global.Gui = new GUI(player, Content.Load<SpriteFont>("fonts/Default"));
             //Global.CombatManager = new CombatManager(player, enemies); 
 
-            Level level = new Level(map, enemies, items, obstacles, floor, wall, player);
+            Level level = new Level(map, enemies, items, obstacles, floor, wall, player, occupiedCells);
 
             this.levels.Add(level);
         }
@@ -74,13 +75,15 @@ namespace Dungeon_Crawler
             Texture2D floor = LoadFloorTexture(Content);
             Texture2D wall = LoadWallTexture(Content);
 
-            List<Enemy> enemies = CreateEnemiesList(Content,map,floor.Width,5);
-            List<Item> items = CreateItemsList(Content,map, floor.Width,3);
-            List<Obstacle> obstacles = CreateObstaclesList(Content,map, floor.Width,3);
+            List<Cell> occupiedCells = new List<Cell>();
+
+            List<Enemy> enemies = CreateEnemiesList(Content, map, floor.Width, 5, occupiedCells);
+            List<Item> items = CreateItemsList(Content, map, floor.Width, 3, occupiedCells);
+            List<Obstacle> obstacles = CreateObstaclesList(Content, map, floor.Width, 3, occupiedCells);
 
             Global.Camera.setParams(map.Width, map.Height, floor.Width);
 
-            Level level = new Level(map, enemies, items, obstacles, floor, wall, player);
+            Level level = new Level(map, enemies, items, obstacles, floor, wall, player, occupiedCells);
 
             this.levels.Add(level);
         }
@@ -97,14 +100,14 @@ namespace Dungeon_Crawler
             return floor;
         }
 
-        private List<Obstacle> CreateObstaclesList(ContentManager Content, Map map, int cellSize, int obstacleCount)
+        private List<Obstacle> CreateObstaclesList(ContentManager Content, Map map, int cellSize, int obstacleCount, List<Cell> occupiedCells)
         {
             List<Obstacle> obstacles = new List<Obstacle>(obstacleCount);
 
             for (int i = 0; i < obstacleCount; i++)
             {
-                Cell randomCell = GetRandomEmptyCell(map);
-
+                Cell randomCell = GetRandomEmptyCell(map, occupiedCells);
+                occupiedCells.Add(randomCell);
                 Obstacle tempObstacle =
                     new Obstacle(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("map/obstacle1"));
                 obstacles.Add(tempObstacle);
@@ -113,27 +116,41 @@ namespace Dungeon_Crawler
             return obstacles;
         }
 
-        private List<Item> CreateItemsList(ContentManager Content, Map map, int cellSize, int itemCount)
+        private List<Item> CreateItemsList(ContentManager Content, Map map, int cellSize, int itemCount, List<Cell> occupiedCells)
         {
-            List<Item> items = new List<Item>(itemCount);
+            List<Texture2D> allItems = new List<Texture2D>(3);
+            List<String> allItemsNames = new List<String>(3);
 
-            Cell randomCell = GetRandomEmptyCell(map);
-            items.Add(new Item(new Vector2(randomCell.X * cellSize + cellSize / 3, randomCell.Y * cellSize + cellSize / 3), Content.Load<Texture2D>("items/bow1"), "Bow"));
-            randomCell = GetRandomEmptyCell(map);
-            items.Add(new Item(new Vector2(randomCell.X * cellSize + cellSize / 3, randomCell.Y * cellSize + cellSize / 3), Content.Load<Texture2D>("items/sword1"), "Sword"));
-            randomCell = GetRandomEmptyCell(map);
-            items.Add(new Item(new Vector2(randomCell.X * cellSize + cellSize / 3, randomCell.Y * cellSize + cellSize / 3), Content.Load<Texture2D>("items/wand1"), "Wand"));
+            allItems.Add(Content.Load<Texture2D>("items/bow1"));
+            allItems.Add(Content.Load<Texture2D>("items/sword1"));
+            allItems.Add(Content.Load<Texture2D>("items/wand1"));
+
+            allItemsNames.Add("Bow");
+            allItemsNames.Add("Sword");
+            allItemsNames.Add("Wand");
+
+            List <Item> items = new List<Item>(itemCount);
+
+            for (int i = 0; i < itemCount; i++)
+            {
+                Cell randomCell = GetRandomEmptyCell(map, occupiedCells);
+                occupiedCells.Add(randomCell);
+                int rand = Global.random.Next(2) + 1;
+                Item tempItem=new Item(new Vector2(randomCell.X * cellSize + cellSize / 3, randomCell.Y * cellSize + cellSize / 3), allItems[rand], allItemsNames[rand]);
+                items.Add(tempItem);
+            }
 
             return items;
         }
 
-        private List<Enemy> CreateEnemiesList(ContentManager Content, Map map, int cellSize, int enemyCount)
+        private List<Enemy> CreateEnemiesList(ContentManager Content, Map map, int cellSize, int enemyCount, List<Cell> occupiedCells)
         {
             List<Enemy> enemies = new List<Enemy>(enemyCount);
 
             for (int i = 0; i < enemyCount; i++)
             {
-                Cell randomCell = GetRandomEmptyCell(map);
+                Cell randomCell = GetRandomEmptyCell(map, occupiedCells);
+                occupiedCells.Add(randomCell);
                 float speed = (Global.random.Next(2) + 1) / 0.7f;
                 float timeBetweenActions = (Global.random.Next(2)) + 1 / 0.7f;
                 Enemy tempEnemy =
@@ -165,17 +182,17 @@ namespace Dungeon_Crawler
             levels[playerCurrentLevel].Update(gameTime, graphicsDevice);
         }
 
-        private Cell GetRandomEmptyCell(Map map)
+        private Cell GetRandomEmptyCell(Map map, List<Cell> occupiedCells)
         {
-            while (true)
+            int x, y;
+            Cell tempCell;
+            do
             {
-                int x = Global.random.Next(map.Width);
-                int y = Global.random.Next(map.Height);
-                if (map.IsWalkable(x, y))
-                {
-                    return map.GetCell(x, y);
-                }
-            }
+                x = Global.random.Next(map.Width);
+                y = Global.random.Next(map.Height);
+                tempCell = map.GetCell(x, y);
+            } while (!tempCell.IsWalkable || occupiedCells.Contains(tempCell));
+            return tempCell;
         }
     }
 }

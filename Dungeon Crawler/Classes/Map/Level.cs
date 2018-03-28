@@ -11,11 +11,12 @@ namespace Dungeon_Crawler
         public List<Item> items;
         public List<Enemy> enemies;
         public List<Obstacle> obstacles;
+        public List<Cell> occupiedCells;
 
         public Texture2D floor;
         public Texture2D wall;
         public Player player;
-        public Level(Map map, List<Enemy> enemies, List<Item> items, List<Obstacle> obstacles, Texture2D floor, Texture2D wall,Player player)
+        public Level(Map map, List<Enemy> enemies, List<Item> items, List<Obstacle> obstacles, Texture2D floor, Texture2D wall,Player player, List<Cell> occupiedCells)
         {
             this.map = map;
             this.enemies = enemies;
@@ -24,6 +25,7 @@ namespace Dungeon_Crawler
             this.floor = floor;
             this.wall = wall;
             this.player = player;
+            this.occupiedCells = occupiedCells;
         }
         public void Update(GameTime gameTime, GraphicsDevice graphicsDevice)
         {
@@ -31,7 +33,7 @@ namespace Dungeon_Crawler
             {
                 enemy.Update(gameTime, this, graphicsDevice);
             }
-            player.Update(gameTime, map);
+            player.Update(gameTime, this, graphicsDevice);
         
 
             Item[] itemArray = items.ToArray();

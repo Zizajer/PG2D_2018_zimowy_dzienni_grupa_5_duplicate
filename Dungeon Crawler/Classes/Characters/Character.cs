@@ -28,7 +28,7 @@ namespace Dungeon_Crawler
         }
         public Vector2 fixedPosition
         {
-            get { return new Vector2(_position.X + getWidth() / 2, _position.Y + getHeight()); }
+            get { return new Vector2(Position.X + getWidth() / 2, Position.Y + getHeight()); }
         }
 
         public float Speed = 1.0f;

@@ -40,6 +40,7 @@ namespace Dungeon_Crawler
             int y = (int)Math.Floor(fixedPosition.Y / cellSize);
             Map map = level.map;
             Cell enemyCell = map.GetCell(x, y);
+            int pixelPerfectTolerance = 8;
 
             if (change)
             {
@@ -49,44 +50,44 @@ namespace Dungeon_Crawler
             {
                 if (lastDirection == 0)
                 {
-                    _position.Y = _position.Y - Speed;
+                    _position.Y = _position.Y - pixelPerfectTolerance;
                     if (isColliding(this, level, graphicsDevice))
                         moveUp(map, x, y, direction);
                     else
                         lastDirection = direction;
-                    _position.Y = _position.Y + Speed;
+                    _position.Y = _position.Y + pixelPerfectTolerance;
                 }
 
                 if (lastDirection == 1)
                 {
-                    _position.Y = _position.Y + Speed;
+                    _position.Y = _position.Y + pixelPerfectTolerance;
                     if (isColliding(this, level, graphicsDevice))
                         moveDown(map, x, y, direction);
                     else
                         lastDirection = direction;
-                    _position.Y = _position.Y - Speed;
+                    _position.Y = _position.Y - pixelPerfectTolerance;
                 }
 
                 if (lastDirection == 2)
                 {
-                    _position.X = _position.X - Speed;
+                    _position.X = _position.X - pixelPerfectTolerance;
                     if (isColliding(this, level, graphicsDevice))
                         moveLeft(map, x, y, direction);
                     else
                         lastDirection = direction;
-                    _position.X = _position.X + Speed;
+                    _position.X = _position.X + pixelPerfectTolerance;
                 }
 
                 if (lastDirection == 3)
                 {
-                    _position.X = _position.X + Speed;
+                    _position.X = _position.X + pixelPerfectTolerance;
 
-                   if(isColliding(this, level, graphicsDevice))
+                    if (isColliding(this, level, graphicsDevice))
                         moveRight(map, x, y, direction);
                    else
                         lastDirection = direction;
 
-                    _position.X = _position.X - Speed;
+                    _position.X = _position.X - pixelPerfectTolerance;
                 }
             }
         }
