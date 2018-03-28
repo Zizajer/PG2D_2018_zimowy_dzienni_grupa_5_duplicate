@@ -76,9 +76,9 @@ namespace Dungeon_Crawler
         public void AdjustZoom(float amount)
         {
             Zoom += amount;
-            if (Zoom < 0.85f)
+            if (Zoom < 0.25f)
             {
-                Zoom = 0.85f;
+                Zoom = 0.25f;
             }
             if (Zoom > 1.75f)
             {

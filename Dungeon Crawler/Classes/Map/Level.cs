@@ -15,8 +15,11 @@ namespace Dungeon_Crawler
 
         public Texture2D floor;
         public Texture2D wall;
+        public Portal portal;
         public Player player;
-        public Level(Map map, List<Enemy> enemies, List<Item> items, List<Obstacle> obstacles, Texture2D floor, Texture2D wall,Player player, List<Cell> occupiedCells)
+
+        public bool finished { get; set; }
+        public Level(Map map, List<Enemy> enemies, List<Item> items, List<Obstacle> obstacles, Texture2D floor, Texture2D wall, Portal portal, Player player, List<Cell> occupiedCells)
         {
             this.map = map;
             this.enemies = enemies;
@@ -24,11 +27,18 @@ namespace Dungeon_Crawler
             this.obstacles = obstacles;
             this.floor = floor;
             this.wall = wall;
+            this.portal = portal;
             this.player = player;
             this.occupiedCells = occupiedCells;
+            finished = false;
         }
         public void Update(GameTime gameTime, GraphicsDevice graphicsDevice)
         {
+            if (Collision.checkCollision(player, portal, graphicsDevice))
+            {
+                finished = true;
+                return;
+            }
             foreach (Enemy enemy in enemies)
             {
                 enemy.Update(gameTime, this, graphicsDevice);
@@ -45,6 +55,8 @@ namespace Dungeon_Crawler
                     items.Remove(itemArray[i]);
                 }
             }
+
+            
         }
         public void Draw(GameTime gameTime,SpriteBatch spriteBatch)
         {
@@ -75,8 +87,20 @@ namespace Dungeon_Crawler
                 enemy.Draw(spriteBatch);
             }
 
+            portal.Draw(spriteBatch);
             player.Draw(spriteBatch);
         }
-
+        public Vector2 GetRandomEmptyCell()
+        {
+            int x, y;
+            Cell tempCell;
+            do
+            {
+                x = Global.random.Next(map.Width);
+                y = Global.random.Next(map.Height);
+                tempCell = map.GetCell(x, y);
+            } while (!tempCell.IsWalkable || occupiedCells.Contains(tempCell));
+            return new Vector2(tempCell.X*floor.Width+ floor.Width/3, tempCell.Y * floor.Width +floor.Width / 3);
+        }
     }
 }
