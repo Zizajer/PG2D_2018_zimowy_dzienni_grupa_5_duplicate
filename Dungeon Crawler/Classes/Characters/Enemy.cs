@@ -14,15 +14,9 @@ namespace Dungeon_Crawler
         float timeBetweenActions;
         int lastDirection;
 
-        public Enemy(ContentManager content, int cellSize, float speed,float timeBetweenActions)
+        public Enemy(Dictionary<string, Animation> _animations, int cellSize, float speed,float timeBetweenActions)
         {
-            _animations = new Dictionary<string, Animation>()
-                {
-                    {"WalkUp",new Animation(content.Load<Texture2D>("enemy/EnemyWalkingup"),3 )},
-                    {"WalkDown",new Animation(content.Load<Texture2D>("enemy/EnemyWalkingDown"),3 )},
-                    {"WalkLeft",new Animation(content.Load<Texture2D>("enemy/EnemyWalkingLeft"),3 )},
-                    {"WalkRight",new Animation(content.Load<Texture2D>("enemy/EnemyWalkingRight"),3 )}
-                };
+            this._animations = _animations;
             this.timeBetweenActions = timeBetweenActions;
             this.Speed = speed;
             this.cellSize = cellSize;
@@ -183,15 +177,15 @@ namespace Dungeon_Crawler
         {
 
             actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            Random superRand = new Random(Global.random.Next(1000));
+
             if (actionTimer > timeBetweenActions)
             {
                 actionTimer = 0;
-                Move(level, true, superRand.Next(4), graphicsDevice);
+                Move(level, true, Global.random.Next(4), graphicsDevice);
             }
             else
             {
-                Move(level, false, superRand.Next(4), graphicsDevice);
+                Move(level, false, Global.random.Next(4), graphicsDevice);
             }
             
             SetAnimations();

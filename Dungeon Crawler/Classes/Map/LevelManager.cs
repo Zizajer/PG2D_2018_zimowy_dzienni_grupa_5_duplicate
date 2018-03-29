@@ -13,56 +13,69 @@ namespace Dungeon_Crawler
         private Player player;
         List<Level> levels;
         ContentManager Content;
-        int playerCurrentLevel = 0;
-        private int newMapWidth = 30;
-        private int newMapHeight = 12;
+        private int newMapWidth = 15;
+        private int newMapHeight = 8;
         private int newMapRoomCount = 100;
         private int newMapRoomMaxSize = 7;
         private int newMapRoomMinSize = 2;
-        private int enemiesCount = 5;
-        private int itemsCount = 3;
-        private int obstaclesCount = 3;
+        private int enemiesCount = 3;
+        private int itemsCount = 1;
+        private int obstaclesCount = 0;
+        Texture2D floor;
+        Texture2D wall;
+        
+        Dictionary<string, Animation> _animations;
+
+        List<Texture2D> allItems;
+        List<String> allItemsNames;
+
+        Texture2D obstacle;
+
+        Texture2D portalTexture;
 
         public LevelManager(ContentManager Content)
         {
             levels = new List<Level>();
             this.Content = Content;
-            Map map = CreateMap(newMapWidth, newMapHeight, newMapRoomCount, newMapRoomMaxSize, newMapRoomMinSize);
             
-            List<Cell> occupiedCells = new List<Cell>();
+            floor = Content.Load<Texture2D>("map/Floor");
+            wall = Content.Load<Texture2D>("map/Wall");
+            obstacle = Content.Load<Texture2D>("map/obstacle1");
+            portalTexture = Content.Load<Texture2D>("map/portal");
 
-            incrementMapParameters(2);
-            
-            Texture2D floor = LoadFloorTexture(Content);
-            Texture2D wall = LoadWallTexture(Content);
-
-            List<Enemy> enemies = CreateEnemiesList(Content, map, floor.Width, enemiesCount, occupiedCells);
-            List<Item> items = CreateItemsList(Content, map, floor.Width, itemsCount, occupiedCells);
-            List<Obstacle> obstacles = CreateObstaclesList(Content, map, floor.Width, obstaclesCount, occupiedCells);
-            //incrementOtherParameters(1);
-
-            Global.Camera.setParams(map.Width, map.Height, floor.Width);
-
-            Cell randomCell = GetRandomEmptyCell(map, occupiedCells);
-            Global.Camera.CenterOn(randomCell);
-
-            this.player =
-                new Player(Content, floor.Width)
+            _animations = new Dictionary<string, Animation>()
                 {
-                    Position = new Vector2((randomCell.X * floor.Width + floor.Width / 3), (randomCell.Y * floor.Width) + floor.Width / 3)
+                    {"WalkUp",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingup"),3 )},
+                    {"WalkDown",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingDown"),3 )},
+                    {"WalkLeft",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingLeft"),3 )},
+                    {"WalkRight",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingRight"),3 )}
                 };
 
-            Cell portalcell = GetCellFarFromPlayer(map, occupiedCells,player);
-            occupiedCells.Add(portalcell);
-            Portal portal =
-                new Portal(new Vector2(portalcell.X * floor.Width, portalcell.Y * floor.Width), Content.Load<Texture2D>("map/portal"));
+            allItems = new List<Texture2D>(3);
+            allItemsNames = new List<String>(3);
+
+            allItems.Add(Content.Load<Texture2D>("items/bow1"));
+            allItems.Add(Content.Load<Texture2D>("items/sword1"));
+            allItems.Add(Content.Load<Texture2D>("items/wand1"));
+
+            allItemsNames.Add("Bow");
+            allItemsNames.Add("Sword");
+            allItemsNames.Add("Wand");
+
+            this.player =
+                new Player(Content, floor.Width, 0)
+                {
+                    Position = new Vector2((floor.Width + floor.Width / 3), ( floor.Width) + floor.Width / 3)
+                };
+
+            CreateLevel();
+
+            Cell randomCell = GetRandomEmptyCell(levels[0].map, levels[0].occupiedCells);
+            player.Position = new Vector2((randomCell.X * floor.Width + floor.Width / 3), (randomCell.Y * floor.Width) + floor.Width / 3);
+
+            Global.Camera.CenterOn(randomCell);
 
             Global.Gui = new GUI(player, Content.Load<SpriteFont>("fonts/Default"));
-            //Global.CombatManager = new CombatManager(player, enemies); 
-
-            Level level = new Level(map, enemies, items, obstacles, floor, wall, portal, player, occupiedCells);
-
-            this.levels.Add(level);
         }
 
         public void incrementMapParameters(int increaseValue)
@@ -73,31 +86,31 @@ namespace Dungeon_Crawler
 
         public void incrementOtherParameters(int increaseValue)
         {
+            //if (player.CurrentLevel % 3 == 2) 
             enemiesCount = enemiesCount + increaseValue;
+            //if (player.CurrentLevel % 2 == 0) 
             itemsCount = itemsCount + increaseValue;
+            //if (player.CurrentLevel % 2 == 1) 
             obstaclesCount = obstaclesCount + increaseValue;
         }
 
-        public void CreateLevel(ContentManager Content)
+        public void CreateLevel()
         {
             Map map = CreateMap(newMapWidth, newMapHeight, newMapRoomCount, newMapRoomMaxSize, newMapRoomMinSize);
 
             incrementMapParameters(2);
-
-            Texture2D floor = LoadFloorTexture(Content);
-            Texture2D wall = LoadWallTexture(Content);
 
             List<Cell> occupiedCells = new List<Cell>();
 
             Cell portalcell = GetCellFarFromPlayer(map, occupiedCells, player);
             occupiedCells.Add(portalcell);
             Portal portal =
-                new Portal(new Vector2(portalcell.X * floor.Width, portalcell.Y * floor.Width), Content.Load<Texture2D>("map/portal"));
+                new Portal(new Vector2(portalcell.X * floor.Width, portalcell.Y * floor.Width), portalTexture);
 
             List<Enemy> enemies = CreateEnemiesList(Content, map, floor.Width, enemiesCount, occupiedCells);
-            List<Item> items = CreateItemsList(Content, map, floor.Width, itemsCount, occupiedCells);
-            List<Obstacle> obstacles = CreateObstaclesList(Content, map, floor.Width, obstaclesCount, occupiedCells);
-            //incrementOtherParameters(1);
+            List<Item> items = CreateItemsList(Content, map, floor.Width, itemsCount, occupiedCells, allItems, allItemsNames);
+            List<Obstacle> obstacles = CreateObstaclesList(Content, map, floor.Width, obstaclesCount, occupiedCells, obstacle);
+            incrementOtherParameters(1);
 
             Global.Camera.setParams(map.Width, map.Height, floor.Width);
 
@@ -106,19 +119,7 @@ namespace Dungeon_Crawler
             this.levels.Add(level);
         }
 
-        private Texture2D LoadWallTexture(ContentManager Content)
-        {
-            Texture2D wall = Content.Load<Texture2D>("map/Wall");
-            return wall;
-        }
-
-        private Texture2D LoadFloorTexture(ContentManager Content)
-        {
-            Texture2D floor = Content.Load<Texture2D>("map/Floor");
-            return floor;
-        }
-
-        private List<Obstacle> CreateObstaclesList(ContentManager Content, Map map, int cellSize, int obstacleCount, List<Cell> occupiedCells)
+        private List<Obstacle> CreateObstaclesList(ContentManager Content, Map map, int cellSize, int obstacleCount, List<Cell> occupiedCells, Texture2D obstacle)
         {
             List<Obstacle> obstacles = new List<Obstacle>(obstacleCount);
 
@@ -127,26 +128,15 @@ namespace Dungeon_Crawler
                 Cell randomCell = GetRandomEmptyCell(map, occupiedCells);
                 occupiedCells.Add(randomCell);
                 Obstacle tempObstacle =
-                    new Obstacle(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), Content.Load<Texture2D>("map/obstacle1"));
+                    new Obstacle(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), obstacle);
                 obstacles.Add(tempObstacle);
             }
 
             return obstacles;
         }
 
-        private List<Item> CreateItemsList(ContentManager Content, Map map, int cellSize, int itemCount, List<Cell> occupiedCells)
+        private List<Item> CreateItemsList(ContentManager Content, Map map, int cellSize, int itemCount, List<Cell> occupiedCells, List<Texture2D> allItems, List<String> allItemsNames)
         {
-            List<Texture2D> allItems = new List<Texture2D>(3);
-            List<String> allItemsNames = new List<String>(3);
-
-            allItems.Add(Content.Load<Texture2D>("items/bow1"));
-            allItems.Add(Content.Load<Texture2D>("items/sword1"));
-            allItems.Add(Content.Load<Texture2D>("items/wand1"));
-
-            allItemsNames.Add("Bow");
-            allItemsNames.Add("Sword");
-            allItemsNames.Add("Wand");
-
             List <Item> items = new List<Item>(itemCount);
 
             for (int i = 0; i < itemCount; i++)
@@ -172,7 +162,7 @@ namespace Dungeon_Crawler
                 float speed = (Global.random.Next(2) + 1) / 0.7f;
                 float timeBetweenActions = (Global.random.Next(2)) + 1 / 0.7f;
                 Enemy tempEnemy =
-                    new Enemy(Content, cellSize, speed, timeBetweenActions)
+                    new Enemy(_animations, cellSize, speed, timeBetweenActions)
                     {
                         Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
                     };
@@ -192,19 +182,18 @@ namespace Dungeon_Crawler
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            levels[playerCurrentLevel].Draw(gameTime, spriteBatch);
+            levels[player.CurrentLevel].Draw(gameTime, spriteBatch);
         }
 
         public void Update(GameTime gameTime, GraphicsDevice graphicsDevice)
         {
-            levels[playerCurrentLevel].Update(gameTime, graphicsDevice);
-            if (levels[playerCurrentLevel].finished == true)
+            levels[player.CurrentLevel].Update(gameTime, graphicsDevice);
+            if (levels[player.CurrentLevel].finished == true)
             {
-                CreateLevel(Content);
-                playerCurrentLevel++;
-                Vector2 newPlayerPosition = levels[playerCurrentLevel].GetRandomEmptyCell();
+                CreateLevel();
+                player.CurrentLevel++;
+                Vector2 newPlayerPosition = levels[player.CurrentLevel].GetRandomEmptyCell();
                 player.Position = newPlayerPosition;
-
             }
         }
 

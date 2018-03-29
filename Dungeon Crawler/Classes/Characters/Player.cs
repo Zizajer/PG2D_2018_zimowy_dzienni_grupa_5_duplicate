@@ -12,8 +12,8 @@ namespace Dungeon_Crawler
     public class Player:Character
     {
         public List<Item> inventory { get; set; }
-
-        public Player(ContentManager content, int cellSize)
+        public int CurrentLevel { get; set; }
+        public Player(ContentManager content, int cellSize,int playerCurrentLevel)
         {
             this.Health = 100;
             _animations = new Dictionary<string, Animation>()
@@ -24,6 +24,7 @@ namespace Dungeon_Crawler
                 {"WalkRight",new Animation(content.Load<Texture2D>("player/WalkingRight"),3 )}
             };
             Speed = 5.0f;
+            this.CurrentLevel = playerCurrentLevel;
             this.cellSize = cellSize;
             inventory = new List<Item>();
             _animationManager = new AnimationManager(_animations.First().Value);
@@ -36,6 +37,12 @@ namespace Dungeon_Crawler
             Map map = level.map;
             Cell playerCell = map.GetCell(x, y);
             int pixelPerfectTolerance = 4;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.S) || Keyboard.GetState().IsKeyDown(Keys.A) && Keyboard.GetState().IsKeyDown(Keys.D))
+            {
+                return;
+            }
+
             if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
                 _position.Y = _position.Y - pixelPerfectTolerance;
@@ -46,7 +53,7 @@ namespace Dungeon_Crawler
                 Global.Camera.CenterOn(fixedPosition);
             }
 
-            else if (Keyboard.GetState().IsKeyDown(Keys.S))
+            if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
 
                 _position.Y = _position.Y + pixelPerfectTolerance;
@@ -67,7 +74,7 @@ namespace Dungeon_Crawler
                 Global.Camera.CenterOn(fixedPosition);
             }
 
-            else if (Keyboard.GetState().IsKeyDown(Keys.D))
+            if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
                 _position.X = _position.X + pixelPerfectTolerance;
                 if (isColliding(this, level, graphicsDevice))

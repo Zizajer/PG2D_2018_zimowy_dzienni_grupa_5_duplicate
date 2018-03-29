@@ -6,8 +6,9 @@ namespace Dungeon_Crawler
     class GUI
     {
         private readonly Player _player;
+        private int playerCurrentLevel;
+        private int health;
         private SpriteFont font;
-        private int health { get; set; }
         private string[] console = { "", "", "", "" };
 
         public GUI(Player player, SpriteFont f)
@@ -20,9 +21,10 @@ namespace Dungeon_Crawler
             int tempX = Global.Camera.ViewportWorldBoundry().X;
             int tempY = Global.Camera.ViewportWorldBoundry().Y;
             float scale = Global.Camera.Zoom;
-            if (health > 0)
+            if (_player.Health > 0)
             {
-                spriteBatch.DrawString(font, "Health= " + health + "% \n" + _player.getItems(), new Vector2(tempX, tempY), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
+                string s = "Health " + health + "% \n" + _player.getItems() + " \nLevel " + (playerCurrentLevel + 1);
+                spriteBatch.DrawString(font, s, new Vector2(tempX, tempY), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
             }
             else
             {
@@ -36,6 +38,7 @@ namespace Dungeon_Crawler
         public void Update()
         {
             health = _player.Health;
+            playerCurrentLevel = _player.CurrentLevel;
         }
         public void WriteToConsole(string msg)
         {

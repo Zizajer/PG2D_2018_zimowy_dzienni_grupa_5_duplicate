@@ -8,6 +8,7 @@ namespace Dungeon_Crawler
     {
         public static bool checkCollision(Character character1, Character character2, GraphicsDevice graphicsDevice)
         {
+            if (character1 == null || character2 == null) return false;
             Rectangle character1Rectangle = character1.getRectangle();
             Color[] character1TextureData = character1.getCurrentTextureData(graphicsDevice);
 
@@ -27,6 +28,7 @@ namespace Dungeon_Crawler
 
         public static bool checkCollision(Character character,Obstacle obstacle,GraphicsDevice graphicsDevice)
         {
+            if (character == null || obstacle == null) return false;
             Color[] characterTextureData = character.getCurrentTextureData(graphicsDevice);
 
             Rectangle characterRectangle = character.getRectangle();
