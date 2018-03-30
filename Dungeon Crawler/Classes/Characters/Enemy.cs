@@ -13,6 +13,8 @@ namespace Dungeon_Crawler
         float actionTimer;
         float timeBetweenActions;
         int lastDirection;
+        public int x { get; set; }
+        public int y { get; set; }
 
         public Enemy(Dictionary<string, Animation> _animations, int cellSize, float speed,float timeBetweenActions)
         {
@@ -30,8 +32,8 @@ namespace Dungeon_Crawler
 
         public virtual void Move(Level level,bool change,int direction,GraphicsDevice graphicsDevice)
         {
-            int x = (int)Math.Floor(fixedPosition.X / cellSize);
-            int y = (int)Math.Floor(fixedPosition.Y / cellSize);
+            x = (int)Math.Floor(fixedPosition.X / cellSize);
+            y = (int)Math.Floor(fixedPosition.Y / cellSize);
             Map map = level.map;
             Cell enemyCell = map.GetCell(x, y);
             int pixelPerfectTolerance = 8;
@@ -93,13 +95,20 @@ namespace Dungeon_Crawler
                 foreach (Enemy enemy in level.enemies)
                 {
                     if (enemy.Equals(this)) continue;
-                    if (Collision.checkCollision(this, enemy, graphicsDevice))
-                        collision = true;
+                    if ((Math.Abs(this.fixedPosition.X - enemy.fixedPosition.X) < this.getWidth() * 2) && (Math.Abs(this.fixedPosition.Y - enemy.fixedPosition.Y) < this.getWidth()))
+                    {
+                        if (Collision.checkCollision(this, enemy, graphicsDevice))
+                            collision = true;
+                    }
+
                 }
                 foreach (Obstacle obstacle in level.obstacles)
                 {
-                    if (Collision.checkCollision(this, obstacle, graphicsDevice))
-                        collision = true;
+                    if ((Math.Abs(this.Position.X - obstacle.Position.X) < this.getWidth() + obstacle.Texture.Width) && (Math.Abs(this.Position.Y - obstacle.Position.Y) < this.getHeight() + obstacle.Texture.Height))
+                    {
+                        if (Collision.checkCollision(this, obstacle, graphicsDevice))
+                            collision = true;
+                    }
                 }
                 if (!collision)
                     return true;

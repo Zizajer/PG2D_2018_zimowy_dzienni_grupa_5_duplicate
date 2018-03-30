@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using RogueSharp;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace Dungeon_Crawler
 {
@@ -34,11 +35,15 @@ namespace Dungeon_Crawler
         }
         public void Update(GameTime gameTime, GraphicsDevice graphicsDevice)
         {
-            if (Collision.checkCollision(player, portal, graphicsDevice))
+            if ((Math.Abs(player.Position.X - player.Position.X) < player.getWidth() + portal.Texture.Width) && (Math.Abs(player.Position.Y - player.Position.Y) < player.getHeight() + portal.Texture.Height))
             {
-                finished = true;
-                return;
+                if (Collision.checkCollision(player, portal, graphicsDevice))
+                {
+                    finished = true;
+                    return;
+                }
             }
+
             foreach (Enemy enemy in enemies)
             {
                 enemy.Update(gameTime, this, graphicsDevice);
@@ -49,10 +54,13 @@ namespace Dungeon_Crawler
             Item[] itemArray = items.ToArray();
             for(int i = 0; i<items.Count;i++)
             {
-                if (Collision.checkCollision(player, itemArray[i], graphicsDevice))
+                if ((Math.Abs(player.Position.X - player.Position.X) < player.getWidth() + itemArray[i].Texture.Width) && (Math.Abs(player.Position.Y - player.Position.Y) < player.getHeight() + itemArray[i].Texture.Height))
                 {
-                    player.inventory.Add(itemArray[i]);
-                    items.Remove(itemArray[i]);
+                    if (Collision.checkCollision(player, itemArray[i], graphicsDevice))
+                    {
+                        player.inventory.Add(itemArray[i]);
+                        items.Remove(itemArray[i]);
+                    }
                 }
             }
 

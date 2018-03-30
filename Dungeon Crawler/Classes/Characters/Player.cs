@@ -13,6 +13,8 @@ namespace Dungeon_Crawler
     {
         public List<Item> inventory { get; set; }
         public int CurrentLevel { get; set; }
+        public int x;
+        public int y;
         public Player(ContentManager content, int cellSize,int playerCurrentLevel)
         {
             this.Health = 100;
@@ -32,8 +34,8 @@ namespace Dungeon_Crawler
 
         public virtual void Move(Level level, GraphicsDevice graphicsDevice)
         {
-            int x = (int)Math.Floor(fixedPosition.X / cellSize);
-            int y = (int)Math.Floor(fixedPosition.Y / cellSize);
+            x = (int)Math.Floor(fixedPosition.X / cellSize);
+            y = (int)Math.Floor(fixedPosition.Y / cellSize);
             Map map = level.map;
             Cell playerCell = map.GetCell(x, y);
             int pixelPerfectTolerance = 4;
@@ -90,13 +92,19 @@ namespace Dungeon_Crawler
             bool collision = false;
             foreach (Enemy enemy in level.enemies)
             {
-                if (Collision.checkCollision(this, enemy, graphicsDevice))
-                    collision = true;
+                if ((Math.Abs(this.fixedPosition.X - enemy.fixedPosition.X) < this.getWidth() * 2) && (Math.Abs(this.fixedPosition.Y - enemy.fixedPosition.Y) < this.getHeight()))
+                {
+                    if (Collision.checkCollision(this, enemy, graphicsDevice))
+                        collision = true;
+                }
             }
             foreach (Obstacle obstacle in level.obstacles)
             {
-                if (Collision.checkCollision(this, obstacle, graphicsDevice))
-                    collision = true;
+                if ((Math.Abs(this.Position.X - obstacle.Position.X) < this.getWidth() + obstacle.Texture.Width) && (Math.Abs(this.Position.Y - obstacle.Position.Y) < this.getHeight() + obstacle.Texture.Height))
+                {
+                    if (Collision.checkCollision(this, obstacle, graphicsDevice))
+                        collision = true;
+                }
             }
             if (!collision)
                 return true;
