@@ -16,7 +16,7 @@ namespace Dungeon_Crawler
         public int x { get; set; }
         public int y { get; set; }
 
-        public Enemy(Dictionary<string, Animation> _animations, int cellSize, float speed,float timeBetweenActions)
+        public Enemy(Dictionary<string, Animation> _animations, int cellSize, float speed, float timeBetweenActions)
         {
             this._animations = _animations;
             this.timeBetweenActions = timeBetweenActions;
@@ -187,20 +187,23 @@ namespace Dungeon_Crawler
 
             actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (actionTimer > timeBetweenActions)
+            if (Math.Abs(this.Position.X - level.player.Position.X) < Global.Camera.ViewportWidth && Math.Abs(this.Position.Y - level.player.Position.Y) < Global.Camera.ViewportHeight)
             {
-                actionTimer = 0;
-                Move(level, true, Global.random.Next(4), graphicsDevice);
+                if (actionTimer > timeBetweenActions)
+                {
+                    actionTimer = 0;
+                    Move(level, true, Global.random.Next(4), graphicsDevice);
+                }
+                else
+                {
+                    Move(level, false, Global.random.Next(4), graphicsDevice);
+                }
+
+                SetAnimations();
+                _animationManager.Update(gameTime);
+                Position += Velocity;
+                Velocity = Vector2.Zero;
             }
-            else
-            {
-                Move(level, false, Global.random.Next(4), graphicsDevice);
-            }
-            
-            SetAnimations();
-            _animationManager.Update(gameTime);
-            Position += Velocity;
-            Velocity = Vector2.Zero;
         }
     }
 }
