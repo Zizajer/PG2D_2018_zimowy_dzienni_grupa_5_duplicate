@@ -51,7 +51,6 @@ namespace Dungeon_Crawler
                 if (isColliding(this, level, graphicsDevice))
                 {
                     moveUp(map, x, y);
-                    map.ComputeFov(x, y, 15, true);
                 }
               _position.Y = _position.Y + pixelPerfectTolerance;
 
@@ -65,10 +64,6 @@ namespace Dungeon_Crawler
                 if (isColliding(this, level, graphicsDevice))
                 {
                     moveDown(map, x, y);
-                    //Compute fov of the player within range of 15 cells. 
-                    //This fov calculation will be used by all enemies (it's faster to calcluate fov only for player rather then for all enemies).
-                    //So basically, for enemies, we will be checking if player can see enemy, not if enemy can see player (isn't it the same?)
-                    map.ComputeFov(x, y, 15, true);
                 }
                 _position.Y = _position.Y - pixelPerfectTolerance;
 
@@ -81,7 +76,6 @@ namespace Dungeon_Crawler
                 if (isColliding(this, level, graphicsDevice))
                 {
                     moveLeft(map, x, y);
-                    map.ComputeFov(x, y, 15, true);
                 }
                 _position.X = _position.X + pixelPerfectTolerance;
 
@@ -94,7 +88,6 @@ namespace Dungeon_Crawler
                 if (isColliding(this, level, graphicsDevice))
                 {
                     moveRight(map, x, y);
-                    map.ComputeFov(x, y, 15, true);
                 }
                 _position.X = _position.X - pixelPerfectTolerance;
 
@@ -185,7 +178,13 @@ namespace Dungeon_Crawler
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
             Move(level,graphicsDevice);
-
+            //Compute fov of the player within range of 15 cells. 
+            //This fov calculation will be used by all enemies (it's faster to calcluate fov only for player rather then for all enemies).
+            //So basically, for enemies, we will be checking if player can see enemy, not if enemy can see player (isn't it the same?)
+            //
+            //Fov will be computed within every update call. It could be done only after player move and it surely would improve performance.. but what if we put some new obstacles during a gameplay ?
+            //They wouldn't be tracked until the player moved!
+            level.map.ComputeFov(x, y, 15, true);
             SetAnimations();
             _animationManager.Update(gameTime);
             Position += Velocity;
