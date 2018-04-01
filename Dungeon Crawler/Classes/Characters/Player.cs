@@ -49,8 +49,11 @@ namespace Dungeon_Crawler
             {
                 _position.Y = _position.Y - pixelPerfectTolerance;
                 if (isColliding(this, level, graphicsDevice))
+                {
                     moveUp(map, x, y);
-                _position.Y = _position.Y + pixelPerfectTolerance;
+                    map.ComputeFov(x, y, 15, true);
+                }
+              _position.Y = _position.Y + pixelPerfectTolerance;
 
                 Global.Camera.CenterOn(fixedPosition);
             }
@@ -60,7 +63,13 @@ namespace Dungeon_Crawler
 
                 _position.Y = _position.Y + pixelPerfectTolerance;
                 if (isColliding(this, level, graphicsDevice))
+                {
                     moveDown(map, x, y);
+                    //Compute fov of the player within range of 15 cells. 
+                    //This fov calculation will be used by all enemies (it's faster to calcluate fov only for player rather then for all enemies).
+                    //So basically, for enemies, we will be checking if player can see enemy, not if enemy can see player (isn't it the same?)
+                    map.ComputeFov(x, y, 15, true);
+                }
                 _position.Y = _position.Y - pixelPerfectTolerance;
 
                 Global.Camera.CenterOn(fixedPosition);
@@ -70,7 +79,10 @@ namespace Dungeon_Crawler
             {
                 _position.X = _position.X - pixelPerfectTolerance;
                 if (isColliding(this, level, graphicsDevice))
+                {
                     moveLeft(map, x, y);
+                    map.ComputeFov(x, y, 15, true);
+                }
                 _position.X = _position.X + pixelPerfectTolerance;
 
                 Global.Camera.CenterOn(fixedPosition);
@@ -80,7 +92,10 @@ namespace Dungeon_Crawler
             {
                 _position.X = _position.X + pixelPerfectTolerance;
                 if (isColliding(this, level, graphicsDevice))
+                {
                     moveRight(map, x, y);
+                    map.ComputeFov(x, y, 15, true);
+                }
                 _position.X = _position.X - pixelPerfectTolerance;
 
                 Global.Camera.CenterOn(fixedPosition);
