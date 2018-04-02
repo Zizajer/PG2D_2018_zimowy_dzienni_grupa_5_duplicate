@@ -18,7 +18,7 @@ namespace Dungeon_Crawler
         private int newMapRoomCount = 100;
         private int newMapRoomMaxSize = 7;
         private int newMapRoomMinSize = 2;
-        private int enemiesCount = 3;
+        private int enemiesCount = 1;
         private int itemsCount = 1;
         private int obstaclesCount = 0;
         Texture2D floor;

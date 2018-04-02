@@ -16,6 +16,12 @@ namespace Dungeon_Crawler
         public int x { get; set; }
         public int y { get; set; }
 
+        Map map;
+        PathFinder PathFinder;
+        //Next cell to move in by enemy (returned by pathfinder)
+        Cell CellToReach;
+        bool BeginningOfPathFinding = true;
+
         public Enemy(Dictionary<string, Animation> _animations, int cellSize, float speed, float timeBetweenActions)
         {
             this._animations = _animations;
@@ -32,9 +38,6 @@ namespace Dungeon_Crawler
 
         public virtual void Move(Level level,bool change,int direction,GraphicsDevice graphicsDevice)
         {
-            x = (int)Math.Floor(fixedPosition.X / cellSize);
-            y = (int)Math.Floor(fixedPosition.Y / cellSize);
-            Map map = level.map;
             Cell enemyCell = map.GetCell(x, y);
             int pixelPerfectTolerance = 8;
 
@@ -124,12 +127,12 @@ namespace Dungeon_Crawler
             Cell cellAbove = map.GetCell(x, y - 1);
             if (cellAbove.IsWalkable)
             {
-                Velocity.Y = -Speed;
+                Velocity.Y = -1;
             }
             else
             {
                 if (fixedPosition.Y > cellAbove.Y * cellSize + cellSize + getHeight() / 2)
-                    Velocity.Y = -Speed;
+                    Velocity.Y = -1;
                 else
                     lastDirection = direction;
             }
@@ -140,12 +143,12 @@ namespace Dungeon_Crawler
             Cell cellBelow = map.GetCell(x, y + 1);
             if (cellBelow.IsWalkable)
             {
-                Velocity.Y = +Speed;
+                Velocity.Y = +1;
             }
             else
             {
                 if (fixedPosition.Y + 4 < cellBelow.Y * cellSize)
-                    Velocity.Y = +Speed;
+                    Velocity.Y = +1;
                 else
                     lastDirection = direction;
             }
@@ -156,12 +159,12 @@ namespace Dungeon_Crawler
             Cell cellOnLeft = map.GetCell(x - 1, y);
             if (cellOnLeft.IsWalkable)
             {
-                Velocity.X = -Speed;
+                Velocity.X = -1;
             }
             else
             {
                 if (fixedPosition.X > cellOnLeft.X * cellSize + cellSize + getWidth() / 2)
-                    Velocity.X = -Speed;
+                    Velocity.X = -1;
                 else
                     lastDirection = direction;
             }
@@ -172,12 +175,12 @@ namespace Dungeon_Crawler
             Cell cellOnRight = map.GetCell(x + 1, y);
             if (cellOnRight.IsWalkable)
             {
-                Velocity.X = +Speed;
+                Velocity.X = +1;
             }
             else
             {
                 if (fixedPosition.X + getWidth() / 2 < cellOnRight.X * cellSize)
-                    Velocity.X = +Speed;
+                    Velocity.X = +1;
                 else
                     lastDirection = direction;
             }
@@ -189,8 +192,25 @@ namespace Dungeon_Crawler
 
             if (Math.Abs(this.Position.X - level.player.Position.X) < Global.Camera.ViewportWidth && Math.Abs(this.Position.Y - level.player.Position.Y) < Global.Camera.ViewportHeight)
             {
-                if (!level.map.IsInFov(this.x, this.y))
+
+                x = (int)Math.Floor(fixedPosition.X / cellSize);
+                y = (int)Math.Floor(fixedPosition.Y / cellSize);
+
+                //Pathfinder is reinitialized every time an enemy can move. We could initialize it once and keep it but in future development we could put new obstacles during gameplay
+                //(thus changing property of some cells on the map) so we must take it into account.
+                //Note: for some speedup, map references will be checked so if input map is the same as one in this class, we won't reinitialize pathfinder.
+                if (this.map != level.map)
                 {
+                    PathFinder = new PathFinder(level.map);
+                }
+                this.map = level.map;
+
+                
+                // WYKOMENTOWANE RANDOMOWE PORUSZANIE SIE GDY BOT NIE WIDZI GRACZA
+
+                //if (!map.IsInFov(this.x, this.y))
+                //{
+                    /*
                     if (actionTimer > timeBetweenActions)
                     {
                         actionTimer = 0;
@@ -200,16 +220,52 @@ namespace Dungeon_Crawler
                     {
                         Move(level, false, Global.random.Next(4), graphicsDevice);
                     }
-
-                    SetAnimations();
-                    _animationManager.Update(gameTime);
-                    Position += Velocity;
-                    Velocity = Vector2.Zero;
-                }
-                else
+                    */
+                //}
+                //else
                 {
-                    //TODO: Calulations when enemy will see the player
+
+                    if (this.x != level.player.x || this.y != level.player.y) // Wchodzi w petle, gdy gracz nie stoi na tej samej celce co bot
+                    {
+                        if (BeginningOfPathFinding || (this.x == CellToReach.X && this.y == CellToReach.Y)) // Wchodzi w pętlę wtedy gdy bot doszedł do celki, wtedy pobiera kolejną. (Wchodzi w pętlę też za pierwszym razem, dlatego sprawdza boola)
+                        {
+                            BeginningOfPathFinding = false;
+                            Path path = PathFinder.ShortestPath(level.map.GetCell(x, y), level.map.GetCell(level.player.x, level.player.y));
+                            CellToReach = path.Start;
+
+                        }
+
+                        //W tych ifach kaze botowi isc w strone cellki
+
+                        if (CellToReach.Y < y)
+                        {
+                            Move(level, false, 0, graphicsDevice);
+                            Console.WriteLine("Up");
+                        }
+                        else if (CellToReach.Y > y)
+                        {
+                            Move(level, false, 1, graphicsDevice);
+                            Console.WriteLine("Down");
+                        }
+                        else if (CellToReach.X < x)
+                        {
+                            Move(level, false, 2, graphicsDevice);
+                            Console.WriteLine("Left");
+                        }
+                        else
+                        {
+                            Move(level, false, 3, graphicsDevice);
+                            Console.WriteLine("Right");
+                        }
+                        Console.WriteLine("CellToReach: {0}, {1} :: This.cell {2}, {3}", CellToReach.X, CellToReach.Y, this.x, this.y);
+                    }
+
+
                 }
+                SetAnimations();
+                _animationManager.Update(gameTime);
+                Position += Velocity;
+                Velocity = Vector2.Zero;
             }
         }
     }
