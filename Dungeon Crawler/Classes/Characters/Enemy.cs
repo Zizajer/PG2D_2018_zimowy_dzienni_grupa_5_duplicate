@@ -36,58 +36,44 @@ namespace Dungeon_Crawler
         }
 
 
-        public virtual void Move(Level level,bool change,int direction,GraphicsDevice graphicsDevice)
+        public virtual void Move(Level level,int direction,GraphicsDevice graphicsDevice)
         {
             Cell enemyCell = map.GetCell(x, y);
             int pixelPerfectTolerance = 8;
 
-            if (change)
+           
+            if (direction == 0)
             {
-                lastDirection = direction;
+                _position.Y = _position.Y - pixelPerfectTolerance;
+                if (isColliding(this, level, graphicsDevice))
+                    moveUp(map, x, y, direction);
+                _position.Y = _position.Y + pixelPerfectTolerance;
             }
-            else
+
+            if (direction == 1)
             {
-                if (lastDirection == 0)
-                {
-                    _position.Y = _position.Y - pixelPerfectTolerance;
-                    if (isColliding(this, level, graphicsDevice))
-                        moveUp(map, x, y, direction);
-                    else
-                        lastDirection = direction;
-                    _position.Y = _position.Y + pixelPerfectTolerance;
-                }
+                _position.Y = _position.Y + pixelPerfectTolerance;
+                if (isColliding(this, level, graphicsDevice))
+                    moveDown(map, x, y, direction);
+                _position.Y = _position.Y - pixelPerfectTolerance;
+            }
 
-                if (lastDirection == 1)
-                {
-                    _position.Y = _position.Y + pixelPerfectTolerance;
-                    if (isColliding(this, level, graphicsDevice))
-                        moveDown(map, x, y, direction);
-                    else
-                        lastDirection = direction;
-                    _position.Y = _position.Y - pixelPerfectTolerance;
-                }
+            if (direction == 2)
+            {
+                _position.X = _position.X - pixelPerfectTolerance;
+                if (isColliding(this, level, graphicsDevice))
+                    moveLeft(map, x, y, direction);
+                _position.X = _position.X + pixelPerfectTolerance;
+            }
 
-                if (lastDirection == 2)
-                {
-                    _position.X = _position.X - pixelPerfectTolerance;
-                    if (isColliding(this, level, graphicsDevice))
-                        moveLeft(map, x, y, direction);
-                    else
-                        lastDirection = direction;
-                    _position.X = _position.X + pixelPerfectTolerance;
-                }
+            if (direction == 3)
+            {
+                _position.X = _position.X + pixelPerfectTolerance;
 
-                if (lastDirection == 3)
-                {
-                    _position.X = _position.X + pixelPerfectTolerance;
+                if (isColliding(this, level, graphicsDevice))
+                    moveRight(map, x, y, direction);
 
-                    if (isColliding(this, level, graphicsDevice))
-                        moveRight(map, x, y, direction);
-                   else
-                        lastDirection = direction;
-
-                    _position.X = _position.X - pixelPerfectTolerance;
-                }
+                _position.X = _position.X - pixelPerfectTolerance;
             }
         }
         public bool isColliding(Character character, Level level, GraphicsDevice graphicsDevice)
@@ -133,8 +119,6 @@ namespace Dungeon_Crawler
             {
                 if (fixedPosition.Y > cellAbove.Y * cellSize + cellSize + getHeight() / 2)
                     Velocity.Y = -1;
-                else
-                    lastDirection = direction;
             }
         }
 
@@ -149,8 +133,6 @@ namespace Dungeon_Crawler
             {
                 if (fixedPosition.Y + 4 < cellBelow.Y * cellSize)
                     Velocity.Y = +1;
-                else
-                    lastDirection = direction;
             }
         }
 
@@ -165,8 +147,6 @@ namespace Dungeon_Crawler
             {
                 if (fixedPosition.X > cellOnLeft.X * cellSize + cellSize + getWidth() / 2)
                     Velocity.X = -1;
-                else
-                    lastDirection = direction;
             }
         }
 
@@ -181,8 +161,6 @@ namespace Dungeon_Crawler
             {
                 if (fixedPosition.X + getWidth() / 2 < cellOnRight.X * cellSize)
                     Velocity.X = +1;
-                else
-                    lastDirection = direction;
             }
         }
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
@@ -239,22 +217,22 @@ namespace Dungeon_Crawler
 
                         if (CellToReach.Y < y)
                         {
-                            Move(level, false, 0, graphicsDevice);
+                            Move(level, 0, graphicsDevice);
                             Console.WriteLine("Up");
                         }
-                        else if (CellToReach.Y > y)
+                        if (CellToReach.Y > y)
                         {
-                            Move(level, false, 1, graphicsDevice);
+                            Move(level, 1, graphicsDevice);
                             Console.WriteLine("Down");
                         }
-                        else if (CellToReach.X < x)
+                        if (CellToReach.X < x)
                         {
-                            Move(level, false, 2, graphicsDevice);
+                            Move(level, 2, graphicsDevice);
                             Console.WriteLine("Left");
                         }
-                        else
+                        if (CellToReach.X > x)
                         {
-                            Move(level, false, 3, graphicsDevice);
+                            Move(level, 3, graphicsDevice);
                             Console.WriteLine("Right");
                         }
                         Console.WriteLine("CellToReach: {0}, {1} :: This.cell {2}, {3}", CellToReach.X, CellToReach.Y, this.x, this.y);
