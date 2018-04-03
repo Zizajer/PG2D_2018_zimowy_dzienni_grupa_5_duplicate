@@ -8,19 +8,21 @@ using System.Linq;
 
 namespace Dungeon_Crawler
 {
-    public class Enemy:Character
+    public class Enemy : Character
     {
-        float actionTimer;
-        float timeBetweenActions;
-        int lastDirection;
         public int x { get; set; }
         public int y { get; set; }
 
         Map map;
+
+        //Random movement vars
+        float actionTimer;
+        float timeBetweenActions;
+        int RandomDirection;
+
+        //Pathfinding vars
         PathFinder PathFinder;
-        //Next cell to move in by enemy (returned by pathfinder)
-        Cell CellToReach;
-        bool BeginningOfPathFinding = true;
+        Cell CellToReach; //Next cell to move in by enemy (returned by pathfinder)
 
         public Enemy(Dictionary<string, Animation> _animations, int cellSize, float speed, float timeBetweenActions)
         {
@@ -30,23 +32,27 @@ namespace Dungeon_Crawler
             this.cellSize = cellSize;
             _animationManager = new AnimationManager(_animations.First().Value);
 
-            actionTimer=Global.random.Next(3);
+            actionTimer = Global.random.Next(3);
 
-            lastDirection = Global.random.Next(4);
+            RandomDirection = Global.random.Next(4);
         }
 
 
-        public virtual void Move(Level level,int direction,GraphicsDevice graphicsDevice)
+        public virtual void Move(Level level, int direction, bool isRandomMovement, GraphicsDevice graphicsDevice)
         {
             Cell enemyCell = map.GetCell(x, y);
             int pixelPerfectTolerance = 8;
 
-           
+
             if (direction == 0)
             {
                 _position.Y = _position.Y - pixelPerfectTolerance;
                 if (isColliding(this, level, graphicsDevice))
-                    moveUp(map, x, y, direction);
+                    moveUp(map, x, y, direction, isRandomMovement);
+                else if (isRandomMovement)
+                {
+                    RandomDirection = Flip(direction);
+                }
                 _position.Y = _position.Y + pixelPerfectTolerance;
             }
 
@@ -54,7 +60,11 @@ namespace Dungeon_Crawler
             {
                 _position.Y = _position.Y + pixelPerfectTolerance;
                 if (isColliding(this, level, graphicsDevice))
-                    moveDown(map, x, y, direction);
+                    moveDown(map, x, y, direction, isRandomMovement);
+                else if (isRandomMovement)
+                {
+                    RandomDirection = Flip(direction);
+                }
                 _position.Y = _position.Y - pixelPerfectTolerance;
             }
 
@@ -62,7 +72,11 @@ namespace Dungeon_Crawler
             {
                 _position.X = _position.X - pixelPerfectTolerance;
                 if (isColliding(this, level, graphicsDevice))
-                    moveLeft(map, x, y, direction);
+                    moveLeft(map, x, y, direction, isRandomMovement);
+                else if (isRandomMovement)
+                {
+                    RandomDirection = Flip(direction);
+                }
                 _position.X = _position.X + pixelPerfectTolerance;
             }
 
@@ -71,7 +85,11 @@ namespace Dungeon_Crawler
                 _position.X = _position.X + pixelPerfectTolerance;
 
                 if (isColliding(this, level, graphicsDevice))
-                    moveRight(map, x, y, direction);
+                    moveRight(map, x, y, direction, isRandomMovement);
+                else if (isRandomMovement)
+                {
+                    RandomDirection = Flip(direction);
+                }
 
                 _position.X = _position.X - pixelPerfectTolerance;
             }
@@ -108,61 +126,95 @@ namespace Dungeon_Crawler
                 return false;
         }
 
-        public void moveUp(Map map, int x, int y, int direction)
+        public void moveUp(Map map, int x, int y, int direction, bool isRandomMovement)
         {
             Cell cellAbove = map.GetCell(x, y - 1);
             if (cellAbove.IsWalkable)
             {
-                Velocity.Y = -1;
+                Velocity.Y = -Speed;
             }
             else
             {
                 if (fixedPosition.Y > cellAbove.Y * cellSize + cellSize + getHeight() / 2)
-                    Velocity.Y = -1;
+                    Velocity.Y = -Speed;
+                else if (isRandomMovement)
+                {
+                    RandomDirection = Flip(direction);
+                }
             }
         }
 
-        public void moveDown(Map map, int x, int y, int direction)
+        public void moveDown(Map map, int x, int y, int direction, bool isRandomMovement)
         {
             Cell cellBelow = map.GetCell(x, y + 1);
             if (cellBelow.IsWalkable)
             {
-                Velocity.Y = +1;
+                Velocity.Y = +Speed;
             }
             else
             {
                 if (fixedPosition.Y + 4 < cellBelow.Y * cellSize)
-                    Velocity.Y = +1;
+                    Velocity.Y = +Speed;
+                else if (isRandomMovement)
+                {
+                    RandomDirection = Flip(direction);
+                }
             }
         }
 
-        public void moveLeft(Map map, int x, int y, int direction)
+        public void moveLeft(Map map, int x, int y, int direction, bool isRandomMovement)
         {
             Cell cellOnLeft = map.GetCell(x - 1, y);
             if (cellOnLeft.IsWalkable)
             {
-                Velocity.X = -1;
+                Velocity.X = -Speed;
             }
             else
             {
                 if (fixedPosition.X > cellOnLeft.X * cellSize + cellSize + getWidth() / 2)
-                    Velocity.X = -1;
+                    Velocity.X = -Speed;
+                else if (isRandomMovement)
+                {
+                    RandomDirection = Flip(direction);
+                }
             }
         }
 
-        public void moveRight(Map map, int x, int y, int direction)
+        public void moveRight(Map map, int x, int y, int direction, bool isRandomMovement)
         {
             Cell cellOnRight = map.GetCell(x + 1, y);
             if (cellOnRight.IsWalkable)
             {
-                Velocity.X = +1;
+                Velocity.X = +Speed;
             }
             else
             {
                 if (fixedPosition.X + getWidth() / 2 < cellOnRight.X * cellSize)
-                    Velocity.X = +1;
+                    Velocity.X = +Speed;
+                else if (isRandomMovement)
+                {
+                    RandomDirection = Flip(direction);
+                }
             }
         }
+
+        public int Flip(int direction)
+        {
+            if (direction == 0)
+            {
+                return 1;
+            }
+            else if (direction == 1)
+            {
+                return 0;
+            }
+            else if (direction == 2)
+            {
+                return 3;
+            }
+            else return 2;
+        }
+
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
 
@@ -183,59 +235,54 @@ namespace Dungeon_Crawler
                 }
                 this.map = level.map;
 
-                
-                // WYKOMENTOWANE RANDOMOWE PORUSZANIE SIE GDY BOT NIE WIDZI GRACZA
-
-                //if (!map.IsInFov(this.x, this.y))
-                //{
-                    /*
+                // Random movement when player is not in enemies fov
+                if (!map.IsInFov(this.x, this.y))
+                {
                     if (actionTimer > timeBetweenActions)
                     {
                         actionTimer = 0;
-                        Move(level, true, Global.random.Next(4), graphicsDevice);
+                        RandomDirection = Global.random.Next(4);
+                        Move(level, RandomDirection, true, graphicsDevice);
                     }
                     else
                     {
-                        Move(level, false, Global.random.Next(4), graphicsDevice);
+                        Move(level, RandomDirection, true, graphicsDevice);
                     }
-                    */
-                //}
-                //else
+                }
+                else
+                // Pathfinding
                 {
 
-                    if (this.x != level.player.x || this.y != level.player.y) // Wchodzi w petle, gdy gracz nie stoi na tej samej celce co bot
+                    if (this.x != level.player.x || this.y != level.player.y)
                     {
-                        if (BeginningOfPathFinding || (this.x == CellToReach.X && this.y == CellToReach.Y)) // Wchodzi w pętlę wtedy gdy bot doszedł do celki, wtedy pobiera kolejną. (Wchodzi w pętlę też za pierwszym razem, dlatego sprawdza boola)
+                        if (this.CellToReach == null || this.x == CellToReach.X && this.y == CellToReach.Y)
                         {
-                            BeginningOfPathFinding = false;
                             Path path = PathFinder.ShortestPath(level.map.GetCell(x, y), level.map.GetCell(level.player.x, level.player.y));
                             CellToReach = path.Start;
 
                         }
 
-                        //W tych ifach kaze botowi isc w strone cellki
-
                         if (CellToReach.Y < y)
                         {
-                            Move(level, 0, graphicsDevice);
-                            Console.WriteLine("Up");
+                            Move(level, 0, false, graphicsDevice);
+                            //Console.WriteLine("Up");
                         }
                         if (CellToReach.Y > y)
                         {
-                            Move(level, 1, graphicsDevice);
-                            Console.WriteLine("Down");
+                            Move(level, 1, false, graphicsDevice);
+                            //Console.WriteLine("Down");
                         }
                         if (CellToReach.X < x)
                         {
-                            Move(level, 2, graphicsDevice);
-                            Console.WriteLine("Left");
+                            Move(level, 2, false, graphicsDevice);
+                            //Console.WriteLine("Left");
                         }
                         if (CellToReach.X > x)
                         {
-                            Move(level, 3, graphicsDevice);
-                            Console.WriteLine("Right");
+                            Move(level, 3, false, graphicsDevice);
+                            //Console.WriteLine("Right");
                         }
-                        Console.WriteLine("CellToReach: {0}, {1} :: This.cell {2}, {3}", CellToReach.X, CellToReach.Y, this.x, this.y);
+                        //Console.WriteLine("CellToReach: {0}, {1} :: This.cell {2}, {3}", CellToReach.X, CellToReach.Y, this.x, this.y);
                     }
 
 
