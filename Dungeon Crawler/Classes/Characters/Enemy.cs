@@ -51,7 +51,7 @@ namespace Dungeon_Crawler
                     moveUp(map, x, y, direction, isRandomMovement);
                 else if (isRandomMovement)
                 {
-                    RandomDirection = Flip(direction);
+                    RandomDirection = BounceOffObject(direction);
                 }
                 _position.Y = _position.Y + pixelPerfectTolerance;
             }
@@ -63,7 +63,7 @@ namespace Dungeon_Crawler
                     moveDown(map, x, y, direction, isRandomMovement);
                 else if (isRandomMovement)
                 {
-                    RandomDirection = Flip(direction);
+                    RandomDirection = BounceOffObject(direction);
                 }
                 _position.Y = _position.Y - pixelPerfectTolerance;
             }
@@ -75,7 +75,7 @@ namespace Dungeon_Crawler
                     moveLeft(map, x, y, direction, isRandomMovement);
                 else if (isRandomMovement)
                 {
-                    RandomDirection = Flip(direction);
+                    RandomDirection = BounceOffObject(direction);
                 }
                 _position.X = _position.X + pixelPerfectTolerance;
             }
@@ -88,7 +88,7 @@ namespace Dungeon_Crawler
                     moveRight(map, x, y, direction, isRandomMovement);
                 else if (isRandomMovement)
                 {
-                    RandomDirection = Flip(direction);
+                    RandomDirection = BounceOffObject(direction);
                 }
 
                 _position.X = _position.X - pixelPerfectTolerance;
@@ -139,7 +139,7 @@ namespace Dungeon_Crawler
                     Velocity.Y = -Speed;
                 else if (isRandomMovement)
                 {
-                    RandomDirection = Flip(direction);
+                    RandomDirection = BounceOffObject(direction);
                 }
             }
         }
@@ -157,7 +157,7 @@ namespace Dungeon_Crawler
                     Velocity.Y = +Speed;
                 else if (isRandomMovement)
                 {
-                    RandomDirection = Flip(direction);
+                    RandomDirection = BounceOffObject(direction);
                 }
             }
         }
@@ -175,7 +175,7 @@ namespace Dungeon_Crawler
                     Velocity.X = -Speed;
                 else if (isRandomMovement)
                 {
-                    RandomDirection = Flip(direction);
+                    RandomDirection = BounceOffObject(direction);
                 }
             }
         }
@@ -193,26 +193,27 @@ namespace Dungeon_Crawler
                     Velocity.X = +Speed;
                 else if (isRandomMovement)
                 {
-                    RandomDirection = Flip(direction);
+                    RandomDirection = BounceOffObject(direction);
                 }
             }
         }
 
-        public int Flip(int direction)
+        //Bounces character off the object in clockwise direction
+        public int BounceOffObject(int direction)
         {
             if (direction == 0)
             {
-                return 1;
+                return 3;
             }
             else if (direction == 1)
             {
-                return 0;
+                return 2;
             }
             else if (direction == 2)
             {
-                return 3;
+                return 0;
             }
-            else return 2;
+            else return 1;
         }
 
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
