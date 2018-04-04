@@ -51,7 +51,11 @@ namespace Dungeon_Crawler
                     moveUp(map, x, y, direction, isRandomMovement);
                 else if (isRandomMovement)
                 {
-                    RandomDirection = BounceOffObject(direction);
+                    RandomDirection = BounceOffObject(direction, true);
+                }
+                else
+                {   //Case when movement is not random and collsion is (probably) caused by walking of multiple enemies in a single line
+                    Move(level, BounceOffObject(direction, false), false, graphicsDevice);
                 }
                 _position.Y = _position.Y + pixelPerfectTolerance;
             }
@@ -63,7 +67,11 @@ namespace Dungeon_Crawler
                     moveDown(map, x, y, direction, isRandomMovement);
                 else if (isRandomMovement)
                 {
-                    RandomDirection = BounceOffObject(direction);
+                    RandomDirection = BounceOffObject(direction, true);
+                }
+                else
+                {   //Case when movement is not random and collsion is (probably) caused by walking of multiple enemies in a single line
+                    Move(level, BounceOffObject(direction, false), false, graphicsDevice);
                 }
                 _position.Y = _position.Y - pixelPerfectTolerance;
             }
@@ -75,7 +83,11 @@ namespace Dungeon_Crawler
                     moveLeft(map, x, y, direction, isRandomMovement);
                 else if (isRandomMovement)
                 {
-                    RandomDirection = BounceOffObject(direction);
+                    RandomDirection = BounceOffObject(direction, true);
+                }
+                else
+                {   //Case when movement is not random and collsion is (probably) caused by walking of multiple enemies in a single line
+                    Move(level, BounceOffObject(direction, false), false, graphicsDevice);
                 }
                 _position.X = _position.X + pixelPerfectTolerance;
             }
@@ -88,9 +100,12 @@ namespace Dungeon_Crawler
                     moveRight(map, x, y, direction, isRandomMovement);
                 else if (isRandomMovement)
                 {
-                    RandomDirection = BounceOffObject(direction);
+                    RandomDirection = BounceOffObject(direction, true);
                 }
-
+                else
+                {   //Case when movement is not random and collsion is (probably) caused by walking of multiple enemies in a single line
+                    Move(level, BounceOffObject(direction, false), false, graphicsDevice);
+                }
                 _position.X = _position.X - pixelPerfectTolerance;
             }
         }
@@ -139,7 +154,7 @@ namespace Dungeon_Crawler
                     Velocity.Y = -Speed;
                 else if (isRandomMovement)
                 {
-                    RandomDirection = BounceOffObject(direction);
+                    RandomDirection = BounceOffObject(direction, true);
                 }
             }
         }
@@ -157,7 +172,7 @@ namespace Dungeon_Crawler
                     Velocity.Y = +Speed;
                 else if (isRandomMovement)
                 {
-                    RandomDirection = BounceOffObject(direction);
+                    RandomDirection = BounceOffObject(direction, true);
                 }
             }
         }
@@ -175,7 +190,7 @@ namespace Dungeon_Crawler
                     Velocity.X = -Speed;
                 else if (isRandomMovement)
                 {
-                    RandomDirection = BounceOffObject(direction);
+                    RandomDirection = BounceOffObject(direction, true);
                 }
             }
         }
@@ -193,27 +208,42 @@ namespace Dungeon_Crawler
                     Velocity.X = +Speed;
                 else if (isRandomMovement)
                 {
-                    RandomDirection = BounceOffObject(direction);
+                    RandomDirection = BounceOffObject(direction, true);
                 }
             }
         }
 
-        //Bounces character off the object in clockwise direction
-        public int BounceOffObject(int direction)
+        //Bounces character off the object in clockwise direction (if not clockwise, will try to bounce off another enemy by moving either left or right when direction is up/down
+        //or either up or down when direction is left/right
+        public int BounceOffObject(int direction, Boolean clockwise)
         {
-            if (direction == 0)
+            if (clockwise)
             {
-                return 3;
+                if (direction == 0)
+                {
+                    return 3;
+                }
+                else if (direction == 1)
+                {
+                    return 2;
+                }
+                else if (direction == 2)
+                {
+                    return 0;
+                }
+                else return 1;
             }
-            else if (direction == 1)
+            else
             {
-                return 2;
+                if (direction == 0 || direction == 1)
+                {
+                    return Global.random.Next(1) + 2;
+                }
+                else
+                {
+                    return Global.random.Next(1);
+                }
             }
-            else if (direction == 2)
-            {
-                return 0;
-            }
-            else return 1;
         }
 
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
