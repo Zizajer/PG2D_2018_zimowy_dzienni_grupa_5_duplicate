@@ -42,9 +42,9 @@ namespace Dungeon_Crawler
                 if (level.projectiles.Count() < 20)
                 {
                     MouseState mouse = Mouse.GetState();
-
-                    float distanceX = mouse.X - this.Position.X;
-                    float distanceY = mouse.Y - this.Position.Y;
+                    Vector2 mousePos = Global.Camera.ScreenToWorld(mouse.X, mouse.Y);
+                    float distanceX = mousePos.X - this.Position.X;
+                    float distanceY = mousePos.Y - this.Position.Y;
 
                     rotation = (float)Math.Atan2(distanceY, distanceX);
                     Vector2 tempVelocity = new Vector2((float)Math.Cos(rotation) * 3f, ((float)Math.Sin(rotation)) *5f);

@@ -207,5 +207,9 @@ namespace Dungeon_Crawler
 
             MoveCamera(cameraMovement, true);
         }
+        public Vector2 ScreenToWorld(int x, int y)
+        {
+            return new Vector2(Position.X-ViewportWidth/2 + x, Position.Y - ViewportHeight / 2 + y);
+        }
     }
 }
