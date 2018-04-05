@@ -256,15 +256,10 @@ namespace Dungeon_Crawler
                 if (Collision.checkCollision(this, projectile, graphicsDevice))
                 {
                     collision = true;
-                    VanishProjectile(level.projectiles, i);
+                    projectile.isVisible = false;
                 }
             }
             return collision;
-        }
-
-        private void VanishProjectile(List<Projectile> projectiles, int index)
-        {
-            projectiles.RemoveAt(index);
         }
 
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
