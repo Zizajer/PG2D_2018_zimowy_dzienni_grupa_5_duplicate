@@ -250,12 +250,21 @@ namespace Dungeon_Crawler
         public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
         {
             bool collision = false;
-            foreach (Projectile projectile in level.projectiles)
+            for (int i = 0; i < level.projectiles.Count; i++)
             {
+                Projectile projectile = level.projectiles[i];
                 if (Collision.checkCollision(this, projectile, graphicsDevice))
+                {
                     collision = true;
+                    VanishProjectile(level.projectiles, i);
+                }
             }
             return collision;
+        }
+
+        private void VanishProjectile(List<Projectile> projectiles, int index)
+        {
+            projectiles.RemoveAt(index);
         }
 
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
