@@ -26,6 +26,7 @@ namespace Dungeon_Crawler
 
         public Enemy(Dictionary<string, Animation> _animations, int cellSize, float speed, float timeBetweenActions)
         {
+            this.Health = 100;
             this._animations = _animations;
             this.timeBetweenActions = timeBetweenActions;
             this.Speed = speed;
@@ -246,6 +247,17 @@ namespace Dungeon_Crawler
             }
         }
 
+        public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
+        {
+            bool collision = false;
+            foreach (Projectile projectile in level.projectiles)
+            {
+                if (Collision.checkCollision(this, projectile, graphicsDevice))
+                    collision = true;
+            }
+            return collision;
+        }
+
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
 
@@ -256,6 +268,13 @@ namespace Dungeon_Crawler
 
                 x = (int)Math.Floor(fixedPosition.X / cellSize);
                 y = (int)Math.Floor(fixedPosition.Y / cellSize);
+
+                if (IsHitByProjectile(level, graphicsDevice))
+                {
+                    this.Health = 0;
+                }
+
+                Console.WriteLine(this.Health);
 
                 //Pathfinder is reinitialized every time an enemy can move. We could initialize it once and keep it but in future development we could put new obstacles during gameplay
                 //(thus changing property of some cells on the map) so we must take it into account.

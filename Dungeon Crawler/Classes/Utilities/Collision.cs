@@ -46,6 +46,26 @@ namespace Dungeon_Crawler
             return false;
         }
 
+        public static bool checkCollision(Character character, Projectile projectile, GraphicsDevice graphicsDevice)
+        {
+            if (character == null || projectile == null) return false;
+            Color[] characterTextureData = character.getCurrentTextureData(graphicsDevice);
+
+            Rectangle characterRectangle = character.getRectangle();
+
+            Rectangle projectileRectangle = projectile.getRectangle();
+
+            if (characterRectangle.Intersects(projectileRectangle))
+            {
+                if (Collision.IntersectPixels(characterRectangle, characterTextureData,
+                                    projectileRectangle, projectile.TextureData))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         // source: http://xbox.create.msdn.com/en-US/education/catalog/tutorial/collision_2d_perpixel_transformed
         /// <summary>
         /// Determines if there is overlap of the non-transparent pixels

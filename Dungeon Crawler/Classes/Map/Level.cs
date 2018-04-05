@@ -49,9 +49,14 @@ namespace Dungeon_Crawler
             }
 
             player.Update(gameTime, this, graphicsDevice);
-            foreach (Enemy enemy in enemies)
+            for (int i = enemies.Count - 1; i >= 0; i--)
             {
+                Enemy enemy = enemies[i];
                 enemy.Update(gameTime, this, graphicsDevice);
+                if (enemy.Health == 0)
+                {
+                    enemies.RemoveAt(i);
+                }
             }
         
 

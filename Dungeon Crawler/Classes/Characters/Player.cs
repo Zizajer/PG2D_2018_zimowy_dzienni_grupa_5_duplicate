@@ -9,13 +9,16 @@ using System.Linq;
 
 namespace Dungeon_Crawler
 {
-    public class Player:Character
+    public class Player : Character
     {
+        public MouseState mouse;
+        public float rotation;
         public List<Item> inventory { get; set; }
         public int CurrentLevel { get; set; }
+        KeyboardState pastKey;
         public int x;
         public int y;
-        public Player(ContentManager content, int cellSize,int playerCurrentLevel)
+        public Player(ContentManager content, int cellSize, int playerCurrentLevel)
         {
             this.Health = 100;
             _animations = new Dictionary<string, Animation>()
@@ -30,6 +33,29 @@ namespace Dungeon_Crawler
             this.cellSize = cellSize;
             inventory = new List<Item>();
             _animationManager = new AnimationManager(_animations.First().Value);
+        }
+
+        public void Shoot(Level level)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.Space) && pastKey.IsKeyUp(Keys.Space))
+            {
+                if (level.projectiles.Count() < 20)
+                {
+                    MouseState mouse = Mouse.GetState();
+                    Vector2 mousePos = Global.Camera.ScreenToWorld(mouse.X, mouse.Y);
+                    float distanceX = mousePos.X - this.Position.X;
+                    float distanceY = mousePos.Y - this.Position.Y;
+
+                    rotation = (float)Math.Atan2(distanceY, distanceX);
+                    Vector2 tempVelocity = new Vector2((float)Math.Cos(rotation) * 3f, ((float)Math.Sin(rotation)) * 5f);
+                    Vector2 tempPosition = this.Origin + tempVelocity * 3;
+
+                    Projectile newProjectile = new Projectile(tempVelocity, tempPosition, level.fireball, rotation);
+
+                    level.projectiles.Add(newProjectile);
+                }
+            }
+            pastKey = Keyboard.GetState();
         }
 
         public virtual void Move(Level level, GraphicsDevice graphicsDevice)
@@ -185,6 +211,7 @@ namespace Dungeon_Crawler
             //Fov will be computed within every update call. It could be done only after player move and it surely would improve performance.. but what if we put some new obstacles during a gameplay ?
             //They wouldn't be tracked until the player moved!
             level.map.ComputeFov(x, y, 15, true);
+            Shoot(level);
             SetAnimations();
             _animationManager.Update(gameTime);
             Position += Velocity;

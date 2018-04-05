@@ -36,8 +36,7 @@ namespace Dungeon_Crawler
         }
         public Rectangle getRectangle()
         {
-            //return new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
-            throw new Exception("not implemented");
+            return new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
         }
         public void Draw(SpriteBatch spriteBatch)
         {
