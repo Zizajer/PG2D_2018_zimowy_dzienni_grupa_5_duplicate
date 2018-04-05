@@ -42,5 +42,14 @@ namespace Dungeon_Crawler
         {
             spriteBatch.Draw(Texture, Position, null, Color.White, rotation, Origin, 0.5f, SpriteEffects.None, Layers.Projectiles);
         }
+        public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
+        {
+            this.Position += this.Velocity;
+            //Vanish projectile when out of player's fov.
+            if (!(Math.Abs(this.Position.X - level.player.Position.X) < Global.Camera.ViewportWidth && Math.Abs(this.Position.Y - level.player.Position.Y) < Global.Camera.ViewportHeight))
+            {
+                this.isVisible = false;
+            }
+        }
     }
 }

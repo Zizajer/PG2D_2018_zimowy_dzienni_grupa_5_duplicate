@@ -73,19 +73,13 @@ namespace Dungeon_Crawler
                 }
             }
 
-            foreach (Projectile projectile in projectiles)
+            for (int i = projectiles.Count - 1; i >= 0; i--)
             {
-                projectile.Position += projectile.Velocity;
-                if (Vector2.Distance(projectile.Position, player.Position) > 500)
-                    projectile.isVisible = false;
-            }
-
-            for (int i = 0; i < projectiles.Count; i++)
-            {
-                if (!projectiles[i].isVisible)
+                Projectile projectile = projectiles[i];
+                projectile.Update(gameTime, this, graphicsDevice);
+                if (!projectile.isVisible)
                 {
                     projectiles.RemoveAt(i);
-                    i--;
                 }
             }
 
