@@ -18,7 +18,7 @@ namespace Dungeon_Crawler
         private int newMapRoomCount = 100;
         private int newMapRoomMaxSize = 7;
         private int newMapRoomMinSize = 2;
-        private int enemiesCount = 3;
+        private int enemiesCount = 1;
         private int itemsCount = 1;
         private int obstaclesCount = 0;
         Texture2D floor;
@@ -129,6 +129,8 @@ namespace Dungeon_Crawler
             {
                 Cell randomCell = GetRandomEmptyCell(map, occupiedCells);
                 occupiedCells.Add(randomCell);
+                //Set property of a cell occupied by an obstacle on a map to make it non-transparent. Necessary for fov calculations.
+                map.SetCellProperties(randomCell.X, randomCell.Y, false, true);
                 Obstacle tempObstacle =
                     new Obstacle(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), obstacle);
                 obstacles.Add(tempObstacle);

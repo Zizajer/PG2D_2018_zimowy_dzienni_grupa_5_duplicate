@@ -8,15 +8,23 @@ using System.Linq;
 
 namespace Dungeon_Crawler
 {
-    public class Enemy:Character
+    public class Enemy : Character
     {
-        float actionTimer;
-        float timeBetweenActions;
-        int lastDirection;
         public int x { get; set; }
         public int y { get; set; }
 
-        public Enemy(Dictionary<string, Animation> _animations, int cellSize, float speed,float timeBetweenActions)
+        Map map;
+
+        //Random movement vars
+        float actionTimer;
+        float timeBetweenActions;
+        int RandomDirection;
+
+        //Pathfinding vars
+        PathFinder PathFinder;
+        Cell CellToReach; //Next cell to move in by enemy (returned by pathfinder)
+
+        public Enemy(Dictionary<string, Animation> _animations, int cellSize, float speed, float timeBetweenActions)
         {
             this._animations = _animations;
             this.timeBetweenActions = timeBetweenActions;
@@ -24,67 +32,81 @@ namespace Dungeon_Crawler
             this.cellSize = cellSize;
             _animationManager = new AnimationManager(_animations.First().Value);
 
-            actionTimer=Global.random.Next(3);
+            actionTimer = Global.random.Next(3);
 
-            lastDirection = Global.random.Next(4);
+            RandomDirection = Global.random.Next(4);
         }
 
 
-        public virtual void Move(Level level,bool change,int direction,GraphicsDevice graphicsDevice)
+        public virtual void Move(Level level, int direction, bool isRandomMovement, GraphicsDevice graphicsDevice)
         {
-            x = (int)Math.Floor(fixedPosition.X / cellSize);
-            y = (int)Math.Floor(fixedPosition.Y / cellSize);
-            Map map = level.map;
             Cell enemyCell = map.GetCell(x, y);
             int pixelPerfectTolerance = 8;
 
-            if (change)
+
+            if (direction == 0)
             {
-                lastDirection = direction;
+                _position.Y = _position.Y - pixelPerfectTolerance;
+                if (isColliding(this, level, graphicsDevice))
+                    moveUp(map, x, y, direction, isRandomMovement);
+                else if (isRandomMovement)
+                {
+                    RandomDirection = BounceOffObject(direction, true);
+                }
+                else
+                {   //Case when movement is not random and collsion is (probably) caused by walking of multiple enemies in a single line
+                    Move(level, BounceOffObject(direction, false), false, graphicsDevice);
+                }
+                _position.Y = _position.Y + pixelPerfectTolerance;
             }
-            else
+
+            if (direction == 1)
             {
-                if (lastDirection == 0)
+                _position.Y = _position.Y + pixelPerfectTolerance;
+                if (isColliding(this, level, graphicsDevice))
+                    moveDown(map, x, y, direction, isRandomMovement);
+                else if (isRandomMovement)
                 {
-                    _position.Y = _position.Y - pixelPerfectTolerance;
-                    if (isColliding(this, level, graphicsDevice))
-                        moveUp(map, x, y, direction);
-                    else
-                        lastDirection = direction;
-                    _position.Y = _position.Y + pixelPerfectTolerance;
+                    RandomDirection = BounceOffObject(direction, true);
                 }
+                else
+                {   //Case when movement is not random and collsion is (probably) caused by walking of multiple enemies in a single line
+                    Move(level, BounceOffObject(direction, false), false, graphicsDevice);
+                }
+                _position.Y = _position.Y - pixelPerfectTolerance;
+            }
 
-                if (lastDirection == 1)
+            if (direction == 2)
+            {
+                _position.X = _position.X - pixelPerfectTolerance;
+                if (isColliding(this, level, graphicsDevice))
+                    moveLeft(map, x, y, direction, isRandomMovement);
+                else if (isRandomMovement)
                 {
-                    _position.Y = _position.Y + pixelPerfectTolerance;
-                    if (isColliding(this, level, graphicsDevice))
-                        moveDown(map, x, y, direction);
-                    else
-                        lastDirection = direction;
-                    _position.Y = _position.Y - pixelPerfectTolerance;
+                    RandomDirection = BounceOffObject(direction, true);
                 }
+                else
+                {   //Case when movement is not random and collsion is (probably) caused by walking of multiple enemies in a single line
+                    Move(level, BounceOffObject(direction, false), false, graphicsDevice);
+                }
+                _position.X = _position.X + pixelPerfectTolerance;
+            }
 
-                if (lastDirection == 2)
+            if (direction == 3)
+            {
+                _position.X = _position.X + pixelPerfectTolerance;
+
+                if (isColliding(this, level, graphicsDevice))
+                    moveRight(map, x, y, direction, isRandomMovement);
+                else if (isRandomMovement)
                 {
-                    _position.X = _position.X - pixelPerfectTolerance;
-                    if (isColliding(this, level, graphicsDevice))
-                        moveLeft(map, x, y, direction);
-                    else
-                        lastDirection = direction;
-                    _position.X = _position.X + pixelPerfectTolerance;
+                    RandomDirection = BounceOffObject(direction, true);
                 }
-
-                if (lastDirection == 3)
-                {
-                    _position.X = _position.X + pixelPerfectTolerance;
-
-                    if (isColliding(this, level, graphicsDevice))
-                        moveRight(map, x, y, direction);
-                   else
-                        lastDirection = direction;
-
-                    _position.X = _position.X - pixelPerfectTolerance;
+                else
+                {   //Case when movement is not random and collsion is (probably) caused by walking of multiple enemies in a single line
+                    Move(level, BounceOffObject(direction, false), false, graphicsDevice);
                 }
+                _position.X = _position.X - pixelPerfectTolerance;
             }
         }
         public bool isColliding(Character character, Level level, GraphicsDevice graphicsDevice)
@@ -119,7 +141,7 @@ namespace Dungeon_Crawler
                 return false;
         }
 
-        public void moveUp(Map map, int x, int y, int direction)
+        public void moveUp(Map map, int x, int y, int direction, bool isRandomMovement)
         {
             Cell cellAbove = map.GetCell(x, y - 1);
             if (cellAbove.IsWalkable)
@@ -130,12 +152,14 @@ namespace Dungeon_Crawler
             {
                 if (fixedPosition.Y > cellAbove.Y * cellSize + cellSize + getHeight() / 2)
                     Velocity.Y = -Speed;
-                else
-                    lastDirection = direction;
+                else if (isRandomMovement)
+                {
+                    RandomDirection = BounceOffObject(direction, true);
+                }
             }
         }
 
-        public void moveDown(Map map, int x, int y, int direction)
+        public void moveDown(Map map, int x, int y, int direction, bool isRandomMovement)
         {
             Cell cellBelow = map.GetCell(x, y + 1);
             if (cellBelow.IsWalkable)
@@ -146,12 +170,14 @@ namespace Dungeon_Crawler
             {
                 if (fixedPosition.Y + 4 < cellBelow.Y * cellSize)
                     Velocity.Y = +Speed;
-                else
-                    lastDirection = direction;
+                else if (isRandomMovement)
+                {
+                    RandomDirection = BounceOffObject(direction, true);
+                }
             }
         }
 
-        public void moveLeft(Map map, int x, int y, int direction)
+        public void moveLeft(Map map, int x, int y, int direction, bool isRandomMovement)
         {
             Cell cellOnLeft = map.GetCell(x - 1, y);
             if (cellOnLeft.IsWalkable)
@@ -162,12 +188,14 @@ namespace Dungeon_Crawler
             {
                 if (fixedPosition.X > cellOnLeft.X * cellSize + cellSize + getWidth() / 2)
                     Velocity.X = -Speed;
-                else
-                    lastDirection = direction;
+                else if (isRandomMovement)
+                {
+                    RandomDirection = BounceOffObject(direction, true);
+                }
             }
         }
 
-        public void moveRight(Map map, int x, int y, int direction)
+        public void moveRight(Map map, int x, int y, int direction, bool isRandomMovement)
         {
             Cell cellOnRight = map.GetCell(x + 1, y);
             if (cellOnRight.IsWalkable)
@@ -178,29 +206,123 @@ namespace Dungeon_Crawler
             {
                 if (fixedPosition.X + getWidth() / 2 < cellOnRight.X * cellSize)
                     Velocity.X = +Speed;
-                else
-                    lastDirection = direction;
+                else if (isRandomMovement)
+                {
+                    RandomDirection = BounceOffObject(direction, true);
+                }
             }
         }
+
+        //Bounces character off the object in clockwise direction (if not clockwise, will try to bounce off another enemy by moving either left or right when direction is up/down
+        //or either up or down when direction is left/right
+        public int BounceOffObject(int direction, Boolean clockwise)
+        {
+            if (clockwise)
+            {
+                if (direction == 0)
+                {
+                    return 3;
+                }
+                else if (direction == 1)
+                {
+                    return 2;
+                }
+                else if (direction == 2)
+                {
+                    return 0;
+                }
+                else return 1;
+            }
+            else
+            {
+                if (direction == 0 || direction == 1)
+                {
+                    return Global.random.Next(1) + 2;
+                }
+                else
+                {
+                    return Global.random.Next(1);
+                }
+            }
+        }
+
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
 
             actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (actionTimer > timeBetweenActions)
+            if (Math.Abs(this.Position.X - level.player.Position.X) < Global.Camera.ViewportWidth && Math.Abs(this.Position.Y - level.player.Position.Y) < Global.Camera.ViewportHeight)
             {
-                actionTimer = 0;
-                Move(level, true, Global.random.Next(4), graphicsDevice);
+
+                x = (int)Math.Floor(fixedPosition.X / cellSize);
+                y = (int)Math.Floor(fixedPosition.Y / cellSize);
+
+                //Pathfinder is reinitialized every time an enemy can move. We could initialize it once and keep it but in future development we could put new obstacles during gameplay
+                //(thus changing property of some cells on the map) so we must take it into account.
+                //Note: for some speedup, map references will be checked so if input map is the same as one in this class, we won't reinitialize pathfinder.
+                if (this.map != level.map)
+                {
+                    PathFinder = new PathFinder(level.map);
+                }
+                this.map = level.map;
+
+                // Random movement when player is not in enemies fov
+                if (!map.IsInFov(this.x, this.y))
+                {
+                    if (actionTimer > timeBetweenActions)
+                    {
+                        actionTimer = 0;
+                        RandomDirection = Global.random.Next(4);
+                        Move(level, RandomDirection, true, graphicsDevice);
+                    }
+                    else
+                    {
+                        Move(level, RandomDirection, true, graphicsDevice);
+                    }
+                }
+                else
+                // Pathfinding
+                {
+
+                    if (this.x != level.player.x || this.y != level.player.y)
+                    {
+                        if (this.CellToReach == null || this.x == CellToReach.X && this.y == CellToReach.Y)
+                        {
+                            Path path = PathFinder.ShortestPath(level.map.GetCell(x, y), level.map.GetCell(level.player.x, level.player.y));
+                            CellToReach = path.Start;
+
+                        }
+
+                        if (CellToReach.Y < y)
+                        {
+                            Move(level, 0, false, graphicsDevice);
+                            //Console.WriteLine("Up");
+                        }
+                        if (CellToReach.Y > y)
+                        {
+                            Move(level, 1, false, graphicsDevice);
+                            //Console.WriteLine("Down");
+                        }
+                        if (CellToReach.X < x)
+                        {
+                            Move(level, 2, false, graphicsDevice);
+                            //Console.WriteLine("Left");
+                        }
+                        if (CellToReach.X > x)
+                        {
+                            Move(level, 3, false, graphicsDevice);
+                            //Console.WriteLine("Right");
+                        }
+                        //Console.WriteLine("CellToReach: {0}, {1} :: This.cell {2}, {3}", CellToReach.X, CellToReach.Y, this.x, this.y);
+                    }
+
+
+                }
+                SetAnimations();
+                _animationManager.Update(gameTime);
+                Position += Velocity;
+                Velocity = Vector2.Zero;
             }
-            else
-            {
-                Move(level, false, Global.random.Next(4), graphicsDevice);
-            }
-            
-            SetAnimations();
-            _animationManager.Update(gameTime);
-            Position += Velocity;
-            Velocity = Vector2.Zero;
         }
     }
 }

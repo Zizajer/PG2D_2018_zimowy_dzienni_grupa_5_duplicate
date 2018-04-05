@@ -11,11 +11,8 @@ namespace Dungeon_Crawler
 {
     public class Player:Character
     {
-        public MouseState mouse;
-        public float rotation;
         public List<Item> inventory { get; set; }
         public int CurrentLevel { get; set; }
-        KeyboardState pastKey;
         public int x;
         public int y;
         public Player(ContentManager content, int cellSize,int playerCurrentLevel)
@@ -35,29 +32,6 @@ namespace Dungeon_Crawler
             _animationManager = new AnimationManager(_animations.First().Value);
         }
 
-        public void Shoot(Level level)
-        {  
-            if (Keyboard.GetState().IsKeyDown(Keys.Space) && pastKey.IsKeyUp(Keys.Space))
-            {
-                if (level.projectiles.Count() < 20)
-                {
-                    MouseState mouse = Mouse.GetState();
-                    Vector2 mousePos = Global.Camera.ScreenToWorld(mouse.X, mouse.Y);
-                    float distanceX = mousePos.X - this.Position.X;
-                    float distanceY = mousePos.Y - this.Position.Y;
-
-                    rotation = (float)Math.Atan2(distanceY, distanceX);
-                    Vector2 tempVelocity = new Vector2((float)Math.Cos(rotation) * 3f, ((float)Math.Sin(rotation)) *5f);
-                    Vector2 tempPosition = this.Origin + tempVelocity * 3;
-
-                    Projectile newProjectile = new Projectile(tempVelocity, tempPosition, level.fireball, rotation);
-
-                    level.projectiles.Add(newProjectile);
-                }
-            }
-            pastKey = Keyboard.GetState();
-        }
-
         public virtual void Move(Level level, GraphicsDevice graphicsDevice)
         {
             x = (int)Math.Floor(fixedPosition.X / cellSize);
@@ -75,8 +49,10 @@ namespace Dungeon_Crawler
             {
                 _position.Y = _position.Y - pixelPerfectTolerance;
                 if (isColliding(this, level, graphicsDevice))
+                {
                     moveUp(map, x, y);
-                _position.Y = _position.Y + pixelPerfectTolerance;
+                }
+              _position.Y = _position.Y + pixelPerfectTolerance;
 
                 Global.Camera.CenterOn(fixedPosition);
             }
@@ -86,7 +62,9 @@ namespace Dungeon_Crawler
 
                 _position.Y = _position.Y + pixelPerfectTolerance;
                 if (isColliding(this, level, graphicsDevice))
+                {
                     moveDown(map, x, y);
+                }
                 _position.Y = _position.Y - pixelPerfectTolerance;
 
                 Global.Camera.CenterOn(fixedPosition);
@@ -96,7 +74,9 @@ namespace Dungeon_Crawler
             {
                 _position.X = _position.X - pixelPerfectTolerance;
                 if (isColliding(this, level, graphicsDevice))
+                {
                     moveLeft(map, x, y);
+                }
                 _position.X = _position.X + pixelPerfectTolerance;
 
                 Global.Camera.CenterOn(fixedPosition);
@@ -106,7 +86,9 @@ namespace Dungeon_Crawler
             {
                 _position.X = _position.X + pixelPerfectTolerance;
                 if (isColliding(this, level, graphicsDevice))
+                {
                     moveRight(map, x, y);
+                }
                 _position.X = _position.X - pixelPerfectTolerance;
 
                 Global.Camera.CenterOn(fixedPosition);
@@ -196,7 +178,13 @@ namespace Dungeon_Crawler
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
             Move(level,graphicsDevice);
-            Shoot(level);
+            //Compute fov of the player within range of 15 cells. 
+            //This fov calculation will be used by all enemies (it's faster to calcluate fov only for player rather then for all enemies).
+            //So basically, for enemies, we will be checking if player can see enemy, not if enemy can see player (isn't it the same?)
+            //
+            //Fov will be computed within every update call. It could be done only after player move and it surely would improve performance.. but what if we put some new obstacles during a gameplay ?
+            //They wouldn't be tracked until the player moved!
+            level.map.ComputeFov(x, y, 15, true);
             SetAnimations();
             _animationManager.Update(gameTime);
             Position += Velocity;

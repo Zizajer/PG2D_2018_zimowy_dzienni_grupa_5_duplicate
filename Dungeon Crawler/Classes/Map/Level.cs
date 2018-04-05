@@ -48,11 +48,11 @@ namespace Dungeon_Crawler
                 }
             }
 
+            player.Update(gameTime, this, graphicsDevice);
             foreach (Enemy enemy in enemies)
             {
                 enemy.Update(gameTime, this, graphicsDevice);
             }
-            player.Update(gameTime, this, graphicsDevice);
         
 
             Item[] itemArray = items.ToArray();
