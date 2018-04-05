@@ -9,11 +9,15 @@ namespace Dungeon_Crawler
     public class Level
     {
         public Map map;
+        public int cellSize;
         public List<Item> items;
         public List<Enemy> enemies;
         public List<Obstacle> obstacles;
         public List<Cell> occupiedCells;
         public List<Projectile> projectiles;
+
+        List<Texture2D> allItems;
+        List<String> allItemsNames;
 
         public Texture2D floor;
         public Texture2D wall;
@@ -22,11 +26,14 @@ namespace Dungeon_Crawler
         public Player player;
 
         public bool finished { get; set; }
-        public Level(Map map, List<Enemy> enemies, List<Item> items, List<Obstacle> obstacles, Texture2D floor, Texture2D wall, Portal portal, Player player, List<Cell> occupiedCells, Texture2D fireball)
+        public Level(Map map, int cellSize, List<Enemy> enemies, List<Texture2D> allItems, List<String> allItemsNames, List<Item> items, List<Obstacle> obstacles, Texture2D floor, Texture2D wall, Portal portal, Player player, List<Cell> occupiedCells, Texture2D fireball)
         {
             this.map = map;
+            this.cellSize = cellSize;
             this.enemies = enemies;
             this.items = items;
+            this.allItems = allItems;
+            this.allItemsNames = allItemsNames;
             this.obstacles = obstacles;
             this.floor = floor;
             this.wall = wall;
@@ -56,6 +63,12 @@ namespace Dungeon_Crawler
                 if (enemy.Health == 0)
                 {
                     enemies.RemoveAt(i);
+                    if (Global.random.Next(10) > 6)
+                    {
+                        int rand = Global.random.Next(2) + 1;
+                        Item tempItem = new Item(new Vector2(enemy.Position.X + cellSize / 3, enemy.Position.Y + cellSize / 3), allItems[rand], allItemsNames[rand]);
+                        items.Add(tempItem);
+                    }
                 }
             }
         

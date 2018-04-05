@@ -116,7 +116,7 @@ namespace Dungeon_Crawler
 
             Global.Camera.setParams(map.Width, map.Height, floor.Width);
 
-            Level level = new Level(map, enemies, items, obstacles, floor, wall, portal, player, occupiedCells, fireball);
+            Level level = new Level(map, floor.Width, enemies, allItems, allItemsNames, items, obstacles, floor, wall, portal, player, occupiedCells, fireball);
 
             this.levels.Add(level);
         }
