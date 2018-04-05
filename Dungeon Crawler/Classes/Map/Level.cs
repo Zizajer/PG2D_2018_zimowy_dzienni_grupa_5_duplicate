@@ -39,7 +39,7 @@ namespace Dungeon_Crawler
         }
         public void Update(GameTime gameTime, GraphicsDevice graphicsDevice)
         {
-            if ((Math.Abs(player.Position.X - player.Position.X) < player.getWidth() + portal.Texture.Width) && (Math.Abs(player.Position.Y - player.Position.Y) < player.getHeight() + portal.Texture.Height))
+            if ((Math.Abs(player.Position.X - player.Position.X) < player.getWidth() + portal.Texture.Width) && (Math.Abs(player.Position.Y - player.Position.Y) < player.getHeight() + portal.Texture.Height) && enemies.Count == 0)
             {
                 if (Collision.checkCollision(player, portal, graphicsDevice))
                 {
@@ -118,8 +118,10 @@ namespace Dungeon_Crawler
                 projectile.Draw(spriteBatch);
             }
 
-
-            portal.Draw(spriteBatch);
+            if (enemies.Count == 0)
+            {
+                portal.Draw(spriteBatch);
+            }
             player.Draw(spriteBatch);
         }
         public Vector2 GetRandomEmptyCell()
