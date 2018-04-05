@@ -77,7 +77,7 @@ namespace Dungeon_Crawler
             {
                 Projectile projectile = projectiles[i];
                 projectile.Update(gameTime, this, graphicsDevice);
-                if (!projectile.isVisible)
+                if (projectile.isMarkedToDelete)
                 {
                     projectiles.RemoveAt(i);
                 }

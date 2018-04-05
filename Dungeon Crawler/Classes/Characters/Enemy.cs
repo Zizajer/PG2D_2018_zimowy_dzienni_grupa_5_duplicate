@@ -256,7 +256,7 @@ namespace Dungeon_Crawler
                 if (Collision.checkCollision(this, projectile, graphicsDevice))
                 {
                     collision = true;
-                    projectile.isVisible = false;
+                    projectile.isEnemyHit = true;
                 }
             }
             return collision;

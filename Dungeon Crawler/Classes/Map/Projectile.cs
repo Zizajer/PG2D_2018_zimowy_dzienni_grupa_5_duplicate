@@ -18,7 +18,10 @@ namespace Dungeon_Crawler
             set { }
         }
         public float rotation;
-        public bool isVisible;
+        public bool isEnemyHit = false;
+        public bool isMarkedToDelete = false;
+        private float ProjectileTimer;
+        private readonly float VanishDelay = 0.25f;
 
         public Color[] TextureData { get; }
         public Projectile(Vector2 vel, Vector2 pos, Texture2D tex,float rot)
@@ -27,7 +30,7 @@ namespace Dungeon_Crawler
             Texture = tex;
             Velocity = vel;
             rotation = rot;
-            isVisible = true;
+            isEnemyHit = false;
             Rectangle rec = new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
             Origin = new Vector2(rec.Width/2, rec.Height/2);
             TextureData =
@@ -48,7 +51,17 @@ namespace Dungeon_Crawler
             //Vanish projectile when out of player's fov.
             if (!(Math.Abs(this.Position.X - level.player.Position.X) < Global.Camera.ViewportWidth && Math.Abs(this.Position.Y - level.player.Position.Y) < Global.Camera.ViewportHeight))
             {
-                this.isVisible = false;
+                isMarkedToDelete = true;
+            }
+
+            //Vanish projectile when hit an enemy after certain delay. (If we destroyed the projectile just after hitting first enemy, we couldn't kill a group of enemies staying nearby)
+            if (isEnemyHit)
+            {
+                ProjectileTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (ProjectileTimer > VanishDelay)
+                {
+                    isMarkedToDelete = true;
+                }
             }
         }
     }
