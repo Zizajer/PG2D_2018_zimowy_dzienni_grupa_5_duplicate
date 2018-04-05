@@ -23,7 +23,8 @@ namespace Dungeon_Crawler
         private int obstaclesCount = 0;
         Texture2D floor;
         Texture2D wall;
-        
+        Texture2D fireball;
+
         Dictionary<string, Animation> _animations;
 
         List<Texture2D> allItems;
@@ -40,6 +41,7 @@ namespace Dungeon_Crawler
             
             floor = Content.Load<Texture2D>("map/Floor");
             wall = Content.Load<Texture2D>("map/Wall");
+            fireball = Content.Load<Texture2D>("spells/Fireball");
             obstacle = Content.Load<Texture2D>("map/obstacle1");
             portalTexture = Content.Load<Texture2D>("map/portal");
 
@@ -114,7 +116,7 @@ namespace Dungeon_Crawler
 
             Global.Camera.setParams(map.Width, map.Height, floor.Width);
 
-            Level level = new Level(map, enemies, items, obstacles, floor, wall, portal, player, occupiedCells);
+            Level level = new Level(map, enemies, items, obstacles, floor, wall, portal, player, occupiedCells, fireball);
 
             this.levels.Add(level);
         }

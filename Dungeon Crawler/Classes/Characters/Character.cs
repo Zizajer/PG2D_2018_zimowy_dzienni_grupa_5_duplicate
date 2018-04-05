@@ -30,7 +30,10 @@ namespace Dungeon_Crawler
         {
             get { return new Vector2(Position.X + getWidth() / 2, Position.Y + getHeight()); }
         }
-
+        public Vector2 Origin
+        {
+            get { return new Vector2(Position.X + getWidth() / 2, Position.Y + getHeight() / 2); }
+        }
         public float Speed = 1.0f;
         public Vector2 Velocity;
 

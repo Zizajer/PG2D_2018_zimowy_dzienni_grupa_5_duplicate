@@ -18,6 +18,7 @@ namespace Dungeon_Crawler
 
         protected override void Initialize()
         {
+            this.IsMouseVisible = true;
             Global.Camera.setViewports(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height);
             base.Initialize();
         }

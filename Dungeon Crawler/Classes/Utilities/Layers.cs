@@ -6,6 +6,7 @@
         public static readonly float Paths = 0.6f;
         public static readonly float Items = 0.5f;
         public static readonly float Figures = 0.4f;
-        public static readonly float Text = 0.3f;
+        public static readonly float Projectiles = 0.3f;
+        public static readonly float Text = 0.2f;
     }
 }

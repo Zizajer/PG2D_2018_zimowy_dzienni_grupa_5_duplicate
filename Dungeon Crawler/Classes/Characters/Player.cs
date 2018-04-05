@@ -11,8 +11,11 @@ namespace Dungeon_Crawler
 {
     public class Player:Character
     {
+        public MouseState mouse;
+        public float rotation;
         public List<Item> inventory { get; set; }
         public int CurrentLevel { get; set; }
+        KeyboardState pastKey;
         public int x;
         public int y;
         public Player(ContentManager content, int cellSize,int playerCurrentLevel)
@@ -30,6 +33,29 @@ namespace Dungeon_Crawler
             this.cellSize = cellSize;
             inventory = new List<Item>();
             _animationManager = new AnimationManager(_animations.First().Value);
+        }
+
+        public void Shoot(Level level)
+        {  
+            if (Keyboard.GetState().IsKeyDown(Keys.Space) && pastKey.IsKeyUp(Keys.Space))
+            {
+                if (level.projectiles.Count() < 20)
+                {
+                    MouseState mouse = Mouse.GetState();
+
+                    float distanceX = mouse.X - this.Position.X;
+                    float distanceY = mouse.Y - this.Position.Y;
+
+                    rotation = (float)Math.Atan2(distanceY, distanceX);
+                    Vector2 tempVelocity = new Vector2((float)Math.Cos(rotation) * 3f, ((float)Math.Sin(rotation)) *5f);
+                    Vector2 tempPosition = this.Origin + tempVelocity * 3;
+
+                    Projectile newProjectile = new Projectile(tempVelocity, tempPosition, level.fireball, rotation);
+
+                    level.projectiles.Add(newProjectile);
+                }
+            }
+            pastKey = Keyboard.GetState();
         }
 
         public virtual void Move(Level level, GraphicsDevice graphicsDevice)
@@ -170,7 +196,7 @@ namespace Dungeon_Crawler
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
             Move(level,graphicsDevice);
-
+            Shoot(level);
             SetAnimations();
             _animationManager.Update(gameTime);
             Position += Velocity;

@@ -46,6 +46,7 @@
     <Compile Include="Classes\Camera\CameraManager.cs" />
     <Compile Include="Classes\Characters\Character.cs" />
     <Compile Include="Classes\Map\Portal.cs" />
+    <Compile Include="Classes\Map\Projectile.cs" />
     <Compile Include="Classes\Utilities\Collision.cs" />
     <Compile Include="Classes\Characters\Enemy.cs" />
     <Compile Include="Classes\Game1.cs" />

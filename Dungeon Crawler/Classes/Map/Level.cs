@@ -13,14 +13,16 @@ namespace Dungeon_Crawler
         public List<Enemy> enemies;
         public List<Obstacle> obstacles;
         public List<Cell> occupiedCells;
+        public List<Projectile> projectiles;
 
         public Texture2D floor;
         public Texture2D wall;
+        public Texture2D fireball;
         public Portal portal;
         public Player player;
 
         public bool finished { get; set; }
-        public Level(Map map, List<Enemy> enemies, List<Item> items, List<Obstacle> obstacles, Texture2D floor, Texture2D wall, Portal portal, Player player, List<Cell> occupiedCells)
+        public Level(Map map, List<Enemy> enemies, List<Item> items, List<Obstacle> obstacles, Texture2D floor, Texture2D wall, Portal portal, Player player, List<Cell> occupiedCells, Texture2D fireball)
         {
             this.map = map;
             this.enemies = enemies;
@@ -31,6 +33,8 @@ namespace Dungeon_Crawler
             this.portal = portal;
             this.player = player;
             this.occupiedCells = occupiedCells;
+            this.fireball = fireball;
+            projectiles = new List<Projectile>();
             finished = false;
         }
         public void Update(GameTime gameTime, GraphicsDevice graphicsDevice)
@@ -64,7 +68,22 @@ namespace Dungeon_Crawler
                 }
             }
 
-            
+            foreach (Projectile projectile in projectiles)
+            {
+                projectile.Position += projectile.Velocity;
+                if (Vector2.Distance(projectile.Position, player.Position) > 500)
+                    projectile.isVisible = false;
+            }
+
+            for (int i = 0; i < projectiles.Count; i++)
+            {
+                if (!projectiles[i].isVisible)
+                {
+                    projectiles.RemoveAt(i);
+                    i--;
+                }
+            }
+
         }
         public void Draw(GameTime gameTime,SpriteBatch spriteBatch)
         {
@@ -94,6 +113,12 @@ namespace Dungeon_Crawler
             {
                 enemy.Draw(spriteBatch);
             }
+
+            foreach (var projectile in projectiles)
+            {
+                projectile.Draw(spriteBatch);
+            }
+
 
             portal.Draw(spriteBatch);
             player.Draw(spriteBatch);
