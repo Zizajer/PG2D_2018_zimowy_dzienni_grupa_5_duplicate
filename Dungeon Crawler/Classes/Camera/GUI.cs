@@ -8,6 +8,7 @@ namespace Dungeon_Crawler
         private readonly Player _player;
         private int playerCurrentLevel;
         private int health;
+        private int mana;
         private SpriteFont font;
         private string[] console = { "", "", "", "" };
 
@@ -23,8 +24,12 @@ namespace Dungeon_Crawler
             float scale = Global.Camera.Zoom;
             if (_player.Health > 0)
             {
-                string s = "Health " + health + "% \n" + _player.getItems() + " \nLevel " + (playerCurrentLevel + 1);
-                spriteBatch.DrawString(font, s, new Vector2(tempX, tempY), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
+                string healthString = "Health " + health + "%";
+                string manaString = "Mana " + mana + "%";
+                string s = _player.getItems() + " \nLevel " + (playerCurrentLevel + 1);
+                spriteBatch.DrawString(font, healthString, new Vector2(tempX, tempY), Color.OrangeRed, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
+                spriteBatch.DrawString(font, manaString, new Vector2(tempX+180, tempY), Color.DeepSkyBlue, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
+                spriteBatch.DrawString(font, s, new Vector2(tempX, tempY+30), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
             }
             else
             {
@@ -38,6 +43,7 @@ namespace Dungeon_Crawler
         public void Update()
         {
             health = _player.Health;
+            mana = (int)_player.Mana;
             playerCurrentLevel = _player.CurrentLevel;
         }
         public void WriteToConsole(string msg)

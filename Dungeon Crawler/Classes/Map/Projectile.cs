@@ -31,8 +31,6 @@ namespace Dungeon_Crawler
             Velocity = vel;
             rotation = rot;
             isEnemyHit = false;
-            Rectangle rec = new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
-            Origin = new Vector2(rec.Width/2, rec.Height/2);
             TextureData =
                new Color[Texture.Width * Texture.Height];
             Texture.GetData(TextureData);
@@ -43,7 +41,7 @@ namespace Dungeon_Crawler
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Position, null, Color.White, rotation, Origin, 0.5f, SpriteEffects.None, Layers.Projectiles);
+            spriteBatch.Draw(Texture, Position, null, Color.White, rotation, Origin, 0.3f, SpriteEffects.None, Layers.Projectiles);
         }
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {

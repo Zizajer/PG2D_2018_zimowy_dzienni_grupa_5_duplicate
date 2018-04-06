@@ -90,7 +90,7 @@ namespace Dungeon_Crawler
         {
             //if (player.CurrentLevel % 3 == 2) 
             enemiesCount = enemiesCount + increaseValue;
-            //if (player.CurrentLevel % 2 == 0) 
+            if (player.CurrentLevel % 2 == 0) 
             itemsCount = itemsCount + increaseValue;
             //if (player.CurrentLevel % 2 == 1) 
             obstaclesCount = obstaclesCount + increaseValue;

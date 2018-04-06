@@ -11,6 +11,7 @@ namespace Dungeon_Crawler
 {
     public class Player : Character
     {
+        public float Mana;
         public MouseState mouse;
         public float rotation;
         public List<Item> inventory { get; set; }
@@ -28,7 +29,8 @@ namespace Dungeon_Crawler
                 {"WalkLeft",new Animation(content.Load<Texture2D>("player/WalkingLeft"),3 )},
                 {"WalkRight",new Animation(content.Load<Texture2D>("player/WalkingRight"),3 )}
             };
-            Speed = 5.0f;
+            Speed = 2.5f;
+            Mana = 100;
             this.CurrentLevel = playerCurrentLevel;
             this.cellSize = cellSize;
             inventory = new List<Item>();
@@ -39,7 +41,7 @@ namespace Dungeon_Crawler
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Space) && pastKey.IsKeyUp(Keys.Space))
             {
-                if (level.projectiles.Count() < 20)
+                if (level.projectiles.Count() < 20 && Mana>30)
                 {
                     MouseState mouse = Mouse.GetState();
                     Vector2 mousePos = Global.Camera.ScreenToWorld(mouse.X, mouse.Y);
@@ -53,6 +55,7 @@ namespace Dungeon_Crawler
                     Projectile newProjectile = new Projectile(tempVelocity, tempPosition, level.fireball, rotation);
 
                     level.projectiles.Add(newProjectile);
+                    Mana = Mana - 30;
                 }
             }
             pastKey = Keyboard.GetState();
@@ -203,6 +206,7 @@ namespace Dungeon_Crawler
 
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
+            if(Mana<100)Mana=Mana+0.15f;
             Move(level,graphicsDevice);
             //Compute fov of the player within range of 15 cells. 
             //This fov calculation will be used by all enemies (it's faster to calcluate fov only for player rather then for all enemies).
