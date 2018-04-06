@@ -1,18 +1,73 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using RogueSharp;
 using System;
 
 namespace Dungeon_Crawler
 {
     public static class Collision
     {
+        public static bool isInBounds(Character character, Level level)
+        {
+            Cell playerCell;
+            int x, y;
+
+            //check most common scenario first
+            x = (int)Math.Floor(character.Position.X / character.cellSize);
+            y = (int)Math.Floor(character.Position.Y / character.cellSize);
+            playerCell = level.map.GetCell(x, y);
+            Microsoft.Xna.Framework.Rectangle cellRectangle = new Microsoft.Xna.Framework.Rectangle(playerCell.X * character.cellSize, playerCell.Y * character.cellSize, character.cellSize, character.cellSize);
+            Microsoft.Xna.Framework.Rectangle playerRectangle = character.getRectangle();
+
+            if (cellRectangle.Contains(playerRectangle) && playerCell.IsWalkable)
+                return true;
+
+            //check if topleft corner is in walkable cell
+            x = (int)Math.Floor(character.Position.X / character.cellSize);
+            y = (int)Math.Floor(character.Position.Y / character.cellSize);
+            playerCell = level.map.GetCell(x, y);
+            if (!playerCell.IsWalkable)
+                return false;
+            //check if bottomright corner is in walkable cell
+            x = (int)Math.Floor((character.Position.X + character.getWidth()) / character.cellSize);
+            y = (int)Math.Floor((character.Position.Y + character.getHeight()) / character.cellSize);
+            playerCell = level.map.GetCell(x, y);
+            if (!playerCell.IsWalkable)
+                return false;
+            //check if topright corner is in walkable cell
+            x = (int)Math.Floor((character.Position.X + character.getWidth()) / character.cellSize);
+            y = (int)Math.Floor(character.Position.Y / character.cellSize);
+            playerCell = level.map.GetCell(x, y);
+            if (!playerCell.IsWalkable)
+                return false;
+            //check if bottomleft corner is in walkable cell
+            x = (int)Math.Floor(character.Position.X / character.cellSize);
+            y = (int)Math.Floor((character.Position.Y + character.getHeight()) / character.cellSize);
+            playerCell = level.map.GetCell(x, y);
+            if (!playerCell.IsWalkable)
+                return false;
+
+            return true;
+
+        }
+
+        public static void getInBounds(Character character, Level level)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool checkCollisionInGivenDirection(int currentDirection,float speed, Level level)
+        {
+            throw new NotImplementedException();
+        }
+
         public static bool checkCollision(Character character1, Character character2, GraphicsDevice graphicsDevice)
         {
             if (character1 == null || character2 == null) return false;
-            Rectangle character1Rectangle = character1.getRectangle();
+            Microsoft.Xna.Framework.Rectangle character1Rectangle = character1.getRectangle();
             Color[] character1TextureData = character1.getCurrentTextureData(graphicsDevice);
 
-            Rectangle character2Rectangle = character2.getRectangle();
+            Microsoft.Xna.Framework.Rectangle character2Rectangle = character2.getRectangle();
             Color[] character2TextureData = character2.getCurrentTextureData(graphicsDevice);
 
             if (character1Rectangle.Intersects(character2Rectangle))
@@ -31,9 +86,9 @@ namespace Dungeon_Crawler
             if (character == null || obstacle == null) return false;
             Color[] characterTextureData = character.getCurrentTextureData(graphicsDevice);
 
-            Rectangle characterRectangle = character.getRectangle();
-             
-            Rectangle obstacleRectangle = obstacle.getRectangle();
+            Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+
+            Microsoft.Xna.Framework.Rectangle obstacleRectangle = obstacle.getRectangle();
 
             if (characterRectangle.Intersects(obstacleRectangle))
             {
@@ -51,9 +106,9 @@ namespace Dungeon_Crawler
             if (character == null || projectile == null) return false;
             Color[] characterTextureData = character.getCurrentTextureData(graphicsDevice);
 
-            Rectangle characterRectangle = character.getRectangle();
+            Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
 
-            Rectangle projectileRectangle = projectile.getRectangle();
+            Microsoft.Xna.Framework.Rectangle projectileRectangle = projectile.getRectangle();
 
             if (characterRectangle.Intersects(projectileRectangle))
             {
@@ -76,8 +131,8 @@ namespace Dungeon_Crawler
         /// <param name="rectangleB">Bouding rectangle of the second sprite</param>
         /// <param name="dataB">Pixel data of the second sprite</param>
         /// <returns>True if non-transparent pixels overlap; false otherwise</returns>
-        public static bool IntersectPixels(Rectangle rectangleA, Color[] dataA,
-                                           Rectangle rectangleB, Color[] dataB)
+        public static bool IntersectPixels(Microsoft.Xna.Framework.Rectangle rectangleA, Color[] dataA,
+                                           Microsoft.Xna.Framework.Rectangle rectangleB, Color[] dataB)
         {
             // Find the bounds of the rectangle intersection
             int top = Math.Max(rectangleA.Top, rectangleB.Top);

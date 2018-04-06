@@ -8,6 +8,7 @@ namespace Dungeon_Crawler
 {
     public class Character
     {
+        public enum Directions { None, Up, Down, Left, Right, TopLeft, TopRight, BottomLeft, BottomRight};
         public int Damage { get; set; }
         public int Health { get; set; }
         public string Name { get; set; }
@@ -56,16 +57,16 @@ namespace Dungeon_Crawler
         }
         public int getWidth()
         {
-            return _animationManager._animation.FrameWidth;
+            return _animationManager._animation.FrameWidth-1;
         }
         public int getHeight()
         {
-            return _animationManager._animation.FrameHeight;
+            return _animationManager._animation.FrameHeight-1;
         }
 
         public Rectangle getRectangle()
         {
-            return new Rectangle((int)Position.X, (int)Position.Y,
+            return new Rectangle((int)Math.Floor(Position.X), (int)Math.Floor(Position.Y),
                getWidth(), getHeight());
         }
         public Color[] getCurrentTextureData(GraphicsDevice graphicsDevice)

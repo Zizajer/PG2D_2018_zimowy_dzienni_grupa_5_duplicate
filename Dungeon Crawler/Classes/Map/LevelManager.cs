@@ -24,6 +24,7 @@ namespace Dungeon_Crawler
         Texture2D floor;
         Texture2D wall;
         Texture2D fireball;
+        int cellSize;
 
         Dictionary<string, Animation> _animations;
 
@@ -64,17 +65,23 @@ namespace Dungeon_Crawler
             allItemsNames.Add("Sword");
             allItemsNames.Add("Wand");
 
+            cellSize = floor.Width - 1;
+
             this.player =
-                new Player(Content, floor.Width, 0)
+                new Player(Content, cellSize, 0)
                 {
-                    Position = new Vector2((floor.Width + floor.Width / 3), ( floor.Width) + floor.Width / 3)
+                    Position = new Vector2((cellSize + cellSize / 3), ( cellSize) + cellSize / 3)
                 };
 
             CreateLevel();
-
             Cell randomCell = GetRandomEmptyCell(levels[0].map, levels[0].occupiedCells);
-            player.Position = new Vector2((randomCell.X * floor.Width + floor.Width / 3), (randomCell.Y * floor.Width) + floor.Width / 3);
+            this.player =
+                new Player(Content, floor.Width, 0)
+                {
+                    Position = new Vector2(randomCell.X * floor.Width + floor.Width / 3, randomCell.Y * floor.Width + floor.Width / 3)
+                };
 
+            levels[0].addPlayer(player);
             Global.Camera.CenterOn(randomCell);
 
             Global.Gui = new GUI(player, Content.Load<SpriteFont>("fonts/Default"));
@@ -90,7 +97,7 @@ namespace Dungeon_Crawler
         {
             //if (player.CurrentLevel % 3 == 2) 
             enemiesCount = enemiesCount + increaseValue;
-            if (player.CurrentLevel % 2 == 0) 
+            //if (player.CurrentLevel % 2 == 0) 
             itemsCount = itemsCount + increaseValue;
             //if (player.CurrentLevel % 2 == 1) 
             obstaclesCount = obstaclesCount + increaseValue;
@@ -104,19 +111,19 @@ namespace Dungeon_Crawler
 
             List<Cell> occupiedCells = new List<Cell>();
 
-            Cell portalcell = GetCellFarFromPlayer(map, occupiedCells, player);
+            Cell portalcell = GetRandomEmptyCell(map, occupiedCells);
             occupiedCells.Add(portalcell);
             Portal portal =
-                new Portal(new Vector2(portalcell.X * floor.Width, portalcell.Y * floor.Width), portalTexture);
+                new Portal(new Vector2(portalcell.X * cellSize, portalcell.Y * cellSize), portalTexture);
 
-            List<Enemy> enemies = CreateEnemiesList(Content, map, floor.Width, enemiesCount, occupiedCells);
-            List<Item> items = CreateItemsList(Content, map, floor.Width, itemsCount, occupiedCells, allItems, allItemsNames);
-            List<Obstacle> obstacles = CreateObstaclesList(Content, map, floor.Width, obstaclesCount, occupiedCells, obstacle);
+            List<Enemy> enemies = CreateEnemiesList(Content, map, cellSize, enemiesCount, occupiedCells);
+            List<Item> items = CreateItemsList(Content, map, cellSize, itemsCount, occupiedCells, allItems, allItemsNames);
+            List<Obstacle> obstacles = CreateObstaclesList(Content, map, cellSize, obstaclesCount, occupiedCells, obstacle);
             incrementOtherParameters(1);
 
-            Global.Camera.setParams(map.Width, map.Height, floor.Width);
+            Global.Camera.setParams(map.Width, map.Height, cellSize);
 
-            Level level = new Level(map, floor.Width, enemies, allItems, allItemsNames, items, obstacles, floor, wall, portal, player, occupiedCells, fireball);
+            Level level = new Level(map, cellSize, enemies, allItems, allItemsNames, items, obstacles, floor, wall, portal, occupiedCells, fireball);
 
             this.levels.Add(level);
         }
@@ -196,24 +203,13 @@ namespace Dungeon_Crawler
             {
                 CreateLevel();
                 player.CurrentLevel++;
+                levels[player.CurrentLevel].addPlayer(player);
                 Vector2 newPlayerPosition = levels[player.CurrentLevel].GetRandomEmptyCell();
                 player.Position = newPlayerPosition;
             }
         }
 
         private Cell GetRandomEmptyCell(Map map, List<Cell> occupiedCells)
-        {
-            int x, y;
-            Cell tempCell;
-            do
-            {
-                x = Global.random.Next(map.Width);
-                y = Global.random.Next(map.Height);
-                tempCell = map.GetCell(x, y);
-            } while (!tempCell.IsWalkable || occupiedCells.Contains(tempCell));
-            return tempCell;
-        }
-        private Cell GetCellFarFromPlayer(Map map, List<Cell> occupiedCells, Player player)
         {
             int x, y;
             Cell tempCell;

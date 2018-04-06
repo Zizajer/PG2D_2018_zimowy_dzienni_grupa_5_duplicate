@@ -26,7 +26,7 @@ namespace Dungeon_Crawler
         public Player player;
 
         public bool finished { get; set; }
-        public Level(Map map, int cellSize, List<Enemy> enemies, List<Texture2D> allItems, List<String> allItemsNames, List<Item> items, List<Obstacle> obstacles, Texture2D floor, Texture2D wall, Portal portal, Player player, List<Cell> occupiedCells, Texture2D fireball)
+        public Level(Map map, int cellSize, List<Enemy> enemies, List<Texture2D> allItems, List<String> allItemsNames, List<Item> items, List<Obstacle> obstacles, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells, Texture2D fireball)
         {
             this.map = map;
             this.cellSize = cellSize;
@@ -38,11 +38,14 @@ namespace Dungeon_Crawler
             this.floor = floor;
             this.wall = wall;
             this.portal = portal;
-            this.player = player;
             this.occupiedCells = occupiedCells;
             this.fireball = fireball;
             projectiles = new List<Projectile>();
             finished = false;
+        }
+        public void addPlayer(Player player)
+        {
+            this.player = player;
         }
         public void Update(GameTime gameTime, GraphicsDevice graphicsDevice)
         {
