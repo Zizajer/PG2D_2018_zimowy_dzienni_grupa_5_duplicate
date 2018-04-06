@@ -41,7 +41,7 @@ namespace Dungeon_Crawler
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Position, null, Color.White, rotation, Origin, 0.3f, SpriteEffects.None, Layers.Projectiles);
+            spriteBatch.Draw(Texture, Position, null, Color.White, rotation, Origin, 1f, SpriteEffects.None, Layers.Projectiles);
         }
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
