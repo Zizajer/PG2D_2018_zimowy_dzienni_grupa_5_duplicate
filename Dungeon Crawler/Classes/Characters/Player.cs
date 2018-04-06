@@ -61,6 +61,27 @@ namespace Dungeon_Crawler
             pastKey = Keyboard.GetState();
         }
 
+        public void Teleport(Level level)
+        {
+            if (Mouse.GetState().RightButton == ButtonState.Pressed)
+            {
+                if (Mana > 60)
+                {
+                    MouseState mouse = Mouse.GetState();
+                    Vector2 mousePos = Global.Camera.ScreenToWorld(mouse.X, mouse.Y);
+                    x = (int)Math.Floor(mousePos.X / cellSize);
+                    y = (int)Math.Floor(mousePos.Y / cellSize);
+                    if (level.map.GetCell(x, y).IsWalkable && !level.occupiedCells.Contains(level.map.GetCell(x, y)))
+                    {
+                        Vector2 tempVector = new Vector2(mousePos.X, mousePos.Y);
+                        this.Position = tempVector;
+                        Mana = Mana - 60;
+                        Global.Camera.CenterOn(fixedPosition);
+                    }
+                }
+            }
+        }
+
         public virtual void Move(Level level, GraphicsDevice graphicsDevice)
         {
             x = (int)Math.Floor(fixedPosition.X / cellSize);
@@ -216,6 +237,7 @@ namespace Dungeon_Crawler
             //They wouldn't be tracked until the player moved!
             level.map.ComputeFov(x, y, 15, true);
             Shoot(level);
+            Teleport(level);
             SetAnimations();
             _animationManager.Update(gameTime);
             Position += Velocity;
