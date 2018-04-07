@@ -48,12 +48,69 @@ namespace Dungeon_Crawler
                 return false;
 
             return true;
-
         }
 
         public static void getInBounds(Character character, Level level)
         {
-            throw new NotImplementedException();
+            Vector2 originalPosition = character.Position;
+
+            for(int i = 1; i < 100; i++)
+            {
+                //top
+                character._position.Y -= i;
+                if (isInBounds(character, level))
+                    return;
+                else
+                    character.Position = originalPosition;
+                //bottom
+                character._position.Y += i;
+                if (isInBounds(character, level))
+                    return;
+                else
+                    character.Position = originalPosition;
+                //left
+                character._position.X -= i;
+                if (isInBounds(character, level))
+                    return;
+                else
+                    character.Position = originalPosition;
+                //right
+                character._position.X += i;
+                if (isInBounds(character, level))
+                    return;
+                else
+                    character.Position = originalPosition;
+
+                //topleft
+                character._position.Y -= i;
+                character._position.X -= i;
+                if (isInBounds(character, level))
+                    return;
+                else
+                    character.Position = originalPosition;
+                //topright
+                character._position.Y -= i;
+                character._position.X += i;
+                if (isInBounds(character, level))
+                    return;
+                else
+                    character.Position = originalPosition;
+                //bottomleft
+                character._position.Y += i;
+                character._position.X -= i;
+                if (isInBounds(character, level))
+                    return;
+                else
+                    character.Position = originalPosition;
+                //bottomright
+                character._position.Y += i;
+                character._position.X += i;
+                if (isInBounds(character, level))
+                    return;
+                else
+                    character.Position = originalPosition;
+
+            }
         }
 
         public static bool checkCollisionInGivenDirection(int currentDirection,float speed, Level level)

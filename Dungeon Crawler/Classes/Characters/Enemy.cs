@@ -278,8 +278,6 @@ namespace Dungeon_Crawler
                     this.Health = 0;
                 }
 
-                Console.WriteLine(this.Health);
-
                 //Pathfinder is reinitialized every time an enemy can move. We could initialize it once and keep it but in future development we could put new obstacles during gameplay
                 //(thus changing property of some cells on the map) so we must take it into account.
                 //Note: for some speedup, map references will be checked so if input map is the same as one in this class, we won't reinitialize pathfinder.

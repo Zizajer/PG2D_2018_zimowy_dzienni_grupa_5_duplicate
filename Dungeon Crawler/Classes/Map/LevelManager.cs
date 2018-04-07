@@ -65,21 +65,15 @@ namespace Dungeon_Crawler
             allItemsNames.Add("Sword");
             allItemsNames.Add("Wand");
 
-            cellSize = floor.Width - 1;
-
-            this.player =
-                new Player(Content, cellSize, 0)
-                {
-                    Position = new Vector2((cellSize + cellSize / 3), ( cellSize) + cellSize / 3)
-                };
+            cellSize = floor.Width;
 
             CreateLevel();
             Cell randomCell = GetRandomEmptyCell(levels[0].map, levels[0].occupiedCells);
             this.player =
-                new Player(Content, floor.Width, 0)
-                {
-                    Position = new Vector2(randomCell.X * floor.Width + floor.Width / 3, randomCell.Y * floor.Width + floor.Width / 3)
-                };
+             new Player(Content, cellSize, 0)
+             {
+                 Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
+             };
 
             levels[0].addPlayer(player);
             Global.Camera.CenterOn(randomCell);

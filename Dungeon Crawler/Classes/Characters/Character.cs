@@ -16,7 +16,7 @@ namespace Dungeon_Crawler
 
         public AnimationManager _animationManager;
         protected Dictionary<String, Animation> _animations;
-        protected Vector2 _position;
+        public Vector2 _position;
         public Vector2 Position
         {
             get { return _position; }

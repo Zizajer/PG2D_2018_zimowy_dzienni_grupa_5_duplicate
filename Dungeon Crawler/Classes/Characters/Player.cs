@@ -64,17 +64,17 @@ namespace Dungeon_Crawler
         {
             if (Mouse.GetState().RightButton == ButtonState.Pressed)
             {
-                if (Mana > 60)
+                if (Mana > 10)
                 {
                     MouseState mouse = Mouse.GetState();
                     Vector2 mousePos = Global.Camera.ScreenToWorld(mouse.X, mouse.Y);
                     x = (int)Math.Floor(mousePos.X / cellSize);
                     y = (int)Math.Floor(mousePos.Y / cellSize);
-                    if (level.map.GetCell(x, y).IsWalkable && !level.occupiedCells.Contains(level.map.GetCell(x, y)))
+                   // if (level.map.GetCell(x, y).IsWalkable && !level.occupiedCells.Contains(level.map.GetCell(x, y)))
                     {
                         Vector2 tempVector = new Vector2(mousePos.X, mousePos.Y);
-                        this.Position = tempVector;
-                        Mana = Mana - 60;
+                        Position = tempVector;
+                        Mana = Mana - 10;
                         Global.Camera.CenterOn(fixedPosition);
                     }
                 }
@@ -119,10 +119,7 @@ namespace Dungeon_Crawler
             if (!Collision.isInBounds(this,level))
             {
                 Console.WriteLine("player not in bounds");
-                //getInBounds(this,level);
-            }else
-            {
-                Console.WriteLine("player in bounds");
+                Collision.getInBounds(this,level);
             }
             
             int currentDirection = GetDirection();
