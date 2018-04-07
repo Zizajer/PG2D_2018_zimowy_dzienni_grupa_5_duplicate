@@ -28,7 +28,7 @@ namespace Dungeon_Crawler
                 {"WalkLeft",new Animation(content.Load<Texture2D>("player/WalkingLeft"),3 )},
                 {"WalkRight",new Animation(content.Load<Texture2D>("player/WalkingRight"),3 )}
             };
-            Speed = 2.5f;
+            Speed = 9.5f;
             Mana = 100;
             CurrentLevel = playerCurrentLevel;
             inventory = new List<Item>();
@@ -39,7 +39,7 @@ namespace Dungeon_Crawler
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Space) && pastKey.IsKeyUp(Keys.Space))
             {
-                if (level.projectiles.Count() < 20 && Mana>30)
+                if (level.projectiles.Count() < 20 && Mana>10)
                 {
                     MouseState mouse = Mouse.GetState();
                     Vector2 mousePos = Global.Camera.ScreenToWorld(mouse.X, mouse.Y);
@@ -53,7 +53,7 @@ namespace Dungeon_Crawler
                     Projectile newProjectile = new Projectile(tempVelocity, tempPosition, level.fireball, rotation);
 
                     level.projectiles.Add(newProjectile);
-                    Mana = Mana - 30;
+                    Mana = Mana - 10;
                 }
             }
             pastKey = Keyboard.GetState();
@@ -114,31 +114,29 @@ namespace Dungeon_Crawler
 
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
-            if (Mana < 100) Mana = Mana + 0.15f;
-            if (!Collision.isCharacterInBounds(this,level))
+            CurrentCell = level.map.GetCell((int)Math.Floor(Origin.X / level.cellSize), (int)Math.Floor(Origin.Y / level.cellSize));
+            if (Mana < 100) Mana = Mana + 0.95f; //0.15
+            if (!Collision.isCharacterInBounds(this, level))
             {
-                Collision.getCharacterInBounds(this,level);
+                Collision.Unstuck(this, level);
             }
             
             int currentDirection = GetDirection();
             if (currentDirection != (int)Directions.None)
             {
-                if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level))
+                if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
                 {
-                    if (!Collision.isCollidingWithEverythingElse(currentDirection, this, level, graphicsDevice))
-                    {
-                        Move(currentDirection, Speed, level, graphicsDevice);
-                        level.map.ComputeFov(x, y, 15, true);
-                        Global.Camera.CenterOn(fixedPosition);
-                    }
+                    Move(currentDirection, Speed, level, graphicsDevice);
+                    level.map.ComputeFov(x, y, 15, true);
+                    Global.Camera.CenterOn(fixedPosition);
                 }
                 else
                 {
                     //this allows sliding when one of diagonal directions is blocked eg. cant go topleft but can go left
                     if (currentDirection == (int)Directions.TopLeft || currentDirection == (int)Directions.TopRight || currentDirection == (int)Directions.BottomLeft || currentDirection == (int)Directions.BottomRight)
                     {
-                        int fixedDirection = Collision.checkIfOneOfDirectionsIsOk(currentDirection, this, level);
-                        if (!Collision.isCollidingWithEverythingElse(fixedDirection, this, level, graphicsDevice))
+                        int fixedDirection = Collision.checkIfOneOfDirectionsIsOk(currentDirection, this, level, graphicsDevice);
+                        if (!Collision.checkCollisionInGivenDirection(fixedDirection, this, level, graphicsDevice))
                         {
                             Move(fixedDirection, Speed, level, graphicsDevice);
                             level.map.ComputeFov(x, y, 15, true);
@@ -187,6 +185,7 @@ namespace Dungeon_Crawler
                 Velocity.X = -Speed;
                 Velocity.Y = +Speed;
             }
+
             if (currentDirection == (int)Directions.BottomRight)
             {
                 Velocity.X = +Speed;

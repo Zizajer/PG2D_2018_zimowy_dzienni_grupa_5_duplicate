@@ -87,7 +87,7 @@ namespace Dungeon_Crawler
                 return false;
         }
 
-        public static void getCharacterInBounds(Character character, Level level)
+        public static void Unstuck(Character character, Level level)
         {
             Vector2 originalPosition = character.Position;
 
@@ -150,16 +150,16 @@ namespace Dungeon_Crawler
             }
         }
 
-        public static int checkIfOneOfDirectionsIsOk(int currentDirection, Character character, Level level)
+        public static int checkIfOneOfDirectionsIsOk(int currentDirection, Character character, Level level, GraphicsDevice graphicsDevice)
         {
             if (currentDirection == (int)Character.Directions.TopLeft)
             {
                 int top = (int)Character.Directions.Top;
                 int left = (int)Character.Directions.Left;
 
-                if (!checkCollisionInGivenDirection(top, character, level))
+                if (!checkCollisionInGivenDirection(top, character, level, graphicsDevice))
                     return top;
-                else if (!checkCollisionInGivenDirection(left, character, level))
+                else if (!checkCollisionInGivenDirection(left, character, level, graphicsDevice))
                     return left;
                 else
                     return (int)Character.Directions.None;
@@ -170,9 +170,9 @@ namespace Dungeon_Crawler
                 int top = (int)Character.Directions.Top;
                 int right = (int)Character.Directions.Right;
 
-                if (!checkCollisionInGivenDirection(top, character, level))
+                if (!checkCollisionInGivenDirection(top, character, level, graphicsDevice))
                     return top;
-                else if (!checkCollisionInGivenDirection(right, character, level))
+                else if (!checkCollisionInGivenDirection(right, character, level, graphicsDevice))
                     return right;
                 else
                     return (int)Character.Directions.None;
@@ -183,9 +183,9 @@ namespace Dungeon_Crawler
                 int bottom = (int)Character.Directions.Bottom;
                 int left = (int)Character.Directions.Left;
 
-                if (!checkCollisionInGivenDirection(bottom, character, level))
+                if (!checkCollisionInGivenDirection(bottom, character, level, graphicsDevice))
                     return bottom;
-                else if (!checkCollisionInGivenDirection(left, character, level))
+                else if (!checkCollisionInGivenDirection(left, character, level, graphicsDevice))
                     return left;
                 else
                     return (int)Character.Directions.None;
@@ -196,9 +196,9 @@ namespace Dungeon_Crawler
                 int bottom = (int)Character.Directions.Bottom;
                 int right = (int)Character.Directions.Right;
 
-                if (!checkCollisionInGivenDirection(bottom, character, level))
+                if (!checkCollisionInGivenDirection(bottom, character, level, graphicsDevice))
                     return bottom;
-                else if (!checkCollisionInGivenDirection(right, character, level))
+                else if (!checkCollisionInGivenDirection(right, character, level, graphicsDevice))
                     return right;
                 else
                     return (int)Character.Directions.None;
@@ -206,14 +206,18 @@ namespace Dungeon_Crawler
             return (int)Character.Directions.None;
         }
 
-        public static bool checkCollisionInGivenDirection(int currentDirection,Character character, Level level)
+        public static bool checkCollisionInGivenDirection(int currentDirection,Character character, Level level, GraphicsDevice graphicsDevice)
         {
             if (currentDirection == (int)Character.Directions.Top)
             {
                 Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.Y -= (int)character.Speed;
                 if (isTopLeftCornerInBounds(characterRectangle, level) && isTopRightCornerInBounds(characterRectangle, level))
-                    return false;
+                    if (!isCollidingWithEverythingElse(currentDirection, characterRectangle, character, level, graphicsDevice))
+                        return false;
+                    else
+                        return true;
+
                 else
                     return true;
             }
@@ -223,7 +227,10 @@ namespace Dungeon_Crawler
                 Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.Y += (int)character.Speed;
                 if (isBottomLeftCornerInBounds(characterRectangle, level) && isBottomRightCornerInBounds(characterRectangle, level))
-                    return false;
+                    if (!isCollidingWithEverythingElse(currentDirection, characterRectangle, character, level, graphicsDevice))
+                        return false;
+                    else
+                        return true;
                 else
                     return true;
             }
@@ -233,7 +240,10 @@ namespace Dungeon_Crawler
                 Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.X -= (int)character.Speed;
                 if (isTopLeftCornerInBounds(characterRectangle, level) && isBottomLeftCornerInBounds(characterRectangle, level))
-                    return false;
+                    if (!isCollidingWithEverythingElse(currentDirection, characterRectangle, character, level, graphicsDevice))
+                        return false;
+                    else
+                        return true;
                 else
                     return true;
             }
@@ -243,7 +253,10 @@ namespace Dungeon_Crawler
                 Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.X += (int)character.Speed;
                 if (isTopRightCornerInBounds(characterRectangle, level) && isBottomRightCornerInBounds(characterRectangle, level))
-                    return false;
+                    if (!isCollidingWithEverythingElse(currentDirection, characterRectangle, character, level, graphicsDevice))
+                        return false;
+                    else
+                        return true;
                 else
                     return true;
             }
@@ -255,7 +268,10 @@ namespace Dungeon_Crawler
                 characterRectangle.X -= (int)character.Speed;
 
                 if (isTopLeftCornerInBounds(characterRectangle, level) && isBottomLeftCornerInBounds(characterRectangle, level) && isTopRightCornerInBounds(characterRectangle, level))
-                    return false;
+                    if (!isCollidingWithEverythingElse(currentDirection, characterRectangle, character, level, graphicsDevice))
+                        return false;
+                    else
+                        return true;
                 else
                     return true;
             }
@@ -267,7 +283,10 @@ namespace Dungeon_Crawler
                 characterRectangle.X += (int)character.Speed;
 
                 if (isTopRightCornerInBounds(characterRectangle, level) && isTopLeftCornerInBounds(characterRectangle, level) && isBottomRightCornerInBounds(characterRectangle, level))
-                    return false;
+                    if (!isCollidingWithEverythingElse(currentDirection, characterRectangle, character, level, graphicsDevice))
+                        return false;
+                    else
+                        return true;
                 else
                     return true;
             }
@@ -279,7 +298,10 @@ namespace Dungeon_Crawler
                 characterRectangle.X -= (int)character.Speed;
 
                 if (isBottomLeftCornerInBounds(characterRectangle, level) && isTopLeftCornerInBounds(characterRectangle, level) && isBottomRightCornerInBounds(characterRectangle, level))
-                    return false;
+                    if (!isCollidingWithEverythingElse(currentDirection, characterRectangle, character, level, graphicsDevice))
+                        return false;
+                    else
+                        return true;
                 else
                     return true;
             }
@@ -290,19 +312,22 @@ namespace Dungeon_Crawler
                 characterRectangle.X += (int)character.Speed;
 
                 if (isBottomRightCornerInBounds(characterRectangle, level) && isBottomLeftCornerInBounds(characterRectangle, level) && isTopRightCornerInBounds(characterRectangle, level))
-                    return false;
+                    if (!isCollidingWithEverythingElse(currentDirection, characterRectangle, character, level, graphicsDevice))
+                        return false;
+                    else
+                        return true;
                 else
                     return true;
             }
             return false;
         }
 
-        public static bool isCollidingWithEverythingElse(int currentDirection, Character character, Level level, GraphicsDevice graphicsDevice)
+        public static bool isCollidingWithEverythingElse(int currentDirection, Microsoft.Xna.Framework.Rectangle characterRectangle, Character character, Level level, GraphicsDevice graphicsDevice)
         {
             if (character.GetType() != typeof(Player))
             {
                 if (Vector2.Distance(character.Origin, level.player.Origin) < level.cellSize)
-                        if (checkCollision(character, level.player, graphicsDevice))
+                        if (checkCollision(characterRectangle, character, level.player, graphicsDevice))
                             return true;
             }
 
@@ -311,7 +336,7 @@ namespace Dungeon_Crawler
                 if (enemy.Equals(character)) continue;
                 if (Vector2.Distance(character.Origin,enemy.Origin) < level.cellSize)
                 {
-                    if (checkCollision(character, enemy, graphicsDevice))
+                    if (checkCollision(characterRectangle, character, enemy, graphicsDevice))
                         return true;
                 }
 
@@ -320,7 +345,7 @@ namespace Dungeon_Crawler
             {
                 if (Vector2.Distance(character.Origin, obstacle.Origin) < level.cellSize)
                 {
-                    if (checkCollision(character, obstacle, graphicsDevice))
+                    if (checkCollision(characterRectangle, character, obstacle, graphicsDevice))
                         return true;
                 }
             }
@@ -328,10 +353,10 @@ namespace Dungeon_Crawler
         }
 
 
-        public static bool checkCollision(Character character1, Character character2, GraphicsDevice graphicsDevice)
+        public static bool checkCollision(Microsoft.Xna.Framework.Rectangle characterRectangle, Character character1, Character character2, GraphicsDevice graphicsDevice)
         {
             if (character1 == null || character2 == null) return false;
-            Microsoft.Xna.Framework.Rectangle character1Rectangle = character1.getRectangle();
+            Microsoft.Xna.Framework.Rectangle character1Rectangle = characterRectangle;
             Color[] character1TextureData = character1.getCurrentTextureData(graphicsDevice);
 
             Microsoft.Xna.Framework.Rectangle character2Rectangle = character2.getRectangle();
@@ -348,12 +373,12 @@ namespace Dungeon_Crawler
             return false;
         }
 
-        public static bool checkCollision(Character character,Obstacle obstacle,GraphicsDevice graphicsDevice)
+        public static bool checkCollision(Microsoft.Xna.Framework.Rectangle character1Rectangle, Character character,Obstacle obstacle,GraphicsDevice graphicsDevice)
         {
             if (character == null || obstacle == null) return false;
             Color[] characterTextureData = character.getCurrentTextureData(graphicsDevice);
 
-            Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+            Microsoft.Xna.Framework.Rectangle characterRectangle = character1Rectangle;
 
             Microsoft.Xna.Framework.Rectangle obstacleRectangle = obstacle.getRectangle();
 
@@ -427,6 +452,46 @@ namespace Dungeon_Crawler
                 }
             }
             // No intersection found
+            return false;
+        }
+
+        public static bool checkCollision(Character character1, Character character2, GraphicsDevice graphicsDevice)
+        {
+            if (character1 == null || character2 == null) return false;
+            Microsoft.Xna.Framework.Rectangle character1Rectangle = character1.getRectangle();
+            Color[] character1TextureData = character1.getCurrentTextureData(graphicsDevice);
+
+            Microsoft.Xna.Framework.Rectangle character2Rectangle = character2.getRectangle();
+            Color[] character2TextureData = character2.getCurrentTextureData(graphicsDevice);
+
+            if (character1Rectangle.Intersects(character2Rectangle))
+            {
+                if (IntersectPixels(character1Rectangle, character1TextureData,
+                                    character2Rectangle, character2TextureData))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool checkCollision(Character character, Obstacle obstacle, GraphicsDevice graphicsDevice)
+        {
+            if (character == null || obstacle == null) return false;
+            Color[] characterTextureData = character.getCurrentTextureData(graphicsDevice);
+
+            Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+
+            Microsoft.Xna.Framework.Rectangle obstacleRectangle = obstacle.getRectangle();
+
+            if (characterRectangle.Intersects(obstacleRectangle))
+            {
+                if (IntersectPixels(characterRectangle, characterTextureData,
+                                    obstacleRectangle, obstacle.TextureData))
+                {
+                    return true;
+                }
+            }
             return false;
         }
     }

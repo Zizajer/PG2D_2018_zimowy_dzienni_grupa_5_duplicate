@@ -34,6 +34,8 @@ namespace Dungeon_Crawler
         {
             get { return new Vector2(Position.X + getWidth() / 2, Position.Y + getHeight() / 2); }
         }
+
+        public RogueSharp.Cell CurrentCell;
         public float Speed = 1.0f;
         public Vector2 Velocity;
 

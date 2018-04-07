@@ -90,7 +90,7 @@ namespace Dungeon_Crawler
         public void incrementOtherParameters(int increaseValue)
         {
             //if (player.CurrentLevel % 3 == 2) 
-            enemiesCount = enemiesCount + increaseValue;
+            enemiesCount = enemiesCount + 5;
             //if (player.CurrentLevel % 2 == 0) 
             itemsCount = itemsCount + increaseValue;
             //if (player.CurrentLevel % 2 == 1) 
