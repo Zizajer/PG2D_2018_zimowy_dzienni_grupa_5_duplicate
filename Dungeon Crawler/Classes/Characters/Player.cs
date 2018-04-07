@@ -28,10 +28,9 @@ namespace Dungeon_Crawler
                 {"WalkLeft",new Animation(content.Load<Texture2D>("player/WalkingLeft"),3 )},
                 {"WalkRight",new Animation(content.Load<Texture2D>("player/WalkingRight"),3 )}
             };
-            Speed = 2.5f;
+            Speed = 5.5f;
             Mana = 100;
-            this.CurrentLevel = playerCurrentLevel;
-            this.cellSize = cellSize;
+            CurrentLevel = playerCurrentLevel;
             inventory = new List<Item>();
             _animationManager = new AnimationManager(_animations.First().Value);
         }
@@ -68,8 +67,8 @@ namespace Dungeon_Crawler
                 {
                     MouseState mouse = Mouse.GetState();
                     Vector2 mousePos = Global.Camera.ScreenToWorld(mouse.X, mouse.Y);
-                    x = (int)Math.Floor(mousePos.X / cellSize);
-                    y = (int)Math.Floor(mousePos.Y / cellSize);
+                    x = (int)Math.Floor(mousePos.X / level.cellSize);
+                    y = (int)Math.Floor(mousePos.Y / level.cellSize);
                     if (level.map.GetCell(x, y).IsWalkable && !level.occupiedCells.Contains(level.map.GetCell(x, y)))
                     {
                         Vector2 tempVector = new Vector2(mousePos.X, mousePos.Y);
@@ -116,16 +115,16 @@ namespace Dungeon_Crawler
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
             if (Mana < 100) Mana = Mana + 0.15f;
-            if (!Collision.isInBounds(this,level))
+            if (!Collision.isCharacterInBounds(this,level))
             {
                 Console.WriteLine("player not in bounds");
-                Collision.getInBounds(this,level);
+                Collision.getCharacterInBounds(this,level);
             }
             
             int currentDirection = GetDirection();
             if (currentDirection != (int)Directions.None)
             {
-                //if (Collision.checkCollisionInGivenDirection(currentDirection, Speed, level))
+                if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level))
                 {
                     Move(currentDirection, Speed, level, graphicsDevice);
                     level.map.ComputeFov(x, y, 15, true);

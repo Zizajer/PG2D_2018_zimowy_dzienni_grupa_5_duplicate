@@ -26,11 +26,10 @@ namespace Dungeon_Crawler
 
         public Enemy(Dictionary<string, Animation> _animations, int cellSize, float speed, float timeBetweenActions)
         {
-            this.Health = 100;
+            Health = 100;
             this._animations = _animations;
             this.timeBetweenActions = timeBetweenActions;
-            this.Speed = speed;
-            this.cellSize = cellSize;
+            Speed = speed;
             _animationManager = new AnimationManager(_animations.First().Value);
 
             actionTimer = Global.random.Next(3);
@@ -49,7 +48,7 @@ namespace Dungeon_Crawler
             {
                 _position.Y = _position.Y - pixelPerfectTolerance;
                 if (isColliding(this, level, graphicsDevice))
-                    moveUp(map, x, y, direction, isRandomMovement);
+                    moveUp(level, x, y, direction, isRandomMovement);
                 else if (isRandomMovement)
                 {
                     RandomDirection = BounceOffObject(direction, true);
@@ -65,7 +64,7 @@ namespace Dungeon_Crawler
             {
                 _position.Y = _position.Y + pixelPerfectTolerance;
                 if (isColliding(this, level, graphicsDevice))
-                    moveDown(map, x, y, direction, isRandomMovement);
+                    moveDown(level, x, y, direction, isRandomMovement);
                 else if (isRandomMovement)
                 {
                     RandomDirection = BounceOffObject(direction, true);
@@ -81,7 +80,7 @@ namespace Dungeon_Crawler
             {
                 _position.X = _position.X - pixelPerfectTolerance;
                 if (isColliding(this, level, graphicsDevice))
-                    moveLeft(map, x, y, direction, isRandomMovement);
+                    moveLeft(level, x, y, direction, isRandomMovement);
                 else if (isRandomMovement)
                 {
                     RandomDirection = BounceOffObject(direction, true);
@@ -98,7 +97,7 @@ namespace Dungeon_Crawler
                 _position.X = _position.X + pixelPerfectTolerance;
 
                 if (isColliding(this, level, graphicsDevice))
-                    moveRight(map, x, y, direction, isRandomMovement);
+                    moveRight(level, x, y, direction, isRandomMovement);
                 else if (isRandomMovement)
                 {
                     RandomDirection = BounceOffObject(direction, true);
@@ -142,7 +141,7 @@ namespace Dungeon_Crawler
                 return false;
         }
 
-        public void moveUp(Map map, int x, int y, int direction, bool isRandomMovement)
+        public void moveUp(Level level, int x, int y, int direction, bool isRandomMovement)
         {
             Cell cellAbove = map.GetCell(x, y - 1);
             if (cellAbove.IsWalkable)
@@ -151,7 +150,7 @@ namespace Dungeon_Crawler
             }
             else
             {
-                if (fixedPosition.Y > cellAbove.Y * cellSize + cellSize + getHeight() / 2)
+                if (fixedPosition.Y > cellAbove.Y * level.cellSize + level.cellSize + getHeight() / 2)
                     Velocity.Y = -Speed;
                 else if (isRandomMovement)
                 {
@@ -160,7 +159,7 @@ namespace Dungeon_Crawler
             }
         }
 
-        public void moveDown(Map map, int x, int y, int direction, bool isRandomMovement)
+        public void moveDown(Level level, int x, int y, int direction, bool isRandomMovement)
         {
             Cell cellBelow = map.GetCell(x, y + 1);
             if (cellBelow.IsWalkable)
@@ -169,7 +168,7 @@ namespace Dungeon_Crawler
             }
             else
             {
-                if (fixedPosition.Y + 4 < cellBelow.Y * cellSize)
+                if (fixedPosition.Y + 4 < cellBelow.Y * level.cellSize)
                     Velocity.Y = +Speed;
                 else if (isRandomMovement)
                 {
@@ -178,7 +177,7 @@ namespace Dungeon_Crawler
             }
         }
 
-        public void moveLeft(Map map, int x, int y, int direction, bool isRandomMovement)
+        public void moveLeft(Level level, int x, int y, int direction, bool isRandomMovement)
         {
             Cell cellOnLeft = map.GetCell(x - 1, y);
             if (cellOnLeft.IsWalkable)
@@ -187,7 +186,7 @@ namespace Dungeon_Crawler
             }
             else
             {
-                if (fixedPosition.X > cellOnLeft.X * cellSize + cellSize + getWidth() / 2)
+                if (fixedPosition.X > cellOnLeft.X * level.cellSize + level.cellSize + getWidth() / 2)
                     Velocity.X = -Speed;
                 else if (isRandomMovement)
                 {
@@ -196,7 +195,7 @@ namespace Dungeon_Crawler
             }
         }
 
-        public void moveRight(Map map, int x, int y, int direction, bool isRandomMovement)
+        public void moveRight(Level level, int x, int y, int direction, bool isRandomMovement)
         {
             Cell cellOnRight = map.GetCell(x + 1, y);
             if (cellOnRight.IsWalkable)
@@ -205,7 +204,7 @@ namespace Dungeon_Crawler
             }
             else
             {
-                if (fixedPosition.X + getWidth() / 2 < cellOnRight.X * cellSize)
+                if (fixedPosition.X + getWidth() / 2 < cellOnRight.X * level.cellSize)
                     Velocity.X = +Speed;
                 else if (isRandomMovement)
                 {
@@ -270,8 +269,8 @@ namespace Dungeon_Crawler
             if (Math.Abs(this.Position.X - level.player.Position.X) < Global.Camera.ViewportWidth && Math.Abs(this.Position.Y - level.player.Position.Y) < Global.Camera.ViewportHeight)
             {
 
-                x = (int)Math.Floor(fixedPosition.X / cellSize);
-                y = (int)Math.Floor(fixedPosition.Y / cellSize);
+                x = (int)Math.Floor(fixedPosition.X / level.cellSize);
+                y = (int)Math.Floor(fixedPosition.Y / level.cellSize);
 
                 if (IsHitByProjectile(level, graphicsDevice))
                 {

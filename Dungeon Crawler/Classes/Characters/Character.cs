@@ -12,7 +12,6 @@ namespace Dungeon_Crawler
         public int Damage { get; set; }
         public int Health { get; set; }
         public string Name { get; set; }
-        public int cellSize;
 
         public AnimationManager _animationManager;
         protected Dictionary<String, Animation> _animations;

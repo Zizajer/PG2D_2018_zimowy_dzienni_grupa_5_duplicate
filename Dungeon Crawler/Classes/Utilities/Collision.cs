@@ -7,50 +7,87 @@ namespace Dungeon_Crawler
 {
     public static class Collision
     {
-        public static bool isInBounds(Character character, Level level)
+        public static bool isCharacterInBounds(Character character, Level level)
         {
-            Cell playerCell;
-            int x, y;
-
-            //check most common scenario first
-            x = (int)Math.Floor(character.Position.X / character.cellSize);
-            y = (int)Math.Floor(character.Position.Y / character.cellSize);
-            playerCell = level.map.GetCell(x, y);
-            Microsoft.Xna.Framework.Rectangle cellRectangle = new Microsoft.Xna.Framework.Rectangle(playerCell.X * character.cellSize, playerCell.Y * character.cellSize, character.cellSize, character.cellSize);
-            Microsoft.Xna.Framework.Rectangle playerRectangle = character.getRectangle();
-
-            if (cellRectangle.Contains(playerRectangle) && playerCell.IsWalkable)
+            //most common scenario first to optimise calculations
+            if (isWholeCharacterInBounds(character, level))
                 return true;
 
-            //check if topleft corner is in walkable cell
-            x = (int)Math.Floor(character.Position.X / character.cellSize);
-            y = (int)Math.Floor(character.Position.Y / character.cellSize);
-            playerCell = level.map.GetCell(x, y);
-            if (!playerCell.IsWalkable)
+            Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+            //if not we check every corner
+            if (!isTopLeftCornerInBounds(characterRectangle, level))
                 return false;
-            //check if bottomright corner is in walkable cell
-            x = (int)Math.Floor((character.Position.X + character.getWidth()) / character.cellSize);
-            y = (int)Math.Floor((character.Position.Y + character.getHeight()) / character.cellSize);
-            playerCell = level.map.GetCell(x, y);
-            if (!playerCell.IsWalkable)
+            if (!isTopRightCornerInBounds(characterRectangle, level))
                 return false;
-            //check if topright corner is in walkable cell
-            x = (int)Math.Floor((character.Position.X + character.getWidth()) / character.cellSize);
-            y = (int)Math.Floor(character.Position.Y / character.cellSize);
-            playerCell = level.map.GetCell(x, y);
-            if (!playerCell.IsWalkable)
+            if (!isBottomLeftCornerInBounds(characterRectangle, level))
                 return false;
-            //check if bottomleft corner is in walkable cell
-            x = (int)Math.Floor(character.Position.X / character.cellSize);
-            y = (int)Math.Floor((character.Position.Y + character.getHeight()) / character.cellSize);
-            playerCell = level.map.GetCell(x, y);
-            if (!playerCell.IsWalkable)
+            if (!isBottomRightCornerInBounds(characterRectangle, level))
                 return false;
 
+            //all corners are in bounds so we good
             return true;
         }
 
-        public static void getInBounds(Character character, Level level)
+        public static bool isWholeCharacterInBounds(Character character, Level level)
+        {
+            int x = (int)Math.Floor(character.Position.X / level.cellSize);
+            int y = (int)Math.Floor(character.Position.Y / level.cellSize);
+            Cell characterCell = level.map.GetCell(x, y);
+            Microsoft.Xna.Framework.Rectangle cellRectangle = new Microsoft.Xna.Framework.Rectangle(characterCell.X * level.cellSize, characterCell.Y * level.cellSize, level.cellSize, level.cellSize);
+            Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+
+            if (cellRectangle.Contains(characterRectangle) && characterCell.IsWalkable)
+                return true;
+            else
+                return false;
+        }
+
+        public static bool isTopLeftCornerInBounds(Microsoft.Xna.Framework.Rectangle characterRectangle, Level level)
+        {
+            int x = characterRectangle.Left / level.cellSize;
+            int y = characterRectangle.Top / level.cellSize;
+            Cell characterCell = level.map.GetCell(x, y);
+            if (characterCell.IsWalkable)
+                return true;
+            else
+                return false;
+        }
+
+        public static bool isTopRightCornerInBounds(Microsoft.Xna.Framework.Rectangle characterRectangle, Level level)
+        {
+
+            int x = characterRectangle.Right / level.cellSize;
+            int y = characterRectangle.Top / level.cellSize;
+            Cell characterCell = level.map.GetCell(x, y);
+            if (characterCell.IsWalkable)
+                return true;
+            else
+                return false;
+        }
+
+        public static bool isBottomLeftCornerInBounds(Microsoft.Xna.Framework.Rectangle characterRectangle, Level level)
+        {
+            int x = characterRectangle.Left/ level.cellSize;
+            int y = characterRectangle.Bottom / level.cellSize;
+            Cell characterCell = level.map.GetCell(x, y);
+            if (characterCell.IsWalkable)
+                return true;
+            else
+                return false;
+        }
+
+        public static bool isBottomRightCornerInBounds(Microsoft.Xna.Framework.Rectangle characterRectangle, Level level)
+        {
+            int x = characterRectangle.Right / level.cellSize;
+            int y = characterRectangle.Bottom / level.cellSize;
+            Cell characterCell = level.map.GetCell(x, y);
+            if (characterCell.IsWalkable)
+                return true;
+            else
+                return false;
+        }
+
+        public static void getCharacterInBounds(Character character, Level level)
         {
             Vector2 originalPosition = character.Position;
 
@@ -58,25 +95,25 @@ namespace Dungeon_Crawler
             {
                 //top
                 character._position.Y -= i;
-                if (isInBounds(character, level))
+                if (isCharacterInBounds(character, level))
                     return;
                 else
                     character.Position = originalPosition;
                 //bottom
                 character._position.Y += i;
-                if (isInBounds(character, level))
+                if (isCharacterInBounds(character, level))
                     return;
                 else
                     character.Position = originalPosition;
                 //left
                 character._position.X -= i;
-                if (isInBounds(character, level))
+                if (isCharacterInBounds(character, level))
                     return;
                 else
                     character.Position = originalPosition;
                 //right
                 character._position.X += i;
-                if (isInBounds(character, level))
+                if (isCharacterInBounds(character, level))
                     return;
                 else
                     character.Position = originalPosition;
@@ -84,28 +121,28 @@ namespace Dungeon_Crawler
                 //topleft
                 character._position.Y -= i;
                 character._position.X -= i;
-                if (isInBounds(character, level))
+                if (isCharacterInBounds(character, level))
                     return;
                 else
                     character.Position = originalPosition;
                 //topright
                 character._position.Y -= i;
                 character._position.X += i;
-                if (isInBounds(character, level))
+                if (isCharacterInBounds(character, level))
                     return;
                 else
                     character.Position = originalPosition;
                 //bottomleft
                 character._position.Y += i;
                 character._position.X -= i;
-                if (isInBounds(character, level))
+                if (isCharacterInBounds(character, level))
                     return;
                 else
                     character.Position = originalPosition;
                 //bottomright
                 character._position.Y += i;
                 character._position.X += i;
-                if (isInBounds(character, level))
+                if (isCharacterInBounds(character, level))
                     return;
                 else
                     character.Position = originalPosition;
@@ -113,9 +150,129 @@ namespace Dungeon_Crawler
             }
         }
 
-        public static bool checkCollisionInGivenDirection(int currentDirection,float speed, Level level)
+        public static bool checkCollisionInGivenDirection(int currentDirection,Character character, Level level)
         {
-            throw new NotImplementedException();
+            if (currentDirection == (int)Character.Directions.None)
+                return true;
+            if (currentDirection == (int)Character.Directions.Up)
+            {
+                Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+                characterRectangle.Y -= (int)character.Speed;
+                if (isTopLeftCornerInBounds(characterRectangle, level) && isTopRightCornerInBounds(characterRectangle, level))
+                    return false;
+                else
+                    return true;
+            }
+                
+            if (currentDirection == (int)Character.Directions.Down)
+            {
+                Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+                characterRectangle.Y += (int)character.Speed;
+                if (isBottomLeftCornerInBounds(characterRectangle, level) && isBottomRightCornerInBounds(characterRectangle, level))
+                    return false;
+                else
+                    return true;
+            }
+
+            if (currentDirection == (int)Character.Directions.Left)
+            {
+                Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+                characterRectangle.X -= (int)character.Speed;
+                if (isTopLeftCornerInBounds(characterRectangle, level) && isBottomLeftCornerInBounds(characterRectangle, level))
+                    return false;
+                else
+                    return true;
+            }
+ 
+            if (currentDirection == (int)Character.Directions.Right)
+            {
+                Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+                characterRectangle.X += (int)character.Speed;
+                if (isTopRightCornerInBounds(characterRectangle, level) && isBottomRightCornerInBounds(characterRectangle, level))
+                    return false;
+                else
+                    return true;
+            }
+
+            if (currentDirection == (int)Character.Directions.TopLeft)
+            {
+                Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+                characterRectangle.Y -= (int)character.Speed;
+                characterRectangle.X -= (int)character.Speed;
+
+                if (isTopLeftCornerInBounds(characterRectangle, level) && isBottomLeftCornerInBounds(characterRectangle, level) && isTopRightCornerInBounds(characterRectangle, level))
+                    return false;
+                else
+                    return true;
+            }
+
+            if (currentDirection == (int)Character.Directions.TopRight)
+            {
+                Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+                characterRectangle.Y -= (int)character.Speed;
+                characterRectangle.X += (int)character.Speed;
+
+                if (isTopRightCornerInBounds(characterRectangle, level) && isTopLeftCornerInBounds(characterRectangle, level) && isBottomRightCornerInBounds(characterRectangle, level))
+                    return false;
+                else
+                    return true;
+            }
+
+            if (currentDirection == (int)Character.Directions.BottomLeft)
+            {
+                Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+                characterRectangle.Y += (int)character.Speed;
+                characterRectangle.X -= (int)character.Speed;
+
+                if (isBottomLeftCornerInBounds(characterRectangle, level) && isTopLeftCornerInBounds(characterRectangle, level) && isBottomRightCornerInBounds(characterRectangle, level))
+                    return false;
+                else
+                    return true;
+            }
+            if (currentDirection == (int)Character.Directions.BottomRight)
+            {
+                Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+                characterRectangle.Y += (int)character.Speed;
+                characterRectangle.X += (int)character.Speed;
+
+                if (isBottomRightCornerInBounds(characterRectangle, level) && isBottomLeftCornerInBounds(characterRectangle, level) && isTopRightCornerInBounds(characterRectangle, level))
+                    return false;
+                else
+                    return true;
+            }
+            return false;
+        }
+
+        public static bool isColliding(Character character, Level level, GraphicsDevice graphicsDevice)
+        {
+            if (!checkCollision(character, level.player, graphicsDevice))
+            {
+                bool collision = false;
+                foreach (Enemy enemy in level.enemies)
+                {
+                    if (enemy.Equals(character)) continue;
+                    if ((Math.Abs(character.fixedPosition.X - enemy.fixedPosition.X) < character.getWidth() * 2) && (Math.Abs(character.fixedPosition.Y - enemy.fixedPosition.Y) < character.getWidth()))
+                    {
+                        if (checkCollision(character, enemy, graphicsDevice))
+                            collision = true;
+                    }
+
+                }
+                foreach (Obstacle obstacle in level.obstacles)
+                {
+                    if ((Math.Abs(character.Position.X - obstacle.Position.X) < character.getWidth() + obstacle.Texture.Width) && (Math.Abs(character.Position.Y - obstacle.Position.Y) < character.getHeight() + obstacle.Texture.Height))
+                    {
+                        if (checkCollision(character, obstacle, graphicsDevice))
+                            collision = true;
+                    }
+                }
+                if (!collision)
+                    return true;
+                else
+                    return false;
+            }
+            else
+                return false;
         }
 
         public static bool checkCollision(Character character1, Character character2, GraphicsDevice graphicsDevice)
