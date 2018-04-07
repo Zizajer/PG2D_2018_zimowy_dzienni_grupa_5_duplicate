@@ -70,7 +70,7 @@ namespace Dungeon_Crawler
                     Vector2 mousePos = Global.Camera.ScreenToWorld(mouse.X, mouse.Y);
                     x = (int)Math.Floor(mousePos.X / cellSize);
                     y = (int)Math.Floor(mousePos.Y / cellSize);
-                   // if (level.map.GetCell(x, y).IsWalkable && !level.occupiedCells.Contains(level.map.GetCell(x, y)))
+                    if (level.map.GetCell(x, y).IsWalkable && !level.occupiedCells.Contains(level.map.GetCell(x, y)))
                     {
                         Vector2 tempVector = new Vector2(mousePos.X, mousePos.Y);
                         Position = tempVector;
@@ -125,7 +125,7 @@ namespace Dungeon_Crawler
             int currentDirection = GetDirection();
             if (currentDirection != (int)Directions.None)
             {
-                if (Collision.checkCollisionInGivenDirection(currentDirection, Speed, level))
+                //if (Collision.checkCollisionInGivenDirection(currentDirection, Speed, level))
                 {
                     Move(currentDirection, Speed, level, graphicsDevice);
                     level.map.ComputeFov(x, y, 15, true);
@@ -143,7 +143,40 @@ namespace Dungeon_Crawler
 
         private void Move(int currentDirection, float speed, Level level, GraphicsDevice graphicsDevice)
         {
-            throw new NotImplementedException();
+            if (currentDirection == (int)Directions.Up)
+                Velocity.Y = -Speed;
+
+            if (currentDirection == (int)Directions.Down)
+                Velocity.Y = +Speed;
+
+            if (currentDirection == (int)Directions.Left)
+                Velocity.X = -Speed;
+
+            if (currentDirection == (int)Directions.Right)
+                Velocity.X = +Speed;
+
+            if (currentDirection == (int)Directions.TopLeft)
+            {
+                Velocity.X = -Speed;
+                Velocity.Y = -Speed;
+            }
+
+            if (currentDirection == (int)Directions.TopRight)
+            {
+                Velocity.X = +Speed;
+                Velocity.Y = -Speed;
+            }
+
+            if (currentDirection == (int)Directions.BottomLeft)
+            {
+                Velocity.X = -Speed;
+                Velocity.Y = +Speed;
+            }
+            if (currentDirection == (int)Directions.BottomRight)
+            {
+                Velocity.X = +Speed;
+                Velocity.Y = +Speed;
+            }
         }
 
 
