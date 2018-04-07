@@ -8,7 +8,7 @@ namespace Dungeon_Crawler
 {
     public class Character
     {
-        public enum Directions { None, Up, Down, Left, Right, TopLeft, TopRight, BottomLeft, BottomRight};
+        public enum Directions { None, Top, Bottom, Left, Right, TopLeft, TopRight, BottomLeft, BottomRight};
         public int Damage { get; set; }
         public int Health { get; set; }
         public string Name { get; set; }

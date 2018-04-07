@@ -28,7 +28,7 @@ namespace Dungeon_Crawler
                 {"WalkLeft",new Animation(content.Load<Texture2D>("player/WalkingLeft"),3 )},
                 {"WalkRight",new Animation(content.Load<Texture2D>("player/WalkingRight"),3 )}
             };
-            Speed = 5.5f;
+            Speed = 1f;
             Mana = 100;
             CurrentLevel = playerCurrentLevel;
             inventory = new List<Item>();
@@ -98,10 +98,10 @@ namespace Dungeon_Crawler
                 return (int)Directions.BottomRight;
 
             if (Keyboard.GetState().IsKeyDown(Keys.W))
-                return (int)Directions.Up;
+                return (int)Directions.Top;
 
             if (Keyboard.GetState().IsKeyDown(Keys.S))
-                return (int)Directions.Down;
+                return (int)Directions.Bottom;
 
             if (Keyboard.GetState().IsKeyDown(Keys.A))
                 return (int)Directions.Left;
@@ -130,6 +130,16 @@ namespace Dungeon_Crawler
                     level.map.ComputeFov(x, y, 15, true);
                     Global.Camera.CenterOn(fixedPosition);
                 }
+                else
+                {//this allows sliding when one of diagonal directions is blocked eg. cant go topleft but can go left
+                    if (currentDirection == (int)Directions.TopLeft || currentDirection == (int)Directions.TopRight || currentDirection == (int)Directions.BottomLeft || currentDirection == (int)Directions.BottomRight)
+                    {
+                        int fixedDriection = Collision.checkIfOneOfDirectionsIsOk(currentDirection, this, level);
+                        Move(fixedDriection, Speed, level, graphicsDevice);
+                        level.map.ComputeFov(x, y, 15, true);
+                        Global.Camera.CenterOn(fixedPosition);
+                    }
+                }
             }
 
             Fireball(level);
@@ -142,10 +152,10 @@ namespace Dungeon_Crawler
 
         private void Move(int currentDirection, float speed, Level level, GraphicsDevice graphicsDevice)
         {
-            if (currentDirection == (int)Directions.Up)
+            if (currentDirection == (int)Directions.Top)
                 Velocity.Y = -Speed;
 
-            if (currentDirection == (int)Directions.Down)
+            if (currentDirection == (int)Directions.Bottom)
                 Velocity.Y = +Speed;
 
             if (currentDirection == (int)Directions.Left)
@@ -177,7 +187,6 @@ namespace Dungeon_Crawler
                 Velocity.Y = +Speed;
             }
         }
-
 
         public string getItems()
         {

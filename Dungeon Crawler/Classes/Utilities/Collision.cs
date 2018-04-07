@@ -150,11 +150,67 @@ namespace Dungeon_Crawler
             }
         }
 
+        public static int checkIfOneOfDirectionsIsOk(int currentDirection, Character character, Level level)
+        {
+            if (currentDirection == (int)Character.Directions.TopLeft)
+            {
+                int top = (int)Character.Directions.Top;
+                int left = (int)Character.Directions.Left;
+                checkCollisionInGivenDirection(top, character, level);
+                if (!checkCollisionInGivenDirection(top, character, level))
+                    return top;
+                else if (!checkCollisionInGivenDirection(left, character, level))
+                    return left;
+                else
+                    return 0;
+            }
+
+            if (currentDirection == (int)Character.Directions.TopRight)
+            {
+                int top = (int)Character.Directions.Top;
+                int right = (int)Character.Directions.Right;
+                checkCollisionInGivenDirection(top, character, level);
+                if (!checkCollisionInGivenDirection(top, character, level))
+                    return top;
+                else if (!checkCollisionInGivenDirection(right, character, level))
+                    return right;
+                else
+                    return (int)Character.Directions.None;
+            }
+
+            if (currentDirection == (int)Character.Directions.BottomLeft)
+            {
+                int bottom = (int)Character.Directions.Bottom;
+                int left = (int)Character.Directions.Left;
+                checkCollisionInGivenDirection(bottom, character, level);
+                if (!checkCollisionInGivenDirection(bottom, character, level))
+                    return bottom;
+                else if (!checkCollisionInGivenDirection(left, character, level))
+                    return left;
+                else
+                    return (int)Character.Directions.None;
+            }
+
+            if (currentDirection == (int)Character.Directions.BottomRight)
+            {
+                int bottom = (int)Character.Directions.Bottom;
+                int right = (int)Character.Directions.Right;
+                checkCollisionInGivenDirection(bottom, character, level);
+                if (!checkCollisionInGivenDirection(bottom, character, level))
+                    return bottom;
+                else if (!checkCollisionInGivenDirection(right, character, level))
+                    return right;
+                else
+                    return (int)Character.Directions.None;
+            }
+            return (int)Character.Directions.None;
+        }
+
         public static bool checkCollisionInGivenDirection(int currentDirection,Character character, Level level)
         {
             if (currentDirection == (int)Character.Directions.None)
                 return true;
-            if (currentDirection == (int)Character.Directions.Up)
+            if (currentDirection == (int)Character.Directions.Top)
             {
                 Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.Y -= (int)character.Speed;
@@ -164,7 +220,7 @@ namespace Dungeon_Crawler
                     return true;
             }
                 
-            if (currentDirection == (int)Character.Directions.Down)
+            if (currentDirection == (int)Character.Directions.Bottom)
             {
                 Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.Y += (int)character.Speed;
