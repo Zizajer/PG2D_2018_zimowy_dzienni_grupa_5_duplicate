@@ -28,7 +28,7 @@ namespace Dungeon_Crawler
                 {"WalkLeft",new Animation(content.Load<Texture2D>("player/WalkingLeft"),3 )},
                 {"WalkRight",new Animation(content.Load<Texture2D>("player/WalkingRight"),3 )}
             };
-            Speed = 1f;
+            Speed = 2.5f;
             Mana = 100;
             CurrentLevel = playerCurrentLevel;
             inventory = new List<Item>();
@@ -117,7 +117,6 @@ namespace Dungeon_Crawler
             if (Mana < 100) Mana = Mana + 0.15f;
             if (!Collision.isCharacterInBounds(this,level))
             {
-                Console.WriteLine("player not in bounds");
                 Collision.getCharacterInBounds(this,level);
             }
             
@@ -126,18 +125,25 @@ namespace Dungeon_Crawler
             {
                 if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level))
                 {
-                    Move(currentDirection, Speed, level, graphicsDevice);
-                    level.map.ComputeFov(x, y, 15, true);
-                    Global.Camera.CenterOn(fixedPosition);
-                }
-                else
-                {//this allows sliding when one of diagonal directions is blocked eg. cant go topleft but can go left
-                    if (currentDirection == (int)Directions.TopLeft || currentDirection == (int)Directions.TopRight || currentDirection == (int)Directions.BottomLeft || currentDirection == (int)Directions.BottomRight)
+                    if (!Collision.isCollidingWithEverythingElse(currentDirection, this, level, graphicsDevice))
                     {
-                        int fixedDriection = Collision.checkIfOneOfDirectionsIsOk(currentDirection, this, level);
-                        Move(fixedDriection, Speed, level, graphicsDevice);
+                        Move(currentDirection, Speed, level, graphicsDevice);
                         level.map.ComputeFov(x, y, 15, true);
                         Global.Camera.CenterOn(fixedPosition);
+                    }
+                }
+                else
+                {
+                    //this allows sliding when one of diagonal directions is blocked eg. cant go topleft but can go left
+                    if (currentDirection == (int)Directions.TopLeft || currentDirection == (int)Directions.TopRight || currentDirection == (int)Directions.BottomLeft || currentDirection == (int)Directions.BottomRight)
+                    {
+                        int fixedDirection = Collision.checkIfOneOfDirectionsIsOk(currentDirection, this, level);
+                        if (!Collision.isCollidingWithEverythingElse(fixedDirection, this, level, graphicsDevice))
+                        {
+                            Move(fixedDirection, Speed, level, graphicsDevice);
+                            level.map.ComputeFov(x, y, 15, true);
+                            Global.Camera.CenterOn(fixedPosition);
+                        }
                     }
                 }
             }

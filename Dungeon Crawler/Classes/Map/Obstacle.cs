@@ -16,6 +16,10 @@ namespace Dungeon_Crawler
                new Color[Texture.Width * Texture.Height];
             Texture.GetData(TextureData);
         }
+        public Vector2 Origin
+        {
+            get { return new Vector2(Position.X + Texture.Width / 2, Position.Y + Texture.Height / 2); }
+        }
         public Rectangle getRectangle()
         {
             return new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);

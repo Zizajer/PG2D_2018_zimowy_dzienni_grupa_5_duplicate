@@ -156,20 +156,20 @@ namespace Dungeon_Crawler
             {
                 int top = (int)Character.Directions.Top;
                 int left = (int)Character.Directions.Left;
-                checkCollisionInGivenDirection(top, character, level);
+
                 if (!checkCollisionInGivenDirection(top, character, level))
                     return top;
                 else if (!checkCollisionInGivenDirection(left, character, level))
                     return left;
                 else
-                    return 0;
+                    return (int)Character.Directions.None;
             }
 
             if (currentDirection == (int)Character.Directions.TopRight)
             {
                 int top = (int)Character.Directions.Top;
                 int right = (int)Character.Directions.Right;
-                checkCollisionInGivenDirection(top, character, level);
+
                 if (!checkCollisionInGivenDirection(top, character, level))
                     return top;
                 else if (!checkCollisionInGivenDirection(right, character, level))
@@ -182,7 +182,7 @@ namespace Dungeon_Crawler
             {
                 int bottom = (int)Character.Directions.Bottom;
                 int left = (int)Character.Directions.Left;
-                checkCollisionInGivenDirection(bottom, character, level);
+
                 if (!checkCollisionInGivenDirection(bottom, character, level))
                     return bottom;
                 else if (!checkCollisionInGivenDirection(left, character, level))
@@ -195,7 +195,7 @@ namespace Dungeon_Crawler
             {
                 int bottom = (int)Character.Directions.Bottom;
                 int right = (int)Character.Directions.Right;
-                checkCollisionInGivenDirection(bottom, character, level);
+
                 if (!checkCollisionInGivenDirection(bottom, character, level))
                     return bottom;
                 else if (!checkCollisionInGivenDirection(right, character, level))
@@ -208,8 +208,6 @@ namespace Dungeon_Crawler
 
         public static bool checkCollisionInGivenDirection(int currentDirection,Character character, Level level)
         {
-            if (currentDirection == (int)Character.Directions.None)
-                return true;
             if (currentDirection == (int)Character.Directions.Top)
             {
                 Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
@@ -299,37 +297,36 @@ namespace Dungeon_Crawler
             return false;
         }
 
-        public static bool isColliding(Character character, Level level, GraphicsDevice graphicsDevice)
+        public static bool isCollidingWithEverythingElse(int currentDirection, Character character, Level level, GraphicsDevice graphicsDevice)
         {
-            if (!checkCollision(character, level.player, graphicsDevice))
+            if (character.GetType() != typeof(Player))
             {
-                bool collision = false;
-                foreach (Enemy enemy in level.enemies)
-                {
-                    if (enemy.Equals(character)) continue;
-                    if ((Math.Abs(character.fixedPosition.X - enemy.fixedPosition.X) < character.getWidth() * 2) && (Math.Abs(character.fixedPosition.Y - enemy.fixedPosition.Y) < character.getWidth()))
-                    {
-                        if (checkCollision(character, enemy, graphicsDevice))
-                            collision = true;
-                    }
-
-                }
-                foreach (Obstacle obstacle in level.obstacles)
-                {
-                    if ((Math.Abs(character.Position.X - obstacle.Position.X) < character.getWidth() + obstacle.Texture.Width) && (Math.Abs(character.Position.Y - obstacle.Position.Y) < character.getHeight() + obstacle.Texture.Height))
-                    {
-                        if (checkCollision(character, obstacle, graphicsDevice))
-                            collision = true;
-                    }
-                }
-                if (!collision)
-                    return true;
-                else
-                    return false;
+                if (Vector2.Distance(character.Origin, level.player.Origin) < level.cellSize)
+                        if (checkCollision(character, level.player, graphicsDevice))
+                            return true;
             }
-            else
-                return false;
+
+            foreach (Enemy enemy in level.enemies)
+            {
+                if (enemy.Equals(character)) continue;
+                if (Vector2.Distance(character.Origin,enemy.Origin) < level.cellSize)
+                {
+                    if (checkCollision(character, enemy, graphicsDevice))
+                        return true;
+                }
+
+            }
+            foreach (Obstacle obstacle in level.obstacles)
+            {
+                if (Vector2.Distance(character.Origin, obstacle.Origin) < level.cellSize)
+                {
+                    if (checkCollision(character, obstacle, graphicsDevice))
+                        return true;
+                }
+            }
+            return false;
         }
+
 
         public static bool checkCollision(Character character1, Character character2, GraphicsDevice graphicsDevice)
         {
@@ -342,7 +339,7 @@ namespace Dungeon_Crawler
 
             if (character1Rectangle.Intersects(character2Rectangle))
             {
-                if (Collision.IntersectPixels(character1Rectangle, character1TextureData,
+                if (IntersectPixels(character1Rectangle, character1TextureData,
                                     character2Rectangle, character2TextureData))
                 {
                     return true;
@@ -362,7 +359,7 @@ namespace Dungeon_Crawler
 
             if (characterRectangle.Intersects(obstacleRectangle))
             {
-                if (Collision.IntersectPixels(characterRectangle, characterTextureData,
+                if (IntersectPixels(characterRectangle, characterTextureData,
                                     obstacleRectangle, obstacle.TextureData))
                 {
                     return true;
@@ -382,7 +379,7 @@ namespace Dungeon_Crawler
 
             if (characterRectangle.Intersects(projectileRectangle))
             {
-                if (Collision.IntersectPixels(characterRectangle, characterTextureData,
+                if (IntersectPixels(characterRectangle, characterTextureData,
                                     projectileRectangle, projectile.TextureData))
                 {
                     return true;
