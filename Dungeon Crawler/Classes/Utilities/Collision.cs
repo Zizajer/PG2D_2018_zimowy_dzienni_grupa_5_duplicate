@@ -87,11 +87,21 @@ namespace Dungeon_Crawler
                 return false;
         }
 
-        public static void Unstuck(Character character, Level level)
+        public static int isStuck(Character character, Level level, GraphicsDevice graphicsDevice)
+        {
+            for (int i = 1; i < 9; i++)
+            {
+                if (!checkCollisionInGivenDirection(i, character, level, graphicsDevice))
+                    return i;
+            }
+            return 0;
+        }
+
+        public static void unStuck(Character character, Level level, GraphicsDevice graphicsDevice)
         {
             Vector2 originalPosition = character.Position;
 
-            for(int i = 1; i < 100; i++)
+            for(int i = 1; i < 20; i++)
             {
                 //top
                 character._position.Y -= i;

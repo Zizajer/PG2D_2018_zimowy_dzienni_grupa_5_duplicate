@@ -28,7 +28,7 @@ namespace Dungeon_Crawler
                 {"WalkLeft",new Animation(content.Load<Texture2D>("player/WalkingLeft"),3 )},
                 {"WalkRight",new Animation(content.Load<Texture2D>("player/WalkingRight"),3 )}
             };
-            Speed = 9.5f;
+            Speed = 4f;
             Mana = 100;
             CurrentLevel = playerCurrentLevel;
             inventory = new List<Item>();
@@ -114,11 +114,14 @@ namespace Dungeon_Crawler
 
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
-            CurrentCell = level.map.GetCell((int)Math.Floor(Origin.X / level.cellSize), (int)Math.Floor(Origin.Y / level.cellSize));
+            x = (int)Math.Floor(Origin.X / level.cellSize);
+            y = (int)Math.Floor(Origin.Y / level.cellSize);
+            CurrentCell = level.map.GetCell(x, y);
+
             if (Mana < 100) Mana = Mana + 0.95f; //0.15
             if (!Collision.isCharacterInBounds(this, level))
             {
-                Collision.Unstuck(this, level);
+                Collision.unStuck(this, level, graphicsDevice);
             }
             
             int currentDirection = GetDirection();

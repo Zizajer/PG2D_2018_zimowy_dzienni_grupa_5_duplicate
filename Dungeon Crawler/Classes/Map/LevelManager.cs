@@ -167,7 +167,7 @@ namespace Dungeon_Crawler
                 float speed = (Global.random.Next(2) + 1) / 0.7f;
                 float timeBetweenActions = (Global.random.Next(2)) + 1 / 0.7f;
                 Enemy tempEnemy =
-                    new Enemy(_animations, cellSize, speed, timeBetweenActions)
+                    new Enemy(_animations, cellSize, speed, timeBetweenActions, map)
                     {
                         Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
                     };

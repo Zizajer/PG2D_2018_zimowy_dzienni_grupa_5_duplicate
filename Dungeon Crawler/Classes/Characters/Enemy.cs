@@ -12,8 +12,6 @@ namespace Dungeon_Crawler
         public int x { get; set; }
         public int y { get; set; }
 
-        Map map;
-
         int currentDirection;
         //Random movement vars
         float actionTimer;
@@ -21,10 +19,11 @@ namespace Dungeon_Crawler
 
         //Pathfinding vars
         PathFinder PathFinder;
-        Cell CurrentCell;
+        Path path;
         Cell NextCell;
+        Map map;
 
-        public Enemy(Dictionary<string, Animation> _animations, int cellSize, float speed, float timeBetweenActions)
+        public Enemy(Dictionary<string, Animation> _animations, int cellSize, float speed, float timeBetweenActions,Map map)
         {
             Health = 100;
             this._animations = _animations;
@@ -33,6 +32,11 @@ namespace Dungeon_Crawler
             _animationManager = new AnimationManager(_animations.First().Value);
             actionTimer = 0;
             currentDirection= Global.random.Next(4) + 1;
+            this.map = map;
+            PathFinder = new PathFinder(map);
+            x = (int)Math.Floor(Origin.X / cellSize);
+            y = (int)Math.Floor(Origin.Y / cellSize);
+            CurrentCell = map.GetCell(x, y);
         }
 
         public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
@@ -50,37 +54,66 @@ namespace Dungeon_Crawler
             return false;
         }
 
+        //Bounces character off the object in clockwise direction (if not clockwise, will try to bounce off another enemy by moving either left or right when direction is up/down
+        //or either up or down when direction is left/right
+        public int BounceOffObject(int direction, Boolean clockwise)
+        {
+            if (clockwise)
+            {
+                if (direction == 1)
+                {
+                    return 4;
+                }
+                else if (direction == 2)
+                {
+                    return 3;
+                }
+                else if (direction == 3)
+                {
+                    return 1;
+                }
+                else return 2;
+            }
+            else
+            {
+                if (direction == 1 || direction == 2)
+                {
+                    return Global.random.Next(1) + 3;
+                }
+                else
+                {
+                    return Global.random.Next(1) + 1;
+                }
+            }
+        }
+
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
-            CurrentCell = level.map.GetCell((int)Math.Floor(Origin.X / level.cellSize), (int)Math.Floor(Origin.Y / level.cellSize));
+            if (map != level.map)
+            {
+                PathFinder = new PathFinder(level.map);
+            }
+
+            x = (int)Math.Floor(Origin.X / level.cellSize);
+            y = (int)Math.Floor(Origin.Y / level.cellSize);
+            CurrentCell = level.map.GetCell(x, y);
+            //Console.WriteLine("{0} {1}", x, y);
 
             actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (IsHitByProjectile(level, graphicsDevice))
             {
-                this.Health = 0;
+                Health = 0;
             }
-            
-            if (!Collision.isCharacterInBounds(this, level))
-            {
-                Collision.Unstuck(this, level);
-            }
-            
 
             if (actionTimer > timeBetweenActions)
             {
                 currentDirection = Global.random.Next(4) + 1;
                 actionTimer = 0;
             }
-                
-            if (map != level.map)
-            {
-                PathFinder = new PathFinder(level.map);
-            }
-            map = level.map;
 
             // Random movement when player is not in enemies fov
-            if (!map.IsInFov(x, y))
+            if (!map.IsInFov(x, y) && Vector2.Distance(Origin, level.player.Origin) > 3* level.cellSize)
             {
                 if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
                 {
@@ -97,41 +130,82 @@ namespace Dungeon_Crawler
             }
             else
             {
-                if (CurrentCell.X == NextCell.X && CurrentCell.Y == NextCell.Y)
+                if (Vector2.Distance(Origin, level.player.Origin) > level.cellSize*2/3)
                 {
-                    if (CurrentCell.X != level.player.CurrentCell.X || CurrentCell.Y != level.player.CurrentCell.Y)
+                    //move
+                    if (Vector2.Distance(Origin, level.player.Origin) > 2* level.cellSize)
                     {
-                        Path path;
-                        try
-                        {
-                            path = PathFinder.ShortestPath(level.map.GetCell(CurrentCell.X, CurrentCell.Y), level.map.GetCell(level.player.CurrentCell.X, level.player.CurrentCell.Y));
-                        }
-                        catch (PathNotFoundException)
-                        {
-                            if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
-                            {
-                                Move(currentDirection, Speed, level, graphicsDevice);
-                            }
-                            else
-                            {
-                                currentDirection = Opposite(currentDirection);
-                                if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
-                                {
-                                    Move(currentDirection, Speed, level, graphicsDevice);
-                                }
-                            }
-                        }
-                        NextCell = path.StepForward();
-                        CellToReach = path.Start;
+                        //Console.WriteLine("Moving using algorithm");
 
+                        if (x != level.player.x || y != level.player.y)
+                        {
+                            if (NextCell == null || x == NextCell.X && y == NextCell.Y)
+                            {
+                                try
+                                {
+                                    //path = PathFinder.ShortestPath(CurrentCell, level.player.CurrentCell);
+                                    path = PathFinder.ShortestPath(level.map.GetCell(x, y), level.map.GetCell(level.player.x, level.player.y));
+                                }
+                                catch (PathNotFoundException)
+                                {
+                                }
+                            
+                                if (path.Length > 1)
+                                    NextCell = path.Start;
+                                else
+                                    NextCell = level.player.CurrentCell;
+                            }
+                            
+                            if (NextCell.Y < y)
+                                if (!Collision.checkCollisionInGivenDirection(1, this, level, graphicsDevice))
+                                    Move(1, Speed, level, graphicsDevice);
+
+                            if (NextCell.Y > y)
+                                if (!Collision.checkCollisionInGivenDirection(2, this, level, graphicsDevice))
+                                    Move(2, Speed, level, graphicsDevice);
+                            
+                            if (NextCell.X < x)
+                                if (!Collision.checkCollisionInGivenDirection(3, this, level, graphicsDevice))
+                                    Move(3, Speed, level, graphicsDevice);
+
+                            if (NextCell.X > x)
+                                if (!Collision.checkCollisionInGivenDirection(4, this, level, graphicsDevice))
+                                    Move(4, Speed, level, graphicsDevice);
+                            
+                        }
                     }
+                    else
+                    {
+                        //Console.WriteLine("Moving in cell");
+                        if (level.player.Origin.Y < Origin.Y)
+                        {
+                            if (!Collision.checkCollisionInGivenDirection(1, this, level, graphicsDevice))
+                                Move(1, Speed, level, graphicsDevice);
+                        }
+                        if (level.player.Origin.Y > Origin.Y)
+                        {
+                            if (!Collision.checkCollisionInGivenDirection(2, this, level, graphicsDevice))
+                                Move(2, Speed, level, graphicsDevice);
+                        }
+                        if (level.player.Origin.X < Origin.X)
+                        {
+                            if (!Collision.checkCollisionInGivenDirection(3, this, level, graphicsDevice))
+                                Move(3, Speed, level, graphicsDevice);
+                        }
+                        if (level.player.Origin.X > Origin.X)
+                        {
+                            if (!Collision.checkCollisionInGivenDirection(4, this, level, graphicsDevice))
+                                Move(4, Speed, level, graphicsDevice);
+                        }
+                    }
+                        
                 }
                 else
                 {
-                    //attack
+                    Console.WriteLine("Attacking"); 
                 }
-                
             }
+            
 
             SetAnimations();
             _animationManager.Update(gameTime);
