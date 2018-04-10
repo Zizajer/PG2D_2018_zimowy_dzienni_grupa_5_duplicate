@@ -47,8 +47,8 @@ namespace Dungeon_Crawler
                     float distanceY = mousePos.Y - this.Position.Y;
 
                     rotation = (float)Math.Atan2(distanceY, distanceX);
-                    Vector2 tempVelocity = new Vector2((float)Math.Cos(rotation) * 3f, ((float)Math.Sin(rotation)) * 5f);
-                    Vector2 tempPosition = this.Origin + tempVelocity * 3;
+                    Vector2 tempVelocity = new Vector2((float)Math.Cos(rotation) * 3f, ((float)Math.Sin(rotation)) * 5f) +Velocity/3;
+                    Vector2 tempPosition = Origin + tempVelocity * 3;
 
                     Projectile newProjectile = new Projectile(tempVelocity, tempPosition, level.fireball, rotation);
 
@@ -74,7 +74,7 @@ namespace Dungeon_Crawler
                         Vector2 tempVector = new Vector2(mousePos.X, mousePos.Y);
                         Position = tempVector;
                         Mana = Mana - 10;
-                        Global.Camera.CenterOn(fixedPosition);
+                        Global.Camera.CenterOn(Origin);
                     }
                 }
             }
@@ -131,7 +131,7 @@ namespace Dungeon_Crawler
                 {
                     Move(currentDirection, Speed, level, graphicsDevice);
                     level.map.ComputeFov(x, y, 15, true);
-                    Global.Camera.CenterOn(fixedPosition);
+                    Global.Camera.CenterOn(Origin);
                 }
                 else
                 {
@@ -143,7 +143,7 @@ namespace Dungeon_Crawler
                         {
                             Move(fixedDirection, Speed, level, graphicsDevice);
                             level.map.ComputeFov(x, y, 15, true);
-                            Global.Camera.CenterOn(fixedPosition);
+                            Global.Camera.CenterOn(Origin);
                         }
                     }
                 }

@@ -7,7 +7,6 @@ namespace Dungeon_Crawler
     {
         public Portal(Vector2 pos, Texture2D tex) : base(pos, tex)
         {
-
         }
 
     }

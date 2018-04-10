@@ -169,7 +169,7 @@ namespace Dungeon_Crawler
                 Enemy tempEnemy =
                     new Enemy(_animations, cellSize, speed, timeBetweenActions, map)
                     {
-                        Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
+                        Position = new Vector2((randomCell.X * cellSize + cellSize /3), (randomCell.Y * cellSize) + cellSize /3)
                     };
                 enemies.Add(tempEnemy);
             }

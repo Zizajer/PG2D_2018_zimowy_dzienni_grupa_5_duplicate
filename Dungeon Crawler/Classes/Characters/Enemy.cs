@@ -9,6 +9,7 @@ namespace Dungeon_Crawler
 {
     public class Enemy : Character
     {
+        public enum State { RandomMovement, CenterMovement, MovingToAnotherCell, Attacking };
         public int x { get; set; }
         public int y { get; set; }
 
@@ -22,6 +23,8 @@ namespace Dungeon_Crawler
         Path path;
         Cell NextCell;
         Map map;
+
+        State currentState;
 
         public Enemy(Dictionary<string, Animation> _animations, int cellSize, float speed, float timeBetweenActions,Map map)
         {
@@ -37,6 +40,7 @@ namespace Dungeon_Crawler
             x = (int)Math.Floor(Origin.X / cellSize);
             y = (int)Math.Floor(Origin.Y / cellSize);
             CurrentCell = map.GetCell(x, y);
+            currentState = State.CenterMovement;
         }
 
         public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
@@ -96,8 +100,6 @@ namespace Dungeon_Crawler
 
             x = (int)Math.Floor(Origin.X / level.cellSize);
             y = (int)Math.Floor(Origin.Y / level.cellSize);
-            CurrentCell = level.map.GetCell(x, y);
-            //Console.WriteLine("{0} {1}", x, y);
 
             actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -112,105 +114,182 @@ namespace Dungeon_Crawler
                 actionTimer = 0;
             }
 
-            // Random movement when player is not in enemies fov
-            if (!map.IsInFov(x, y) && Vector2.Distance(Origin, level.player.Origin) > 3* level.cellSize)
+            if (currentState == State.RandomMovement)
             {
-                if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
+                Console.WriteLine("RandomMovement");
+            }
+            else if (currentState == State.CenterMovement)
+            {
+                if (isCenter(level, graphicsDevice))
                 {
-                    Move(currentDirection, Speed, level, graphicsDevice);
+                    currentState = State.MovingToAnotherCell;
                 }
                 else
                 {
-                    currentDirection = Opposite(currentDirection);
-                    if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
-                    {
-                        Move(currentDirection, Speed, level, graphicsDevice);
-                    }
+                    MoveToCenter(level, graphicsDevice);
                 }
+                
             }
-            else
+            else if (currentState == State.MovingToAnotherCell)
             {
-                if (Vector2.Distance(Origin, level.player.Origin) > level.cellSize*2/3)
+                if (Vector2.Distance(Origin, level.player.Origin) > level.cellSize * 2 / 3)
                 {
-                    //move
-                    if (Vector2.Distance(Origin, level.player.Origin) > 2* level.cellSize)
-                    {
-                        //Console.WriteLine("Moving using algorithm");
+                    MoveToNextCell(level, graphicsDevice);
+                    int newx = (int)Math.Floor((Origin.X + Velocity.X) / level.cellSize);
+                    int newy = (int)Math.Floor((Origin.Y + Velocity.Y) / level.cellSize);
 
-                        if (x != level.player.x || y != level.player.y)
-                        {
-                            if (NextCell == null || x == NextCell.X && y == NextCell.Y)
-                            {
-                                try
-                                {
-                                    //path = PathFinder.ShortestPath(CurrentCell, level.player.CurrentCell);
-                                    path = PathFinder.ShortestPath(level.map.GetCell(x, y), level.map.GetCell(level.player.x, level.player.y));
-                                }
-                                catch (PathNotFoundException)
-                                {
-                                }
-                            
-                                if (path.Length > 1)
-                                    NextCell = path.Start;
-                                else
-                                    NextCell = level.player.CurrentCell;
-                            }
-                            
-                            if (NextCell.Y < y)
-                                if (!Collision.checkCollisionInGivenDirection(1, this, level, graphicsDevice))
-                                    Move(1, Speed, level, graphicsDevice);
-
-                            if (NextCell.Y > y)
-                                if (!Collision.checkCollisionInGivenDirection(2, this, level, graphicsDevice))
-                                    Move(2, Speed, level, graphicsDevice);
-                            
-                            if (NextCell.X < x)
-                                if (!Collision.checkCollisionInGivenDirection(3, this, level, graphicsDevice))
-                                    Move(3, Speed, level, graphicsDevice);
-
-                            if (NextCell.X > x)
-                                if (!Collision.checkCollisionInGivenDirection(4, this, level, graphicsDevice))
-                                    Move(4, Speed, level, graphicsDevice);
-                            
-                        }
-                    }
-                    else
-                    {
-                        //Console.WriteLine("Moving in cell");
-                        if (level.player.Origin.Y < Origin.Y)
-                        {
-                            if (!Collision.checkCollisionInGivenDirection(1, this, level, graphicsDevice))
-                                Move(1, Speed, level, graphicsDevice);
-                        }
-                        if (level.player.Origin.Y > Origin.Y)
-                        {
-                            if (!Collision.checkCollisionInGivenDirection(2, this, level, graphicsDevice))
-                                Move(2, Speed, level, graphicsDevice);
-                        }
-                        if (level.player.Origin.X < Origin.X)
-                        {
-                            if (!Collision.checkCollisionInGivenDirection(3, this, level, graphicsDevice))
-                                Move(3, Speed, level, graphicsDevice);
-                        }
-                        if (level.player.Origin.X > Origin.X)
-                        {
-                            if (!Collision.checkCollisionInGivenDirection(4, this, level, graphicsDevice))
-                                Move(4, Speed, level, graphicsDevice);
-                        }
-                    }
+                    if (newx != x || newy != y)
+                        currentState = State.CenterMovement;
                         
                 }
                 else
                 {
-                    Console.WriteLine("Attacking"); 
+                    currentState = State.Attacking;
+                }
+
+            }
+            else if (currentState == State.Attacking)
+            {
+                if (Vector2.Distance(Origin, level.player.Origin) > level.cellSize * 2/3)
+                {
+                    currentState = State.MovingToAnotherCell;
+                }
+                else
+                {
+                    //attack
                 }
             }
+            else
+            {
+                Console.WriteLine("Error");
+            }          
             
-
             SetAnimations();
             _animationManager.Update(gameTime);
             Position += Velocity;
             Velocity = Vector2.Zero;
+        }
+
+        private void MoveToNextCell(Level level, GraphicsDevice graphicsDevice)
+        {
+            if (x != level.player.x || y != level.player.y)
+            {
+                if (NextCell == null || x == NextCell.X && y == NextCell.Y)
+                {
+                    try
+                    {
+                        path = PathFinder.ShortestPath(level.map.GetCell(x, y), level.map.GetCell(level.player.x, level.player.y));
+                    }
+                    catch (PathNotFoundException)
+                    {
+                        currentState = State.RandomMovement;
+                    }
+
+                    if (path.Length > 1)
+                        NextCell = path.Start;
+                    else
+                        NextCell = level.player.CurrentCell;
+                }
+                
+                if (NextCell.Y < y)
+                {
+                    currentDirection = 1;
+                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
+                    return;
+                }
+                    
+
+                if (NextCell.Y > y)
+                {
+                    currentDirection = 2;
+                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
+                    return;
+                }
+                    
+
+                if (NextCell.X < x)
+                {
+                    currentDirection = 3;
+                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
+                    return;
+                }
+                    
+
+                if (NextCell.X > x)
+                {
+                    currentDirection = 4;
+                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
+                    return;
+                }
+                    
+            }
+
+        }
+
+        private void CollisionAvoidingMove(int currentDirection, float speed, Level level, GraphicsDevice graphicsDevice)
+        {
+            Microsoft.Xna.Framework.Rectangle characterRectangle = getRectangle();
+            if (currentDirection == (int)Character.Directions.Top)
+                characterRectangle.Y -= (int)speed;
+            if (currentDirection == (int)Character.Directions.Bottom)
+                characterRectangle.Y += (int)speed;
+            if (currentDirection == (int)Character.Directions.Left)
+                characterRectangle.X -= (int)speed;
+            if (currentDirection == (int)Character.Directions.Right)
+                characterRectangle.X += (int)speed;
+
+
+            if (!Collision.isCollidingWithObstacles(characterRectangle, this, level, graphicsDevice))
+                if (!Collision.isCollidingWithPlayer(characterRectangle, this, level, graphicsDevice))
+                    Move(currentDirection, Speed, level, graphicsDevice);
+          
+        }
+
+        private bool isCenter(Level level, GraphicsDevice graphicsDevice)
+        {
+            int PosX = x * level.cellSize + level.cellSize / 2;
+            int PosY = y * level.cellSize + level.cellSize / 2;
+
+            if (Math.Abs(Origin.Y - PosY) <= Speed && Math.Abs(Origin.X - PosX) <= Speed)
+                return true;
+            else
+                return false;
+        }
+
+        private void MoveToCenter(Level level, GraphicsDevice graphicsDevice)
+        {
+            int PosX = x * level.cellSize + level.cellSize / 2;
+            int PosY = y * level.cellSize + level.cellSize / 2;
+
+            if (Math.Abs(Origin.Y - PosY) > Speed)
+            {
+                if (Origin.Y >= y * level.cellSize + level.cellSize / 2)
+                {
+                    currentDirection = 1;
+                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
+                }
+                else
+                {
+                    currentDirection = 2;
+                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
+                }
+                    
+            }
+
+            if (Math.Abs(Origin.X - PosX) > Speed)
+            {
+                if (Origin.X >= x * level.cellSize + level.cellSize / 2)
+                {
+                    currentDirection = 3;
+                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
+                }
+                else
+                {
+                    currentDirection = 4;
+                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
+                }
+                    
+            }
         }
 
         private int Opposite(int currentDirection)

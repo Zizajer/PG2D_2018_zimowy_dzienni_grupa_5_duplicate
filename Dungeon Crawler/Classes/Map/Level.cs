@@ -46,6 +46,7 @@ namespace Dungeon_Crawler
         public void addPlayer(Player player)
         {
             this.player = player;
+            Global.Camera.CenterOn(player.Origin);
         }
         public void Update(GameTime gameTime, GraphicsDevice graphicsDevice)
         {

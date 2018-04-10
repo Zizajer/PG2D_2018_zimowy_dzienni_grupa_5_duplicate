@@ -12,17 +12,19 @@ namespace Dungeon_Crawler
         public Vector2 Origin {
             get
             {
-                Rectangle rec = new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
-                return new Vector2(rec.Width / 2, rec.Height / 2);
+                return new Vector2(getRectangle().Width / 2, getRectangle().Height / 2);
             }
-            set { }
+        }
+        public Vector2 Origin2
+        {
+            get { return new Vector2(Position.X + Texture.Width / 2, Position.Y + Texture.Height / 2); }
         }
         public float rotation;
         public bool isEnemyHit = false;
         public bool isMarkedToDelete = false;
         private float ProjectileTimer;
         private readonly float VanishDelay = 0.25f;
-
+        int x, y;
         public Color[] TextureData { get; }
         public Projectile(Vector2 vel, Vector2 pos, Texture2D tex,float rot)
         {
@@ -45,8 +47,21 @@ namespace Dungeon_Crawler
         }
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
-            this.Position += this.Velocity;
+            Position += Velocity;
             //Vanish projectile when out of player's fov.
+            if (!(Math.Abs(this.Position.X - level.player.Position.X) < Global.Camera.ViewportWidth && Math.Abs(this.Position.Y - level.player.Position.Y) < Global.Camera.ViewportHeight))
+            {
+                isMarkedToDelete = true;
+            }
+            //destroy when hit a wall
+            x = (int)Math.Floor(Position.X / level.cellSize);
+            y = (int)Math.Floor(Position.Y / level.cellSize);
+            if (!level.map.GetCell(x, y).IsWalkable)
+                isMarkedToDelete = true;
+
+            if (Collision.isCollidingWithObstacles(this, level, graphicsDevice))
+                isMarkedToDelete = true;
+
             if (!(Math.Abs(this.Position.X - level.player.Position.X) < Global.Camera.ViewportWidth && Math.Abs(this.Position.Y - level.player.Position.Y) < Global.Camera.ViewportHeight))
             {
                 isMarkedToDelete = true;
