@@ -13,7 +13,7 @@ namespace Dungeon_Crawler
         public int x { get; set; }
         public int y { get; set; }
 
-        int currentDirection;
+        Directions currentDirection;
         //Random movement vars
         float actionTimer;
         float timeBetweenActions;
@@ -34,7 +34,7 @@ namespace Dungeon_Crawler
             Speed = speed;
             _animationManager = new AnimationManager(_animations.First().Value);
             actionTimer = 0;
-            currentDirection= Global.random.Next(4) + 1;
+            currentDirection= (Directions)Global.random.Next(4) + 1;
             this.map = map;
             PathFinder = new PathFinder(map);
             x = (int)Math.Floor(Origin.X / cellSize);
@@ -58,39 +58,6 @@ namespace Dungeon_Crawler
             return false;
         }
 
-        //Bounces character off the object in clockwise direction (if not clockwise, will try to bounce off another enemy by moving either left or right when direction is up/down
-        //or either up or down when direction is left/right
-        public int BounceOffObject(int direction, Boolean clockwise)
-        {
-            if (clockwise)
-            {
-                if (direction == 1)
-                {
-                    return 4;
-                }
-                else if (direction == 2)
-                {
-                    return 3;
-                }
-                else if (direction == 3)
-                {
-                    return 1;
-                }
-                else return 2;
-            }
-            else
-            {
-                if (direction == 1 || direction == 2)
-                {
-                    return Global.random.Next(1) + 3;
-                }
-                else
-                {
-                    return Global.random.Next(1) + 1;
-                }
-            }
-        }
-
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
             if (map != level.map)
@@ -108,15 +75,37 @@ namespace Dungeon_Crawler
                 Health = 0;
             }
 
-            if (actionTimer > timeBetweenActions)
-            {
-                currentDirection = Global.random.Next(4) + 1;
-                actionTimer = 0;
-            }
-
             if (currentState == State.RandomMovement)
             {
-                Console.WriteLine("RandomMovement");
+                if (!map.IsInFov(x, y))
+                {
+                    if (actionTimer > timeBetweenActions)
+                    {
+                        actionTimer = 0;
+                        currentDirection = (Directions)Global.random.Next(3) + 1;
+                    }
+                    else
+                    {
+                        if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
+                            Move(currentDirection, Speed, level, graphicsDevice);
+                        else
+                        {
+                            currentDirection = Opposite(currentDirection);
+                            if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
+                                Move(currentDirection, Speed, level, graphicsDevice);
+                        }
+                        int newx = (int)Math.Floor((Origin.X + Velocity.X) / level.cellSize);
+                        int newy = (int)Math.Floor((Origin.Y + Velocity.Y) / level.cellSize);
+
+                        if (newx != x || newy != y)
+                            currentState = State.CenterMovement;
+                    }
+                }
+                else
+                {
+                    currentState = State.MovingToAnotherCell;
+                }
+                   
             }
             else if (currentState == State.CenterMovement)
             {
@@ -132,20 +121,28 @@ namespace Dungeon_Crawler
             }
             else if (currentState == State.MovingToAnotherCell)
             {
-                if (Vector2.Distance(Origin, level.player.Origin) > level.cellSize * 2 / 3)
+                if (map.IsInFov(x, y))
                 {
-                    MoveToNextCell(level, graphicsDevice);
-                    int newx = (int)Math.Floor((Origin.X + Velocity.X) / level.cellSize);
-                    int newy = (int)Math.Floor((Origin.Y + Velocity.Y) / level.cellSize);
+                    if (Vector2.Distance(Origin, level.player.Origin) > level.cellSize * 2 / 3)
+                    {
+                        MoveToNextCell(level, graphicsDevice);
+                        int newx = (int)Math.Floor((Origin.X + Velocity.X) / level.cellSize);
+                        int newy = (int)Math.Floor((Origin.Y + Velocity.Y) / level.cellSize);
 
-                    if (newx != x || newy != y)
-                        currentState = State.CenterMovement;
-                        
+                        if (newx != x || newy != y)
+                            currentState = State.CenterMovement;
+
+                    }
+                    else
+                    {
+                        currentState = State.Attacking;
+                    }
                 }
                 else
                 {
-                    currentState = State.Attacking;
+                    currentState = State.RandomMovement;
                 }
+                    
 
             }
             else if (currentState == State.Attacking)
@@ -159,6 +156,7 @@ namespace Dungeon_Crawler
                     //attack
                 }
             }
+
             else
             {
                 Console.WriteLine("Error");
@@ -184,65 +182,66 @@ namespace Dungeon_Crawler
                     {
                         currentState = State.RandomMovement;
                     }
+                    catch (ArgumentNullException)
+                    {
+                        //next line should take care of that but just in case lets catch it
+                    }
 
+                    //this fixes Exception thrown by ShorthestPath method, not sure why (that method even throws it)
                     if (path.Length > 1)
                         NextCell = path.Start;
                     else
                         NextCell = level.player.CurrentCell;
                 }
-                
                 if (NextCell.Y < y)
                 {
-                    currentDirection = 1;
+                    currentDirection = Directions.Top;
                     CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
                     return;
-                }
-                    
-
+                } 
                 if (NextCell.Y > y)
                 {
-                    currentDirection = 2;
+                    currentDirection = Directions.Bottom;
                     CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
                     return;
                 }
-                    
-
                 if (NextCell.X < x)
                 {
-                    currentDirection = 3;
+                    currentDirection = Directions.Left;
                     CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
                     return;
                 }
-                    
-
                 if (NextCell.X > x)
                 {
-                    currentDirection = 4;
+                    currentDirection = Directions.Right;
                     CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
                     return;
-                }
-                    
+                }        
             }
-
         }
 
-        private void CollisionAvoidingMove(int currentDirection, float speed, Level level, GraphicsDevice graphicsDevice)
+        private void CollisionAvoidingMove(Directions currentDirection, float speed, Level level, GraphicsDevice graphicsDevice)
         {
             Microsoft.Xna.Framework.Rectangle characterRectangle = getRectangle();
-            if (currentDirection == (int)Character.Directions.Top)
+            if (currentDirection == Directions.Top)
                 characterRectangle.Y -= (int)speed;
-            if (currentDirection == (int)Character.Directions.Bottom)
+            if (currentDirection == Directions.Bottom)
                 characterRectangle.Y += (int)speed;
-            if (currentDirection == (int)Character.Directions.Left)
+            if (currentDirection == Directions.Left)
                 characterRectangle.X -= (int)speed;
-            if (currentDirection == (int)Character.Directions.Right)
+            if (currentDirection == Directions.Right)
                 characterRectangle.X += (int)speed;
 
 
             if (!Collision.isCollidingWithObstacles(characterRectangle, this, level, graphicsDevice))
+            {
                 if (!Collision.isCollidingWithPlayer(characterRectangle, this, level, graphicsDevice))
-                    Move(currentDirection, Speed, level, graphicsDevice);
-          
+                        Move(currentDirection, Speed, level, graphicsDevice);
+            }
+            else
+            {
+                //avoiding rocks logic
+            }
         }
 
         private bool isCenter(Level level, GraphicsDevice graphicsDevice)
@@ -265,12 +264,12 @@ namespace Dungeon_Crawler
             {
                 if (Origin.Y >= y * level.cellSize + level.cellSize / 2)
                 {
-                    currentDirection = 1;
+                    currentDirection = Directions.Top;
                     CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
                 }
                 else
                 {
-                    currentDirection = 2;
+                    currentDirection = Directions.Bottom;
                     CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
                 }
                     
@@ -280,68 +279,100 @@ namespace Dungeon_Crawler
             {
                 if (Origin.X >= x * level.cellSize + level.cellSize / 2)
                 {
-                    currentDirection = 3;
+                    currentDirection = Directions.Left;
                     CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
                 }
                 else
                 {
-                    currentDirection = 4;
+                    currentDirection = Directions.Right;
                     CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
                 }
                     
             }
         }
-
-        private int Opposite(int currentDirection)
+        //Bounces character off the object in clockwise direction (if not clockwise, will try to bounce off another enemy by moving either left or right when direction is up/down
+        //or either up or down when direction is left/right
+        public Directions BounceOffObject(Directions direction, Boolean clockwise)
         {
-            if (currentDirection == 1)
+            if (clockwise)
             {
-                return 2;
+                if (direction == Directions.Top)
+                {
+                    return Directions.Right;
+                }
+                else if (direction == Directions.Bottom)
+                {
+                    return Directions.Left;
+                }
+                else if (direction == Directions.Left)
+                {
+                    return Directions.Top;
+                }
+                else return Directions.Bottom;
             }
-            else if (currentDirection == 2)
+            else
             {
-                return 1;
+                if (direction == Directions.Top || direction == Directions.Bottom)
+                {
+                    return (Directions)Global.random.Next(1) + 3;
+                }
+                else
+                {
+                    return (Directions)Global.random.Next(1) + 1;
+                }
             }
-            else if (currentDirection == 3)
-            {
-                return 4;
-            }
-            else return 3;
         }
 
-        private void Move(int currentDirection, float speed, Level level, GraphicsDevice graphicsDevice)
+        private Directions Opposite(Directions currentDirection)
         {
-            if (currentDirection == (int)Directions.Top)
+            if (currentDirection == Directions.Top)
+            {
+                return Directions.Bottom;
+            }
+            else if (currentDirection == Directions.Bottom)
+            {
+                return Directions.Top;
+            }
+            else if (currentDirection == Directions.Left)
+            {
+                return Directions.Right;
+            }
+            else return Directions.Left;
+        }
+
+        private void Move(Directions currentDirection, float speed, Level level, GraphicsDevice graphicsDevice)
+        {
+            if (currentDirection == Directions.Top)
                 Velocity.Y = -Speed;
 
-            if (currentDirection == (int)Directions.Bottom)
+            if (currentDirection == Directions.Bottom)
                 Velocity.Y = +Speed;
 
-            if (currentDirection == (int)Directions.Left)
+            if (currentDirection == Directions.Left)
                 Velocity.X = -Speed;
 
-            if (currentDirection == (int)Directions.Right)
+            if (currentDirection == Directions.Right)
                 Velocity.X = +Speed;
 
-            if (currentDirection == (int)Directions.TopLeft)
+            if (currentDirection == Directions.TopLeft)
             {
                 Velocity.X = -Speed;
                 Velocity.Y = -Speed;
             }
 
-            if (currentDirection == (int)Directions.TopRight)
+            if (currentDirection == Directions.TopRight)
             {
                 Velocity.X = +Speed;
                 Velocity.Y = -Speed;
             }
 
-            if (currentDirection == (int)Directions.BottomLeft)
+            if (currentDirection == Directions.BottomLeft)
             {
                 Velocity.X = -Speed;
                 Velocity.Y = +Speed;
             }
 
-            if (currentDirection == (int)Directions.BottomRight)
+            if (currentDirection == Directions.BottomRight)
             {
                 Velocity.X = +Speed;
                 Velocity.Y = +Speed;

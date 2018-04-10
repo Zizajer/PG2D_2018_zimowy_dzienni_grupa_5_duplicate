@@ -200,6 +200,7 @@ namespace Dungeon_Crawler
                 levels[player.CurrentLevel].addPlayer(player);
                 Vector2 newPlayerPosition = levels[player.CurrentLevel].GetRandomEmptyCell();
                 player.Position = newPlayerPosition;
+                Global.Camera.CenterOn(player.Origin);
             }
         }
 

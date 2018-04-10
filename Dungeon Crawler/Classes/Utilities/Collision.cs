@@ -87,16 +87,6 @@ namespace Dungeon_Crawler
                 return false;
         }
 
-        public static int isStuck(Character character, Level level, GraphicsDevice graphicsDevice)
-        {
-            for (int i = 1; i < 9; i++)
-            {
-                if (!checkCollisionInGivenDirection(i, character, level, graphicsDevice))
-                    return i;
-            }
-            return 0;
-        }
-
         public static void unStuck(Character character, Level level, GraphicsDevice graphicsDevice)
         {
             Vector2 originalPosition = character.Position;
@@ -160,65 +150,65 @@ namespace Dungeon_Crawler
             }
         }
 
-        public static int checkIfOneOfDirectionsIsOk(int currentDirection, Character character, Level level, GraphicsDevice graphicsDevice)
+        public static Character.Directions checkIfOneOfDirectionsIsOk(Character.Directions currentDirection, Character character, Level level, GraphicsDevice graphicsDevice)
         {
-            if (currentDirection == (int)Character.Directions.TopLeft)
+            if (currentDirection == Character.Directions.TopLeft)
             {
-                int top = (int)Character.Directions.Top;
-                int left = (int)Character.Directions.Left;
+                Character.Directions top = Character.Directions.Top;
+                Character.Directions left = Character.Directions.Left;
 
                 if (!checkCollisionInGivenDirection(top, character, level, graphicsDevice))
                     return top;
                 else if (!checkCollisionInGivenDirection(left, character, level, graphicsDevice))
                     return left;
                 else
-                    return (int)Character.Directions.None;
+                    return Character.Directions.None;
             }
 
-            if (currentDirection == (int)Character.Directions.TopRight)
+            if (currentDirection == Character.Directions.TopRight)
             {
-                int top = (int)Character.Directions.Top;
-                int right = (int)Character.Directions.Right;
+                Character.Directions top = Character.Directions.Top;
+                Character.Directions right = Character.Directions.Right;
 
                 if (!checkCollisionInGivenDirection(top, character, level, graphicsDevice))
                     return top;
                 else if (!checkCollisionInGivenDirection(right, character, level, graphicsDevice))
                     return right;
                 else
-                    return (int)Character.Directions.None;
+                    return Character.Directions.None;
             }
 
-            if (currentDirection == (int)Character.Directions.BottomLeft)
+            if (currentDirection == Character.Directions.BottomLeft)
             {
-                int bottom = (int)Character.Directions.Bottom;
-                int left = (int)Character.Directions.Left;
+                Character.Directions bottom = Character.Directions.Bottom;
+                Character.Directions left = Character.Directions.Left;
 
                 if (!checkCollisionInGivenDirection(bottom, character, level, graphicsDevice))
                     return bottom;
                 else if (!checkCollisionInGivenDirection(left, character, level, graphicsDevice))
                     return left;
                 else
-                    return (int)Character.Directions.None;
+                    return Character.Directions.None;
             }
 
-            if (currentDirection == (int)Character.Directions.BottomRight)
+            if (currentDirection == Character.Directions.BottomRight)
             {
-                int bottom = (int)Character.Directions.Bottom;
-                int right = (int)Character.Directions.Right;
+                Character.Directions bottom = Character.Directions.Bottom;
+                Character.Directions right = Character.Directions.Right;
 
                 if (!checkCollisionInGivenDirection(bottom, character, level, graphicsDevice))
                     return bottom;
                 else if (!checkCollisionInGivenDirection(right, character, level, graphicsDevice))
                     return right;
                 else
-                    return (int)Character.Directions.None;
+                    return Character.Directions.None;
             }
-            return (int)Character.Directions.None;
+            return Character.Directions.None;
         }
 
-        public static bool checkCollisionInGivenDirection(int currentDirection,Character character, Level level, GraphicsDevice graphicsDevice)
+        public static bool checkCollisionInGivenDirection(Character.Directions currentDirection,Character character, Level level, GraphicsDevice graphicsDevice)
         {
-            if (currentDirection == (int)Character.Directions.Top)
+            if (currentDirection == Character.Directions.Top)
             {
                 Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.Y -= (int)character.Speed;
@@ -232,7 +222,7 @@ namespace Dungeon_Crawler
                     return true;
             }
                 
-            if (currentDirection == (int)Character.Directions.Bottom)
+            if (currentDirection == Character.Directions.Bottom)
             {
                 Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.Y += (int)character.Speed;
@@ -245,7 +235,7 @@ namespace Dungeon_Crawler
                     return true;
             }
 
-            if (currentDirection == (int)Character.Directions.Left)
+            if (currentDirection == Character.Directions.Left)
             {
                 Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.X -= (int)character.Speed;
@@ -258,7 +248,7 @@ namespace Dungeon_Crawler
                     return true;
             }
  
-            if (currentDirection == (int)Character.Directions.Right)
+            if (currentDirection == Character.Directions.Right)
             {
                 Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.X += (int)character.Speed;
@@ -271,7 +261,7 @@ namespace Dungeon_Crawler
                     return true;
             }
 
-            if (currentDirection == (int)Character.Directions.TopLeft)
+            if (currentDirection == Character.Directions.TopLeft)
             {
                 Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.Y -= (int)character.Speed;
@@ -286,7 +276,7 @@ namespace Dungeon_Crawler
                     return true;
             }
 
-            if (currentDirection == (int)Character.Directions.TopRight)
+            if (currentDirection == Character.Directions.TopRight)
             {
                 Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.Y -= (int)character.Speed;
@@ -301,7 +291,7 @@ namespace Dungeon_Crawler
                     return true;
             }
 
-            if (currentDirection == (int)Character.Directions.BottomLeft)
+            if (currentDirection == Character.Directions.BottomLeft)
             {
                 Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.Y += (int)character.Speed;
@@ -315,7 +305,7 @@ namespace Dungeon_Crawler
                 else
                     return true;
             }
-            if (currentDirection == (int)Character.Directions.BottomRight)
+            if (currentDirection == Character.Directions.BottomRight)
             {
                 Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.Y += (int)character.Speed;
@@ -383,6 +373,7 @@ namespace Dungeon_Crawler
             }
             return false;
         }
+
 
         public static bool isCollidingWithObstacles(Projectile projectile, Level level, GraphicsDevice graphicsDevice)
         {

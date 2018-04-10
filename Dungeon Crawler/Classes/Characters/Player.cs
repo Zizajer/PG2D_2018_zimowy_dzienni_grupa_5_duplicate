@@ -18,6 +18,7 @@ namespace Dungeon_Crawler
         KeyboardState pastKey;
         public int x;
         public int y;
+        Directions currentDirection;
         public Player(ContentManager content, int cellSize, int playerCurrentLevel)
         {
             Health = 100;
@@ -80,36 +81,36 @@ namespace Dungeon_Crawler
             }
         }
 
-        public virtual int GetDirection()
+        public virtual Directions GetDirection()
         {
             if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.S) || Keyboard.GetState().IsKeyDown(Keys.A) && Keyboard.GetState().IsKeyDown(Keys.D))
-                return (int)Directions.None;
+                return Directions.None;
 
             if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.A))
-                return (int)Directions.TopLeft;
+                return Directions.TopLeft;
 
             if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.D))
-                return (int)Directions.TopRight;
+                return Directions.TopRight;
 
             if (Keyboard.GetState().IsKeyDown(Keys.S) && Keyboard.GetState().IsKeyDown(Keys.A))
-                return (int)Directions.BottomLeft;
+                return Directions.BottomLeft;
 
             if (Keyboard.GetState().IsKeyDown(Keys.S) && Keyboard.GetState().IsKeyDown(Keys.D))
-                return (int)Directions.BottomRight;
+                return Directions.BottomRight;
 
             if (Keyboard.GetState().IsKeyDown(Keys.W))
-                return (int)Directions.Top;
+                return Directions.Top;
 
             if (Keyboard.GetState().IsKeyDown(Keys.S))
-                return (int)Directions.Bottom;
+                return Directions.Bottom;
 
             if (Keyboard.GetState().IsKeyDown(Keys.A))
-                return (int)Directions.Left;
+                return Directions.Left;
 
             if (Keyboard.GetState().IsKeyDown(Keys.D))
-                return (int)Directions.Right;
+                return Directions.Right;
 
-            return (int)Directions.None;
+            return Directions.None;
         }
 
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
@@ -124,7 +125,7 @@ namespace Dungeon_Crawler
                 Collision.unStuck(this, level, graphicsDevice);
             }
             
-            int currentDirection = GetDirection();
+            currentDirection = GetDirection();
             if (currentDirection != (int)Directions.None)
             {
                 if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
@@ -136,9 +137,9 @@ namespace Dungeon_Crawler
                 else
                 {
                     //this allows sliding when one of diagonal directions is blocked eg. cant go topleft but can go left
-                    if (currentDirection == (int)Directions.TopLeft || currentDirection == (int)Directions.TopRight || currentDirection == (int)Directions.BottomLeft || currentDirection == (int)Directions.BottomRight)
+                    if (currentDirection == Directions.TopLeft || currentDirection == Directions.TopRight || currentDirection == Directions.BottomLeft || currentDirection == Directions.BottomRight)
                     {
-                        int fixedDirection = Collision.checkIfOneOfDirectionsIsOk(currentDirection, this, level, graphicsDevice);
+                        Directions fixedDirection = Collision.checkIfOneOfDirectionsIsOk(currentDirection, this, level, graphicsDevice);
                         if (!Collision.checkCollisionInGivenDirection(fixedDirection, this, level, graphicsDevice))
                         {
                             Move(fixedDirection, Speed, level, graphicsDevice);
@@ -157,39 +158,39 @@ namespace Dungeon_Crawler
             Velocity = Vector2.Zero;
         }
 
-        private void Move(int currentDirection, float speed, Level level, GraphicsDevice graphicsDevice)
+        private void Move(Directions currentDirection, float speed, Level level, GraphicsDevice graphicsDevice)
         {
-            if (currentDirection == (int)Directions.Top)
+            if (currentDirection == Directions.Top)
                 Velocity.Y = -Speed;
 
-            if (currentDirection == (int)Directions.Bottom)
+            if (currentDirection == Directions.Bottom)
                 Velocity.Y = +Speed;
 
-            if (currentDirection == (int)Directions.Left)
+            if (currentDirection == Directions.Left)
                 Velocity.X = -Speed;
 
-            if (currentDirection == (int)Directions.Right)
+            if (currentDirection == Directions.Right)
                 Velocity.X = +Speed;
 
-            if (currentDirection == (int)Directions.TopLeft)
+            if (currentDirection == Directions.TopLeft)
             {
                 Velocity.X = -Speed;
                 Velocity.Y = -Speed;
             }
 
-            if (currentDirection == (int)Directions.TopRight)
+            if (currentDirection == Directions.TopRight)
             {
                 Velocity.X = +Speed;
                 Velocity.Y = -Speed;
             }
 
-            if (currentDirection == (int)Directions.BottomLeft)
+            if (currentDirection == Directions.BottomLeft)
             {
                 Velocity.X = -Speed;
                 Velocity.Y = +Speed;
             }
 
-            if (currentDirection == (int)Directions.BottomRight)
+            if (currentDirection == Directions.BottomRight)
             {
                 Velocity.X = +Speed;
                 Velocity.Y = +Speed;
