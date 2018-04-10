@@ -8,14 +8,14 @@ namespace Dungeon_Crawler
 {
     public class Character
     {
+        public enum Directions { None, Top, Bottom, Left, Right, TopLeft, TopRight, BottomLeft, BottomRight};
         public int Damage { get; set; }
         public int Health { get; set; }
         public string Name { get; set; }
-        public int cellSize;
 
         public AnimationManager _animationManager;
         protected Dictionary<String, Animation> _animations;
-        protected Vector2 _position;
+        public Vector2 _position;
         public Vector2 Position
         {
             get { return _position; }
@@ -26,14 +26,12 @@ namespace Dungeon_Crawler
                     _animationManager.Position = _position;
             }
         }
-        public Vector2 fixedPosition
-        {
-            get { return new Vector2(Position.X + getWidth() / 2, Position.Y + getHeight()); }
-        }
         public Vector2 Origin
         {
             get { return new Vector2(Position.X + getWidth() / 2, Position.Y + getHeight() / 2); }
         }
+
+        public RogueSharp.Cell CurrentCell;
         public float Speed = 1.0f;
         public Vector2 Velocity;
 
@@ -56,16 +54,16 @@ namespace Dungeon_Crawler
         }
         public int getWidth()
         {
-            return _animationManager._animation.FrameWidth;
+            return _animationManager._animation.FrameWidth-1;
         }
         public int getHeight()
         {
-            return _animationManager._animation.FrameHeight;
+            return _animationManager._animation.FrameHeight-1;
         }
 
         public Rectangle getRectangle()
         {
-            return new Rectangle((int)Position.X, (int)Position.Y,
+            return new Rectangle((int)Math.Floor(Position.X), (int)Math.Floor(Position.Y),
                getWidth(), getHeight());
         }
         public Color[] getCurrentTextureData(GraphicsDevice graphicsDevice)

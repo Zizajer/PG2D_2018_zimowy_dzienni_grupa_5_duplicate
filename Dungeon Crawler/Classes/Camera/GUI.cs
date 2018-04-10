@@ -21,6 +21,8 @@ namespace Dungeon_Crawler
         {
             int tempX = Global.Camera.ViewportWorldBoundry().X;
             int tempY = Global.Camera.ViewportWorldBoundry().Y;
+            int tempX2 = Global.Camera.ViewportWorldBoundry().X + (int)(Global.Camera.ViewportWorldBoundry().Width * 0.21);
+            int tempY2 = Global.Camera.ViewportWorldBoundry().Y + (int)(Global.Camera.ViewportWorldBoundry().Height * 0.06);
             float scale = Global.Camera.Zoom;
             if (_player.Health > 0)
             {
@@ -28,8 +30,8 @@ namespace Dungeon_Crawler
                 string manaString = "Mana " + mana + "%";
                 string s = _player.getItems() + " \nLevel " + (playerCurrentLevel + 1);
                 spriteBatch.DrawString(font, healthString, new Vector2(tempX, tempY), Color.OrangeRed, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
-                spriteBatch.DrawString(font, manaString, new Vector2(tempX+180, tempY), Color.DeepSkyBlue, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
-                spriteBatch.DrawString(font, s, new Vector2(tempX, tempY+30), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
+                spriteBatch.DrawString(font, manaString, new Vector2(tempX2, tempY), Color.DeepSkyBlue, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
+                spriteBatch.DrawString(font, s, new Vector2(tempX, tempY2), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
             }
             else
             {
