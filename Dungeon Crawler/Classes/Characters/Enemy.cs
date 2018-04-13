@@ -236,7 +236,17 @@ namespace Dungeon_Crawler
             if (!Collision.isCollidingWithObstacles(characterRectangle, this, level, graphicsDevice))
             {
                 if (!Collision.isCollidingWithPlayer(characterRectangle, this, level, graphicsDevice))
+                {
+                    if(!Collision.isCollidingWithEnemies(characterRectangle, this, level, graphicsDevice))
+                    {
                         Move(currentDirection, Speed, level, graphicsDevice);
+                    }
+                    else
+                    {
+                        currentDirection = BounceOffObject(currentDirection, false);
+                        Move(currentDirection, Speed, level, graphicsDevice);
+                    }
+                }
             }
             else
             {
