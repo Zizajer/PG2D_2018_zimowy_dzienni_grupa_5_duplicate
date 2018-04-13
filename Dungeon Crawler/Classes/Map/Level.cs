@@ -12,7 +12,7 @@ namespace Dungeon_Crawler
         public int cellSize;
         public List<Item> items;
         public List<Enemy> enemies;
-        public List<Obstacle> obstacles;
+        public List<Rock> rocks;
         public List<Cell> occupiedCells;
         public List<Projectile> projectiles;
 
@@ -26,7 +26,7 @@ namespace Dungeon_Crawler
         public Player player;
 
         public bool finished { get; set; }
-        public Level(Map map, int cellSize, List<Enemy> enemies, List<Texture2D> allItems, List<String> allItemsNames, List<Item> items, List<Obstacle> obstacles, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells, Texture2D fireball)
+        public Level(Map map, int cellSize, List<Enemy> enemies, List<Texture2D> allItems, List<String> allItemsNames, List<Item> items, List<Rock> rocks, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells, Texture2D fireball)
         {
             this.map = map;
             this.cellSize = cellSize;
@@ -34,7 +34,7 @@ namespace Dungeon_Crawler
             this.items = items;
             this.allItems = allItems;
             this.allItemsNames = allItemsNames;
-            this.obstacles = obstacles;
+            this.rocks = rocks;
             this.floor = floor;
             this.wall = wall;
             this.portal = portal;
@@ -51,7 +51,7 @@ namespace Dungeon_Crawler
         {
             if ((Math.Abs(player.Position.X - player.Position.X) < player.getWidth() + portal.Texture.Width) && (Math.Abs(player.Position.Y - player.Position.Y) < player.getHeight() + portal.Texture.Height) && enemies.Count == 0)
             {
-                if (Collision.checkCollision(player, portal, graphicsDevice))
+                if (Collision.checkCollision(player.getRectangle(),player, portal, graphicsDevice))
                 {
                     finished = true;
                     return;
@@ -81,7 +81,7 @@ namespace Dungeon_Crawler
             {
                 if ((Math.Abs(player.Position.X - player.Position.X) < player.getWidth() + itemArray[i].Texture.Width) && (Math.Abs(player.Position.Y - player.Position.Y) < player.getHeight() + itemArray[i].Texture.Height))
                 {
-                    if (Collision.checkCollision(player, itemArray[i], graphicsDevice))
+                    if (Collision.checkCollision(player.getRectangle(),player, itemArray[i], graphicsDevice))
                     {
                         player.inventory.Add(itemArray[i]);
                         items.Remove(itemArray[i]);
@@ -119,9 +119,9 @@ namespace Dungeon_Crawler
                 item.Draw(spriteBatch);
             }
 
-            foreach (var obstacle in obstacles)
+            foreach (var rock in rocks)
             {
-                obstacle.Draw(spriteBatch);
+                rock.Draw(spriteBatch);
             }
 
             foreach (var enemy in enemies)

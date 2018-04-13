@@ -20,7 +20,7 @@ namespace Dungeon_Crawler
         private int newMapRoomMinSize = 2;
         private int enemiesCount = 1;
         private int itemsCount = 1;
-        private int obstaclesCount = 0;
+        private int rocksCount = 0;
         Texture2D floor;
         Texture2D wall;
         Texture2D fireball;
@@ -31,7 +31,7 @@ namespace Dungeon_Crawler
         List<Texture2D> allItems;
         List<String> allItemsNames;
 
-        Texture2D obstacle;
+        Texture2D rock;
 
         Texture2D portalTexture;
 
@@ -43,7 +43,7 @@ namespace Dungeon_Crawler
             floor = Content.Load<Texture2D>("map/Floor");
             wall = Content.Load<Texture2D>("map/Wall");
             fireball = Content.Load<Texture2D>("spells/Fireball");
-            obstacle = Content.Load<Texture2D>("map/obstacle1");
+            rock = Content.Load<Texture2D>("map/rock");
             portalTexture = Content.Load<Texture2D>("map/portal");
 
             _animations = new Dictionary<string, Animation>()
@@ -94,7 +94,7 @@ namespace Dungeon_Crawler
             //if (player.CurrentLevel % 2 == 0) 
             itemsCount = itemsCount + increaseValue;
             //if (player.CurrentLevel % 2 == 1) 
-            obstaclesCount = obstaclesCount + increaseValue;
+            rocksCount = rocksCount + increaseValue;
         }
 
         public void CreateLevel()
@@ -112,32 +112,32 @@ namespace Dungeon_Crawler
 
             List<Enemy> enemies = CreateEnemiesList(Content, map, cellSize, enemiesCount, occupiedCells);
             List<Item> items = CreateItemsList(Content, map, cellSize, itemsCount, occupiedCells, allItems, allItemsNames);
-            List<Obstacle> obstacles = CreateObstaclesList(Content, map, cellSize, obstaclesCount, occupiedCells, obstacle);
+            List<Rock> rocks = CreateRocksList(Content, map, cellSize, rocksCount, occupiedCells, rock);
             incrementOtherParameters(1);
 
             Global.Camera.setParams(map.Width, map.Height, cellSize);
 
-            Level level = new Level(map, cellSize, enemies, allItems, allItemsNames, items, obstacles, floor, wall, portal, occupiedCells, fireball);
+            Level level = new Level(map, cellSize, enemies, allItems, allItemsNames, items, rocks, floor, wall, portal, occupiedCells, fireball);
 
             this.levels.Add(level);
         }
 
-        private List<Obstacle> CreateObstaclesList(ContentManager Content, Map map, int cellSize, int obstacleCount, List<Cell> occupiedCells, Texture2D obstacle)
+        private List<Rock> CreateRocksList(ContentManager Content, Map map, int cellSize, int rocksCount, List<Cell> occupiedCells, Texture2D rock)
         {
-            List<Obstacle> obstacles = new List<Obstacle>(obstacleCount);
+            List<Rock> rocks = new List<Rock>(rocksCount);
 
-            for (int i = 0; i < obstacleCount; i++)
+            for (int i = 0; i < rocksCount; i++)
             {
                 Cell randomCell = GetRandomEmptyCell(map, occupiedCells);
                 occupiedCells.Add(randomCell);
-                //Set property of a cell occupied by an obstacle on a map to make it non-transparent. Necessary for fov calculations.
+                //Set property of a cell occupied by an rock on a map to make it non-transparent. Necessary for fov calculations.
                 map.SetCellProperties(randomCell.X, randomCell.Y, false, true);
-                Obstacle tempObstacle =
-                    new Obstacle(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), obstacle);
-                obstacles.Add(tempObstacle);
+                Rock tempRock =
+                    new Rock(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), rock);
+                rocks.Add(tempRock);
             }
 
-            return obstacles;
+            return rocks;
         }
 
         private List<Item> CreateItemsList(ContentManager Content, Map map, int cellSize, int itemCount, List<Cell> occupiedCells, List<Texture2D> allItems, List<String> allItemsNames)

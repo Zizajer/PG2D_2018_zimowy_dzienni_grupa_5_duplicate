@@ -330,7 +330,7 @@ namespace Dungeon_Crawler
             if (isCollidingWithEnemies(characterRectangle, character, level, graphicsDevice))
                 return true;
 
-            if (isCollidingWithObstacles(characterRectangle, character, level, graphicsDevice))
+            if (isCollidingWithRocks(characterRectangle, character, level, graphicsDevice))
                 return true;
 
             return false;
@@ -361,13 +361,13 @@ namespace Dungeon_Crawler
             return false;
         }
 
-        public static bool isCollidingWithObstacles(Microsoft.Xna.Framework.Rectangle characterRectangle, Character character, Level level, GraphicsDevice graphicsDevice)
+        public static bool isCollidingWithRocks(Microsoft.Xna.Framework.Rectangle characterRectangle, Character character, Level level, GraphicsDevice graphicsDevice)
         {
-            foreach (Obstacle obstacle in level.obstacles)
+            foreach (Rock rock in level.rocks)
             {
-                if (Vector2.Distance(character.Origin, obstacle.Origin) < level.cellSize)
+                if (Vector2.Distance(character.Origin, rock.Origin) < level.cellSize)
                 {
-                    if (checkCollision(characterRectangle, character, obstacle, graphicsDevice))
+                    if (checkCollision(characterRectangle, character, rock, graphicsDevice))
                         return true;
                 }
             }
@@ -375,13 +375,13 @@ namespace Dungeon_Crawler
         }
 
 
-        public static bool isCollidingWithObstacles(Projectile projectile, Level level, GraphicsDevice graphicsDevice)
+        public static bool isCollidingWithRocks(Projectile projectile, Level level, GraphicsDevice graphicsDevice)
         {
-            foreach (Obstacle obstacle in level.obstacles)
+            foreach (Rock rock in level.rocks)
             {
-                if (Vector2.Distance(projectile.Origin2, obstacle.Origin) < level.cellSize)
+                if (Vector2.Distance(projectile.Origin2, rock.Origin) < level.cellSize)
                 {
-                    if (checkCollision(projectile, obstacle, graphicsDevice))
+                    if (checkCollision(projectile, rock, graphicsDevice))
                         return true;
                 }
             }
@@ -413,18 +413,18 @@ namespace Dungeon_Crawler
             return false;
         }
 
-        public static bool checkCollision(Microsoft.Xna.Framework.Rectangle character1Rectangle, Character character,Obstacle obstacle,GraphicsDevice graphicsDevice)
+        public static bool checkCollision(Microsoft.Xna.Framework.Rectangle character1Rectangle, Character character,Sprite sprite,GraphicsDevice graphicsDevice)
         {
-            if (character == null || obstacle == null) return false;
+            if (character == null || sprite == null) return false;
             Color[] characterTextureData = character.getCurrentTextureData(graphicsDevice);
 
             Microsoft.Xna.Framework.Rectangle characterRectangle = character1Rectangle;
 
-            Microsoft.Xna.Framework.Rectangle obstacleRectangle = obstacle.getRectangle();
+            Microsoft.Xna.Framework.Rectangle spriteRectangle = sprite.getRectangle();
 
-            if (characterRectangle.Intersects(obstacleRectangle))
+            if (characterRectangle.Intersects(spriteRectangle))
             {
-                if (IntersectPixels(characterRectangle, characterTextureData,obstacleRectangle, obstacle.TextureData))
+                if (IntersectPixels(characterRectangle, characterTextureData, spriteRectangle, sprite.TextureData))
                 {
                     return true;
                 }
@@ -432,18 +432,17 @@ namespace Dungeon_Crawler
             return false;
         }
 
-        public static bool checkCollision(Character character, Projectile projectile, GraphicsDevice graphicsDevice)
+        public static bool checkCollision(Sprite sprite1, Sprite sprite2, GraphicsDevice graphicsDevice)
         {
-            if (character == null || projectile == null) return false;
-            Color[] characterTextureData = character.getCurrentTextureData(graphicsDevice);
+            if (sprite1 == null || sprite2 == null) return false;
 
-            Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+            Microsoft.Xna.Framework.Rectangle sprite1Rectangle = sprite1.getRectangle();
 
-            Microsoft.Xna.Framework.Rectangle projectileRectangle = projectile.getRectangle();
+            Microsoft.Xna.Framework.Rectangle sprite2Rectangle = sprite2.getRectangle();
 
-            if (characterRectangle.Intersects(projectileRectangle))
+            if (sprite1Rectangle.Intersects(sprite2Rectangle))
             {
-                if (IntersectPixels(characterRectangle, characterTextureData, projectileRectangle, projectile.TextureData))
+                if (IntersectPixels(sprite1Rectangle, sprite1.TextureData, sprite2Rectangle, sprite2.TextureData))
                 {
                     return true;
                 }
@@ -451,61 +450,6 @@ namespace Dungeon_Crawler
             return false;
         }
 
-        public static bool checkCollision(Character character, Item item, GraphicsDevice graphicsDevice)
-        {
-            if (character == null || item == null) return false;
-            Color[] characterTextureData = character.getCurrentTextureData(graphicsDevice);
-
-            Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
-
-            Microsoft.Xna.Framework.Rectangle itemRectangle = item.getRectangle();
-
-            if (characterRectangle.Intersects(itemRectangle))
-            {
-                if (IntersectPixels(characterRectangle, characterTextureData, itemRectangle, item.TextureData))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public static bool checkCollision(Projectile projectile, Obstacle obstacle, GraphicsDevice graphicsDevice)
-        {
-            if (projectile == null || obstacle == null) return false;
-
-            Microsoft.Xna.Framework.Rectangle projectileRectangle = projectile.getRectangle();
-
-            Microsoft.Xna.Framework.Rectangle obstacleRectangle = obstacle.getRectangle();
-
-            if (projectileRectangle.Intersects(obstacleRectangle))
-            {
-                if (IntersectPixels(projectileRectangle, projectile.TextureData, obstacleRectangle, obstacle.TextureData))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public static bool checkCollision(Character character, Portal portal, GraphicsDevice graphicsDevice)
-        {
-            if (character == null || portal == null) return false;
-            Color[] characterTextureData = character.getCurrentTextureData(graphicsDevice);
-
-            Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
-
-            Microsoft.Xna.Framework.Rectangle portalRectangle = portal.getRectangle();
-
-            if (characterRectangle.Intersects(portalRectangle))
-            {
-                if (IntersectPixels(characterRectangle, characterTextureData, portalRectangle, portal.TextureData))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
 
         // source: http://xbox.create.msdn.com/en-US/education/catalog/tutorial/collision_2d_perpixel_transformed
         /// <summary>

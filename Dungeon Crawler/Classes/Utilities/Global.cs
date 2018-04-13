@@ -6,7 +6,6 @@ namespace Dungeon_Crawler
     {
         public static readonly Random random = new Random();
         public static readonly CameraManager Camera = new CameraManager();
-        //public static CombatManager CombatManager;
         public static GUI Gui;
     }
 }

@@ -49,7 +49,7 @@ namespace Dungeon_Crawler
             for (int i = 0; i < level.projectiles.Count; i++)
             {
                 projectile = level.projectiles[i];
-                if (Collision.checkCollision(this, projectile, graphicsDevice))
+                if (Collision.checkCollision(getRectangle(),this, projectile, graphicsDevice))
                 {
                     projectile.isEnemyHit = true;
                     return true;
@@ -233,7 +233,7 @@ namespace Dungeon_Crawler
                 characterRectangle.X += (int)speed;
 
 
-            if (!Collision.isCollidingWithObstacles(characterRectangle, this, level, graphicsDevice))
+            if (!Collision.isCollidingWithRocks(characterRectangle, this, level, graphicsDevice))
             {
                 if (!Collision.isCollidingWithPlayer(characterRectangle, this, level, graphicsDevice))
                 {

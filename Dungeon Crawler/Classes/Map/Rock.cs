@@ -3,9 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Dungeon_Crawler
 {
-    public class Portal:Sprite
+    public class Rock:Sprite
     {
-        public Portal(Vector2 pos, Texture2D tex) : base(pos, tex)
+        public Rock(Vector2 pos, Texture2D tex) : base(pos, tex)
         {
         }
         public void Draw(SpriteBatch spriteBatch)

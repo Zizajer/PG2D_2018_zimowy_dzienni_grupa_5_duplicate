@@ -45,6 +45,7 @@
     <Compile Include="Classes\Characters\AnimationManager.cs" />
     <Compile Include="Classes\Camera\CameraManager.cs" />
     <Compile Include="Classes\Characters\Character.cs" />
+    <Compile Include="Classes\Map\Sprite.cs" />
     <Compile Include="Classes\Map\Portal.cs" />
     <Compile Include="Classes\Map\Projectile.cs" />
     <Compile Include="Classes\Utilities\Collision.cs" />
@@ -56,7 +57,7 @@
     <Compile Include="Classes\Utilities\Layers.cs" />
     <Compile Include="Classes\Map\Level.cs" />
     <Compile Include="Classes\Map\LevelManager.cs" />
-    <Compile Include="Classes\Map\Obstacle.cs" />
+    <Compile Include="Classes\Map\Rock.cs" />
     <Compile Include="Classes\Characters\Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

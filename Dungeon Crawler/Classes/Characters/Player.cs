@@ -11,6 +11,9 @@ namespace Dungeon_Crawler
     public class Player : Character
     {
         public float Mana;
+        public int teleportCost = 10;
+        public int fireballCost = 10;
+        public int maxFireballsOnScreen = 20;
         public MouseState mouse;
         public float rotation;
         public List<Item> inventory { get; set; }
@@ -40,10 +43,11 @@ namespace Dungeon_Crawler
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Space) && pastKey.IsKeyUp(Keys.Space))
             {
-                if (level.projectiles.Count() < 20 && Mana>10)
+                if (level.projectiles.Count() < maxFireballsOnScreen && Mana> fireballCost)
                 {
                     MouseState mouse = Mouse.GetState();
-                    Vector2 mousePos = Global.Camera.ScreenToWorld(mouse.X, mouse.Y);
+                    Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
+                    Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
                     float distanceX = mousePos.X - this.Position.X;
                     float distanceY = mousePos.Y - this.Position.Y;
 
@@ -54,7 +58,7 @@ namespace Dungeon_Crawler
                     Projectile newProjectile = new Projectile(tempVelocity, tempPosition, level.fireball, rotation);
 
                     level.projectiles.Add(newProjectile);
-                    Mana = Mana - 10;
+                    Mana = Mana - fireballCost;
                 }
             }
             pastKey = Keyboard.GetState();
@@ -64,17 +68,17 @@ namespace Dungeon_Crawler
         {
             if (Mouse.GetState().RightButton == ButtonState.Pressed)
             {
-                if (Mana > 10)
+                if (Mana > teleportCost)
                 {
                     MouseState mouse = Mouse.GetState();
-                    Vector2 mousePos = Global.Camera.ScreenToWorld(mouse.X, mouse.Y);
+                    Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
+                    Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
                     x = (int)Math.Floor(mousePos.X / level.cellSize);
                     y = (int)Math.Floor(mousePos.Y / level.cellSize);
                     if (level.map.GetCell(x, y).IsWalkable && !level.occupiedCells.Contains(level.map.GetCell(x, y)))
                     {
-                        Vector2 tempVector = new Vector2(mousePos.X, mousePos.Y);
                         Position = tempVector;
-                        Mana = Mana - 10;
+                        Mana = Mana - teleportCost;
                         Global.Camera.CenterOn(Origin);
                     }
                 }
