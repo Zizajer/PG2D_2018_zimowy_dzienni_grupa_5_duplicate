@@ -181,10 +181,13 @@ namespace Dungeon_Crawler
                     catch (PathNotFoundException)
                     {
                         currentState = State.RandomMovement;
+                        return;
                     }
                     catch (ArgumentNullException)
                     {
                         //next line should take care of that but just in case lets catch it
+                        currentState = State.RandomMovement;
+                        return;
                     }
 
                     //this fixes Exception thrown by ShorthestPath method, not sure why (that method even throws it)
@@ -232,25 +235,16 @@ namespace Dungeon_Crawler
             if (currentDirection == Directions.Right)
                 characterRectangle.X += (int)speed;
 
-
-            if (!Collision.isCollidingWithRocks(characterRectangle, this, level, graphicsDevice))
+            
+            if (!Collision.isCollidingWithEverythingElse(characterRectangle, this, level, graphicsDevice))
             {
-                if (!Collision.isCollidingWithPlayer(characterRectangle, this, level, graphicsDevice))
-                {
-                    if(!Collision.isCollidingWithEnemies(characterRectangle, this, level, graphicsDevice))
-                    {
-                        Move(currentDirection, Speed, level, graphicsDevice);
-                    }
-                    else
-                    {
-                        currentDirection = BounceOffObject(currentDirection, false);
-                        Move(currentDirection, Speed, level, graphicsDevice);
-                    }
-                }
+                Move(currentDirection, Speed, level, graphicsDevice);
             }
             else
             {
-                //avoiding rocks logic
+                currentDirection = BounceOffObject(currentDirection, false);
+                if (!Collision.isCollidingWithEverythingElse(characterRectangle, this, level, graphicsDevice))
+                    Move(currentDirection, Speed, level, graphicsDevice);
             }
         }
 
