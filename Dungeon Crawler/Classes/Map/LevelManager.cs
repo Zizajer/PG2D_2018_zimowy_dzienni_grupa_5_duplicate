@@ -103,7 +103,6 @@ namespace Dungeon_Crawler
             Map map = CreateMap(newMapWidth, newMapHeight, newMapRoomCount, newMapRoomMaxSize, newMapRoomMinSize);
             var grid = new Grid(newMapWidth, newMapHeight, 1.0f);
 
-            incrementMapParameters(2);
 
             List<Cell> occupiedCells = new List<Cell>();
 
@@ -116,13 +115,22 @@ namespace Dungeon_Crawler
             List<Item> items = CreateItemsList(Content, map, cellSize, itemsCount, occupiedCells, allItems, allItemsNames);
             List<Rock> rocks = CreateRocksList(Content, map, cellSize, rocksCount, occupiedCells, rock, grid);
             
-            incrementOtherParameters(1);
-
             Global.Camera.setParams(map.Width, map.Height, cellSize);
+
+            foreach (Cell cell in map.GetAllCells())
+            {
+                if (!cell.IsWalkable)
+                {
+                    grid.BlockCell(new Position(cell.X, cell.Y));
+                }
+            }
 
             Level level = new Level(map, grid, cellSize, enemies, allItems, allItemsNames, items, rocks, floor, wall, portal, occupiedCells, fireball);
 
-            this.levels.Add(level);
+            levels.Add(level);
+
+            incrementMapParameters(2);
+            incrementOtherParameters(1);
         }
 
         private List<Rock> CreateRocksList(ContentManager Content, Map map, int cellSize, int rocksCount, List<Cell> occupiedCells, Texture2D rock, Grid grid)
@@ -134,7 +142,7 @@ namespace Dungeon_Crawler
                 Cell randomCell = GetRandomEmptyCell(map, occupiedCells);
                 occupiedCells.Add(randomCell);
                 //Set property of a cell occupied by an rock on a map to make it non-transparent. Necessary for fov calculations.
-                map.SetCellProperties(randomCell.X, randomCell.Y, false, false);
+                map.SetCellProperties(randomCell.X, randomCell.Y, false, true);
                 Rock tempRock =
                     new Rock(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), rock);
                 rocks.Add(tempRock);
@@ -207,6 +215,7 @@ namespace Dungeon_Crawler
                 Vector2 newPlayerPosition = levels[player.CurrentLevel].GetRandomEmptyCell();
                 player.Position = newPlayerPosition;
                 Global.Camera.CenterOn(player.Center);
+                levels[player.CurrentLevel - 1] = null;
             }
         }
 

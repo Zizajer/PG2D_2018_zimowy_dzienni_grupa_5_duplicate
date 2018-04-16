@@ -167,8 +167,10 @@ namespace Dungeon_Crawler
             else
             {
                 Console.WriteLine("Error");
-            }          
-            
+            }
+
+            prevX = x;
+            prevY = y;
             SetAnimations();
             _animationManager.Update(gameTime);
             Position += Velocity;
@@ -189,7 +191,7 @@ namespace Dungeon_Crawler
                     }
                     try
                     {
-                        NextCell = level.map.GetCell(path[path.Length - 1].X, path[path.Length - 1].Y);
+                        NextCell = level.map.GetCell(path[1].X, path[1].Y);
                     }
                     catch (IndexOutOfRangeException)
                     {
