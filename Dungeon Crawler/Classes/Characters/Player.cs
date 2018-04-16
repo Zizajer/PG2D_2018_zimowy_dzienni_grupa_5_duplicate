@@ -132,7 +132,7 @@ namespace Dungeon_Crawler
             if (Mana < 100) Mana = Mana + 0.95f; //0.15
             if (!Collision.isCharacterInBounds(this, level))
             {
-                Collision.unStuck(this, level, graphicsDevice);
+                Collision.getPlayerInBounds(this, level, graphicsDevice);
             }
             
             currentDirection = GetDirection();
@@ -149,7 +149,7 @@ namespace Dungeon_Crawler
                     //this allows sliding when one of diagonal directions is blocked eg. cant go topleft but can go left
                     if (currentDirection == Directions.TopLeft || currentDirection == Directions.TopRight || currentDirection == Directions.BottomLeft || currentDirection == Directions.BottomRight)
                     {
-                        Directions fixedDirection = Collision.checkIfOneOfDirectionsIsOk(currentDirection, this, level, graphicsDevice);
+                        Directions fixedDirection = Collision.checkIfOneOfDoubleDirectionsIsOk(currentDirection, this, level, graphicsDevice);
                         if (!Collision.checkCollisionInGivenDirection(fixedDirection, this, level, graphicsDevice))
                         {
                             Move(fixedDirection, Speed, level, graphicsDevice);

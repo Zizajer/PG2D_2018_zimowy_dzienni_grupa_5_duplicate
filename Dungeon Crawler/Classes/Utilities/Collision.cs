@@ -130,7 +130,7 @@ namespace Dungeon_Crawler
                 return false;
         }
 
-        public static void unStuck(Character character, Level level, GraphicsDevice graphicsDevice)
+        public static void getPlayerInBounds(Character character, Level level, GraphicsDevice graphicsDevice)
         {
             Vector2 originalPosition = character.Position;
 
@@ -193,7 +193,70 @@ namespace Dungeon_Crawler
             }
         }
 
-        public static Character.Directions checkIfOneOfDirectionsIsOk(Character.Directions currentDirection, Character character, Level level, GraphicsDevice graphicsDevice)
+        public static void unStuck(Character character, Level level, GraphicsDevice graphicsDevice)
+        {
+            Vector2 originalPosition = character.Position;
+
+            for (int i = 1; i < 30; i++)
+            {
+                //top
+                character._position.Y -= i;
+                if (isCharacterInBounds(character, level)&&!isCollidingWithEverythingElse(character.getRectangle(),character,level,graphicsDevice))
+                    return;
+                else
+                    character.Position = originalPosition;
+                //bottom
+                character._position.Y += i;
+                if (isCharacterInBounds(character, level)&&!isCollidingWithEverythingElse(character.getRectangle(),character,level,graphicsDevice))
+                    return;
+                else
+                    character.Position = originalPosition;
+                //left
+                character._position.X -= i;
+                if (isCharacterInBounds(character, level)&&!isCollidingWithEverythingElse(character.getRectangle(),character,level,graphicsDevice))
+                    return;
+                else
+                    character.Position = originalPosition;
+                //right
+                character._position.X += i;
+                if (isCharacterInBounds(character, level)&&!isCollidingWithEverythingElse(character.getRectangle(),character,level,graphicsDevice))
+                    return;
+                else
+                    character.Position = originalPosition;
+
+                //topleft
+                character._position.Y -= i;
+                character._position.X -= i;
+                if (isCharacterInBounds(character, level)&&!isCollidingWithEverythingElse(character.getRectangle(),character,level,graphicsDevice))
+                    return;
+                else
+                    character.Position = originalPosition;
+                //topright
+                character._position.Y -= i;
+                character._position.X += i;
+                if (isCharacterInBounds(character, level)&&!isCollidingWithEverythingElse(character.getRectangle(),character,level,graphicsDevice))
+                    return;
+                else
+                    character.Position = originalPosition;
+                //bottomleft
+                character._position.Y += i;
+                character._position.X -= i;
+                if (isCharacterInBounds(character, level)&&!isCollidingWithEverythingElse(character.getRectangle(),character,level,graphicsDevice))
+                    return;
+                else
+                    character.Position = originalPosition;
+                //bottomright
+                character._position.Y += i;
+                character._position.X += i;
+                if (isCharacterInBounds(character, level)&&!isCollidingWithEverythingElse(character.getRectangle(),character,level,graphicsDevice))
+                    return;
+                else
+                    character.Position = originalPosition;
+
+            }
+        }
+
+        public static Character.Directions checkIfOneOfDoubleDirectionsIsOk(Character.Directions currentDirection, Character character, Level level, GraphicsDevice graphicsDevice)
         {
             if (currentDirection == Character.Directions.TopLeft)
             {
@@ -383,7 +446,7 @@ namespace Dungeon_Crawler
         {
             if (character.GetType() != typeof(Player))
             {
-                if (Vector2.Distance(character.Center, level.player.Center) < level.cellSize)
+                if (Vector2.Distance(characterRectangle.Center.ToVector2(), level.player.Center) < level.cellSize)
                     if (checkCollision(characterRectangle, character, level.player, graphicsDevice))
                         return true;
             }
@@ -394,8 +457,8 @@ namespace Dungeon_Crawler
         {
             foreach (Enemy enemy in level.enemies)
             {
-                if (enemy.Equals(character)) continue;
-                if (Vector2.Distance(character.Center, enemy.Center) < level.cellSize)
+                if (enemy==character) continue;
+                if (Vector2.Distance(characterRectangle.Center.ToVector2(), enemy.Center) < level.cellSize)
                 {
                     if (checkCollision(characterRectangle, character, enemy, graphicsDevice))
                         return true;
@@ -408,7 +471,7 @@ namespace Dungeon_Crawler
         {
             foreach (Rock rock in level.rocks)
             {
-                if (Vector2.Distance(character.Center, rock.Center) < level.cellSize)
+                if (Vector2.Distance(characterRectangle.Center.ToVector2(), rock.Center) < level.cellSize)
                 {
                     if (checkCollision(characterRectangle, character, rock, graphicsDevice))
                         return true;

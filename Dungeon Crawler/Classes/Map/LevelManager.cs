@@ -90,11 +90,11 @@ namespace Dungeon_Crawler
 
         public void incrementOtherParameters(int increaseValue)
         {
-            //if (player.CurrentLevel % 3 == 2) 
+            //if (Global.random.Next(4) % 3 == 0) 
             enemiesCount = enemiesCount + 5;
-            //if (player.CurrentLevel % 2 == 0) 
+            if (Global.random.Next(4) % 3 == 0) 
             itemsCount = itemsCount + increaseValue;
-            //if (player.CurrentLevel % 2 == 1) 
+            if (Global.random.Next(4) % 2 == 0) 
             rocksCount = rocksCount + increaseValue;
         }
 

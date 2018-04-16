@@ -70,7 +70,7 @@ namespace Dungeon_Crawler
                 {
                     grid.SetCellCost(new Position(enemy.x, enemy.y), 1.0f);
                     enemies.RemoveAt(i);
-                    if (Global.random.Next(10) > 6)
+                    if (Global.random.Next(10) > 8)
                     {
                         int rand = Global.random.Next(2) + 1;
                         Item tempItem = new Item(new Vector2(enemy.Position.X + cellSize / 3, enemy.Position.Y + cellSize / 3), allItems[rand], allItemsNames[rand]);
