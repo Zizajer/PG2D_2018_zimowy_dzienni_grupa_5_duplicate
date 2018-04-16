@@ -10,7 +10,7 @@ namespace Dungeon_Crawler
 {
     public class Enemy : Character
     {
-        public enum State { RandomMovement, CenterMovement, MovingToAnotherCell, Attacking };
+        public enum State { RandomMovement, CenterMovement, MovingToAnotherCell, Attacking, Unstucking};
 
         public int prevX { get; set; }
         public int prevY { get; set; }
@@ -21,6 +21,8 @@ namespace Dungeon_Crawler
         //Random movement vars
         float actionTimer;
         float timeBetweenActions;
+        float unstuckTimer;
+        float timeBetweenUnstuck;
 
         //Pathfinding vars
         Position[] path;
@@ -45,6 +47,8 @@ namespace Dungeon_Crawler
             currentState = State.CenterMovement;
             prevX = x;
             prevY = y;
+            unstuckTimer=0;
+            timeBetweenUnstuck = 2;
         }
 
         public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
@@ -69,10 +73,14 @@ namespace Dungeon_Crawler
 
             if(prevX!=x || prevY != y)
             {
-                level.grid.SetCellCost(new Position(prevX, prevY), 1.0f);
-                level.grid.SetCellCost(new Position(x, y), 5.0f);
-                //level.grid.UnblockCell(new Position(prevX, prevY));
-                //level.grid.BlockCell(new Position(x, y));
+                if (x >= 0 && x < level.map.Width && y >= 0 && y < level.map.Height)
+                {
+                    level.grid.SetCellCost(new Position(prevX, prevY), 1.0f);
+                    level.grid.SetCellCost(new Position(x, y), 5.0f);
+                    //level.grid.UnblockCell(new Position(prevX, prevY));
+                    //level.grid.BlockCell(new Position(x, y));
+                }
+
             }
             
             actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -93,14 +101,8 @@ namespace Dungeon_Crawler
                     }
                     else
                     {
-                        if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
-                            Move(currentDirection, Speed, level, graphicsDevice);
-                        else
-                        {
-                            currentDirection = Opposite(currentDirection);
-                            if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
-                                Move(currentDirection, Speed, level, graphicsDevice);
-                        }
+                        CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
+                        
                         int newx = (int)Math.Floor((Center.X + Velocity.X) / level.cellSize);
                         int newy = (int)Math.Floor((Center.Y + Velocity.Y) / level.cellSize);
 
@@ -142,15 +144,13 @@ namespace Dungeon_Crawler
                     }
                     else
                     {
-                        currentState = State.Attacking;
+                        //atack
                     }
                 }
                 //else
                 {
                    // currentState = State.RandomMovement;
                 }
-                    
-
             }
             else if (currentState == State.Attacking)
             {
@@ -163,7 +163,28 @@ namespace Dungeon_Crawler
                     //attack
                 }
             }
+            else if (currentState == State.Unstucking)
+            {
+                if (Vector2.Distance(Center, level.player.Center) < level.cellSize * 2 / 3)
+                {
+                    currentState = State.Attacking;
+                }
 
+                currentDirection = (Directions)Global.random.Next(4) + 1;
+                unstuckTimer += 0.2f;
+                if (unstuckTimer < timeBetweenUnstuck)
+                {
+                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
+                    if ((int)Math.Floor((Center.X + Velocity.X) / level.cellSize) != x || (int)Math.Floor((Center.Y + Velocity.Y) / level.cellSize) != y)
+                        currentState = State.CenterMovement;
+                }
+                else
+                {
+                    currentDirection = (Directions)Global.random.Next(4) + 1;
+                    unstuckTimer = 0;
+                }
+                
+            }
             else
             {
                 Console.WriteLine("Error");
@@ -231,14 +252,14 @@ namespace Dungeon_Crawler
             }
             else
             {
-                currentDirection = BounceOffObject(currentDirection, level, true, graphicsDevice);
-                if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
-                    Move(currentDirection, Speed, level, graphicsDevice);
+                if (unstuckTimer < timeBetweenUnstuck)
+                {
+                    unstuckTimer += 0.1f;
+                }
                 else
                 {
-
-                        Move(currentDirection, Speed, level, graphicsDevice);
-                    
+                    unstuckTimer = 0;
+                    currentState = State.Unstucking;
                 }
             }
         }
@@ -264,30 +285,26 @@ namespace Dungeon_Crawler
                 if (Center.Y >= y * level.cellSize + level.cellSize / 2)
                 {
                     currentDirection = Directions.Top;
-                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
                 }
                 else
                 {
                     currentDirection = Directions.Bottom;
-                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
                 }
                     
             }
-
+            CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
             if (Math.Abs(Center.X - PosX) > Speed)
             {
                 if (Center.X >= x * level.cellSize + level.cellSize / 2)
                 {
                     currentDirection = Directions.Left;
-                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
                 }
                 else
                 {
                     currentDirection = Directions.Right;
-                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
-                }
-                    
+                }  
             }
+            CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
         }
         //Bounces character off the object in clockwise direction (if not clockwise, will try to bounce off another enemy by moving either left or right when direction is up/down
         //or either up or down when direction is left/right
