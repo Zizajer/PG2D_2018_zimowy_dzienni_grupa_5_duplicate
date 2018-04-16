@@ -53,7 +53,7 @@ namespace Dungeon_Crawler
 
                     rotation = (float)Math.Atan2(distanceY, distanceX);
                     Vector2 tempVelocity = new Vector2((float)Math.Cos(rotation) * 3f, ((float)Math.Sin(rotation)) * 5f) +Velocity/3;
-                    Vector2 tempPosition = Origin + tempVelocity * 3;
+                    Vector2 tempPosition = Center + tempVelocity * 3;
 
                     Projectile newProjectile = new Projectile(tempVelocity, tempPosition, level.fireball, rotation);
 
@@ -79,7 +79,7 @@ namespace Dungeon_Crawler
                     {
                         Position = tempVector;
                         Mana = Mana - teleportCost;
-                        Global.Camera.CenterOn(Origin);
+                        Global.Camera.CenterOn(Center);
                     }
                 }
             }
@@ -119,8 +119,8 @@ namespace Dungeon_Crawler
 
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
-            x = (int)Math.Floor(Origin.X / level.cellSize);
-            y = (int)Math.Floor(Origin.Y / level.cellSize);
+            x = (int)Math.Floor(Center.X / level.cellSize);
+            y = (int)Math.Floor(Center.Y / level.cellSize);
             CurrentCell = level.map.GetCell(x, y);
 
             if (Mana < 100) Mana = Mana + 0.95f; //0.15
@@ -136,7 +136,7 @@ namespace Dungeon_Crawler
                 {
                     Move(currentDirection, Speed, level, graphicsDevice);
                     level.map.ComputeFov(x, y, 15, true);
-                    Global.Camera.CenterOn(Origin);
+                    Global.Camera.CenterOn(Center);
                 }
                 else
                 {
@@ -148,7 +148,7 @@ namespace Dungeon_Crawler
                         {
                             Move(fixedDirection, Speed, level, graphicsDevice);
                             level.map.ComputeFov(x, y, 15, true);
-                            Global.Camera.CenterOn(Origin);
+                            Global.Camera.CenterOn(Center);
                         }
                     }
                 }

@@ -7,12 +7,6 @@ namespace Dungeon_Crawler
     public class Projectile:Sprite
     {
         public Vector2 Velocity { get; set; }
-        public Vector2 Origin2 {
-            get
-            {
-                return new Vector2(getRectangle().Width / 2, getRectangle().Height / 2);
-            }
-        }
         public float rotation;
         public bool isEnemyHit = false;
         public bool isMarkedToDelete = false;
@@ -27,7 +21,7 @@ namespace Dungeon_Crawler
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Position, null, Color.White, rotation, Origin2, Size, SpriteEffects.None, Layers.Projectiles);
+            spriteBatch.Draw(Texture, Position, null, Color.White, rotation, Origin, Size, SpriteEffects.None, Layers.Projectiles);
         }
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
@@ -41,9 +35,6 @@ namespace Dungeon_Crawler
             x = (int)Math.Floor(Position.X / level.cellSize);
             y = (int)Math.Floor(Position.Y / level.cellSize);
             if (!level.map.GetCell(x, y).IsWalkable)
-                isMarkedToDelete = true;
-
-            if (Collision.isCollidingWithRocks(this, level, graphicsDevice))
                 isMarkedToDelete = true;
 
             if (!(Math.Abs(this.Position.X - level.player.Position.X) < Global.Camera.ViewportWidth && Math.Abs(this.Position.Y - level.player.Position.Y) < Global.Camera.ViewportHeight))

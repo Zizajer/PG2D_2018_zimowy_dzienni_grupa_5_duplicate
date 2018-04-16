@@ -26,7 +26,7 @@ namespace Dungeon_Crawler
                     _animationManager.Position = _position;
             }
         }
-        public Vector2 Origin
+        public Vector2 Center
         {
             get { return new Vector2(Position.X + getWidth() / 2, Position.Y + getHeight() / 2); }
         }

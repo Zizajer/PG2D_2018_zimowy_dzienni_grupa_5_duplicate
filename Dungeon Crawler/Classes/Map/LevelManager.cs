@@ -5,6 +5,7 @@ using RogueSharp;
 using RogueSharp.MapCreation;
 using System;
 using System.Collections.Generic;
+using RoyT.AStar;
 
 namespace Dungeon_Crawler
 {
@@ -100,6 +101,7 @@ namespace Dungeon_Crawler
         public void CreateLevel()
         {
             Map map = CreateMap(newMapWidth, newMapHeight, newMapRoomCount, newMapRoomMaxSize, newMapRoomMinSize);
+            var grid = new Grid(newMapWidth, newMapHeight, 1.0f);
 
             incrementMapParameters(2);
 
@@ -110,19 +112,20 @@ namespace Dungeon_Crawler
             Portal portal =
                 new Portal(new Vector2(portalcell.X * cellSize, portalcell.Y * cellSize), portalTexture);
 
-            List<Enemy> enemies = CreateEnemiesList(Content, map, cellSize, enemiesCount, occupiedCells);
+            List<Enemy> enemies = CreateEnemiesList(Content, map, cellSize, enemiesCount, occupiedCells, grid);
             List<Item> items = CreateItemsList(Content, map, cellSize, itemsCount, occupiedCells, allItems, allItemsNames);
-            List<Rock> rocks = CreateRocksList(Content, map, cellSize, rocksCount, occupiedCells, rock);
+            List<Rock> rocks = CreateRocksList(Content, map, cellSize, rocksCount, occupiedCells, rock, grid);
+            
             incrementOtherParameters(1);
 
             Global.Camera.setParams(map.Width, map.Height, cellSize);
 
-            Level level = new Level(map, cellSize, enemies, allItems, allItemsNames, items, rocks, floor, wall, portal, occupiedCells, fireball);
+            Level level = new Level(map, grid, cellSize, enemies, allItems, allItemsNames, items, rocks, floor, wall, portal, occupiedCells, fireball);
 
             this.levels.Add(level);
         }
 
-        private List<Rock> CreateRocksList(ContentManager Content, Map map, int cellSize, int rocksCount, List<Cell> occupiedCells, Texture2D rock)
+        private List<Rock> CreateRocksList(ContentManager Content, Map map, int cellSize, int rocksCount, List<Cell> occupiedCells, Texture2D rock, Grid grid)
         {
             List<Rock> rocks = new List<Rock>(rocksCount);
 
@@ -131,10 +134,11 @@ namespace Dungeon_Crawler
                 Cell randomCell = GetRandomEmptyCell(map, occupiedCells);
                 occupiedCells.Add(randomCell);
                 //Set property of a cell occupied by an rock on a map to make it non-transparent. Necessary for fov calculations.
-                map.SetCellProperties(randomCell.X, randomCell.Y, false, true);
+                map.SetCellProperties(randomCell.X, randomCell.Y, false, false);
                 Rock tempRock =
                     new Rock(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), rock);
                 rocks.Add(tempRock);
+                grid.BlockCell(new Position(randomCell.X, randomCell.Y));
             }
 
             return rocks;
@@ -156,7 +160,7 @@ namespace Dungeon_Crawler
             return items;
         }
 
-        private List<Enemy> CreateEnemiesList(ContentManager Content, Map map, int cellSize, int enemyCount, List<Cell> occupiedCells)
+        private List<Enemy> CreateEnemiesList(ContentManager Content, Map map, int cellSize, int enemyCount, List<Cell> occupiedCells,Grid grid)
         {
             List<Enemy> enemies = new List<Enemy>(enemyCount);
 
@@ -172,6 +176,8 @@ namespace Dungeon_Crawler
                         Position = new Vector2((randomCell.X * cellSize + cellSize /3), (randomCell.Y * cellSize) + cellSize /3)
                     };
                 enemies.Add(tempEnemy);
+                grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
+                //grid.BlockCell(new Position(randomCell.X, randomCell.Y));
             }
 
             return enemies;
@@ -200,7 +206,7 @@ namespace Dungeon_Crawler
                 levels[player.CurrentLevel].addPlayer(player);
                 Vector2 newPlayerPosition = levels[player.CurrentLevel].GetRandomEmptyCell();
                 player.Position = newPlayerPosition;
-                Global.Camera.CenterOn(player.Origin);
+                Global.Camera.CenterOn(player.Center);
             }
         }
 

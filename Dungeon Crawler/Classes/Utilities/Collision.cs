@@ -340,7 +340,7 @@ namespace Dungeon_Crawler
         {
             if (character.GetType() != typeof(Player))
             {
-                if (Vector2.Distance(character.Origin, level.player.Origin) < level.cellSize)
+                if (Vector2.Distance(character.Center, level.player.Center) < level.cellSize)
                     if (checkCollision(characterRectangle, character, level.player, graphicsDevice))
                         return true;
             }
@@ -352,7 +352,7 @@ namespace Dungeon_Crawler
             foreach (Enemy enemy in level.enemies)
             {
                 if (enemy.Equals(character)) continue;
-                if (Vector2.Distance(character.Origin, enemy.Origin) < level.cellSize)
+                if (Vector2.Distance(character.Center, enemy.Center) < level.cellSize)
                 {
                     if (checkCollision(characterRectangle, character, enemy, graphicsDevice))
                         return true;
@@ -365,7 +365,7 @@ namespace Dungeon_Crawler
         {
             foreach (Rock rock in level.rocks)
             {
-                if (Vector2.Distance(character.Origin, rock.Origin) < level.cellSize)
+                if (Vector2.Distance(character.Center, rock.Center) < level.cellSize)
                 {
                     if (checkCollision(characterRectangle, character, rock, graphicsDevice))
                         return true;
@@ -379,13 +379,13 @@ namespace Dungeon_Crawler
         {
             foreach (Rock rock in level.rocks)
             {
-                if (Vector2.Distance(projectile.Origin2, rock.Origin) < level.cellSize)
+                if (Vector2.Distance(projectile.Center, rock.Center) < level.cellSize)
                 {
                     if (checkCollision(projectile, rock, graphicsDevice))
                         return true;
                 }
             }
-            if (Vector2.Distance(projectile.Origin2, level.portal.Origin) < level.cellSize)
+            if (Vector2.Distance(projectile.Center, level.portal.Center) < level.cellSize)
             {
                 if (checkCollision(projectile, level.portal, graphicsDevice))
                     return true;

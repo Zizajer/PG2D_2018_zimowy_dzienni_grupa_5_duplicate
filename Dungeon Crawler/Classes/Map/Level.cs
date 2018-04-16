@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using RogueSharp;
 using Microsoft.Xna.Framework;
 using System;
+using RoyT.AStar;
 
 namespace Dungeon_Crawler
 {
     public class Level
     {
         public Map map;
+        public Grid grid;
         public int cellSize;
         public List<Item> items;
         public List<Enemy> enemies;
@@ -26,9 +28,10 @@ namespace Dungeon_Crawler
         public Player player;
 
         public bool finished { get; set; }
-        public Level(Map map, int cellSize, List<Enemy> enemies, List<Texture2D> allItems, List<String> allItemsNames, List<Item> items, List<Rock> rocks, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells, Texture2D fireball)
+        public Level(Map map, Grid grid, int cellSize, List<Enemy> enemies, List<Texture2D> allItems, List<String> allItemsNames, List<Item> items, List<Rock> rocks, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells, Texture2D fireball)
         {
             this.map = map;
+            this.grid = grid;
             this.cellSize = cellSize;
             this.enemies = enemies;
             this.items = items;
