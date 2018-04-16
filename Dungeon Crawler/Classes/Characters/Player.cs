@@ -84,6 +84,7 @@ namespace Dungeon_Crawler
                     {
                         Position = mousePos;
                         Mana = Mana - teleportCost;
+                        level.map.ComputeFov(x, y, 15, true);
                         Global.Camera.CenterOn(Center);
                     }
                 }

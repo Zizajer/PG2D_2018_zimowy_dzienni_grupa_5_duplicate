@@ -70,7 +70,7 @@ namespace Dungeon_Crawler
 
             CreateLevel();
             Cell randomCell = GetRandomEmptyCell(levels[0].map, levels[0].occupiedCells);
-            this.player =
+            player =
              new Player(Content, cellSize, 0)
              {
                  Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
@@ -177,7 +177,7 @@ namespace Dungeon_Crawler
                 Cell randomCell = GetRandomEmptyCell(map, occupiedCells);
                 occupiedCells.Add(randomCell);
                 float speed = (Global.random.Next(2) + 1) / 0.7f;
-                float timeBetweenActions = (Global.random.Next(2)) + 1 / 0.7f;
+                float timeBetweenActions = 1f;
                 Enemy tempEnemy =
                     new Enemy(_animations, cellSize, speed, timeBetweenActions, map)
                     {
@@ -185,7 +185,6 @@ namespace Dungeon_Crawler
                     };
                 enemies.Add(tempEnemy);
                 grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
-                //grid.BlockCell(new Position(randomCell.X, randomCell.Y));
             }
 
             return enemies;

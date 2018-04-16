@@ -32,7 +32,7 @@ namespace Dungeon_Crawler
 
         State currentState;
 
-        public Enemy(Dictionary<string, Animation> _animations, int cellSize, float speed, float timeBetweenActions,Map map)
+        public Enemy(Dictionary<string, Animation> _animations, int cellSize, float speed, float timeBetweenActions, Map map)
         {
             Health = 100;
             this._animations = _animations;
@@ -73,8 +73,6 @@ namespace Dungeon_Crawler
             x = (int)Math.Floor(Center.X / level.cellSize);
             y = (int)Math.Floor(Center.Y / level.cellSize);
             
-            actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
             if (IsHitByProjectile(level, graphicsDevice))
             {
                 Health = 0;
@@ -82,7 +80,7 @@ namespace Dungeon_Crawler
 
             if (currentState == State.RandomMovement)
             {
-               // if (!map.IsInFov(x, y))
+                if (!map.IsInFov(x, y))
                 {
                     if (actionTimer > timeBetweenActions)
                     {
@@ -91,18 +89,16 @@ namespace Dungeon_Crawler
                     }
                     else
                     {
-                        CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
-                        
-                        int newx = (int)Math.Floor((Center.X + Velocity.X) / level.cellSize);
-                        int newy = (int)Math.Floor((Center.Y + Velocity.Y) / level.cellSize);
+                        actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        CollisionAvoidingMoveWithBouncing(currentDirection, Speed, level, graphicsDevice);
 
-                        if (newx != x || newy != y)
+                        if ((int)Math.Floor((Center.X + Velocity.X) / level.cellSize) != x || (int)Math.Floor((Center.Y + Velocity.Y) / level.cellSize) != y)
                             currentState = State.CenterMovement;
                     }
                 }
-                //else
+                else
                 {
-                    //currentState = State.MovingToAnotherCell;
+                    currentState = State.MovingToAnotherCell;
                 }
                    
             }
@@ -120,7 +116,7 @@ namespace Dungeon_Crawler
             }
             else if (currentState == State.MovingToAnotherCell)
             {
-                //if (map.IsInFov(x, y))
+                if (map.IsInFov(x, y))
                 {
                     if (Vector2.Distance(Center, level.player.Center) > level.cellSize * 2 / 3)
                     {
@@ -130,27 +126,26 @@ namespace Dungeon_Crawler
 
                         if (newx != x || newy != y)
                             currentState = State.CenterMovement;
-
                     }
                     else
                     {
-                        //atack
+                        currentState = State.Attacking;
                     }
                 }
-                //else
+                else
                 {
-                   // currentState = State.RandomMovement;
+                    currentState = State.RandomMovement;
                 }
             }
             else if (currentState == State.Attacking)
             {
-                if (Vector2.Distance(Center, level.player.Center) > level.cellSize * 2/3)
+                if (Vector2.Distance(Center, level.player.Center) < level.cellSize * 2/3)
                 {
-                    currentState = State.MovingToAnotherCell;
+                    //attack
                 }
                 else
                 {
-                    //attack
+                    currentState = State.MovingToAnotherCell;
                 }
             }
             else if (currentState == State.Unstucking)
@@ -246,6 +241,25 @@ namespace Dungeon_Crawler
             if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
             {
                 Move(currentDirection, Speed, level, graphicsDevice);
+            }
+        }
+        private void CollisionAvoidingMoveWithBouncing(Directions currentDirection, float speed, Level level, GraphicsDevice graphicsDevice)
+        {
+            if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
+            {
+                Move(currentDirection, Speed, level, graphicsDevice);
+            }
+            else
+            {
+                currentDirection = (Directions)Global.random.Next(4) + 1;
+                if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
+                {
+                    Move(currentDirection, Speed, level, graphicsDevice);
+                }
+                else
+                {
+                    Collision.unStuck(this, level, graphicsDevice);
+                }
             }
         }
         private void CollisionAvoidingMove(Directions currentDirection, float speed, Level level, GraphicsDevice graphicsDevice)
@@ -348,6 +362,22 @@ namespace Dungeon_Crawler
                 Velocity.X = +Speed;
                 Velocity.Y = +Speed;
             }
+        }
+        private Directions Opposite(Directions currentDirection)
+        {
+            if (currentDirection == Directions.Top)
+            {
+                return Directions.Bottom;
+            }
+            else if (currentDirection == Directions.Bottom)
+            {
+                return Directions.Top;
+            }
+            else if (currentDirection == Directions.Left)
+            {
+                return Directions.Right;
+            }
+            else return Directions.Left;
         }
     }
 }
