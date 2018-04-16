@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using RoyT.AStar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,7 +65,7 @@ namespace Dungeon_Crawler
             pastKey = Keyboard.GetState();
         }
 
-        public void Teleport(Level level)
+        public void Teleport(Level level,GraphicsDevice graphicsDevice)
         {
             if (Mouse.GetState().RightButton == ButtonState.Pressed)
             {
@@ -75,9 +76,12 @@ namespace Dungeon_Crawler
                     Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
                     x = (int)Math.Floor(mousePos.X / level.cellSize);
                     y = (int)Math.Floor(mousePos.Y / level.cellSize);
-                    if (level.map.GetCell(x, y).IsWalkable && !level.occupiedCells.Contains(level.map.GetCell(x, y)))
+                    Rectangle tempRec = new Rectangle((int)mousePos.X, (int)mousePos.Y, getWidth(), getHeight());
+                    if (x < 0 || x >= level.map.Width || y < 0 || y >= level.map.Height || Collision.isCollidingWithEnemies(tempRec,this,level,graphicsDevice) || Collision.isCollidingWithRocks(tempRec, this, level, graphicsDevice))
+                        return;
+                    if (level.map.GetCell(x, y).IsWalkable && !level.occupiedCells.Contains(level.map.GetCell(x, y)) && Collision.isCharacterInBounds(tempRec, level) && level.grid.GetCellCost(new Position(x,y))!= float.PositiveInfinity)
                     {
-                        Position = tempVector;
+                        Position = mousePos;
                         Mana = Mana - teleportCost;
                         Global.Camera.CenterOn(Center);
                     }
@@ -155,7 +159,7 @@ namespace Dungeon_Crawler
             }
 
             Fireball(level);
-            Teleport(level);
+            Teleport(level,graphicsDevice);
             SetAnimations();
             _animationManager.Update(gameTime);
             Position += Velocity;

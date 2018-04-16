@@ -181,48 +181,53 @@ namespace Dungeon_Crawler
         {
             if (x != level.player.x || y != level.player.y)
             {
-                //if (NextCell == null || x == NextCell.X && y == NextCell.Y)
+                if (NextCell == null || x == NextCell.X && y == NextCell.Y)
                 { 
-                    path = level.grid.GetPath(new Position(x, y), new Position(level.player.x, level.player.y),MovementPatterns.LateralOnly);
+                    path = level.grid.GetPath(new Position(x, y), new Position(level.player.x, level.player.y), MovementPatterns.LateralOnly);
                     if (path == null)
                     {
                         currentState = State.RandomMovement;
                         return;
                     }
-                    try
+                    else
                     {
-                        NextCell = level.map.GetCell(path[1].X, path[1].Y);
+                        if (path.Length>0)
+                        {
+                            int x = path[1].X;
+                            int y = path[1].Y;
+                            NextCell = level.map.GetCell(x, y);
+                        }
                     }
-                    catch (IndexOutOfRangeException)
+                }
+                else
+                {
+                    if (NextCell.Y < y)
                     {
+                        currentDirection = Directions.Top;
+                        CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
+                        return;
+                    } 
+                    if (NextCell.Y > y)
+                    {
+                        currentDirection = Directions.Bottom;
+                        CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
+                        return;
+                    }
+                    if (NextCell.X < x)
+                    {
+                        currentDirection = Directions.Left;
+                        CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
+                        return;
+                    }
+                    if (NextCell.X > x)
+                    {
+                        currentDirection = Directions.Right;
+                        CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
                         return;
                     }
                 }
-                if (NextCell.Y < y)
-                {
-                    currentDirection = Directions.Top;
-                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
-                    return;
-                } 
-                if (NextCell.Y > y)
-                {
-                    currentDirection = Directions.Bottom;
-                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
-                    return;
-                }
-                if (NextCell.X < x)
-                {
-                    currentDirection = Directions.Left;
-                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
-                    return;
-                }
-                if (NextCell.X > x)
-                {
-                    currentDirection = Directions.Right;
-                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
-                    return;
-                }
             }
+
         }
 
         private void CollisionAvoidingMove(Directions currentDirection, float speed, Level level, GraphicsDevice graphicsDevice)
