@@ -20,6 +20,7 @@ namespace Dungeon_Crawler
         public List<Item> inventory { get; set; }
         public int CurrentLevel { get; set; }
         KeyboardState pastKey;
+        MouseState pastButton;
         public int x;
         public int y;
         Directions currentDirection;
@@ -67,7 +68,7 @@ namespace Dungeon_Crawler
 
         public void Teleport(Level level,GraphicsDevice graphicsDevice)
         {
-            if (Mouse.GetState().RightButton == ButtonState.Pressed)
+            if (Mouse.GetState().RightButton == ButtonState.Pressed && pastButton.RightButton==ButtonState.Released)
             {
                 if (Mana > teleportCost)
                 {
@@ -87,6 +88,7 @@ namespace Dungeon_Crawler
                     }
                 }
             }
+            pastButton = Mouse.GetState();
         }
 
         public virtual Directions GetDirection()
