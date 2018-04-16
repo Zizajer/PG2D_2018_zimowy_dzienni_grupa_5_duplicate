@@ -204,27 +204,20 @@ namespace Dungeon_Crawler
                     if (NextCell.Y < y)
                     {
                         currentDirection = Directions.Top;
-                        CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
-                        return;
                     } 
                     if (NextCell.Y > y)
                     {
                         currentDirection = Directions.Bottom;
-                        CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
-                        return;
                     }
                     if (NextCell.X < x)
                     {
                         currentDirection = Directions.Left;
-                        CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
-                        return;
                     }
                     if (NextCell.X > x)
                     {
                         currentDirection = Directions.Right;
-                        CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
-                        return;
                     }
+                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
                 }
             }
 
@@ -243,9 +236,9 @@ namespace Dungeon_Crawler
                     Move(currentDirection, Speed, level, graphicsDevice);
                 else
                 {
-                    currentDirection = BounceOffObject(currentDirection, level, false, graphicsDevice);
-                    if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
+
                         Move(currentDirection, Speed, level, graphicsDevice);
+                    
                 }
             }
         }

@@ -68,6 +68,7 @@ namespace Dungeon_Crawler
                 enemy.Update(gameTime, this, graphicsDevice);
                 if (enemy.Health == 0)
                 {
+                    grid.SetCellCost(new Position(enemy.x, enemy.y), 1.0f);
                     enemies.RemoveAt(i);
                     if (Global.random.Next(10) > 6)
                     {
