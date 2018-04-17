@@ -142,7 +142,6 @@ namespace Dungeon_Crawler
             {
                 Cell randomCell = GetRandomEmptyCell(map, occupiedCells);
                 occupiedCells.Add(randomCell);
-                //Set property of a cell occupied by an rock on a map to make it non-transparent. Necessary for fov calculations.
                 map.SetCellProperties(randomCell.X, randomCell.Y, false, true);
                 Rock tempRock =
                     new Rock(new Vector2(randomCell.X * cellSize, randomCell.Y * cellSize), rock);

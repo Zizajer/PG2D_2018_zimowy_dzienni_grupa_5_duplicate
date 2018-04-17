@@ -82,19 +82,7 @@ namespace Dungeon_Crawler
             {
                 if (!map.IsInFov(x, y))
                 {
-                    if (actionTimer > timeBetweenActions)
-                    {
-                        actionTimer = 0;
-                        currentDirection = (Directions)Global.random.Next(3) + 1;
-                    }
-                    else
-                    {
-                        actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                        CollisionAvoidingMoveWithBouncing(currentDirection, Speed, level, graphicsDevice);
-
-                        if ((int)Math.Floor((Center.X + Velocity.X) / level.cellSize) != x || (int)Math.Floor((Center.Y + Velocity.Y) / level.cellSize) != y)
-                            currentState = State.CenterMovement;
-                    }
+                    CollisionAvoidingMoveWithBouncing(currentDirection, Speed, level, graphicsDevice);
                 }
                 else
                 {
@@ -258,7 +246,8 @@ namespace Dungeon_Crawler
                 }
                 else
                 {
-                    Collision.unStuck(this, level, graphicsDevice);
+
+                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
                 }
             }
         }
@@ -362,22 +351,6 @@ namespace Dungeon_Crawler
                 Velocity.X = +Speed;
                 Velocity.Y = +Speed;
             }
-        }
-        private Directions Opposite(Directions currentDirection)
-        {
-            if (currentDirection == Directions.Top)
-            {
-                return Directions.Bottom;
-            }
-            else if (currentDirection == Directions.Bottom)
-            {
-                return Directions.Top;
-            }
-            else if (currentDirection == Directions.Left)
-            {
-                return Directions.Right;
-            }
-            else return Directions.Left;
         }
     }
 }

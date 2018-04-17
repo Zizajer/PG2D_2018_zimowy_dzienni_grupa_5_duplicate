@@ -480,6 +480,19 @@ namespace Dungeon_Crawler
             return false;
         }
 
+        public static bool isCollidingWithRocks(Sprite sprite, Level level, GraphicsDevice graphicsDevice)
+        {
+            foreach (Rock rock in level.rocks)
+            {
+                if (Vector2.Distance(sprite.Center, rock.Center) < level.cellSize)
+                {
+                    if (checkCollision(sprite, rock, graphicsDevice))
+                        return true;
+                }
+            }
+            return false;
+        }
+
         public static bool checkCollision(Rectangle characterRectangle, Character character1, Character character2, GraphicsDevice graphicsDevice)
         {
             if (character1 == null || character2 == null) return false;

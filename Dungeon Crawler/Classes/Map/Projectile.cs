@@ -7,6 +7,7 @@ namespace Dungeon_Crawler
     public class Projectile:Sprite
     {
         public Vector2 Velocity { get; set; }
+        public Vector2 OriginalPosition { get; set; }
         public float rotation;
         public bool isEnemyHit = false;
         public bool isMarkedToDelete = false;
@@ -15,6 +16,7 @@ namespace Dungeon_Crawler
         int x, y;
         public Projectile(Vector2 vel, Vector2 pos, Texture2D tex,float rot) : base(pos, tex)
         {
+            OriginalPosition = pos;
             Velocity = vel;
             rotation = rot;
             isEnemyHit = false;
@@ -26,8 +28,8 @@ namespace Dungeon_Crawler
         public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
             Position += Velocity;
-            //Vanish projectile when out of player's fov.
-            if (!(Math.Abs(this.Position.X - level.player.Position.X) < Global.Camera.ViewportWidth && Math.Abs(this.Position.Y - level.player.Position.Y) < Global.Camera.ViewportHeight))
+            //Vanish projectile when out of range
+            if (Vector2.Distance(Center, OriginalPosition) > 3*level.cellSize)
             {
                 isMarkedToDelete = true;
             }
@@ -36,8 +38,11 @@ namespace Dungeon_Crawler
             y = (int)Math.Floor(Position.Y / level.cellSize);
             if (!level.map.GetCell(x, y).IsWalkable)
                 isMarkedToDelete = true;
+            //destroy when hit a rock
+            if (Collision.isCollidingWithRocks(this, level, graphicsDevice))
+                isMarkedToDelete = true;
 
-            if (!(Math.Abs(this.Position.X - level.player.Position.X) < Global.Camera.ViewportWidth && Math.Abs(this.Position.Y - level.player.Position.Y) < Global.Camera.ViewportHeight))
+            if (!(Math.Abs(Position.X - level.player.Position.X) < Global.Camera.ViewportWidth && Math.Abs(Position.Y - level.player.Position.Y) < Global.Camera.ViewportHeight))
             {
                 isMarkedToDelete = true;
             }
