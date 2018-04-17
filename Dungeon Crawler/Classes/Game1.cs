@@ -18,7 +18,7 @@ namespace Dungeon_Crawler
 
         protected override void Initialize()
         {
-            this.IsMouseVisible = true;
+            IsMouseVisible = true;
             Global.Camera.setViewports(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height);
             base.Initialize();
         }
@@ -28,6 +28,7 @@ namespace Dungeon_Crawler
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             levelManager = new LevelManager(this.Content);
+            Global.Gui.addLevelMananger(levelManager);
         }
 
         protected override void UnloadContent()

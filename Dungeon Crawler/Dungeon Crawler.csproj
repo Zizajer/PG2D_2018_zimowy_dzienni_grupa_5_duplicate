@@ -44,9 +44,12 @@
     <Compile Include="Classes\Characters\Animation.cs" />
     <Compile Include="Classes\Characters\AnimationManager.cs" />
     <Compile Include="Classes\Camera\CameraManager.cs" />
+    <Compile Include="Classes\Characters\Boss.cs" />
     <Compile Include="Classes\Characters\Character.cs" />
+    <Compile Include="Classes\Map\EnemyProjectile.cs" />
+    <Compile Include="Classes\Map\Sprite.cs" />
     <Compile Include="Classes\Map\Portal.cs" />
-    <Compile Include="Classes\Map\Projectile.cs" />
+    <Compile Include="Classes\Map\PlayerProjectile.cs" />
     <Compile Include="Classes\Utilities\Collision.cs" />
     <Compile Include="Classes\Characters\Enemy.cs" />
     <Compile Include="Classes\Game1.cs" />
@@ -56,7 +59,7 @@
     <Compile Include="Classes\Utilities\Layers.cs" />
     <Compile Include="Classes\Map\Level.cs" />
     <Compile Include="Classes\Map\LevelManager.cs" />
-    <Compile Include="Classes\Map\Obstacle.cs" />
+    <Compile Include="Classes\Map\Rock.cs" />
     <Compile Include="Classes\Characters\Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -68,8 +71,21 @@
     <Reference Include="RogueSharp, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\RogueSharp.3.0.0\lib\portable-net40+sl50+win+wpa81+wp80\RogueSharp.dll</HintPath>
     </Reference>
+    <Reference Include="RoyT.AStar, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RoyT.AStar.2.1.0\lib\netstandard1.0\RoyT.AStar.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon.ico" />

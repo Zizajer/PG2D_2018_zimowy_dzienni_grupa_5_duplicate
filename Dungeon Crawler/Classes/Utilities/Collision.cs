@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using RogueSharp;
 using System;
 
 namespace Dungeon_Crawler
@@ -13,7 +12,27 @@ namespace Dungeon_Crawler
             if (isWholeCharacterInBounds(character, level))
                 return true;
 
-            Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+             Rectangle characterRectangle = character.getRectangle();
+            //if not we check every corner
+            if (!isTopLeftCornerInBounds(characterRectangle, level))
+                return false;
+            if (!isTopRightCornerInBounds(characterRectangle, level))
+                return false;
+            if (!isBottomLeftCornerInBounds(characterRectangle, level))
+                return false;
+            if (!isBottomRightCornerInBounds(characterRectangle, level))
+                return false;
+
+            //all corners are in bounds so we good
+            return true;
+        }
+
+        public static bool isCharacterInBounds(Rectangle characterRectangle, Level level)
+        {
+            //most common scenario first to optimise calculations
+            if (isWholeCharacterInBounds(characterRectangle, level))
+                return true;
+
             //if not we check every corner
             if (!isTopLeftCornerInBounds(characterRectangle, level))
                 return false;
@@ -32,9 +51,25 @@ namespace Dungeon_Crawler
         {
             int x = (int)Math.Floor(character.Position.X / level.cellSize);
             int y = (int)Math.Floor(character.Position.Y / level.cellSize);
-            Cell characterCell = level.map.GetCell(x, y);
-            Microsoft.Xna.Framework.Rectangle cellRectangle = new Microsoft.Xna.Framework.Rectangle(characterCell.X * level.cellSize, characterCell.Y * level.cellSize, level.cellSize, level.cellSize);
-            Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+            if (x < 0 || x >= level.map.Width || y < 0 || y >= level.map.Height)
+                return false;
+            RogueSharp.Cell characterCell = level.map.GetCell(x, y);
+            Rectangle cellRectangle = new  Rectangle(characterCell.X * level.cellSize, characterCell.Y * level.cellSize, level.cellSize, level.cellSize);
+            Rectangle characterRectangle = character.getRectangle();
+
+            if (cellRectangle.Contains(characterRectangle) && characterCell.IsWalkable)
+                return true;
+            else
+                return false;
+        }
+        public static bool isWholeCharacterInBounds(Rectangle characterRectangle, Level level)
+        {
+            int x = characterRectangle.X / level.cellSize;
+            int y = characterRectangle.Y / level.cellSize;
+            if (x < 0 || x >= level.map.Width || y < 0 || y >= level.map.Height)
+                return false;
+            RogueSharp.Cell characterCell = level.map.GetCell(x, y);
+            Rectangle cellRectangle = new Rectangle(characterCell.X * level.cellSize, characterCell.Y * level.cellSize, level.cellSize, level.cellSize);
 
             if (cellRectangle.Contains(characterRectangle) && characterCell.IsWalkable)
                 return true;
@@ -42,52 +77,60 @@ namespace Dungeon_Crawler
                 return false;
         }
 
-        public static bool isTopLeftCornerInBounds(Microsoft.Xna.Framework.Rectangle characterRectangle, Level level)
+        public static bool isTopLeftCornerInBounds(Rectangle characterRectangle, Level level)
         {
             int x = characterRectangle.Left / level.cellSize;
             int y = characterRectangle.Top / level.cellSize;
-            Cell characterCell = level.map.GetCell(x, y);
+            if (x < 0 || x >= level.map.Width || y < 0 || y >= level.map.Height)
+                return false;
+            RogueSharp.Cell characterCell = level.map.GetCell(x, y);
             if (characterCell.IsWalkable)
                 return true;
             else
                 return false;
         }
 
-        public static bool isTopRightCornerInBounds(Microsoft.Xna.Framework.Rectangle characterRectangle, Level level)
+        public static bool isTopRightCornerInBounds(Rectangle characterRectangle, Level level)
         {
 
             int x = characterRectangle.Right / level.cellSize;
             int y = characterRectangle.Top / level.cellSize;
-            Cell characterCell = level.map.GetCell(x, y);
+            if (x < 0 || x >= level.map.Width || y < 0 || y >= level.map.Height)
+                return false;
+            RogueSharp.Cell characterCell = level.map.GetCell(x, y);
             if (characterCell.IsWalkable)
                 return true;
             else
                 return false;
         }
 
-        public static bool isBottomLeftCornerInBounds(Microsoft.Xna.Framework.Rectangle characterRectangle, Level level)
+        public static bool isBottomLeftCornerInBounds(Rectangle characterRectangle, Level level)
         {
             int x = characterRectangle.Left/ level.cellSize;
             int y = characterRectangle.Bottom / level.cellSize;
-            Cell characterCell = level.map.GetCell(x, y);
+            if (x < 0 || x >= level.map.Width || y < 0 || y >= level.map.Height)
+                return false;
+            RogueSharp.Cell characterCell = level.map.GetCell(x, y);
             if (characterCell.IsWalkable)
                 return true;
             else
                 return false;
         }
 
-        public static bool isBottomRightCornerInBounds(Microsoft.Xna.Framework.Rectangle characterRectangle, Level level)
+        public static bool isBottomRightCornerInBounds(Rectangle characterRectangle, Level level)
         {
             int x = characterRectangle.Right / level.cellSize;
             int y = characterRectangle.Bottom / level.cellSize;
-            Cell characterCell = level.map.GetCell(x, y);
+            if (x < 0 || x >= level.map.Width || y < 0 || y >= level.map.Height)
+                return false;
+            RogueSharp.Cell characterCell = level.map.GetCell(x, y);
             if (characterCell.IsWalkable)
                 return true;
             else
                 return false;
         }
 
-        public static void unStuck(Character character, Level level, GraphicsDevice graphicsDevice)
+        public static void getPlayerInBounds(Character character, Level level, GraphicsDevice graphicsDevice)
         {
             Vector2 originalPosition = character.Position;
 
@@ -150,7 +193,70 @@ namespace Dungeon_Crawler
             }
         }
 
-        public static Character.Directions checkIfOneOfDirectionsIsOk(Character.Directions currentDirection, Character character, Level level, GraphicsDevice graphicsDevice)
+        public static void unStuck(Character character, Level level, GraphicsDevice graphicsDevice)
+        {
+            Vector2 originalPosition = character.Position;
+
+            for (int i = 1; i < 30; i++)
+            {
+                //top
+                character._position.Y -= i;
+                if (isCharacterInBounds(character, level)&&!isCollidingWithEverythingElse(character.getRectangle(),character,level,graphicsDevice))
+                    return;
+                else
+                    character.Position = originalPosition;
+                //bottom
+                character._position.Y += i;
+                if (isCharacterInBounds(character, level)&&!isCollidingWithEverythingElse(character.getRectangle(),character,level,graphicsDevice))
+                    return;
+                else
+                    character.Position = originalPosition;
+                //left
+                character._position.X -= i;
+                if (isCharacterInBounds(character, level)&&!isCollidingWithEverythingElse(character.getRectangle(),character,level,graphicsDevice))
+                    return;
+                else
+                    character.Position = originalPosition;
+                //right
+                character._position.X += i;
+                if (isCharacterInBounds(character, level)&&!isCollidingWithEverythingElse(character.getRectangle(),character,level,graphicsDevice))
+                    return;
+                else
+                    character.Position = originalPosition;
+
+                //topleft
+                character._position.Y -= i;
+                character._position.X -= i;
+                if (isCharacterInBounds(character, level)&&!isCollidingWithEverythingElse(character.getRectangle(),character,level,graphicsDevice))
+                    return;
+                else
+                    character.Position = originalPosition;
+                //topright
+                character._position.Y -= i;
+                character._position.X += i;
+                if (isCharacterInBounds(character, level)&&!isCollidingWithEverythingElse(character.getRectangle(),character,level,graphicsDevice))
+                    return;
+                else
+                    character.Position = originalPosition;
+                //bottomleft
+                character._position.Y += i;
+                character._position.X -= i;
+                if (isCharacterInBounds(character, level)&&!isCollidingWithEverythingElse(character.getRectangle(),character,level,graphicsDevice))
+                    return;
+                else
+                    character.Position = originalPosition;
+                //bottomright
+                character._position.Y += i;
+                character._position.X += i;
+                if (isCharacterInBounds(character, level)&&!isCollidingWithEverythingElse(character.getRectangle(),character,level,graphicsDevice))
+                    return;
+                else
+                    character.Position = originalPosition;
+
+            }
+        }
+
+        public static Character.Directions checkIfOneOfDoubleDirectionsIsOk(Character.Directions currentDirection, Character character, Level level, GraphicsDevice graphicsDevice)
         {
             if (currentDirection == Character.Directions.TopLeft)
             {
@@ -210,7 +316,7 @@ namespace Dungeon_Crawler
         {
             if (currentDirection == Character.Directions.Top)
             {
-                Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+                Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.Y -= (int)character.Speed;
                 if (isTopLeftCornerInBounds(characterRectangle, level) && isTopRightCornerInBounds(characterRectangle, level))
                     if (!isCollidingWithEverythingElse(characterRectangle, character, level, graphicsDevice))
@@ -224,7 +330,7 @@ namespace Dungeon_Crawler
                 
             if (currentDirection == Character.Directions.Bottom)
             {
-                Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+                Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.Y += (int)character.Speed;
                 if (isBottomLeftCornerInBounds(characterRectangle, level) && isBottomRightCornerInBounds(characterRectangle, level))
                     if (!isCollidingWithEverythingElse(characterRectangle, character, level, graphicsDevice))
@@ -237,7 +343,7 @@ namespace Dungeon_Crawler
 
             if (currentDirection == Character.Directions.Left)
             {
-                Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+                Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.X -= (int)character.Speed;
                 if (isTopLeftCornerInBounds(characterRectangle, level) && isBottomLeftCornerInBounds(characterRectangle, level))
                     if (!isCollidingWithEverythingElse(characterRectangle, character, level, graphicsDevice))
@@ -250,7 +356,7 @@ namespace Dungeon_Crawler
  
             if (currentDirection == Character.Directions.Right)
             {
-                Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+                Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.X += (int)character.Speed;
                 if (isTopRightCornerInBounds(characterRectangle, level) && isBottomRightCornerInBounds(characterRectangle, level))
                     if (!isCollidingWithEverythingElse(characterRectangle, character, level, graphicsDevice))
@@ -263,7 +369,7 @@ namespace Dungeon_Crawler
 
             if (currentDirection == Character.Directions.TopLeft)
             {
-                Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+                Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.Y -= (int)character.Speed;
                 characterRectangle.X -= (int)character.Speed;
 
@@ -278,7 +384,7 @@ namespace Dungeon_Crawler
 
             if (currentDirection == Character.Directions.TopRight)
             {
-                Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+                Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.Y -= (int)character.Speed;
                 characterRectangle.X += (int)character.Speed;
 
@@ -293,7 +399,7 @@ namespace Dungeon_Crawler
 
             if (currentDirection == Character.Directions.BottomLeft)
             {
-                Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+                Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.Y += (int)character.Speed;
                 characterRectangle.X -= (int)character.Speed;
 
@@ -307,7 +413,7 @@ namespace Dungeon_Crawler
             }
             if (currentDirection == Character.Directions.BottomRight)
             {
-                Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+                Rectangle characterRectangle = character.getRectangle();
                 characterRectangle.Y += (int)character.Speed;
                 characterRectangle.X += (int)character.Speed;
 
@@ -322,7 +428,7 @@ namespace Dungeon_Crawler
             return false;
         }
 
-        public static bool isCollidingWithEverythingElse(Microsoft.Xna.Framework.Rectangle characterRectangle, Character character, Level level, GraphicsDevice graphicsDevice)
+        public static bool isCollidingWithEverythingElse(Rectangle characterRectangle, Character character, Level level, GraphicsDevice graphicsDevice)
         {
             if (isCollidingWithPlayer(characterRectangle, character, level, graphicsDevice))
                 return true;
@@ -330,29 +436,29 @@ namespace Dungeon_Crawler
             if (isCollidingWithEnemies(characterRectangle, character, level, graphicsDevice))
                 return true;
 
-            if (isCollidingWithObstacles(characterRectangle, character, level, graphicsDevice))
+            if (isCollidingWithRocks(characterRectangle, character, level, graphicsDevice))
                 return true;
 
             return false;
         }
 
-        public static bool isCollidingWithPlayer(Microsoft.Xna.Framework.Rectangle characterRectangle, Character character, Level level, GraphicsDevice graphicsDevice)
+        public static bool isCollidingWithPlayer(Rectangle characterRectangle, Character character, Level level, GraphicsDevice graphicsDevice)
         {
             if (character.GetType() != typeof(Player))
             {
-                if (Vector2.Distance(character.Origin, level.player.Origin) < level.cellSize)
+                if (Vector2.Distance(characterRectangle.Center.ToVector2(), level.player.Center) < level.cellSize)
                     if (checkCollision(characterRectangle, character, level.player, graphicsDevice))
                         return true;
             }
             return false;
         }
 
-        public static bool isCollidingWithEnemies(Microsoft.Xna.Framework.Rectangle characterRectangle, Character character, Level level, GraphicsDevice graphicsDevice)
+        public static bool isCollidingWithEnemies(Rectangle characterRectangle, Character character, Level level, GraphicsDevice graphicsDevice)
         {
-            foreach (Enemy enemy in level.enemies)
+            foreach (Character enemy in level.enemies)
             {
-                if (enemy.Equals(character)) continue;
-                if (Vector2.Distance(character.Origin, enemy.Origin) < level.cellSize)
+                if (enemy==character) continue;
+                if (Vector2.Distance(characterRectangle.Center.ToVector2(), enemy.Center) < level.cellSize)
                 {
                     if (checkCollision(characterRectangle, character, enemy, graphicsDevice))
                         return true;
@@ -361,46 +467,39 @@ namespace Dungeon_Crawler
             return false;
         }
 
-        public static bool isCollidingWithObstacles(Microsoft.Xna.Framework.Rectangle characterRectangle, Character character, Level level, GraphicsDevice graphicsDevice)
+        public static bool isCollidingWithRocks(Rectangle characterRectangle, Character character, Level level, GraphicsDevice graphicsDevice)
         {
-            foreach (Obstacle obstacle in level.obstacles)
+            foreach (Rock rock in level.rocks)
             {
-                if (Vector2.Distance(character.Origin, obstacle.Origin) < level.cellSize)
+                if (Vector2.Distance(characterRectangle.Center.ToVector2(), rock.Center) < level.cellSize)
                 {
-                    if (checkCollision(characterRectangle, character, obstacle, graphicsDevice))
+                    if (checkCollision(characterRectangle, character, rock, graphicsDevice))
                         return true;
                 }
             }
             return false;
         }
 
-
-        public static bool isCollidingWithObstacles(Projectile projectile, Level level, GraphicsDevice graphicsDevice)
+        public static bool isCollidingWithRocks(Sprite sprite, Level level, GraphicsDevice graphicsDevice)
         {
-            foreach (Obstacle obstacle in level.obstacles)
+            foreach (Rock rock in level.rocks)
             {
-                if (Vector2.Distance(projectile.Origin2, obstacle.Origin) < level.cellSize)
+                if (Vector2.Distance(sprite.Center, rock.Center) < level.cellSize)
                 {
-                    if (checkCollision(projectile, obstacle, graphicsDevice))
+                    if (checkCollision(sprite, rock, graphicsDevice))
                         return true;
                 }
             }
-            if (Vector2.Distance(projectile.Origin2, level.portal.Origin) < level.cellSize)
-            {
-                if (checkCollision(projectile, level.portal, graphicsDevice))
-                    return true;
-            }
-
             return false;
         }
 
-        public static bool checkCollision(Microsoft.Xna.Framework.Rectangle characterRectangle, Character character1, Character character2, GraphicsDevice graphicsDevice)
+        public static bool checkCollision(Rectangle characterRectangle, Character character1, Character character2, GraphicsDevice graphicsDevice)
         {
             if (character1 == null || character2 == null) return false;
-            Microsoft.Xna.Framework.Rectangle character1Rectangle = characterRectangle;
+            Rectangle character1Rectangle = characterRectangle;
             Color[] character1TextureData = character1.getCurrentTextureData(graphicsDevice);
 
-            Microsoft.Xna.Framework.Rectangle character2Rectangle = character2.getRectangle();
+            Rectangle character2Rectangle = character2.getRectangle();
             Color[] character2TextureData = character2.getCurrentTextureData(graphicsDevice);
 
             if (character1Rectangle.Intersects(character2Rectangle))
@@ -413,18 +512,18 @@ namespace Dungeon_Crawler
             return false;
         }
 
-        public static bool checkCollision(Microsoft.Xna.Framework.Rectangle character1Rectangle, Character character,Obstacle obstacle,GraphicsDevice graphicsDevice)
+        public static bool checkCollision(Rectangle character1Rectangle, Character character,Sprite sprite,GraphicsDevice graphicsDevice)
         {
-            if (character == null || obstacle == null) return false;
+            if (character == null || sprite == null) return false;
             Color[] characterTextureData = character.getCurrentTextureData(graphicsDevice);
 
-            Microsoft.Xna.Framework.Rectangle characterRectangle = character1Rectangle;
+            Rectangle characterRectangle = character1Rectangle;
 
-            Microsoft.Xna.Framework.Rectangle obstacleRectangle = obstacle.getRectangle();
+            Rectangle spriteRectangle = sprite.getRectangle();
 
-            if (characterRectangle.Intersects(obstacleRectangle))
+            if (characterRectangle.Intersects(spriteRectangle))
             {
-                if (IntersectPixels(characterRectangle, characterTextureData,obstacleRectangle, obstacle.TextureData))
+                if (IntersectPixels(characterRectangle, characterTextureData, spriteRectangle, sprite.TextureData))
                 {
                     return true;
                 }
@@ -432,80 +531,21 @@ namespace Dungeon_Crawler
             return false;
         }
 
-        public static bool checkCollision(Character character, Projectile projectile, GraphicsDevice graphicsDevice)
+        public static bool checkCollision(Sprite sprite1, Sprite sprite2, GraphicsDevice graphicsDevice)
         {
-            if (character == null || projectile == null) return false;
-            Color[] characterTextureData = character.getCurrentTextureData(graphicsDevice);
+            if (sprite1 == null || sprite2 == null) return false;
 
-            Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
+            Rectangle sprite1Rectangle = sprite1.getRectangle();
 
-            Microsoft.Xna.Framework.Rectangle projectileRectangle = projectile.getRectangle();
+            Rectangle sprite2Rectangle = sprite2.getRectangle();
 
-            if (characterRectangle.Intersects(projectileRectangle))
+            if (sprite1Rectangle.Intersects(sprite2Rectangle))
             {
-                if (IntersectPixels(characterRectangle, characterTextureData, projectileRectangle, projectile.TextureData))
-                {
-                    return true;
-                }
+                return true;
             }
             return false;
         }
 
-        public static bool checkCollision(Character character, Item item, GraphicsDevice graphicsDevice)
-        {
-            if (character == null || item == null) return false;
-            Color[] characterTextureData = character.getCurrentTextureData(graphicsDevice);
-
-            Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
-
-            Microsoft.Xna.Framework.Rectangle itemRectangle = item.getRectangle();
-
-            if (characterRectangle.Intersects(itemRectangle))
-            {
-                if (IntersectPixels(characterRectangle, characterTextureData, itemRectangle, item.TextureData))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public static bool checkCollision(Projectile projectile, Obstacle obstacle, GraphicsDevice graphicsDevice)
-        {
-            if (projectile == null || obstacle == null) return false;
-
-            Microsoft.Xna.Framework.Rectangle projectileRectangle = projectile.getRectangle();
-
-            Microsoft.Xna.Framework.Rectangle obstacleRectangle = obstacle.getRectangle();
-
-            if (projectileRectangle.Intersects(obstacleRectangle))
-            {
-                if (IntersectPixels(projectileRectangle, projectile.TextureData, obstacleRectangle, obstacle.TextureData))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public static bool checkCollision(Character character, Portal portal, GraphicsDevice graphicsDevice)
-        {
-            if (character == null || portal == null) return false;
-            Color[] characterTextureData = character.getCurrentTextureData(graphicsDevice);
-
-            Microsoft.Xna.Framework.Rectangle characterRectangle = character.getRectangle();
-
-            Microsoft.Xna.Framework.Rectangle portalRectangle = portal.getRectangle();
-
-            if (characterRectangle.Intersects(portalRectangle))
-            {
-                if (IntersectPixels(characterRectangle, characterTextureData, portalRectangle, portal.TextureData))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
 
         // source: http://xbox.create.msdn.com/en-US/education/catalog/tutorial/collision_2d_perpixel_transformed
         /// <summary>
@@ -517,8 +557,8 @@ namespace Dungeon_Crawler
         /// <param name="rectangleB">Bouding rectangle of the second sprite</param>
         /// <param name="dataB">Pixel data of the second sprite</param>
         /// <returns>True if non-transparent pixels overlap; false otherwise</returns>
-        public static bool IntersectPixels(Microsoft.Xna.Framework.Rectangle rectangleA, Color[] dataA,
-                                           Microsoft.Xna.Framework.Rectangle rectangleB, Color[] dataB)
+        public static bool IntersectPixels(Rectangle rectangleA, Color[] dataA,
+                                           Rectangle rectangleB, Color[] dataB)
         {
             // Find the bounds of the rectangle intersection
             int top = Math.Max(rectangleA.Top, rectangleB.Top);
