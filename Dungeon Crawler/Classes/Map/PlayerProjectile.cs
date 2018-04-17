@@ -4,17 +4,16 @@ using System;
 
 namespace Dungeon_Crawler
 {
-    public class Projectile:Sprite
+    public class PlayerProjectile:Sprite
     {
         public Vector2 Velocity { get; set; }
         public Vector2 OriginalPosition { get; set; }
         public float rotation;
         public bool isEnemyHit = false;
-        public bool isMarkedToDelete = false;
         private float ProjectileTimer;
         private readonly float VanishDelay = 0.25f;
         int x, y;
-        public Projectile(Vector2 vel, Vector2 pos, Texture2D tex,float rot) : base(pos, tex)
+        public PlayerProjectile(Vector2 vel, Vector2 pos, Texture2D tex,float rot) : base(pos, tex)
         {
             OriginalPosition = pos;
             Velocity = vel;
@@ -25,7 +24,7 @@ namespace Dungeon_Crawler
         {
             spriteBatch.Draw(Texture, Position, null, Color.White, rotation, Origin, Size, SpriteEffects.None, Layers.Projectiles);
         }
-        public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
+        public void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
             Position += Velocity;
             //Vanish projectile when out of range
@@ -41,11 +40,6 @@ namespace Dungeon_Crawler
             //destroy when hit a rock
             if (Collision.isCollidingWithRocks(this, level, graphicsDevice))
                 isMarkedToDelete = true;
-
-            if (!(Math.Abs(Position.X - level.player.Position.X) < Global.Camera.ViewportWidth && Math.Abs(Position.Y - level.player.Position.Y) < Global.Camera.ViewportHeight))
-            {
-                isMarkedToDelete = true;
-            }
 
             //Vanish projectile when hit an enemy after certain delay. (If we destroyed the projectile just after hitting first enemy, we couldn't kill a group of enemies staying nearby)
             if (isEnemyHit)

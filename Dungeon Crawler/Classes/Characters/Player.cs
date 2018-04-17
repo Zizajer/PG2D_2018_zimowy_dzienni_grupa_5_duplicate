@@ -21,8 +21,6 @@ namespace Dungeon_Crawler
         public int CurrentLevel { get; set; }
         KeyboardState pastKey;
         MouseState pastButton;
-        public int x;
-        public int y;
         Directions currentDirection;
         public Player(ContentManager content, int cellSize, int playerCurrentLevel)
         {
@@ -40,12 +38,26 @@ namespace Dungeon_Crawler
             inventory = new List<Item>();
             _animationManager = new AnimationManager(_animations.First().Value);
         }
+        public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
+        {
+            EnemyProjectile projectile = null;
+            for (int i = 0; i < level.enemyProjectiles.Count; i++)
+            {
+                projectile = level.enemyProjectiles[i];
+                if (Collision.checkCollision(getRectangle(), this, projectile, graphicsDevice))
+                {
+                    projectile.isPlayerHit = true;
 
+                    return true;
+                }
+            }
+            return false;
+        }
         public void Fireball(Level level)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Space) && pastKey.IsKeyUp(Keys.Space))
             {
-                if (level.projectiles.Count() < maxFireballsOnScreen && Mana> fireballCost)
+                if (level.playerProjectiles.Count() < maxFireballsOnScreen && Mana> fireballCost)
                 {
                     MouseState mouse = Mouse.GetState();
                     Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
@@ -54,12 +66,12 @@ namespace Dungeon_Crawler
                     float distanceY = mousePos.Y - this.Position.Y;
 
                     rotation = (float)Math.Atan2(distanceY, distanceX);
-                    Vector2 tempVelocity = new Vector2((float)Math.Cos(rotation) * 3f, ((float)Math.Sin(rotation)) * 5f) +Velocity/3;
+                    Vector2 tempVelocity = new Vector2((float)Math.Cos(rotation) * 5f, ((float)Math.Sin(rotation)) * 5f) +Velocity/3;
                     Vector2 tempPosition = Center + tempVelocity * 3;
 
-                    Projectile newProjectile = new Projectile(tempVelocity, tempPosition, level.fireball, rotation);
+                    PlayerProjectile newProjectile = new PlayerProjectile(tempVelocity, tempPosition, level.fireball, rotation);
 
-                    level.projectiles.Add(newProjectile);
+                    level.playerProjectiles.Add(newProjectile);
                     Mana = Mana - fireballCost;
                 }
             }
@@ -124,8 +136,12 @@ namespace Dungeon_Crawler
             return Directions.None;
         }
 
-        public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
+        public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
+            if (IsHitByProjectile(level, graphicsDevice))
+            {
+                Health -= 20;
+            }
             x = (int)Math.Floor(Center.X / level.cellSize);
             y = (int)Math.Floor(Center.Y / level.cellSize);
             CurrentCell = level.map.GetCell(x, y);

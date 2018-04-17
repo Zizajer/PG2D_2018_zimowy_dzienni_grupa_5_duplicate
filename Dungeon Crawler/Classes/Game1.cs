@@ -28,6 +28,7 @@ namespace Dungeon_Crawler
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             levelManager = new LevelManager(this.Content);
+            Global.Gui.addLevelMananger(levelManager);
         }
 
         protected override void UnloadContent()

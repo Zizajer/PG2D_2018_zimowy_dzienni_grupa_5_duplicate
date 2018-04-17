@@ -455,7 +455,7 @@ namespace Dungeon_Crawler
 
         public static bool isCollidingWithEnemies(Rectangle characterRectangle, Character character, Level level, GraphicsDevice graphicsDevice)
         {
-            foreach (Enemy enemy in level.enemies)
+            foreach (Character enemy in level.enemies)
             {
                 if (enemy==character) continue;
                 if (Vector2.Distance(characterRectangle.Center.ToVector2(), enemy.Center) < level.cellSize)

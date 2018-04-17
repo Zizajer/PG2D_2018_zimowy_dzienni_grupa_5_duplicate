@@ -14,12 +14,9 @@ namespace Dungeon_Crawler
 
         public int prevX { get; set; }
         public int prevY { get; set; }
-        public int x { get; set; }
-        public int y { get; set; }
 
         Directions currentDirection;
         //Random movement vars
-        float actionTimer;
         float timeBetweenActions;
         float unstuckTimer;
         float unstuckTimer2;
@@ -39,7 +36,6 @@ namespace Dungeon_Crawler
             this.timeBetweenActions = timeBetweenActions;
             Speed = speed;
             _animationManager = new AnimationManager(_animations.First().Value);
-            actionTimer = 0;
             currentDirection= (Directions)Global.random.Next(4) + 1;
             this.map = map;
             x = (int)Math.Floor(Center.X / cellSize);
@@ -55,11 +51,11 @@ namespace Dungeon_Crawler
 
         public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
         {
-            Projectile projectile;
-            for (int i = 0; i < level.projectiles.Count; i++)
+            PlayerProjectile projectile = null;
+            for (int i = 0; i < level.playerProjectiles.Count; i++)
             {
-                projectile = level.projectiles[i];
-                if (Collision.checkCollision(getRectangle(),this, projectile, graphicsDevice))
+                projectile = level.playerProjectiles[i];
+                if (Collision.checkCollision(getRectangle(), this, projectile, graphicsDevice))
                 {
                     projectile.isEnemyHit = true;
                     return true;
@@ -68,7 +64,7 @@ namespace Dungeon_Crawler
             return false;
         }
 
-        public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
+        public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
             x = (int)Math.Floor(Center.X / level.cellSize);
             y = (int)Math.Floor(Center.Y / level.cellSize);

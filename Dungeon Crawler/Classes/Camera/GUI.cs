@@ -5,6 +5,7 @@ namespace Dungeon_Crawler
 {
     class GUI
     {
+        LevelManager lm;
         private readonly Player _player;
         private int playerCurrentLevel;
         private int health;
@@ -23,6 +24,10 @@ namespace Dungeon_Crawler
             int tempY = Global.Camera.ViewportWorldBoundry().Y;
             int tempX2 = Global.Camera.ViewportWorldBoundry().X + (int)(Global.Camera.ViewportWorldBoundry().Width * 0.21);
             int tempY2 = Global.Camera.ViewportWorldBoundry().Y + (int)(Global.Camera.ViewportWorldBoundry().Height * 0.06);
+            int tempY3 = Global.Camera.ViewportWorldBoundry().Y + (int)(Global.Camera.ViewportWorldBoundry().Height * 0.18);
+
+            int gameOverX = (int)(Global.Camera.ViewportWorldBoundry().X+Global.Camera.ViewportWorldBoundry().Width / 2 - font.MeasureString("Game Over").Length() / 2);
+            int gameOverY = Global.Camera.ViewportWorldBoundry().Y+Global.Camera.ViewportWorldBoundry().Height / 3;
             float scale = Global.Camera.Zoom;
             if (_player.Health > 0)
             {
@@ -32,16 +37,34 @@ namespace Dungeon_Crawler
                 spriteBatch.DrawString(font, healthString, new Vector2(tempX, tempY), Color.OrangeRed, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
                 spriteBatch.DrawString(font, manaString, new Vector2(tempX2, tempY), Color.DeepSkyBlue, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
                 spriteBatch.DrawString(font, s, new Vector2(tempX, tempY2), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
+                if (lm.levels[playerCurrentLevel].isBossLevel)
+                {
+                    if(lm.levels[playerCurrentLevel].enemies.Count>0){
+                        string bossHealth = "Boss Health: " + lm.levels[playerCurrentLevel].enemies[0].Health + " %";
+                        spriteBatch.DrawString(font, bossHealth, new Vector2(tempX, tempY3), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
+                    }
+                    else{
+                        string bossHealth = "Boss Health: 0%";
+                        spriteBatch.DrawString(font, bossHealth, new Vector2(tempX, tempY3), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
+                    }
+                    
+                }
             }
             else
             {
-                spriteBatch.DrawString(font, "Game Over", new Vector2(tempX, tempY), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
+                spriteBatch.DrawString(font, "Game Over", new Vector2(gameOverX, gameOverY), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
             }
             tempY += (int)(0.8 * Global.Camera.ViewportWorldBoundry().Height);
             string tempString = console[0] + "\n" + console[1] + "\n" + console[2] + "\n" + console[3];
             spriteBatch.DrawString(font, tempString, new Vector2(tempX, tempY), Color.White, 0.0f, Vector2.One, 0.7f * (1 / scale), SpriteEffects.None, Layers.Text);
 
         }
+
+        internal void addLevelMananger(LevelManager levelManager)
+        {
+            lm = levelManager;
+        }
+
         public void Update()
         {
             health = _player.Health;

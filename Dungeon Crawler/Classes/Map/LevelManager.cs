@@ -11,30 +11,32 @@ namespace Dungeon_Crawler
 {
     class LevelManager
     {
-        private Player player;
-        List<Level> levels;
-        ContentManager Content;
-        private int newMapWidth = 15;
-        private int newMapHeight = 8;
-        private int newMapRoomCount = 100;
-        private int newMapRoomMaxSize = 7;
-        private int newMapRoomMinSize = 2;
-        private int enemiesCount = 1;
-        private int itemsCount = 1;
-        private int rocksCount = 0;
-        Texture2D floor;
-        Texture2D wall;
-        Texture2D fireball;
-        int cellSize;
+        public Player player;
+        public List<Level> levels;
+        public ContentManager Content;
+        public int newMapWidth = 15;
+        public int newMapHeight = 8;
+        public int newMapRoomCount = 100;
+        public int newMapRoomWidth = 7;
+        public int newMapRoomHeight = 2;
+        public int enemiesCount = 1;
+        public int itemsCount = 1;
+        public int rocksCount = 0;
+        public Texture2D floor;
+        public Texture2D wall;
+        public Texture2D fireball;
+        public Texture2D bossFireball;
+        public int cellSize;
 
-        Dictionary<string, Animation> _animations;
+        public Dictionary<string, Animation> _animations;
+        public Dictionary<string, Animation> _animationsBoss;
 
-        List<Texture2D> allItems;
-        List<String> allItemsNames;
+        public List<Texture2D> allItems;
+        public List<String> allItemsNames;
 
-        Texture2D rock;
+        public Texture2D rock;
 
-        Texture2D portalTexture;
+        public Texture2D portalTexture;
 
         public LevelManager(ContentManager Content)
         {
@@ -44,6 +46,7 @@ namespace Dungeon_Crawler
             floor = Content.Load<Texture2D>("map/Floor");
             wall = Content.Load<Texture2D>("map/Wall");
             fireball = Content.Load<Texture2D>("spells/Fireball");
+            bossFireball= Content.Load<Texture2D>("spells/BossFireball");
             rock = Content.Load<Texture2D>("map/rock");
             portalTexture = Content.Load<Texture2D>("map/portal");
 
@@ -53,6 +56,10 @@ namespace Dungeon_Crawler
                     {"WalkDown",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingDown"),3 )},
                     {"WalkLeft",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingLeft"),3 )},
                     {"WalkRight",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingRight"),3 )}
+                };
+            _animationsBoss = new Dictionary<string, Animation>()
+                {
+                    {"BossAlive",new Animation(Content.Load<Texture2D>("enemy/BossAlive"),3 )}
                 };
 
             allItems = new List<Texture2D>(3);
@@ -68,7 +75,7 @@ namespace Dungeon_Crawler
 
             cellSize = floor.Width;
 
-            CreateLevel();
+            CreateNormalLevel();
             Cell randomCell = GetRandomEmptyCell(levels[0].map, levels[0].occupiedCells);
             player =
              new Player(Content, cellSize, 0)
@@ -99,9 +106,9 @@ namespace Dungeon_Crawler
             rocksCount = rocksCount + increaseValue;
         }
 
-        public void CreateLevel()
+        public void CreateNormalLevel()
         {
-            Map map = CreateMap(newMapWidth, newMapHeight, newMapRoomCount, newMapRoomMaxSize, newMapRoomMinSize);
+            Map map = CreateMap(newMapWidth, newMapHeight, newMapRoomCount, newMapRoomWidth, newMapRoomHeight);
             var grid = new Grid(newMapWidth, newMapHeight, 1.0f);
 
 
@@ -112,7 +119,7 @@ namespace Dungeon_Crawler
             Portal portal =
                 new Portal(new Vector2(portalcell.X * cellSize, portalcell.Y * cellSize), portalTexture);
 
-            List<Enemy> enemies = CreateEnemiesList(Content, map, cellSize, enemiesCount, occupiedCells, grid);
+            List<Character> enemies = CreateEnemiesList(Content, map, cellSize, enemiesCount, occupiedCells, grid);
             List<Item> items = CreateItemsList(Content, map, cellSize, itemsCount, occupiedCells, allItems, allItemsNames);
             List<Rock> rocks = CreateRocksList(Content, map, cellSize, rocksCount, occupiedCells, rock, grid);
             
@@ -132,6 +139,38 @@ namespace Dungeon_Crawler
 
             incrementMapParameters(2);
             incrementOtherParameters(1);
+        }
+
+        public void CreateBossLevel()
+        {
+            Map map = CreateMap(15, 11, 50, 10, 10);
+            var grid = new Grid(newMapWidth, newMapHeight, 1.0f);
+
+            List<Cell> occupiedCells = new List<Cell>();
+
+            Cell portalcell = GetRandomEmptyCell(map, occupiedCells);
+            occupiedCells.Add(portalcell);
+            Portal portal =
+                new Portal(new Vector2(portalcell.X * cellSize, portalcell.Y * cellSize), portalTexture);
+
+            List<Character> enemies =new List<Character>(1);
+
+            Cell randomCell = map.GetCell(5, 5);
+            occupiedCells.Add(randomCell);
+
+            float timeBetweenActions = 1f;
+            Character tempBoss =
+                new Boss(_animationsBoss, cellSize, timeBetweenActions, map)
+                {
+                    Position = new Vector2((randomCell.X * cellSize), (randomCell.Y * cellSize))
+                };
+                enemies.Add(tempBoss);
+
+            Global.Camera.setParams(map.Width, map.Height, cellSize);
+
+            Level level = new Level(map, grid, cellSize, enemies, floor, wall, portal, occupiedCells, fireball, bossFireball);
+
+            levels.Add(level);
         }
 
         private List<Rock> CreateRocksList(ContentManager Content, Map map, int cellSize, int rocksCount, List<Cell> occupiedCells, Texture2D rock, Grid grid)
@@ -168,9 +207,9 @@ namespace Dungeon_Crawler
             return items;
         }
 
-        private List<Enemy> CreateEnemiesList(ContentManager Content, Map map, int cellSize, int enemyCount, List<Cell> occupiedCells,Grid grid)
+        private List<Character> CreateEnemiesList(ContentManager Content, Map map, int cellSize, int enemyCount, List<Cell> occupiedCells,Grid grid)
         {
-            List<Enemy> enemies = new List<Enemy>(enemyCount);
+            List<Character> enemies = new List<Character>(enemyCount);
 
             for (int i = 0; i < enemyCount; i++)
             {
@@ -178,7 +217,7 @@ namespace Dungeon_Crawler
                 occupiedCells.Add(randomCell);
                 float speed = (Global.random.Next(2) + 1) / 0.7f;
                 float timeBetweenActions = 1f;
-                Enemy tempEnemy =
+                Character tempEnemy =
                     new Enemy(_animations, cellSize, speed, timeBetweenActions, map)
                     {
                         Position = new Vector2((randomCell.X * cellSize + cellSize /3), (randomCell.Y * cellSize) + cellSize /3)
@@ -208,7 +247,15 @@ namespace Dungeon_Crawler
             levels[player.CurrentLevel].Update(gameTime, graphicsDevice);
             if (levels[player.CurrentLevel].finished == true)
             {
-                CreateLevel();
+                if (player.CurrentLevel % 2 == 1)
+                {
+                    CreateNormalLevel();
+                }
+                else
+                {
+                    CreateBossLevel();
+                }
+                
                 player.CurrentLevel++;
                 levels[player.CurrentLevel].addPlayer(player);
                 Vector2 newPlayerPosition = levels[player.CurrentLevel].GetRandomEmptyCell();

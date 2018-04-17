@@ -21,6 +21,7 @@ namespace Dungeon_Crawler
         {
             spriteBatch.Draw(Texture, Position, null, Color.White, 0.0f, Vector2.One, Size, SpriteEffects.None, Layers.Items);
         }
+
     }
 }
 

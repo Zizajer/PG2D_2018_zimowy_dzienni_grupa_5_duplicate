@@ -3,12 +3,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Dungeon_Crawler
 {
-    public class Sprite
+    public abstract class Sprite
     {
         public float Size { get; set; }
         public Vector2 Origin { get; set; }
         public Texture2D Texture { get; set; }
         public Vector2 Position { get; set; }
+        public bool isMarkedToDelete = false;
         public Color[] TextureData { get; }
         public Sprite(Vector2 pos, Texture2D tex)
         {

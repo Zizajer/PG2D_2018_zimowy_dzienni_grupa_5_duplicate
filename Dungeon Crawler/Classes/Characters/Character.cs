@@ -6,13 +6,14 @@ using System.Collections.Generic;
 
 namespace Dungeon_Crawler
 {
-    public class Character
+    public abstract class Character
     {
         public enum Directions { None, Top, Bottom, Left, Right, TopLeft, TopRight, BottomLeft, BottomRight};
         public int Damage { get; set; }
         public int Health { get; set; }
         public string Name { get; set; }
-
+        public int x { get; set; }
+        public int y { get; set; }
         public AnimationManager _animationManager;
         protected Dictionary<String, Animation> _animations;
         public Vector2 _position;
@@ -77,5 +78,6 @@ namespace Dungeon_Crawler
 
             return singleTextureData;
         }
+        public abstract void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice);
     }
 }
