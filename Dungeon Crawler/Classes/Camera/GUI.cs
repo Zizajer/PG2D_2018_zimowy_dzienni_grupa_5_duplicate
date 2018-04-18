@@ -22,9 +22,9 @@ namespace Dungeon_Crawler
         {
             int tempX = Global.Camera.ViewportWorldBoundry().X;
             int tempY = Global.Camera.ViewportWorldBoundry().Y;
-            int tempX2 = Global.Camera.ViewportWorldBoundry().X + (int)(Global.Camera.ViewportWorldBoundry().Width * 0.21);
-            int tempY2 = Global.Camera.ViewportWorldBoundry().Y + (int)(Global.Camera.ViewportWorldBoundry().Height * 0.06);
-            int tempY3 = Global.Camera.ViewportWorldBoundry().Y + (int)(Global.Camera.ViewportWorldBoundry().Height * 0.18);
+            int tempX2 = Global.Camera.ViewportWorldBoundry().X + (int)(Global.Camera.ViewportWorldBoundry().Width * 0.28);
+            int tempY2 = Global.Camera.ViewportWorldBoundry().Y + (int)(Global.Camera.ViewportWorldBoundry().Height * 0.07);
+            int tempY3 = Global.Camera.ViewportWorldBoundry().Y + (int)(Global.Camera.ViewportWorldBoundry().Height * 0.21);
 
             int gameOverX = (int)(Global.Camera.ViewportWorldBoundry().X+Global.Camera.ViewportWorldBoundry().Width / 2 - font.MeasureString("Game Over").Length() / 2);
             int gameOverY = Global.Camera.ViewportWorldBoundry().Y+Global.Camera.ViewportWorldBoundry().Height / 3;
