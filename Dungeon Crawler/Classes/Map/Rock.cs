@@ -7,7 +7,7 @@ namespace Dungeon_Crawler
     {
         public Rock(Vector2 pos, Texture2D tex) : base(pos, tex)
         {
-            Size = 0.8f;
+            Size = 1f;
         }
         public void Draw(SpriteBatch spriteBatch)
         {
