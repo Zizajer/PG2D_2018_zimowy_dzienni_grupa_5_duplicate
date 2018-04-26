@@ -20,6 +20,7 @@ namespace Dungeon_Crawler
         {
             IsMouseVisible = true;
             Global.Camera.setViewports(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height);
+            Global.GameState = true;
             base.Initialize();
         }
 
@@ -40,11 +41,15 @@ namespace Dungeon_Crawler
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            Global.Camera.Move();
+            if (Global.GameState==true)
+            {
+                Global.Camera.Move();
 
-            levelManager.Update(gameTime, GraphicsDevice);
+                levelManager.Update(gameTime, GraphicsDevice);
 
-            Global.Gui.Update();
+                Global.Gui.Update();
+            }
+            
             base.Update(gameTime);
         }
 

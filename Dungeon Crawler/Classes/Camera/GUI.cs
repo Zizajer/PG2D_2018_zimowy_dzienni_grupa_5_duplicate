@@ -70,6 +70,8 @@ namespace Dungeon_Crawler
             health = _player.Health;
             mana = (int)_player.Mana;
             playerCurrentLevel = _player.CurrentLevel;
+            if (health <= 0)
+                Global.GameState = false;
         }
         public void WriteToConsole(string msg)
         {

@@ -10,14 +10,12 @@ namespace Dungeon_Crawler
 {
     public class Boss : Character
     {
-        public enum State { Standby, Attacking};
-
+        public new enum State { Standby, Attacking};
+        public new State currentState;
         float actionTimer;
         float timeBetweenActions;
 
         Map map;
-
-        State currentState;
 
         public Boss(Dictionary<string, Animation> _animations, int cellSize, float timeBetweenActions, Map map)
         {

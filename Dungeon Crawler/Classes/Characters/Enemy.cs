@@ -10,18 +10,8 @@ namespace Dungeon_Crawler
 {
     public class Enemy : Character
     {
-        public enum State { Moving, Standing };
-
-        public int prevX { get; set; }
-        public int prevY { get; set; }
-
-        Directions currentDirection;
         float timeBetweenActions;
-
         Position[] path;
-        Map map;
-
-        State currentState;
 
         public Enemy(Dictionary<string, Animation> _animations, int cellSize, float speed, float timeBetweenActions, Map map)
         {
@@ -30,14 +20,10 @@ namespace Dungeon_Crawler
             this.timeBetweenActions = timeBetweenActions;
             Speed = speed;
             _animationManager = new AnimationManager(_animations.First().Value);
-            currentDirection= (Directions)Global.random.Next(4) + 1;
-            this.map = map;
             x = (int)Math.Floor(Center.X / cellSize);
             y = (int)Math.Floor(Center.Y / cellSize);
             CurrentCell = map.GetCell(x, y);
             currentState = State.Standing;
-            prevX = x;
-            prevY = y;
         }
 
         public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
@@ -69,7 +55,7 @@ namespace Dungeon_Crawler
                 Cell futureNextCell;
                 if (Vector2.Distance(Center, level.player.Center) > level.cellSize * 1.5f)
                 {
-                    if (map.IsInFov(x, y))
+                    if (level.map.IsInFov(x, y))
                     {//can see player
                         futureNextCell = getNextCellFromPath(level);
                         if (futureNextCell != null && x > 0 && x < level.map.Width && y > 0 && y < level.map.Height)
@@ -92,8 +78,7 @@ namespace Dungeon_Crawler
                             currentState = State.Moving;
                             level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
                             level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 5.0f);
-                        }
-                            
+                        }                 
                     }
                 }
                 else
@@ -156,94 +141,12 @@ namespace Dungeon_Crawler
         private Cell getRandomEmptyCell(Level level, GraphicsDevice graphicsDevice)
         {
             Directions tempDirection = (Directions)Global.random.Next(4) + 1;
-            RogueSharp.Cell futureNextCell = Collision.getCellFromDirection(CurrentCell, tempDirection, level);
+            Cell futureNextCell = Collision.getCellFromDirection(CurrentCell, tempDirection, level);
             if (!Collision.checkCollisionInGivenCell(futureNextCell, level, graphicsDevice))
             {
                 return futureNextCell;
             }
             return null;
-        }
- 
-
-        private bool isCenterOfGivenCell(RogueSharp.Cell NextCell, Level level, GraphicsDevice graphicsDevice)
-        {
-            int PosX = NextCell.X * level.cellSize + level.cellSize / 2;
-            int PosY = NextCell.Y * level.cellSize + level.cellSize / 2;
-
-            if (Math.Abs(Center.Y - PosY) <= Speed && Math.Abs(Center.X - PosX) <= Speed)
-                return true;
-            else
-                return false;
-        }
-
-        private void MoveToCenterOfGivenCell(RogueSharp.Cell NextCell, Level level, GraphicsDevice graphicsDevice)
-        {
-            int PosX = NextCell.X * level.cellSize + level.cellSize / 2;
-            int PosY = NextCell.Y * level.cellSize + level.cellSize / 2;
-
-            if (Math.Abs(Center.Y - PosY) > Speed)
-            {
-                if (Center.Y - PosY > Speed)
-                {
-                    Move(Directions.Top, level, graphicsDevice);
-                }
-                if (Center.Y - PosY < Speed)
-                {
-                    Move(Directions.Bottom, level, graphicsDevice);
-                }
-            }
-
-            if (Math.Abs(Center.X - PosX) > Speed)
-            {
-                if (Center.X - PosX > Speed)
-                {
-                    Move(Directions.Left, level, graphicsDevice);
-                }
-                if (Center.X - PosX < Speed)
-                {
-                    Move(Directions.Right, level, graphicsDevice);
-                }
-
-            }
-        }
-
-        private void Move(Directions currentDirection, Level level, GraphicsDevice graphicsDevice)
-        {
-            if (currentDirection == Directions.Top)
-                Velocity.Y = -Speed;
-
-            if (currentDirection == Directions.Bottom)
-                Velocity.Y = +Speed;
-
-            if (currentDirection == Directions.Left)
-                Velocity.X = -Speed;
-
-            if (currentDirection == Directions.Right)
-                Velocity.X = +Speed;
-
-            if (currentDirection == Directions.TopLeft)
-            {
-                Velocity.X = -Speed;
-                Velocity.Y = -Speed;
-            }
-
-            if (currentDirection == Directions.TopRight)
-            {
-                Velocity.X = +Speed;
-                Velocity.Y = -Speed;
-            }
-
-            if (currentDirection == Directions.BottomLeft)
-            {
-                Velocity.X = -Speed;
-                Velocity.Y = +Speed;
-            }
-
-            if (currentDirection == Directions.BottomRight)
-            {
-                Velocity.X = +Speed;
-                Velocity.Y = +Speed;
-            }
         }
     }
 }

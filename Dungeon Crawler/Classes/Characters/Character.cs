@@ -8,7 +8,10 @@ namespace Dungeon_Crawler
 {
     public abstract class Character
     {
+        public enum State { Moving, Standing };
         public enum Directions { None, Top, Bottom, Left, Right, TopLeft, TopRight, BottomLeft, BottomRight};
+        public Directions currentDirection;
+        public State currentState;
         public int Damage { get; set; }
         public int Health { get; set; }
         public string Name { get; set; }
@@ -80,5 +83,86 @@ namespace Dungeon_Crawler
             return singleTextureData;
         }
         public abstract void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice);
+
+        public bool isCenterOfGivenCell(RogueSharp.Cell NextCell, Level level, GraphicsDevice graphicsDevice)
+        {
+            int PosX = NextCell.X * level.cellSize + level.cellSize / 2;
+            int PosY = NextCell.Y * level.cellSize + level.cellSize / 2;
+
+            if (Math.Abs(Center.Y - PosY) <= Speed && Math.Abs(Center.X - PosX) <= Speed)
+                return true;
+            else
+                return false;
+        }
+
+        public void MoveToCenterOfGivenCell(RogueSharp.Cell NextCell, Level level, GraphicsDevice graphicsDevice)
+        {
+            int PosX = NextCell.X * level.cellSize + level.cellSize / 2;
+            int PosY = NextCell.Y * level.cellSize + level.cellSize / 2;
+
+            if (Math.Abs(Center.Y - PosY) > Speed)
+            {
+                if (Center.Y - PosY > Speed)
+                {
+                    Move(Directions.Top, level, graphicsDevice);
+                }
+                if (Center.Y - PosY < Speed)
+                {
+                    Move(Directions.Bottom, level, graphicsDevice);
+                }
+            }
+
+            if (Math.Abs(Center.X - PosX) > Speed)
+            {
+                if (Center.X - PosX > Speed)
+                {
+                    Move(Directions.Left, level, graphicsDevice);
+                }
+                if (Center.X - PosX < Speed)
+                {
+                    Move(Directions.Right, level, graphicsDevice);
+                }
+
+            }
+        }
+        public void Move(Directions currentDirection, Level level, GraphicsDevice graphicsDevice)
+        {
+            if (currentDirection == Directions.Top)
+                Velocity.Y = -Speed;
+
+            if (currentDirection == Directions.Bottom)
+                Velocity.Y = +Speed;
+
+            if (currentDirection == Directions.Left)
+                Velocity.X = -Speed;
+
+            if (currentDirection == Directions.Right)
+                Velocity.X = +Speed;
+
+            if (currentDirection == Directions.TopLeft)
+            {
+                Velocity.X = -Speed;
+                Velocity.Y = -Speed;
+            }
+
+            if (currentDirection == Directions.TopRight)
+            {
+                Velocity.X = +Speed;
+                Velocity.Y = -Speed;
+            }
+
+            if (currentDirection == Directions.BottomLeft)
+            {
+                Velocity.X = -Speed;
+                Velocity.Y = +Speed;
+            }
+
+            if (currentDirection == Directions.BottomRight)
+            {
+                Velocity.X = +Speed;
+                Velocity.Y = +Speed;
+            }
+        }
+
     }
 }
