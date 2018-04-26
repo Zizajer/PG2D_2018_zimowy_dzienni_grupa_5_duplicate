@@ -11,6 +11,7 @@ namespace Dungeon_Crawler
     public class Enemy : Character
     {
         float timeBetweenActions;
+        float timer;
         Position[] path;
 
         public Enemy(Dictionary<string, Animation> _animations, int cellSize, float speed, float timeBetweenActions, Map map)
@@ -18,12 +19,14 @@ namespace Dungeon_Crawler
             Health = 100;
             this._animations = _animations;
             this.timeBetweenActions = timeBetweenActions;
+            timer = 0;
             Speed = speed;
             _animationManager = new AnimationManager(_animations.First().Value);
             x = (int)Math.Floor(Center.X / cellSize);
             y = (int)Math.Floor(Center.Y / cellSize);
             CurrentCell = map.GetCell(x, y);
             currentState = State.Standing;
+            Name = "Blob";
         }
 
         public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
@@ -83,7 +86,17 @@ namespace Dungeon_Crawler
                 }
                 else
                 {
-                    //attack
+                    
+                    if (timer > timeBetweenActions)
+                    {
+                        Global.CombatManager.Attack(this, level.player);
+                        timer = 0;
+                    }
+                    else
+                    {
+                        timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    }
+                    
                 }
             }
             else //Moving

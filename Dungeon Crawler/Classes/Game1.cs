@@ -28,8 +28,9 @@ namespace Dungeon_Crawler
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            levelManager = new LevelManager(this.Content);
+            levelManager = new LevelManager(Content);
             Global.Gui.addLevelMananger(levelManager);
+            Global.CombatManager = new CombatManager(levelManager);
         }
 
         protected override void UnloadContent()
@@ -48,6 +49,7 @@ namespace Dungeon_Crawler
                 levelManager.Update(gameTime, GraphicsDevice);
 
                 Global.Gui.Update();
+                Global.CombatManager.Update();
             }
             
             base.Update(gameTime);

@@ -29,6 +29,7 @@ namespace Dungeon_Crawler
             this.map = map;
             x = (int)Math.Floor(Center.X / cellSize);
             y = (int)Math.Floor(Center.Y / cellSize);
+            Name = "Demon Oak";
         }
 
         public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
@@ -54,7 +55,10 @@ namespace Dungeon_Crawler
 
             if (IsHitByProjectile(level, graphicsDevice))
             {
-                Health -= 1;
+                int damage = 1;
+                Health -= damage;
+                string tempString = "Player's fireball hit " + Name+ " for " + damage + " and he has " + Health + " health remaining.";
+                Global.Gui.WriteToConsole(tempString);
                 if (Health <= 0)
                 {
                     level.grid.UnblockCell(new Position(5, 5));

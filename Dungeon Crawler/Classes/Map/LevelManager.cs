@@ -9,7 +9,7 @@ using RoyT.AStar;
 
 namespace Dungeon_Crawler
 {
-    class LevelManager
+    public class LevelManager
     {
         public Player player;
         public List<Level> levels;

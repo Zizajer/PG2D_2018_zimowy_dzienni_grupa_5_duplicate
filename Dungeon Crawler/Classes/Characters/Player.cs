@@ -14,12 +14,14 @@ namespace Dungeon_Crawler
         public float Mana;
         public int teleportCost = 10;
         public int fireballCost = 10;
+        public int exoriCost = 20;
         public int maxFireballsOnScreen = 20;
         public MouseState mouse;
         public float rotation;
         public List<Item> inventory { get; set; }
         public int CurrentLevel { get; set; }
         KeyboardState pastKey;
+        KeyboardState pastKey2;
         MouseState pastButton;
 
         public Player(ContentManager content, int cellSize, int playerCurrentLevel)
@@ -35,11 +37,11 @@ namespace Dungeon_Crawler
             };
             Speed = 4f;
             Mana = 100;
+            Damage = 80;
             CurrentLevel = playerCurrentLevel;
             inventory = new List<Item>();
             _animationManager = new AnimationManager(_animations.First().Value);
-
-
+            Name = "Player";
         }
         public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
         {
@@ -50,7 +52,6 @@ namespace Dungeon_Crawler
                 if (Collision.checkCollision(getRectangle(), this, projectile, graphicsDevice))
                 {
                     projectile.isPlayerHit = true;
-
                     return true;
                 }
             }
@@ -111,6 +112,27 @@ namespace Dungeon_Crawler
             pastButton = Mouse.GetState();
         }
 
+        public void Exori(Level level, GraphicsDevice graphicsDevice)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && pastKey2.IsKeyUp(Keys.LeftShift))
+            {
+                if (Mana > exoriCost)
+                {
+                    List<Character> listOfEnemiesAround = Global.CombatManager.IsEnemyInCellAround(x, y);
+                    if (listOfEnemiesAround.Count > 0)
+                    {
+                        foreach (Character enemy in listOfEnemiesAround)
+                        {
+                            Global.CombatManager.Attack(this, enemy);
+                        }
+                    }
+                    Mana = Mana - exoriCost;
+                }
+            }
+            pastKey2 = Keyboard.GetState();
+        }
+
+
         public virtual Directions GetDirection()
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Q))
@@ -151,7 +173,10 @@ namespace Dungeon_Crawler
 
             if (IsHitByProjectile(level, graphicsDevice))
             {
-                Health -= 20;
+                int damage = 20;
+                Health -= damage;
+                string tempString = "Demon Oak's giant fireball hit player for " + damage + " and he has " + Health + " health remaining.";
+                Global.Gui.WriteToConsole(tempString);
             }
 
             if (Mana < 100) Mana = Mana + 0.95f; //0.15
@@ -178,6 +203,8 @@ namespace Dungeon_Crawler
                     }
                 }
                 Teleport(level, graphicsDevice);
+                Exori(level, graphicsDevice);
+                Fireball(level);
             }
             else //Moving
             {
@@ -191,10 +218,9 @@ namespace Dungeon_Crawler
                     level.map.ComputeFov(x, y, 15, true);
                     Global.Camera.CenterOn(Center);
                 }
-                
+                Fireball(level);
             }
             
-            Fireball(level);
             SetAnimations();
             _animationManager.Update(gameTime);
             Position += Velocity;
