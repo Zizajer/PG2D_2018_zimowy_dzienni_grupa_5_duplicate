@@ -144,7 +144,7 @@ namespace Dungeon_Crawler
         public void CreateBossLevel()
         {
             Map map = CreateMap(15, 11, 50, 10, 10);
-            var grid = new Grid(newMapWidth, newMapHeight, 1.0f);
+            var grid = new Grid(15, 11, 1.0f);
 
             List<Cell> occupiedCells = new List<Cell>();
 
@@ -167,6 +167,14 @@ namespace Dungeon_Crawler
                 enemies.Add(tempBoss);
 
             Global.Camera.setParams(map.Width, map.Height, cellSize);
+
+            foreach (Cell cell in map.GetAllCells())
+            {
+                if (!cell.IsWalkable)
+                {
+                    grid.BlockCell(new Position(cell.X, cell.Y));
+                }
+            }
 
             Level level = new Level(map, grid, cellSize, enemies, floor, wall, portal, occupiedCells, fireball, bossFireball);
 
@@ -257,6 +265,7 @@ namespace Dungeon_Crawler
                 }
                 
                 player.CurrentLevel++;
+                player.currentState = Player.State.Standing;
                 levels[player.CurrentLevel].addPlayer(player);
                 Vector2 newPlayerPosition = levels[player.CurrentLevel].GetRandomEmptyCell();
                 player.Position = newPlayerPosition;

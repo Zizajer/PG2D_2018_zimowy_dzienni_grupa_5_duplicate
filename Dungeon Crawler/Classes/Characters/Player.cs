@@ -23,7 +23,7 @@ namespace Dungeon_Crawler
         KeyboardState pastKey;
         MouseState pastButton;
         Directions currentDirection;
-        State currentState;
+        public State currentState;
         public Player(ContentManager content, int cellSize, int playerCurrentLevel)
         {
             currentState = State.Standing;
