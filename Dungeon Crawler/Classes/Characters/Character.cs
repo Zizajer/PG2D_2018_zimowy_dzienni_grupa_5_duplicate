@@ -33,6 +33,7 @@ namespace Dungeon_Crawler
         }
 
         public RogueSharp.Cell CurrentCell;
+        public RogueSharp.Cell NextCell;
         public float Speed = 1.0f;
         public Vector2 Velocity;
 

@@ -11,6 +11,7 @@ namespace Dungeon_Crawler
 {
     public class Player : Character
     {
+        public enum State { Moving, Standing };
         public float Mana;
         public int teleportCost = 10;
         public int fireballCost = 10;
@@ -22,8 +23,10 @@ namespace Dungeon_Crawler
         KeyboardState pastKey;
         MouseState pastButton;
         Directions currentDirection;
+        State currentState;
         public Player(ContentManager content, int cellSize, int playerCurrentLevel)
         {
+            currentState = State.Standing;
             Health = 100;
             _animations = new Dictionary<string, Animation>()
             {
@@ -37,6 +40,8 @@ namespace Dungeon_Crawler
             CurrentLevel = playerCurrentLevel;
             inventory = new List<Item>();
             _animationManager = new AnimationManager(_animations.First().Value);
+
+
         }
         public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
         {
@@ -106,19 +111,16 @@ namespace Dungeon_Crawler
 
         public virtual Directions GetDirection()
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.S) || Keyboard.GetState().IsKeyDown(Keys.A) && Keyboard.GetState().IsKeyDown(Keys.D))
-                return Directions.None;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.A))
+            if (Keyboard.GetState().IsKeyDown(Keys.Q))
                 return Directions.TopLeft;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.D))
+            if (Keyboard.GetState().IsKeyDown(Keys.E))
                 return Directions.TopRight;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.S) && Keyboard.GetState().IsKeyDown(Keys.A))
+            if (Keyboard.GetState().IsKeyDown(Keys.Z))
                 return Directions.BottomLeft;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.S) && Keyboard.GetState().IsKeyDown(Keys.D))
+            if (Keyboard.GetState().IsKeyDown(Keys.C))
                 return Directions.BottomRight;
 
             if (Keyboard.GetState().IsKeyDown(Keys.W))
@@ -138,54 +140,59 @@ namespace Dungeon_Crawler
 
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
-            if (IsHitByProjectile(level, graphicsDevice))
-            {
-                Health -= 20;
-            }
             x = (int)Math.Floor(Center.X / level.cellSize);
             y = (int)Math.Floor(Center.Y / level.cellSize);
             CurrentCell = level.map.GetCell(x, y);
 
-            if (Mana < 100) Mana = Mana + 0.95f; //0.15
-            if (!Collision.isCharacterInBounds(this, level))
+            if (IsHitByProjectile(level, graphicsDevice))
             {
-                Collision.getPlayerInBounds(this, level, graphicsDevice);
+                Health -= 20;
             }
-            
-            currentDirection = GetDirection();
-            if (currentDirection != (int)Directions.None)
+
+            if (Mana < 100) Mana = Mana + 0.95f; //0.15
+
+            if (currentState == State.Standing)
             {
-                if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
+                currentDirection = GetDirection();
+                if (currentDirection != (int)Directions.None)
                 {
-                    Move(currentDirection, Speed, level, graphicsDevice);
-                    level.map.ComputeFov(x, y, 15, true);
-                    Global.Camera.CenterOn(Center);
+                    RogueSharp.Cell futureNextCell= Collision.getCellFromDirection(CurrentCell, currentDirection, level);
+                    if (!Collision.checkCollisionInGivenCell(futureNextCell, level, graphicsDevice))
+                    {
+                        NextCell = futureNextCell;
+                        currentState =State.Moving;
+                    }
+                    else
+                    {
+                        Global.Gui.WriteToConsole("Cant go there");
+                    }
+                }
+                Teleport(level, graphicsDevice);
+            }
+            else //Moving
+            {
+                if (isCenterOfGivenCell(NextCell, level, graphicsDevice))
+                {
+                    currentState = State.Standing;
                 }
                 else
                 {
-                    //this allows sliding when one of diagonal directions is blocked eg. cant go topleft but can go left
-                    if (currentDirection == Directions.TopLeft || currentDirection == Directions.TopRight || currentDirection == Directions.BottomLeft || currentDirection == Directions.BottomRight)
-                    {
-                        Directions fixedDirection = Collision.checkIfOneOfDoubleDirectionsIsOk(currentDirection, this, level, graphicsDevice);
-                        if (!Collision.checkCollisionInGivenDirection(fixedDirection, this, level, graphicsDevice))
-                        {
-                            Move(fixedDirection, Speed, level, graphicsDevice);
-                            level.map.ComputeFov(x, y, 15, true);
-                            Global.Camera.CenterOn(Center);
-                        }
-                    }
+                    //Move(currentDirection, level, graphicsDevice);
+                    MoveToCenterOfGivenCell(NextCell, level, graphicsDevice);
+                    level.map.ComputeFov(x, y, 15, true);
+                    Global.Camera.CenterOn(Center);
                 }
+                
             }
-
+            
             Fireball(level);
-            Teleport(level,graphicsDevice);
             SetAnimations();
             _animationManager.Update(gameTime);
             Position += Velocity;
             Velocity = Vector2.Zero;
         }
 
-        private void Move(Directions currentDirection, float speed, Level level, GraphicsDevice graphicsDevice)
+        private void Move(Directions currentDirection, Level level, GraphicsDevice graphicsDevice)
         {
             if (currentDirection == Directions.Top)
                 Velocity.Y = -Speed;
@@ -235,6 +242,49 @@ namespace Dungeon_Crawler
             }
 
             return temp;
+        }
+
+        private bool isCenterOfGivenCell(RogueSharp.Cell NextCell, Level level, GraphicsDevice graphicsDevice)
+        {
+            int PosX = NextCell.X * level.cellSize + level.cellSize / 2;
+            int PosY = NextCell.Y * level.cellSize + level.cellSize / 2;
+
+            if (Math.Abs(Center.Y - PosY) <= Speed && Math.Abs(Center.X - PosX) <= Speed)
+                return true;
+            else
+                return false;
+        }
+
+        private void MoveToCenterOfGivenCell(RogueSharp.Cell NextCell, Level level, GraphicsDevice graphicsDevice)
+        {
+            int PosX = NextCell.X * level.cellSize + level.cellSize / 2;
+            int PosY = NextCell.Y * level.cellSize + level.cellSize / 2;
+
+            if (Math.Abs(Center.Y - PosY) > Speed)
+            {
+                if (Center.Y - PosY > Speed)
+                {
+                    Move(Directions.Top, level, graphicsDevice);
+                }
+                if (Center.Y - PosY < Speed)
+                {
+                    Move(Directions.Bottom, level, graphicsDevice);
+                }
+            }
+            
+            if (Math.Abs(Center.X - PosX) > Speed)
+            {
+                if (Center.X - PosX > Speed)
+                {
+                    Move(Directions.Left, level, graphicsDevice);
+                }
+                if (Center.X - PosX < Speed)
+                {
+                    Move(Directions.Right, level, graphicsDevice);
+                }
+               
+            }
+
         }
     }
 }

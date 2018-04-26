@@ -24,7 +24,6 @@ namespace Dungeon_Crawler
 
         //Pathfinding vars
         Position[] path;
-        Cell NextCell;
         Map map;
 
         State currentState;

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using RoyT.AStar;
 using System;
 
 namespace Dungeon_Crawler
@@ -191,6 +192,43 @@ namespace Dungeon_Crawler
                     character.Position = originalPosition;
 
             }
+        }
+
+        public static bool checkCollisionInGivenCell(RogueSharp.Cell futureNextCell, Level level, GraphicsDevice graphicsDevice)
+        {
+            if (level.grid.GetCellCost(new Position(futureNextCell.X, futureNextCell.Y)) > 1.0f)
+                return true;
+
+            return false;
+        }
+
+        public static RogueSharp.Cell getCellFromDirection(RogueSharp.Cell currentCell, Character.Directions currentDirection, Level level)
+        {
+            if (currentDirection == Character.Directions.Top)
+                return level.map.GetCell(currentCell.X, currentCell.Y-1);
+
+            if (currentDirection == Character.Directions.Bottom)
+                return level.map.GetCell(currentCell.X, currentCell.Y+1);
+
+            if (currentDirection == Character.Directions.Left)
+                return level.map.GetCell(currentCell.X-1, currentCell.Y);
+
+            if (currentDirection == Character.Directions.Right)
+                return level.map.GetCell(currentCell.X+1, currentCell.Y);
+
+            if (currentDirection == Character.Directions.TopLeft)
+                return level.map.GetCell(currentCell.X-1, currentCell.Y-1);
+
+            if (currentDirection == Character.Directions.TopRight)
+                return level.map.GetCell(currentCell.X+1, currentCell.Y-1);
+
+            if (currentDirection == Character.Directions.BottomLeft)
+                return level.map.GetCell(currentCell.X-1, currentCell.Y+1);
+
+            if (currentDirection == Character.Directions.BottomRight)
+                return level.map.GetCell(currentCell.X+1, currentCell.Y+1);
+
+            return null;
         }
 
         public static void unStuck(Character character, Level level, GraphicsDevice graphicsDevice)
