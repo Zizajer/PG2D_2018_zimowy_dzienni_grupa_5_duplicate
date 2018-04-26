@@ -167,7 +167,15 @@ namespace Dungeon_Crawler
                 var position = new Vector2(cell.X * floor.Width, cell.Y * floor.Width);
                 if (cell.IsWalkable)
                 {
-                    spriteBatch.Draw(floor, position, null, Color.White, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, Layers.Cells);
+                    if(grid.GetCellCost(new Position(cell.X, cell.Y)) > 1.0f)
+                    {
+                        spriteBatch.Draw(floor, position, null, Color.Blue, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, Layers.Cells);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(floor, position, null, Color.White, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, Layers.Cells);
+                    }
+                    
                 }
                 else
                 {
@@ -218,7 +226,7 @@ namespace Dungeon_Crawler
                 x = Global.random.Next(map.Width);
                 y = Global.random.Next(map.Height);
                 tempCell = map.GetCell(x, y);
-            } while (!tempCell.IsWalkable || occupiedCells.Contains(tempCell));
+            } while (!tempCell.IsWalkable || occupiedCells.Contains(tempCell) || grid.GetCellCost(new Position(x, y)) > 1.0f);
             return new Vector2(tempCell.X*floor.Width+ floor.Width/3, tempCell.Y * floor.Width +floor.Width / 3);
         }
     }

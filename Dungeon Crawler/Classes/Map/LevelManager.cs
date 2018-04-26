@@ -76,7 +76,7 @@ namespace Dungeon_Crawler
             cellSize = floor.Width;
 
             CreateNormalLevel();
-            Cell randomCell = GetRandomEmptyCell(levels[0].map, levels[0].occupiedCells);
+            Cell randomCell = GetRandomEmptyCell(levels[0].map, levels[0].occupiedCells, levels[0].grid);
             player =
              new Player(Content, cellSize, 0)
              {
@@ -114,13 +114,13 @@ namespace Dungeon_Crawler
 
             List<Cell> occupiedCells = new List<Cell>();
 
-            Cell portalcell = GetRandomEmptyCell(map, occupiedCells);
+            Cell portalcell = GetRandomEmptyCell(map, occupiedCells, grid);
             occupiedCells.Add(portalcell);
             Portal portal =
                 new Portal(new Vector2(portalcell.X * cellSize, portalcell.Y * cellSize), portalTexture);
 
             List<Character> enemies = CreateEnemiesList(Content, map, cellSize, enemiesCount, occupiedCells, grid);
-            List<Item> items = CreateItemsList(Content, map, cellSize, itemsCount, occupiedCells, allItems, allItemsNames);
+            List<Item> items = CreateItemsList(Content, map, cellSize, itemsCount, occupiedCells, allItems, allItemsNames, grid);
             List<Rock> rocks = CreateRocksList(Content, map, cellSize, rocksCount, occupiedCells, rock, grid);
             
             Global.Camera.setParams(map.Width, map.Height, cellSize);
@@ -148,7 +148,7 @@ namespace Dungeon_Crawler
 
             List<Cell> occupiedCells = new List<Cell>();
 
-            Cell portalcell = GetRandomEmptyCell(map, occupiedCells);
+            Cell portalcell = GetRandomEmptyCell(map, occupiedCells, grid);
             occupiedCells.Add(portalcell);
             Portal portal =
                 new Portal(new Vector2(portalcell.X * cellSize, portalcell.Y * cellSize), portalTexture);
@@ -156,6 +156,17 @@ namespace Dungeon_Crawler
             List<Character> enemies =new List<Character>(1);
 
             Cell randomCell = map.GetCell(5, 5);
+            grid.BlockCell(new Position(5, 5));
+            grid.BlockCell(new Position(6, 5));
+            grid.BlockCell(new Position(7, 5));
+
+            grid.BlockCell(new Position(5, 6));
+            grid.BlockCell(new Position(6, 6));
+            grid.BlockCell(new Position(7, 6));
+
+            grid.BlockCell(new Position(5, 7));
+            grid.BlockCell(new Position(6, 7));
+            grid.BlockCell(new Position(7, 7));
             occupiedCells.Add(randomCell);
 
             float timeBetweenActions = 1f;
@@ -187,7 +198,7 @@ namespace Dungeon_Crawler
 
             for (int i = 0; i < rocksCount; i++)
             {
-                Cell randomCell = GetRandomEmptyCell(map, occupiedCells);
+                Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid);
                 occupiedCells.Add(randomCell);
                 map.SetCellProperties(randomCell.X, randomCell.Y, false, true);
                 Rock tempRock =
@@ -199,13 +210,13 @@ namespace Dungeon_Crawler
             return rocks;
         }
 
-        private List<Item> CreateItemsList(ContentManager Content, Map map, int cellSize, int itemCount, List<Cell> occupiedCells, List<Texture2D> allItems, List<String> allItemsNames)
+        private List<Item> CreateItemsList(ContentManager Content, Map map, int cellSize, int itemCount, List<Cell> occupiedCells, List<Texture2D> allItems, List<String> allItemsNames, Grid grid)
         {
             List <Item> items = new List<Item>(itemCount);
 
             for (int i = 0; i < itemCount; i++)
             {
-                Cell randomCell = GetRandomEmptyCell(map, occupiedCells);
+                Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid);
                 occupiedCells.Add(randomCell);
                 int rand = Global.random.Next(2) + 1;
                 Item tempItem=new Item(new Vector2(randomCell.X * cellSize + cellSize / 3, randomCell.Y * cellSize + cellSize / 3), allItems[rand], allItemsNames[rand]);
@@ -221,7 +232,7 @@ namespace Dungeon_Crawler
 
             for (int i = 0; i < enemyCount; i++)
             {
-                Cell randomCell = GetRandomEmptyCell(map, occupiedCells);
+                Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid);
                 occupiedCells.Add(randomCell);
                 float speed = (Global.random.Next(2) + 1) / 0.7f;
                 float timeBetweenActions = 1f;
@@ -274,7 +285,7 @@ namespace Dungeon_Crawler
             }
         }
 
-        private Cell GetRandomEmptyCell(Map map, List<Cell> occupiedCells)
+        private Cell GetRandomEmptyCell(Map map, List<Cell> occupiedCells, Grid grid)
         {
             int x, y;
             Cell tempCell;
@@ -283,7 +294,7 @@ namespace Dungeon_Crawler
                 x = Global.random.Next(map.Width);
                 y = Global.random.Next(map.Height);
                 tempCell = map.GetCell(x, y);
-            } while (!tempCell.IsWalkable || occupiedCells.Contains(tempCell));
+            } while (!tempCell.IsWalkable || grid.GetCellCost(new Position(x, y)) > 1.0f || occupiedCells.Contains(tempCell));
             return tempCell;
         }
     }

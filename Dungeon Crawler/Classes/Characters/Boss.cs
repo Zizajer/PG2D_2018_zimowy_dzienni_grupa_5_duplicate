@@ -57,6 +57,20 @@ namespace Dungeon_Crawler
             if (IsHitByProjectile(level, graphicsDevice))
             {
                 Health -= 1;
+                if (Health <= 0)
+                {
+                    level.grid.UnblockCell(new Position(5, 5));
+                    level.grid.UnblockCell(new Position(6, 5));
+                    level.grid.UnblockCell(new Position(7, 5));
+
+                    level.grid.UnblockCell(new Position(5, 6));
+                    level.grid.UnblockCell(new Position(6, 6));
+                    level.grid.UnblockCell(new Position(7, 6));
+
+                    level.grid.UnblockCell(new Position(5, 7));
+                    level.grid.UnblockCell(new Position(6, 7));
+                    level.grid.UnblockCell(new Position(7, 7));
+                }
             }
 
             if (currentState == State.Standby)

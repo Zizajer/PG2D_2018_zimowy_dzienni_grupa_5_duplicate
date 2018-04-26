@@ -94,11 +94,15 @@ namespace Dungeon_Crawler
                     Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
                     x = (int)Math.Floor(mousePos.X / level.cellSize);
                     y = (int)Math.Floor(mousePos.Y / level.cellSize);
-                    Rectangle tempRec = new Rectangle((int)mousePos.X, (int)mousePos.Y, getWidth(), getHeight());
-                    if (x < 0 || x >= level.map.Width || y < 0 || y >= level.map.Height || Collision.isCollidingWithEnemies(tempRec,this,level,graphicsDevice) || Collision.isCollidingWithRocks(tempRec, this, level, graphicsDevice))
+
+                    if (x < 0 || x >= level.map.Width || y < 0 || y >= level.map.Height)
                         return;
-                    if (level.map.GetCell(x, y).IsWalkable && !level.occupiedCells.Contains(level.map.GetCell(x, y)) && Collision.isCharacterInBounds(tempRec, level) && level.grid.GetCellCost(new Position(x,y))!= float.PositiveInfinity)
+                    if (level.grid.GetCellCost(new Position(x,y))==1.0f)
                     {
+                        level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
+                        level.grid.SetCellCost(new Position(x, y), 5.0f);
+                        mousePos.X = x * level.cellSize + level.cellSize / 2 - getWidth() / 2;
+                        mousePos.Y = y * level.cellSize + level.cellSize / 2 - getHeight() / 2;
                         Position = mousePos;
                         Mana = Mana - teleportCost;
                         level.map.ComputeFov(x, y, 15, true);
@@ -166,6 +170,8 @@ namespace Dungeon_Crawler
                         {
                             NextCell = futureNextCell;
                             currentState = State.Moving;
+                            level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
+                            level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 5.0f);
                         }
                     }
                     else
@@ -183,7 +189,6 @@ namespace Dungeon_Crawler
                 }
                 else
                 {
-                    //Move(currentDirection, level, graphicsDevice);
                     MoveToCenterOfGivenCell(NextCell, level, graphicsDevice);
                     level.map.ComputeFov(x, y, 15, true);
                     Global.Camera.CenterOn(Center);
@@ -290,7 +295,6 @@ namespace Dungeon_Crawler
                 }
                
             }
-
         }
     }
 }

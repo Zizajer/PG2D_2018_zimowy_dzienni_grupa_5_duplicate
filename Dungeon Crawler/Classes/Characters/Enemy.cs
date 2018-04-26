@@ -10,19 +10,14 @@ namespace Dungeon_Crawler
 {
     public class Enemy : Character
     {
-        public enum State { RandomMovement, CenterMovement, MovingToAnotherCell, Attacking, Unstucking};
+        public enum State { Moving, Standing };
 
         public int prevX { get; set; }
         public int prevY { get; set; }
 
         Directions currentDirection;
-        //Random movement vars
         float timeBetweenActions;
-        float unstuckTimer;
-        float unstuckTimer2;
-        float timeBetweenUnstuck;
 
-        //Pathfinding vars
         Position[] path;
         Map map;
 
@@ -40,12 +35,9 @@ namespace Dungeon_Crawler
             x = (int)Math.Floor(Center.X / cellSize);
             y = (int)Math.Floor(Center.Y / cellSize);
             CurrentCell = map.GetCell(x, y);
-            currentState = State.CenterMovement;
+            currentState = State.Standing;
             prevX = x;
             prevY = y;
-            unstuckTimer = 0;
-            unstuckTimer2 = 0;
-            timeBetweenUnstuck = 2;
         }
 
         public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
@@ -67,124 +59,85 @@ namespace Dungeon_Crawler
         {
             x = (int)Math.Floor(Center.X / level.cellSize);
             y = (int)Math.Floor(Center.Y / level.cellSize);
-            
-            if (IsHitByProjectile(level, graphicsDevice))
+            if (x > 0 && x < level.map.Width && y > 0 && y < level.map.Height)
             {
-                Health = 0;
+                CurrentCell = level.map.GetCell(x, y);
             }
 
-            if (currentState == State.RandomMovement)
+            if (currentState == State.Standing)
             {
-                if (!map.IsInFov(x, y))
+                Cell futureNextCell;
+                if (Vector2.Distance(Center, level.player.Center) > level.cellSize * 1.5f)
                 {
-                    CollisionAvoidingMoveWithBouncing(currentDirection, Speed, level, graphicsDevice);
-                }
-                else
-                {
-                    currentState = State.MovingToAnotherCell;
-                }
-                   
-            }
-            else if (currentState == State.CenterMovement)
-            {
-                if (isCenter(level, graphicsDevice))
-                {
-                    currentState = State.MovingToAnotherCell;
-                }
-                else
-                {
-                    MoveToCenter(level, graphicsDevice);
-                }
-                
-            }
-            else if (currentState == State.MovingToAnotherCell)
-            {
-                if (map.IsInFov(x, y))
-                {
-                    if (Vector2.Distance(Center, level.player.Center) > level.cellSize * 2 / 3)
-                    {
-                        MoveToNextCell(level, graphicsDevice);
-                        int newx = (int)Math.Floor((Center.X + Velocity.X) / level.cellSize);
-                        int newy = (int)Math.Floor((Center.Y + Velocity.Y) / level.cellSize);
-
-                        if (newx != x || newy != y)
-                            currentState = State.CenterMovement;
+                    if (map.IsInFov(x, y))
+                    {//can see player
+                        futureNextCell = getNextCellFromPath(level);
+                        if (futureNextCell != null && x > 0 && x < level.map.Width && y > 0 && y < level.map.Height)
+                        {
+                            if (!Collision.checkCollisionInGivenCell(futureNextCell, level, graphicsDevice))
+                            {
+                                NextCell = futureNextCell;
+                                currentState = State.Moving;
+                                level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
+                                level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 5.0f);
+                            }
+                        }
                     }
                     else
-                    {
-                        currentState = State.Attacking;
+                    {//cant see player
+                        futureNextCell = getRandomEmptyCell(level, graphicsDevice);
+                        if(futureNextCell != null)
+                        {
+                            NextCell = futureNextCell;
+                            currentState = State.Moving;
+                            level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
+                            level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 5.0f);
+                        }
+                            
                     }
                 }
                 else
-                {
-                    currentState = State.RandomMovement;
-                }
-            }
-            else if (currentState == State.Attacking)
-            {
-                if (Vector2.Distance(Center, level.player.Center) < level.cellSize * 2/3)
                 {
                     //attack
                 }
+            }
+            else //Moving
+            {
+                if (isCenterOfGivenCell(NextCell, level, graphicsDevice))
+                {
+                    currentState = State.Standing;
+                }
                 else
                 {
-                    currentState = State.MovingToAnotherCell;
+                    MoveToCenterOfGivenCell(NextCell, level, graphicsDevice);
                 }
             }
-            else if (currentState == State.Unstucking)
-            {
-                if (Vector2.Distance(Center, level.player.Center) < level.cellSize * 2 / 3)
-                {
-                    currentState = State.Attacking;
-                }
 
-                unstuckTimer2 += 0.1f;
-                if (unstuckTimer2 < timeBetweenUnstuck)
-                {
-                    CollisionAvoidingMoveNoUnstuck(currentDirection, Speed, level, graphicsDevice);
-                    if ((int)Math.Floor((Center.X + Velocity.X) / level.cellSize) != x || (int)Math.Floor((Center.Y + Velocity.Y) / level.cellSize) != y)
-                        currentState = State.MovingToAnotherCell;
-                }
-                else
-                {
-                    Collision.unStuck(this, level, graphicsDevice);
-                    currentDirection = (Directions)Global.random.Next(8)+1;
-                    unstuckTimer2 = 0;
-                }
-                
-            }
-            else
+            if (IsHitByProjectile(level, graphicsDevice))
             {
-                Console.WriteLine("Error");
+                Health = 0;
+                level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
+                if (NextCell != null)
+                    level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 1.0f);
             }
-            
-            if (prevX != x || prevY != y)
-            {
-                if (x >= 0 && x < level.map.Width && y >= 0 && y < level.map.Height)
-                {
-                    level.grid.SetCellCost(new Position(prevX, prevY), 1.0f);
-                    level.grid.SetCellCost(new Position(x, y), 5.0f);
-                }
-                prevX = x;
-                prevY = y;
-            }
+
             SetAnimations();
             _animationManager.Update(gameTime);
             Position += Velocity;
             Velocity = Vector2.Zero;
         }
 
-        private void MoveToNextCell(Level level, GraphicsDevice graphicsDevice)
+        private Cell getNextCellFromPath(Level level)
         {
             if (x != level.player.x || y != level.player.y)
             {
                 if (NextCell == null || x == NextCell.X && y == NextCell.Y)
                 { 
-                    path = level.grid.GetPath(new Position(x, y), new Position(level.player.x, level.player.y), MovementPatterns.LateralOnly);
+                    path = level.grid.GetPath(new Position(x, y), new Position(level.player.x, level.player.y), MovementPatterns.Full);
                     if (path == null)
                     {
-                        currentState = State.RandomMovement;
-                        return;
+                        currentState = State.Standing;
+                        return null;
                     }
                     else
                     {
@@ -192,84 +145,30 @@ namespace Dungeon_Crawler
                         {
                             int x = path[1].X;
                             int y = path[1].Y;
-                            NextCell = level.map.GetCell(x, y);
+                            return level.map.GetCell(x, y);
                         }
                     }
                 }
-                else
-                {
-                    if (NextCell.Y < y)
-                    {
-                        currentDirection = Directions.Top;
-                    } 
-                    if (NextCell.Y > y)
-                    {
-                        currentDirection = Directions.Bottom;
-                    }
-                    if (NextCell.X < x)
-                    {
-                        currentDirection = Directions.Left;
-                    }
-                    if (NextCell.X > x)
-                    {
-                        currentDirection = Directions.Right;
-                    }
-                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
-                }
             }
-
-        }
-        private void CollisionAvoidingMoveNoUnstuck(Directions currentDirection, float speed, Level level, GraphicsDevice graphicsDevice)
-        {
-            if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
-            {
-                Move(currentDirection, Speed, level, graphicsDevice);
-            }
-        }
-        private void CollisionAvoidingMoveWithBouncing(Directions currentDirection, float speed, Level level, GraphicsDevice graphicsDevice)
-        {
-            if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
-            {
-                Move(currentDirection, Speed, level, graphicsDevice);
-            }
-            else
-            {
-                currentDirection = (Directions)Global.random.Next(4) + 1;
-                if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
-                {
-                    Move(currentDirection, Speed, level, graphicsDevice);
-                }
-                else
-                {
-
-                    CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
-                }
-            }
-        }
-        private void CollisionAvoidingMove(Directions currentDirection, float speed, Level level, GraphicsDevice graphicsDevice)
-        {
-            if (!Collision.checkCollisionInGivenDirection(currentDirection, this, level, graphicsDevice))
-            {
-                Move(currentDirection, Speed, level, graphicsDevice);
-            }
-            else
-            {
-                if (unstuckTimer < timeBetweenUnstuck)
-                {
-                    unstuckTimer += 0.3f;
-                }
-                else
-                {
-                    unstuckTimer = 0;
-                    currentState = State.Unstucking;
-                }
-            }
+            return null;
         }
 
-        private bool isCenter(Level level, GraphicsDevice graphicsDevice)
+        private Cell getRandomEmptyCell(Level level, GraphicsDevice graphicsDevice)
         {
-            int PosX = x * level.cellSize + level.cellSize / 2;
-            int PosY = y * level.cellSize + level.cellSize / 2;
+            Directions tempDirection = (Directions)Global.random.Next(4) + 1;
+            RogueSharp.Cell futureNextCell = Collision.getCellFromDirection(CurrentCell, tempDirection, level);
+            if (!Collision.checkCollisionInGivenCell(futureNextCell, level, graphicsDevice))
+            {
+                return futureNextCell;
+            }
+            return null;
+        }
+ 
+
+        private bool isCenterOfGivenCell(RogueSharp.Cell NextCell, Level level, GraphicsDevice graphicsDevice)
+        {
+            int PosX = NextCell.X * level.cellSize + level.cellSize / 2;
+            int PosY = NextCell.Y * level.cellSize + level.cellSize / 2;
 
             if (Math.Abs(Center.Y - PosY) <= Speed && Math.Abs(Center.X - PosX) <= Speed)
                 return true;
@@ -277,39 +176,38 @@ namespace Dungeon_Crawler
                 return false;
         }
 
-        private void MoveToCenter(Level level, GraphicsDevice graphicsDevice)
+        private void MoveToCenterOfGivenCell(RogueSharp.Cell NextCell, Level level, GraphicsDevice graphicsDevice)
         {
-            int PosX = x * level.cellSize + level.cellSize / 2;
-            int PosY = y * level.cellSize + level.cellSize / 2;
+            int PosX = NextCell.X * level.cellSize + level.cellSize / 2;
+            int PosY = NextCell.Y * level.cellSize + level.cellSize / 2;
 
             if (Math.Abs(Center.Y - PosY) > Speed)
             {
-                if (Center.Y >= y * level.cellSize + level.cellSize / 2)
+                if (Center.Y - PosY > Speed)
                 {
-                    currentDirection = Directions.Top;
+                    Move(Directions.Top, level, graphicsDevice);
                 }
-                else
+                if (Center.Y - PosY < Speed)
                 {
-                    currentDirection = Directions.Bottom;
+                    Move(Directions.Bottom, level, graphicsDevice);
                 }
-                    
             }
-            CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
+
             if (Math.Abs(Center.X - PosX) > Speed)
             {
-                if (Center.X >= x * level.cellSize + level.cellSize / 2)
+                if (Center.X - PosX > Speed)
                 {
-                    currentDirection = Directions.Left;
+                    Move(Directions.Left, level, graphicsDevice);
                 }
-                else
+                if (Center.X - PosX < Speed)
                 {
-                    currentDirection = Directions.Right;
-                }  
+                    Move(Directions.Right, level, graphicsDevice);
+                }
+
             }
-            CollisionAvoidingMove(currentDirection, Speed, level, graphicsDevice);
         }
 
-        private void Move(Directions currentDirection, float speed, Level level, GraphicsDevice graphicsDevice)
+        private void Move(Directions currentDirection, Level level, GraphicsDevice graphicsDevice)
         {
             if (currentDirection == Directions.Top)
                 Velocity.Y = -Speed;
