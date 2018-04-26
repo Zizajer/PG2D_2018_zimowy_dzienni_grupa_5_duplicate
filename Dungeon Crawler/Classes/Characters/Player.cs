@@ -142,7 +142,10 @@ namespace Dungeon_Crawler
         {
             x = (int)Math.Floor(Center.X / level.cellSize);
             y = (int)Math.Floor(Center.Y / level.cellSize);
-            CurrentCell = level.map.GetCell(x, y);
+            if (x > 0 && x < level.map.Width && y > 0 && y < level.map.Height)
+            {
+                CurrentCell = level.map.GetCell(x, y);
+            }
 
             if (IsHitByProjectile(level, graphicsDevice))
             {
@@ -157,10 +160,13 @@ namespace Dungeon_Crawler
                 if (currentDirection != (int)Directions.None)
                 {
                     RogueSharp.Cell futureNextCell= Collision.getCellFromDirection(CurrentCell, currentDirection, level);
-                    if (!Collision.checkCollisionInGivenCell(futureNextCell, level, graphicsDevice))
+                    if (x > 0 && x < level.map.Width && y > 0 && y < level.map.Height)
                     {
-                        NextCell = futureNextCell;
-                        currentState =State.Moving;
+                        if (!Collision.checkCollisionInGivenCell(futureNextCell, level, graphicsDevice))
+                        {
+                            NextCell = futureNextCell;
+                            currentState = State.Moving;
+                        }
                     }
                     else
                     {
