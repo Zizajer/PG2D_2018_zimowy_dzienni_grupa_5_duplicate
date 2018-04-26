@@ -44,31 +44,6 @@ namespace Dungeon_Crawler
             return null;
         }
 
-        public static bool isCollidingWithPlayer(Rectangle characterRectangle, Character character, Level level, GraphicsDevice graphicsDevice)
-        {
-            if (character.GetType() != typeof(Player))
-            {
-                if (Vector2.Distance(characterRectangle.Center.ToVector2(), level.player.Center) < level.cellSize)
-                    if (checkCollision(characterRectangle, character, level.player, graphicsDevice))
-                        return true;
-            }
-            return false;
-        }
-
-        public static bool isCollidingWithEnemies(Rectangle characterRectangle, Character character, Level level, GraphicsDevice graphicsDevice)
-        {
-            foreach (Character enemy in level.enemies)
-            {
-                if (enemy==character) continue;
-                if (Vector2.Distance(characterRectangle.Center.ToVector2(), enemy.Center) < level.cellSize)
-                {
-                    if (checkCollision(characterRectangle, character, enemy, graphicsDevice))
-                        return true;
-                }
-            }
-            return false;
-        }
-
         public static bool isCollidingWithRocks(Rectangle characterRectangle, Character character, Level level, GraphicsDevice graphicsDevice)
         {
             foreach (Rock rock in level.rocks)
@@ -90,25 +65,6 @@ namespace Dungeon_Crawler
                 {
                     if (checkCollision(sprite, rock, graphicsDevice))
                         return true;
-                }
-            }
-            return false;
-        }
-
-        public static bool checkCollision(Rectangle characterRectangle, Character character1, Character character2, GraphicsDevice graphicsDevice)
-        {
-            if (character1 == null || character2 == null) return false;
-            Rectangle character1Rectangle = characterRectangle;
-            Color[] character1TextureData = character1.getCurrentTextureData(graphicsDevice);
-
-            Rectangle character2Rectangle = character2.getRectangle();
-            Color[] character2TextureData = character2.getCurrentTextureData(graphicsDevice);
-
-            if (character1Rectangle.Intersects(character2Rectangle))
-            {
-                if (IntersectPixels(character1Rectangle, character1TextureData,character2Rectangle, character2TextureData))
-                {
-                    return true;
                 }
             }
             return false;
