@@ -113,16 +113,16 @@ namespace Dungeon_Crawler
 
         public virtual Directions GetDirection()
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Q))
+            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.A))
                 return Directions.TopLeft;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.E))
+            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.D))
                 return Directions.TopRight;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Z))
+            if (Keyboard.GetState().IsKeyDown(Keys.S) && Keyboard.GetState().IsKeyDown(Keys.A))
                 return Directions.BottomLeft;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.C))
+            if (Keyboard.GetState().IsKeyDown(Keys.S) && Keyboard.GetState().IsKeyDown(Keys.D))
                 return Directions.BottomRight;
 
             if (Keyboard.GetState().IsKeyDown(Keys.W))
