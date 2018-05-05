@@ -114,10 +114,7 @@ namespace Dungeon_Crawler
 
             List<Cell> occupiedCells = new List<Cell>();
 
-            Cell portalcell = GetRandomEmptyCell(map, occupiedCells, grid);
-            occupiedCells.Add(portalcell);
-            Portal portal =
-                new Portal(new Vector2(portalcell.X * cellSize, portalcell.Y * cellSize), portalTexture);
+            Portal portal = new Portal(portalTexture);
 
             List<Character> enemies = CreateEnemiesList(Content, map, cellSize, enemiesCount, occupiedCells, grid);
             List<Item> items = CreateItemsList(Content, map, cellSize, itemsCount, occupiedCells, allItems, allItemsNames, grid);
@@ -148,10 +145,7 @@ namespace Dungeon_Crawler
 
             List<Cell> occupiedCells = new List<Cell>();
 
-            Cell portalcell = GetRandomEmptyCell(map, occupiedCells, grid);
-            occupiedCells.Add(portalcell);
-            Portal portal =
-                new Portal(new Vector2(portalcell.X * cellSize, portalcell.Y * cellSize), portalTexture);
+            Portal portal = new Portal(portalTexture);
 
             List<Character> enemies =new List<Character>(1);
 

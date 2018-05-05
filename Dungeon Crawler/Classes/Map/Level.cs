@@ -83,6 +83,12 @@ namespace Dungeon_Crawler
         {
             if (enemies.Count == 0)
             {
+                if (portal.Position.X == 0 && portal.Position.Y == 0)
+                {
+                    Cell portalcell = GetRandomEmptyCellNearCoord(new Vector2(player.x, player.y), 3);
+                    occupiedCells.Add(portalcell);
+                    portal.Position = new Vector2(portalcell.X * cellSize, portalcell.Y * cellSize);
+                }
                 if (Collision.checkCollision(player.getRectangle(), player, portal, graphicsDevice))
                 {
                     finished = true;
@@ -229,5 +235,26 @@ namespace Dungeon_Crawler
             } while (!tempCell.IsWalkable || occupiedCells.Contains(tempCell) || grid.GetCellCost(new Position(x, y)) > 1.0f);
             return new Vector2(tempCell.X*floor.Width+ floor.Width/3, tempCell.Y * floor.Width +floor.Width / 3);
         }
+
+        public Cell GetRandomEmptyCellNearCoord(Vector2 origin, int distance)
+        {
+            Cell tempCell;
+            for (int x = (int)origin.X - distance; x < (int)origin.X + distance; x++)
+            {
+                for (int y = (int)origin.Y - distance; y < (int)origin.Y + distance; y++)
+                {
+                    if (x >= 0 && y >= 0 && x < map.Width && y < map.Height)
+                    {
+                        tempCell = map.GetCell(x, y);
+                        if (tempCell.IsWalkable && !occupiedCells.Contains(tempCell) && grid.GetCellCost(new Position(x, y)) == 1.0f)
+                        {
+                            return tempCell;
+                        }
+                    }
+                }
+            }
+            throw new Exception("No empty cell was found in given area!");
+        }
+
     }
 }
