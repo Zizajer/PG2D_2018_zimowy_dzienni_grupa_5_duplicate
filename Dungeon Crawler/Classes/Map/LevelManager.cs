@@ -20,7 +20,7 @@ namespace Dungeon_Crawler
         public int newMapRoomWidth = 7;
         public int newMapRoomHeight = 2;
         public int enemiesCount = 1;
-        public int itemsCount = 1;
+        public int itemsCount = 0;
         public int rocksCount = 0;
         public Texture2D floor;
         public Texture2D wall;
@@ -98,12 +98,13 @@ namespace Dungeon_Crawler
 
         public void incrementOtherParameters(int increaseValue)
         {
-            //if (Global.random.Next(4) % 3 == 0) 
             enemiesCount = enemiesCount + 5;
-            if (Global.random.Next(4) % 3 == 0) 
-            itemsCount = itemsCount + increaseValue;
             if (Global.random.Next(4) % 2 == 0) 
             rocksCount = rocksCount + increaseValue;
+            if (player != null && player.CurrentLevel > 5)
+            {
+                itemsCount = Global.random.Next(1);
+            }
         }
 
         public void CreateNormalLevel()
@@ -181,7 +182,7 @@ namespace Dungeon_Crawler
                 }
             }
 
-            Level level = new Level(map, grid, cellSize, enemies, floor, wall, portal, occupiedCells, fireball, bossFireball);
+            Level level = new Level(map, grid, cellSize, enemies, allItems, allItemsNames, floor, wall, portal, occupiedCells, fireball, bossFireball);
 
             levels.Add(level);
         }
