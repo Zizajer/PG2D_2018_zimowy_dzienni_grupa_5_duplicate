@@ -22,6 +22,7 @@ namespace Dungeon_Crawler
         public int enemiesCount = 1;
         public int itemsCount = 0;
         public int rocksCount = 0;
+        public float enemySpeedFactor = 1.0f;
         public Texture2D floor;
         public Texture2D wall;
         public Texture2D fireball;
@@ -101,6 +102,7 @@ namespace Dungeon_Crawler
             enemiesCount = enemiesCount + 5;
             if (Global.random.Next(4) % 2 == 0) 
             rocksCount = rocksCount + increaseValue;
+            enemySpeedFactor = enemySpeedFactor + 0.5f;
             if (player != null && player.CurrentLevel > 5)
             {
                 itemsCount = Global.random.Next(1);
@@ -229,7 +231,7 @@ namespace Dungeon_Crawler
             {
                 Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid);
                 occupiedCells.Add(randomCell);
-                float speed = (Global.random.Next(2) + 1) / 0.7f;
+                float speed = (Global.random.Next(2) + 1) / 0.9f + (float)Math.Log(enemySpeedFactor);
                 float timeBetweenActions = 1f;
                 Character tempEnemy =
                     new Enemy(_animations, cellSize, speed, timeBetweenActions, map)
