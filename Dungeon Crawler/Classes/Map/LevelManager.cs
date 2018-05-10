@@ -103,7 +103,7 @@ namespace Dungeon_Crawler
             if (Global.random.Next(4) % 2 == 0) 
             rocksCount = rocksCount + increaseValue;
             enemySpeedFactor = enemySpeedFactor + 0.5f;
-            if (player != null && player.CurrentLevel > 5)
+            if (player != null && player.CurrentMapLevel > 5)
             {
                 itemsCount = Global.random.Next(1);
             }
@@ -168,7 +168,7 @@ namespace Dungeon_Crawler
 
             float timeBetweenActions = 1f;
             Character tempBoss =
-                new Boss(_animationsBoss, cellSize, timeBetweenActions, map)
+                new Boss(_animationsBoss, cellSize, player.CurrentMapLevel, timeBetweenActions, map)
                 {
                     Position = new Vector2((randomCell.X * cellSize), (randomCell.Y * cellSize))
                 };
@@ -233,8 +233,19 @@ namespace Dungeon_Crawler
                 occupiedCells.Add(randomCell);
                 float speed = (Global.random.Next(2) + 1) / 0.9f + (float)Math.Log(enemySpeedFactor);
                 float timeBetweenActions = 1f;
+
+                int level;
+                if (player == null) // Case when the game has just begun and we haven't initialized our player yet (player is initialized AFTER creating first level in constructor of this class)
+                {
+                    level = 1;
+                }
+                else
+                {
+                    level = Global.random.Next(player.CurrentMapLevel, player.CurrentMapLevel + 3);
+                }
+
                 Character tempEnemy =
-                    new Enemy(_animations, cellSize, speed, timeBetweenActions, map)
+                    new Enemy(_animations, cellSize, level, speed, timeBetweenActions, map)
                     {
                         Position = new Vector2((randomCell.X * cellSize + cellSize /3), (randomCell.Y * cellSize) + cellSize /3)
                     };
@@ -255,15 +266,15 @@ namespace Dungeon_Crawler
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            levels[player.CurrentLevel].Draw(gameTime, spriteBatch);
+            levels[player.CurrentMapLevel].Draw(gameTime, spriteBatch);
         }
 
         public void Update(GameTime gameTime, GraphicsDevice graphicsDevice)
         {
-            levels[player.CurrentLevel].Update(gameTime, graphicsDevice);
-            if (levels[player.CurrentLevel].finished == true)
+            levels[player.CurrentMapLevel].Update(gameTime, graphicsDevice);
+            if (levels[player.CurrentMapLevel].finished == true)
             {
-                if (player.CurrentLevel % 2 == 1)
+                if (player.CurrentMapLevel % 2 == 1)
                 {
                     CreateNormalLevel();
                 }
@@ -272,13 +283,13 @@ namespace Dungeon_Crawler
                     CreateBossLevel();
                 }
                 
-                player.CurrentLevel++;
+                player.CurrentMapLevel++;
                 player.currentState = Player.State.Standing;
-                levels[player.CurrentLevel].addPlayer(player);
-                Vector2 newPlayerPosition = levels[player.CurrentLevel].GetRandomEmptyCell();
+                levels[player.CurrentMapLevel].addPlayer(player);
+                Vector2 newPlayerPosition = levels[player.CurrentMapLevel].GetRandomEmptyCell();
                 player.Position = newPlayerPosition;
                 Global.Camera.CenterOn(player.Center);
-                levels[player.CurrentLevel - 1] = null;
+                levels[player.CurrentMapLevel - 1] = null;
             }
         }
 

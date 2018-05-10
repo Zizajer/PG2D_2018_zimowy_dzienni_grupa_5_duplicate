@@ -13,17 +13,29 @@ namespace Dungeon_Crawler
         float timeBetweenActions;
         Position[] path;
 
-        public Enemy(Dictionary<string, Animation> _animations, int cellSize, float speed, float timeBetweenActions, Map map)
+        public Enemy(Dictionary<string, Animation> _animations, int cellSize, int level, float speed, float timeBetweenActions, Map map)
         {
-            Health = 100;
+            this.Level = level;
+            calculateStatistics();
+
             this._animations = _animations;
             this.timeBetweenActions = timeBetweenActions;
-            Speed = speed;
+            Speed = speed; // TODO: move it to calculateStatistics()
             _animationManager = new AnimationManager(_animations.First().Value);
             x = (int)Math.Floor(Center.X / cellSize);
             y = (int)Math.Floor(Center.Y / cellSize);
             CurrentCell = map.GetCell(x, y);
             currentState = State.Standing;
+        }
+
+        public override void calculateStatistics()
+        {
+            Health = 50 + Level * 10;
+            Defense = 50 + Level * 3;
+            SpDefense = 50 + Level * 5;
+            Attack = (int)Math.Floor(50 + Level * 2.5);
+            SpAttack = 50 + Level * 3;
+            //Speed = todo..
         }
 
         public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)

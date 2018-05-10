@@ -17,18 +17,29 @@ namespace Dungeon_Crawler
 
         Map map;
 
-        public Boss(Dictionary<string, Animation> _animations, int cellSize, float timeBetweenActions, Map map)
+        public Boss(Dictionary<string, Animation> _animations, int cellSize, int level, float timeBetweenActions, Map map)
         {
-            Health = 100;
+            this.Level = level;
+            calculateStatistics();
+
             this._animations = _animations;
             this.timeBetweenActions = timeBetweenActions;
-            Speed = 0f;
             _animationManager = new AnimationManager(_animations.First().Value);
             actionTimer = 0;
 
             this.map = map;
             x = (int)Math.Floor(Center.X / cellSize);
             y = (int)Math.Floor(Center.Y / cellSize);
+        }
+
+        public override void calculateStatistics()
+        {
+            Health = 210 + Level * 10;
+            Defense = 210 + Level * 3;
+            SpDefense = 210 + Level * 5;
+            Attack = (int)Math.Floor(210 + Level * 2.5);
+            SpAttack = 210 + Level * 3;
+            Speed = 0f;
         }
 
         public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)

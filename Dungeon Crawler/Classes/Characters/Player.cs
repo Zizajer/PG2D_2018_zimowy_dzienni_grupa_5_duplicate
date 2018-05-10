@@ -18,14 +18,18 @@ namespace Dungeon_Crawler
         public MouseState mouse;
         public float rotation;
         public List<Item> inventory { get; set; }
-        public int CurrentLevel { get; set; }
+        public int CurrentMapLevel { get; set; }
         KeyboardState pastKey;
         MouseState pastButton;
 
-        public Player(ContentManager content, int cellSize, int playerCurrentLevel)
+        public Player(ContentManager content, int cellSize, int playerCurrentMapLevel)
         {
+            Level = 1;
+            Speed = 4f; // TODO: move it to calculateStatistics();
+            Mana = 100; // TODO: move it to calculateStatistics();
+            calculateStatistics();
+
             currentState = State.Standing;
-            Health = 100;
             _animations = new Dictionary<string, Animation>()
             {
                 {"WalkUp",new Animation(content.Load<Texture2D>("player/Walkingup"),3 )},
@@ -33,14 +37,23 @@ namespace Dungeon_Crawler
                 {"WalkLeft",new Animation(content.Load<Texture2D>("player/WalkingLeft"),3 )},
                 {"WalkRight",new Animation(content.Load<Texture2D>("player/WalkingRight"),3 )}
             };
-            Speed = 4f;
-            Mana = 100;
-            CurrentLevel = playerCurrentLevel;
+            CurrentMapLevel = playerCurrentMapLevel;
             inventory = new List<Item>();
             _animationManager = new AnimationManager(_animations.First().Value);
 
 
         }
+
+        public override void calculateStatistics()
+        {
+            Health = 70 + Level * 10;
+            Defense = 70 + Level * 3;
+            SpDefense = 70 + Level * 5;
+            Attack = (int)Math.Floor(70 + Level * 2.5);
+            SpAttack = 70 + Level * 3;
+            //Speed = todo..
+        }
+
         public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
         {
             EnemyProjectile projectile = null;
