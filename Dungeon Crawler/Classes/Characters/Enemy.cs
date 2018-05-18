@@ -16,7 +16,7 @@ namespace Dungeon_Crawler
 
         public Enemy(Dictionary<string, Animation> _animations, int cellSize, int level, float speed, float timeBetweenActions, Map map)
         {
-            this.Level = level;
+            Level = level;
             calculateStatistics();
 
             this._animations = _animations;
@@ -87,18 +87,18 @@ namespace Dungeon_Crawler
                     else
                     {//cant see player
                         futureNextCell = getRandomEmptyCell(level, graphicsDevice);
-                        if(futureNextCell != null)
+                        if (futureNextCell != null)
                         {
                             NextCell = futureNextCell;
                             currentState = State.Moving;
                             level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
                             level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 5.0f);
-                        }                 
+                        }
                     }
                 }
                 else
                 {
-                    
+
                     if (timer > timeBetweenActions)
                     {
                         Global.CombatManager.Attack(this, level.player);
@@ -108,7 +108,7 @@ namespace Dungeon_Crawler
                     {
                         timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
                     }
-                    
+
                 }
             }
             else //Moving
@@ -125,10 +125,22 @@ namespace Dungeon_Crawler
 
             if (IsHitByProjectile(level, graphicsDevice))
             {
-                Health = 0;
+                int damage = 20;
+                Health -=damage;
                 level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
                 if (NextCell != null)
                     level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 1.0f);
+                string tempString;
+                if (Health <= 0)
+                {
+                    tempString = "Player's fireball killed " + Name;
+                }
+                else
+                {
+                    tempString = "Player's fireball hit " + Name + " for " + damage;
+                }
+                
+                Global.Gui.WriteToConsole(tempString);
             }
 
             SetAnimations();
@@ -142,7 +154,7 @@ namespace Dungeon_Crawler
             if (x != level.player.x || y != level.player.y)
             {
                 if (NextCell == null || x == NextCell.X && y == NextCell.Y)
-                { 
+                {
                     path = level.grid.GetPath(new Position(x, y), new Position(level.player.x, level.player.y), MovementPatterns.Full);
                     if (path == null)
                     {
@@ -151,7 +163,7 @@ namespace Dungeon_Crawler
                     }
                     else
                     {
-                        if (path.Length>0)
+                        if (path.Length > 0)
                         {
                             int x = path[1].X;
                             int y = path[1].Y;

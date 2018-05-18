@@ -188,7 +188,7 @@ namespace Dungeon_Crawler
             {
                 int damage = 20;
                 Health -= damage;
-                string tempString = "Demon Oak's giant fireball hit player for " + damage + " and he has " + Health + " health remaining.";
+                string tempString = "Demon Oak's giant fireball hit player for " + damage;
                 Global.Gui.WriteToConsole(tempString);
             }
 

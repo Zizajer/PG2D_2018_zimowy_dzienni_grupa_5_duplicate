@@ -10,7 +10,7 @@ namespace Dungeon_Crawler
         public Vector2 OriginalPosition { get; set; }
         public float rotation;
         public bool isEnemyHit = false;
-        private float ProjectileTimer;
+        private float ProjectileTimer=0;
         private readonly float VanishDelay = 0.25f;
         int x, y;
         public PlayerProjectile(Vector2 vel, Vector2 pos, Texture2D tex,float rot) : base(pos, tex)

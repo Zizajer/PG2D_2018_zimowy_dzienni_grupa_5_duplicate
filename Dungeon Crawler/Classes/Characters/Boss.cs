@@ -51,7 +51,7 @@ namespace Dungeon_Crawler
                 projectile = level.playerProjectiles[i];
                 if (Collision.checkCollision(getRectangle(), this, projectile, graphicsDevice))
                 {
-                    projectile.isEnemyHit = true;
+                    projectile.isMarkedToDelete = true;
                     return true;
                 }
             } 
@@ -66,9 +66,9 @@ namespace Dungeon_Crawler
 
             if (IsHitByProjectile(level, graphicsDevice))
             {
-                int damage = 1;
+                int damage = 20;
                 Health -= damage;
-                string tempString = "Player's fireball hit " + Name+ " for " + damage + " and he has " + Health + " health remaining.";
+                string tempString = "Player's fireball hit " + Name+ " for " + damage;
                 Global.Gui.WriteToConsole(tempString);
                 if (Health <= 0)
                 {
@@ -84,6 +84,7 @@ namespace Dungeon_Crawler
                     level.grid.UnblockCell(new Position(6, 7));
                     level.grid.UnblockCell(new Position(7, 7));
                 }
+
             }
 
             if (currentState == State.Standby)

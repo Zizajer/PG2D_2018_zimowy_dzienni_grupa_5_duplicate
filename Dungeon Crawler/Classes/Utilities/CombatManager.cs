@@ -19,23 +19,27 @@ namespace Dungeon_Crawler
 
         public void Attack(Character attacker, Character defender)
         {
+            string tempString;
             // 80% chance to hit
             if (Global.random.Next(10) < 8)
             {
                 //(1-attacker.damage)
                 int damage = Global.random.Next(attacker.Attack) + 1;
                 defender.Health -= damage;
-                string tempString = attacker.Name + " hit " + defender.Name + " for " + damage + " and he has " + defender.Health + " health remaining.";
-                Global.Gui.WriteToConsole(tempString);
-                if (defender.Health <= 0)
+                if (defender.Health > 0)
+                {
+                    tempString = attacker.Name + " hit " + defender.Name + " for " + damage;
+                }
+                else
                 {
                     tempString = attacker.Name + " killed " + defender.Name;
-                    Global.Gui.WriteToConsole(tempString);
-                }
+                } 
+                Global.Gui.WriteToConsole(tempString);
+
             }
             else
             {
-                string tempString = attacker.Name + " missed " + defender.Name;
+                tempString = attacker.Name + " missed " + defender.Name;
                 Global.Gui.WriteToConsole(tempString);
             }
         }
