@@ -52,15 +52,15 @@ namespace Dungeon_Crawler
             isBossLevel = false;
         }
 
-        public Level(Map map, Grid grid, int cellSize, List<Character> enemies1, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells, Texture2D fireball, Texture2D fireballBoss)
+        public Level(Map map, Grid grid, int cellSize, List<Character> enemies1, List<Texture2D> allItems, List<String> allItemsNames, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells, Texture2D fireball, Texture2D fireballBoss)
         {
             this.map = map;
             this.grid = grid;
             this.cellSize = cellSize;
             enemies = enemies1;
             items = new List<Item>();
-            allItems = new List<Texture2D>();
-            allItemsNames = new List<String>();
+            this.allItems = allItems;
+            this.allItemsNames = allItemsNames;
             rocks = new List<Rock>();
             this.floor = floor;
             this.wall = wall;
@@ -83,6 +83,12 @@ namespace Dungeon_Crawler
         {
             if (enemies.Count == 0)
             {
+                if (portal.Position.X == 0 && portal.Position.Y == 0)
+                {
+                    Cell portalcell = GetRandomEmptyCellNearCoord(new Vector2(player.x, player.y), 3);
+                    occupiedCells.Add(portalcell);
+                    portal.Position = new Vector2(portalcell.X * cellSize, portalcell.Y * cellSize);
+                }
                 if (Collision.checkCollision(player.getRectangle(), player, portal, graphicsDevice))
                 {
                     finished = true;
@@ -101,6 +107,18 @@ namespace Dungeon_Crawler
                     if (character.Health <= 0)
                     {
                         enemies.RemoveAt(i);
+                        if (Global.random.Next(10) > 0) //90% of chance
+                        {
+                            int numberOfItems = Global.random.Next(2, 5);
+                            int positionOffset = 0;
+                            for (int j = 0; j < numberOfItems; j++)
+                            {
+                                int itemId = Global.random.Next(allItemsNames.Count);
+                                Item tempItem = new Item(new Vector2(character.Center.X + positionOffset, character.Center.Y + positionOffset), allItems[itemId], allItemsNames[itemId]);
+                                items.Add(tempItem);
+                                positionOffset += cellSize / 2;
+                            }
+                        }
                     }
                 } 
             }
@@ -114,30 +132,29 @@ namespace Dungeon_Crawler
                     {
                         grid.SetCellCost(new Position(enemy.x, enemy.y), 1.0f);
                         enemies.RemoveAt(i);
-                        if (Global.random.Next(10) > 8)
+                        if (Global.random.Next(20) == 19) //5% of chance
                         {
-                            int rand = Global.random.Next(2) + 1;
-                            Item tempItem = new Item(new Vector2(enemy.Position.X + cellSize / 3, enemy.Position.Y + cellSize / 3), allItems[rand], allItemsNames[rand]);
+                            int itemId = Global.random.Next(allItemsNames.Count);
+                            Item tempItem = new Item(new Vector2(enemy.Center.X, enemy.Center.Y), allItems[itemId], allItemsNames[itemId]);
                             items.Add(tempItem);
                         }
                     }
                 }
+            }
 
-
-                Item[] itemArray = items.ToArray();
-                for (int i = 0; i < items.Count; i++)
+            Item[] itemArray = items.ToArray();
+            for (int i = 0; i < items.Count; i++)
+            {
+                if ((Math.Abs(player.Position.X - player.Position.X) < player.getWidth() + itemArray[i].Texture.Width) && (Math.Abs(player.Position.Y - player.Position.Y) < player.getHeight() + itemArray[i].Texture.Height))
                 {
-                    if ((Math.Abs(player.Position.X - player.Position.X) < player.getWidth() + itemArray[i].Texture.Width) && (Math.Abs(player.Position.Y - player.Position.Y) < player.getHeight() + itemArray[i].Texture.Height))
+                    if (Collision.checkCollision(player.getRectangle(), player, itemArray[i], graphicsDevice))
                     {
-                        if (Collision.checkCollision(player.getRectangle(), player, itemArray[i], graphicsDevice))
-                        {
-                            player.inventory.Add(itemArray[i]);
-                            items.Remove(itemArray[i]);
-                        }
+                        player.inventory.Add(itemArray[i]);
+                        items.Remove(itemArray[i]);
                     }
                 }
             }
-           
+
 
             for (int i = playerProjectiles.Count - 1; i >= 0; i--)
             {
@@ -182,13 +199,14 @@ namespace Dungeon_Crawler
                     spriteBatch.Draw(wall, position, null, Color.White, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, Layers.Cells);
                 }
             }
+
+            foreach (var item in items)
+            {
+                item.Draw(spriteBatch);
+            }
+
             if (!isBossLevel)
             {
-                foreach (var item in items)
-                {
-                    item.Draw(spriteBatch);
-                }
-
                 foreach (var rock in rocks)
                 {
                     rock.Draw(spriteBatch);
@@ -229,5 +247,26 @@ namespace Dungeon_Crawler
             } while (!tempCell.IsWalkable || occupiedCells.Contains(tempCell) || grid.GetCellCost(new Position(x, y)) > 1.0f);
             return new Vector2(tempCell.X*floor.Width+ floor.Width/3, tempCell.Y * floor.Width +floor.Width / 3);
         }
+
+        public Cell GetRandomEmptyCellNearCoord(Vector2 origin, int distance)
+        {
+            Cell tempCell;
+            for (int x = (int)origin.X - distance; x < (int)origin.X + distance; x++)
+            {
+                for (int y = (int)origin.Y - distance; y < (int)origin.Y + distance; y++)
+                {
+                    if (x >= 0 && y >= 0 && x < map.Width && y < map.Height)
+                    {
+                        tempCell = map.GetCell(x, y);
+                        if (tempCell.IsWalkable && !occupiedCells.Contains(tempCell) && grid.GetCellCost(new Position(x, y)) == 1.0f)
+                        {
+                            return tempCell;
+                        }
+                    }
+                }
+            }
+            throw new Exception("No empty cell was found in given area!");
+        }
+
     }
 }

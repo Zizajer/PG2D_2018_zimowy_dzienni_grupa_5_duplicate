@@ -20,8 +20,9 @@ namespace Dungeon_Crawler
         public int newMapRoomWidth = 7;
         public int newMapRoomHeight = 2;
         public int enemiesCount = 1;
-        public int itemsCount = 1;
+        public int itemsCount = 0;
         public int rocksCount = 0;
+        public float enemySpeedFactor = 1.0f;
         public Texture2D floor;
         public Texture2D wall;
         public Texture2D fireball;
@@ -98,12 +99,14 @@ namespace Dungeon_Crawler
 
         public void incrementOtherParameters(int increaseValue)
         {
-            //if (Global.random.Next(4) % 3 == 0) 
             enemiesCount = enemiesCount + 5;
-            if (Global.random.Next(4) % 3 == 0) 
-            itemsCount = itemsCount + increaseValue;
             if (Global.random.Next(4) % 2 == 0) 
             rocksCount = rocksCount + increaseValue;
+            enemySpeedFactor = enemySpeedFactor + 0.5f;
+            if (player != null && player.CurrentMapLevel > 5)
+            {
+                itemsCount = Global.random.Next(1);
+            }
         }
 
         public void CreateNormalLevel()
@@ -114,10 +117,7 @@ namespace Dungeon_Crawler
 
             List<Cell> occupiedCells = new List<Cell>();
 
-            Cell portalcell = GetRandomEmptyCell(map, occupiedCells, grid);
-            occupiedCells.Add(portalcell);
-            Portal portal =
-                new Portal(new Vector2(portalcell.X * cellSize, portalcell.Y * cellSize), portalTexture);
+            Portal portal = new Portal(portalTexture);
 
             List<Character> enemies = CreateEnemiesList(Content, map, cellSize, enemiesCount, occupiedCells, grid);
             List<Item> items = CreateItemsList(Content, map, cellSize, itemsCount, occupiedCells, allItems, allItemsNames, grid);
@@ -148,10 +148,7 @@ namespace Dungeon_Crawler
 
             List<Cell> occupiedCells = new List<Cell>();
 
-            Cell portalcell = GetRandomEmptyCell(map, occupiedCells, grid);
-            occupiedCells.Add(portalcell);
-            Portal portal =
-                new Portal(new Vector2(portalcell.X * cellSize, portalcell.Y * cellSize), portalTexture);
+            Portal portal = new Portal(portalTexture);
 
             List<Character> enemies =new List<Character>(1);
 
@@ -171,7 +168,7 @@ namespace Dungeon_Crawler
 
             float timeBetweenActions = 1f;
             Character tempBoss =
-                new Boss(_animationsBoss, cellSize, timeBetweenActions, map)
+                new Boss(_animationsBoss, cellSize, player.CurrentMapLevel, timeBetweenActions, map)
                 {
                     Position = new Vector2((randomCell.X * cellSize), (randomCell.Y * cellSize))
                 };
@@ -187,7 +184,7 @@ namespace Dungeon_Crawler
                 }
             }
 
-            Level level = new Level(map, grid, cellSize, enemies, floor, wall, portal, occupiedCells, fireball, bossFireball);
+            Level level = new Level(map, grid, cellSize, enemies, allItems, allItemsNames, floor, wall, portal, occupiedCells, fireball, bossFireball);
 
             levels.Add(level);
         }
@@ -234,10 +231,21 @@ namespace Dungeon_Crawler
             {
                 Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid);
                 occupiedCells.Add(randomCell);
-                float speed = (Global.random.Next(2) + 1) / 0.7f;
+                float speed = (Global.random.Next(2) + 1) / 0.9f + (float)Math.Log(enemySpeedFactor);
                 float timeBetweenActions = 1f;
+
+                int level;
+                if (player == null) // Case when the game has just begun and we haven't initialized our player yet (player is initialized AFTER creating first level in constructor of this class)
+                {
+                    level = 1;
+                }
+                else
+                {
+                    level = Global.random.Next(player.CurrentMapLevel, player.CurrentMapLevel + 3);
+                }
+
                 Character tempEnemy =
-                    new Enemy(_animations, cellSize, speed, timeBetweenActions, map)
+                    new Enemy(_animations, cellSize, level, speed, timeBetweenActions, map)
                     {
                         Position = new Vector2((randomCell.X * cellSize + cellSize /3), (randomCell.Y * cellSize) + cellSize /3)
                     };
@@ -258,15 +266,15 @@ namespace Dungeon_Crawler
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            levels[player.CurrentLevel].Draw(gameTime, spriteBatch);
+            levels[player.CurrentMapLevel].Draw(gameTime, spriteBatch);
         }
 
         public void Update(GameTime gameTime, GraphicsDevice graphicsDevice)
         {
-            levels[player.CurrentLevel].Update(gameTime, graphicsDevice);
-            if (levels[player.CurrentLevel].finished == true)
+            levels[player.CurrentMapLevel].Update(gameTime, graphicsDevice);
+            if (levels[player.CurrentMapLevel].finished == true)
             {
-                if (player.CurrentLevel % 2 == 1)
+                if (player.CurrentMapLevel % 2 == 1)
                 {
                     CreateNormalLevel();
                 }
@@ -275,13 +283,13 @@ namespace Dungeon_Crawler
                     CreateBossLevel();
                 }
                 
-                player.CurrentLevel++;
+                player.CurrentMapLevel++;
                 player.currentState = Player.State.Standing;
-                levels[player.CurrentLevel].addPlayer(player);
-                Vector2 newPlayerPosition = levels[player.CurrentLevel].GetRandomEmptyCell();
+                levels[player.CurrentMapLevel].addPlayer(player);
+                Vector2 newPlayerPosition = levels[player.CurrentMapLevel].GetRandomEmptyCell();
                 player.Position = newPlayerPosition;
                 Global.Camera.CenterOn(player.Center);
-                levels[player.CurrentLevel - 1] = null;
+                levels[player.CurrentMapLevel - 1] = null;
             }
         }
 

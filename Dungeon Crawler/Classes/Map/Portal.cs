@@ -8,6 +8,9 @@ namespace Dungeon_Crawler
         public Portal(Vector2 pos, Texture2D tex) : base(pos, tex)
         {
         }
+        public Portal(Texture2D tex) : base(tex)
+        {
+        }
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Texture, Position, null, Color.White, 0.0f, Vector2.One, Size, SpriteEffects.None, Layers.Items);

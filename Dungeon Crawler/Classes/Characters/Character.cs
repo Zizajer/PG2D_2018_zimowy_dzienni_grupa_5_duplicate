@@ -12,9 +12,17 @@ namespace Dungeon_Crawler
         public enum Directions { None, Top, Bottom, Left, Right, TopLeft, TopRight, BottomLeft, BottomRight};
         public Directions currentDirection;
         public State currentState;
-        public int Damage { get; set; }
-        public int Health { get; set; }
+
         public string Name { get; set; }
+
+        public int Level { get; set; }
+        public int Health { get; set; }
+        public int Defense { get; set; }
+        public int SpDefense { get; set; }
+        public int Attack { get; set; }
+        public int SpAttack { get; set; }
+        public float Speed { get; set; }
+
         public int x { get; set; }
         public int y { get; set; }
         public AnimationManager _animationManager;
@@ -37,7 +45,6 @@ namespace Dungeon_Crawler
 
         public RogueSharp.Cell CurrentCell;
         public RogueSharp.Cell NextCell;
-        public float Speed = 1.0f;
         public Vector2 Velocity;
 
         public virtual void Draw(SpriteBatch spriteBatch)
@@ -125,6 +132,24 @@ namespace Dungeon_Crawler
 
             }
         }
+
+        public abstract void calculateStatistics();
+
+        public void deductHealth(int oponentLevel, int oponentCriticalAttackProbability, int opponentAttackOrSpecialAttack, int attackPower, bool isSpecialAttack)
+        {
+            int modifier = 1; //will depend on i.a. critial attack probabilty.
+
+            if (isSpecialAttack)
+            {
+                Health -= ((((((2 * Level) / 5) + 2) * attackPower * opponentAttackOrSpecialAttack / SpDefense) / 50) + 2) * modifier;
+            }
+            else
+            {
+                Health -= ((((((2 * Level) / 5) + 2) * attackPower * opponentAttackOrSpecialAttack / Defense) / 50) + 2) * modifier;
+            }
+            
+        }
+
         public void Move(Directions currentDirection, Level level, GraphicsDevice graphicsDevice)
         {
             if (currentDirection == Directions.Top)

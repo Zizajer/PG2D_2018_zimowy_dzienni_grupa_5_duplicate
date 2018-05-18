@@ -21,6 +21,15 @@ namespace Dungeon_Crawler
             Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
             Size = 1.0f;
         }
+        public Sprite(Texture2D tex)
+        {
+            Texture = tex;
+            TextureData =
+               new Color[Texture.Width * Texture.Height];
+            Texture.GetData(TextureData);
+            Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
+            Size = 1.0f;
+        }
         public Vector2 Center
         {
             get { return new Vector2(Position.X + Texture.Width / 2, Position.Y + Texture.Height / 2); }

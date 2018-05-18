@@ -23,7 +23,7 @@ namespace Dungeon_Crawler
             if (Global.random.Next(10) < 8)
             {
                 //(1-attacker.damage)
-                int damage = Global.random.Next(attacker.Damage) + 1;
+                int damage = Global.random.Next(attacker.Attack) + 1;
                 defender.Health -= damage;
                 string tempString = attacker.Name + " hit " + defender.Name + " for " + damage + " and he has " + defender.Health + " health remaining.";
                 Global.Gui.WriteToConsole(tempString);
@@ -42,7 +42,7 @@ namespace Dungeon_Crawler
 
         public void Update()
         {
-            playerCurrentLevel = _player.CurrentLevel;
+            playerCurrentLevel = _player.CurrentMapLevel;
             currentLevel = levelManager.levels[playerCurrentLevel];
         }
 
