@@ -90,6 +90,7 @@ namespace Dungeon_Crawler
 
                     level.playerProjectiles.Add(newProjectile);
                     Mana = Mana - fireballCost;
+                    Global.SoundManager.playPew();
                 }
             }
             pastKey = Keyboard.GetState();

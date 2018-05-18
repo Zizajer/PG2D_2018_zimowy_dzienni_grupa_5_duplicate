@@ -224,6 +224,24 @@
 /processorParam:TextureFormat=Color
 /build:player/WalkingUp.png
 
+#begin sounds/gameover.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:sounds/gameover.mp3
+
+#begin sounds/pew.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:sounds/pew.mp3
+
+#begin sounds/portalactivated.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:sounds/portalactivated.mp3
+
 #begin spells/BossFireball.png
 /importer:TextureImporter
 /processor:TextureProcessor
