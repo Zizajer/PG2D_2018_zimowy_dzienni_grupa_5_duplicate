@@ -5,10 +5,12 @@ namespace Dungeon_Crawler
 {
     public class Effects
     {
-        public Effect hitEffect;
+        public Effect hitEnemyEffect;
+        public Effect hitPlayerEffect;
         public Effects(ContentManager Content)
         {
-            hitEffect = Content.Load<Effect>("shaders/Effec1");
+            hitEnemyEffect = Content.Load<Effect>("shaders/Effec1");
+            hitPlayerEffect = Content.Load<Effect>("shaders/Effec2");
         }
     }
 }

@@ -55,7 +55,15 @@ namespace Dungeon_Crawler
         {
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
             if (isHitShaderOn) {
-                Global.Effects.hitEffect.CurrentTechnique.Passes[0].Apply();
+                if(this is Player)
+                {
+                    Global.Effects.hitPlayerEffect.CurrentTechnique.Passes[0].Apply();
+                }
+                if(this is Enemy || this is Boss)
+                {
+                    Global.Effects.hitEnemyEffect.CurrentTechnique.Passes[0].Apply();
+                }
+                
             }
             _animationManager.Draw(spriteBatch);
             spriteBatch.End();

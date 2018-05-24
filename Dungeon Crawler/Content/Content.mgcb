@@ -230,6 +230,12 @@
 /processorParam:DebugMode=Auto
 /build:shaders/Effec1.fx
 
+#begin shaders/Effec2.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/Effec2.fx
+
 #begin spells/BossFireball.png
 /importer:TextureImporter
 /processor:TextureProcessor
