@@ -48,7 +48,7 @@ namespace Dungeon_Crawler
 
                 levelManager.Update(gameTime, GraphicsDevice);
 
-                Global.Gui.Update();
+                Global.Gui.Update(gameTime);
                 Global.CombatManager.Update();
             }
             
