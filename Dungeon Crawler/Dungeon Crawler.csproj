@@ -54,6 +54,7 @@
     <Compile Include="Classes\Characters\Enemy.cs" />
     <Compile Include="Classes\Game1.cs" />
     <Compile Include="Classes\Utilities\CombatManager.cs" />
+    <Compile Include="Classes\Utilities\Effects.cs" />
     <Compile Include="Classes\Utilities\Global.cs" />
     <Compile Include="Classes\Camera\GUI.cs" />
     <Compile Include="Classes\Map\Item.cs" />

@@ -23,6 +23,10 @@ namespace Dungeon_Crawler
         public int SpAttack { get; set; }
         public float Speed { get; set; }
 
+        public bool isHitShaderOn = false;
+        public float hitTimer=0;
+        public float howLongShouldShaderApply = 0.25f;
+
         public int x { get; set; }
         public int y { get; set; }
         public AnimationManager _animationManager;
@@ -49,7 +53,12 @@ namespace Dungeon_Crawler
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
+            if (isHitShaderOn) {
+                Global.Effects.hitEffect.CurrentTechnique.Passes[0].Apply();
+            }
             _animationManager.Draw(spriteBatch);
+            spriteBatch.End();
         }
 
         protected virtual void SetAnimations()

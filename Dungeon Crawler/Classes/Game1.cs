@@ -29,6 +29,8 @@ namespace Dungeon_Crawler
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             levelManager = new LevelManager(Content);
+
+            Global.Effects = new Effects(Content);
             Global.Gui.addLevelMananger(levelManager);
             Global.CombatManager = new CombatManager(levelManager);
         }
@@ -59,12 +61,11 @@ namespace Dungeon_Crawler
         {
             GraphicsDevice.Clear(Color.Black);
 
-            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
-
             levelManager.Draw(gameTime, spriteBatch);
 
-            Global.Gui.Draw(spriteBatch);
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
 
+            Global.Gui.Draw(spriteBatch);
             spriteBatch.End();
             base.Draw(gameTime);
         }

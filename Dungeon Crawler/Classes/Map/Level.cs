@@ -179,6 +179,8 @@ namespace Dungeon_Crawler
         }
         public void Draw(GameTime gameTime,SpriteBatch spriteBatch)
         {
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
+
             foreach (Cell cell in map.GetAllCells())
             {
                 var position = new Vector2(cell.X * floor.Width, cell.Y * floor.Width);
@@ -213,12 +215,6 @@ namespace Dungeon_Crawler
                 }
             }
             
-
-            foreach (var enemy in enemies)
-            {
-                enemy.Draw(spriteBatch);
-            }
-
             foreach (var playerProjectile in playerProjectiles)
             {
                 playerProjectile.Draw(spriteBatch);
@@ -233,7 +229,16 @@ namespace Dungeon_Crawler
             {
                 portal.Draw(spriteBatch);
             }
+            
+            spriteBatch.End();
+
             player.Draw(spriteBatch);
+
+            foreach (var enemy in enemies)
+            {
+                enemy.Draw(spriteBatch);
+            }
+
         }
         public Vector2 GetRandomEmptyCell()
         {

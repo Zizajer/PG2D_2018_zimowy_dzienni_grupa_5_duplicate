@@ -64,6 +64,7 @@ namespace Dungeon_Crawler
                 projectile = level.enemyProjectiles[i];
                 if (Collision.checkCollision(getRectangle(), this, projectile, graphicsDevice))
                 {
+                    isHitShaderOn = true;
                     projectile.isPlayerHit = true;
                     return true;
                 }
@@ -177,6 +178,16 @@ namespace Dungeon_Crawler
 
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
+            if (isHitShaderOn)
+            {
+                hitTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (hitTimer > howLongShouldShaderApply)
+                {
+                    hitTimer = 0;
+                    isHitShaderOn = false;
+                }
+            }
+
             x = (int)Math.Floor(Center.X / level.cellSize);
             y = (int)Math.Floor(Center.Y / level.cellSize);
             if (x > 0 && x < level.map.Width && y > 0 && y < level.map.Height)
