@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Diagnostics;
 
 namespace Dungeon_Crawler
 {
@@ -12,6 +13,9 @@ namespace Dungeon_Crawler
         private int mana;
         private SpriteFont font;
         private string[] console = { "", "", "", "" };
+        private double gameTime;
+        private double lastMsgGametime=0;
+        private double afterHowLongClearHighestMsg = 4; //sec
 
         public GUI(Player player, SpriteFont f)
         {
@@ -31,8 +35,8 @@ namespace Dungeon_Crawler
             float scale = Global.Camera.Zoom;
             if (_player.Health > 0)
             {
-                string healthString = "Health " + health + "%";
-                string manaString = "Mana " + mana + "%";
+                string healthString = "Health " + health;
+                string manaString = "Mana " + mana;
                 string s = _player.getItems() + " \nLevel " + (playerCurrentLevel + 1);
                 spriteBatch.DrawString(font, healthString, new Vector2(tempX, tempY), Color.OrangeRed, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
                 spriteBatch.DrawString(font, manaString, new Vector2(tempX2, tempY), Color.DeepSkyBlue, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
@@ -40,11 +44,11 @@ namespace Dungeon_Crawler
                 if (lm.levels[playerCurrentLevel].isBossLevel)
                 {
                     if(lm.levels[playerCurrentLevel].enemies.Count>0){
-                        string bossHealth = "Boss Health: " + lm.levels[playerCurrentLevel].enemies[0].Health + " %";
+                        string bossHealth = "Boss Health: " + lm.levels[playerCurrentLevel].enemies[0].Health;
                         spriteBatch.DrawString(font, bossHealth, new Vector2(tempX, tempY3), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
                     }
                     else{
-                        string bossHealth = "Boss Health: 0%";
+                        string bossHealth = "Boss is dead";
                         spriteBatch.DrawString(font, bossHealth, new Vector2(tempX, tempY3), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
                     }
                     
@@ -65,13 +69,17 @@ namespace Dungeon_Crawler
             lm = levelManager;
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
             health = _player.Health;
             mana = (int)_player.Mana;
             playerCurrentLevel = _player.CurrentMapLevel;
             if (health <= 0)
                 Global.GameState = false;
+            this.gameTime += gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (lastMsgGametime + afterHowLongClearHighestMsg < this.gameTime)
+                WriteToConsole("");
         }
         public void WriteToConsole(string msg)
         {
@@ -79,6 +87,8 @@ namespace Dungeon_Crawler
             console[1] = console[2];
             console[2] = console[3];
             console[3] = msg;
+
+            lastMsgGametime = gameTime;
         }
     }
 }
