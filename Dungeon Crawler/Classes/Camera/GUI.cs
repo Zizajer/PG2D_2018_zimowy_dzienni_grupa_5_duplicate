@@ -59,28 +59,37 @@ namespace Dungeon_Crawler
                 {
                     foreach(Enemy enemy in lm.levels[lm.player.CurrentMapLevel].enemies)
                     {
-                        //Health bar color
-                        Texture2D HealthBarTexture = new Texture2D(graphics.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+                        //Generate healthbar
+                        int HealthBarCurrentHealthWidth = (int)((double)enemy.CurrentHealthPercent / 100 * 50);
+                        int HealthBarBackgroundWidth = 50;
+                        int HealthBarHeight = 10;
+
+                        Texture2D HealthBarCurrentHealthTexture = new Texture2D(graphics.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+                        Texture2D HealthBarBackgroundTexture = new Texture2D(graphics.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+                        HealthBarBackgroundTexture.SetData<Color>(new Color[] { Color.Black });
+
                         if (enemy.CurrentHealthPercent > 65)
                         {
-                            HealthBarTexture.SetData<Color>(new Color[] { Color.Green });
+                            HealthBarCurrentHealthTexture.SetData<Color>(new Color[] { Color.Green });
                         }
                         else if (enemy.CurrentHealthPercent > 35)
                         {
-                            HealthBarTexture.SetData<Color>(new Color[] { Color.Orange });
+                            HealthBarCurrentHealthTexture.SetData<Color>(new Color[] { Color.Orange });
                         }
                         else
                         {
-                            HealthBarTexture.SetData<Color>(new Color[] { Color.Red });
+                            HealthBarCurrentHealthTexture.SetData<Color>(new Color[] { Color.Red });
                         }
-                        //Health bar width
-                        int HealthBarWidth = (int)((double)enemy.CurrentHealthPercent / 100 * 50);
-                        int HealthBarHeight = 10;
 
-                        spriteBatch.Draw(HealthBarTexture, new Rectangle((int)enemy.Position.X, (int)enemy.Position.Y - 30, HealthBarWidth, HealthBarHeight), Color.White);
+                        //Draw healthbar
+                        spriteBatch.Draw(HealthBarBackgroundTexture, new Rectangle((int)enemy.Position.X, (int)enemy.Position.Y - 25, HealthBarBackgroundWidth, HealthBarHeight), Color.White);
+                        spriteBatch.Draw(HealthBarCurrentHealthTexture, new Rectangle((int)enemy.Position.X, (int)enemy.Position.Y - 25, HealthBarCurrentHealthWidth, HealthBarHeight), Color.White);
 
-                        string LevelString = "Level " + enemy.Level.ToString();
-                        spriteBatch.DrawString(font, LevelString, new Vector2(enemy.Position.X + enemy.getWidth(), enemy.Position.Y), Color.Black, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
+                        //Draw level
+                        spriteBatch.DrawString(font, enemy.Level.ToString(), new Vector2(enemy.Position.X + HealthBarBackgroundWidth + 2, enemy.Position.Y - 27), Color.Black, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
+
+                        //Draw name
+                        spriteBatch.DrawString(font, enemy.Name, new Vector2((int)enemy.Position.X, (int)enemy.Position.Y - 39), Color.Black, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
                     }
                 }
             }

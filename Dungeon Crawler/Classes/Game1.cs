@@ -74,7 +74,7 @@ namespace Dungeon_Crawler
 
             levelManager.Draw(gameTime, spriteBatch);
 
-            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
 
             Global.Gui.Draw(spriteBatch);
             spriteBatch.End();
