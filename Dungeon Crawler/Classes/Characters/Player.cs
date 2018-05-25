@@ -24,6 +24,7 @@ namespace Dungeon_Crawler
         KeyboardState pastKey;
         KeyboardState pastKey2;
         MouseState pastButton;
+        MouseState pastButton2;
         ContentManager content;
 
         public Player(ContentManager content, int cellSize, int playerCurrentMapLevel)
@@ -109,25 +110,60 @@ namespace Dungeon_Crawler
                     MouseState mouse = Mouse.GetState();
                     Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
                     Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
-                    x = (int)Math.Floor(mousePos.X / level.cellSize);
-                    y = (int)Math.Floor(mousePos.Y / level.cellSize);
+                    int mx = (int)Math.Floor(mousePos.X / level.cellSize);
+                    int my = (int)Math.Floor(mousePos.Y / level.cellSize);
 
-                    if (x < 0 || x >= level.map.Width || y < 0 || y >= level.map.Height)
+                    if (mx < 0 || mx >= level.map.Width || my < 0 || my >= level.map.Height)
                         return;
-                    if (level.grid.GetCellCost(new Position(x,y))==1.0f)
+                    if (level.grid.GetCellCost(new Position(mx,my))==1.0f)
                     {
                         level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
-                        level.grid.SetCellCost(new Position(x, y), 5.0f);
-                        mousePos.X = x * level.cellSize + level.cellSize / 2 - getWidth() / 2;
-                        mousePos.Y = y * level.cellSize + level.cellSize / 2 - getHeight() / 2;
+                        level.grid.SetCellCost(new Position(mx, my), 5.0f);
+                        mousePos.X = mx * level.cellSize + level.cellSize / 2 - getWidth() / 2;
+                        mousePos.Y = my * level.cellSize + level.cellSize / 2 - getHeight() / 2;
                         Position = mousePos;
                         Mana = Mana - teleportCost;
-                        level.map.ComputeFov(x, y, 15, true);
+                        level.map.ComputeFov(mx, my, 15, true);
                         Global.Camera.CenterOn(Center);
                     }
                 }
             }
             pastButton = Mouse.GetState();
+        }
+
+        public void AutoAttack(Level level, GraphicsDevice graphicsDevice, GameTime gameTime)
+        {
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed && pastButton2.LeftButton == ButtonState.Released)
+            {
+
+                MouseState mouse = Mouse.GetState();
+                Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
+                Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
+                int mx = (int)Math.Floor(mousePos.X / level.cellSize);
+                int my = (int)Math.Floor(mousePos.Y / level.cellSize);
+
+                if (mx < 0 || mx >= level.map.Width || my < 0 || my >= level.map.Height)
+                    return;
+                if (Global.CombatManager.IsEnemyAt(mx, my))
+                {
+                    Character enemy = Global.CombatManager.EnemyAt(mx, my);
+
+                    List<Character> listOfEnemiesAround = Global.CombatManager.IsEnemyInCellAround(x, y);
+                    if (listOfEnemiesAround.Count > 0)
+                    {
+                        foreach (Character enemy2 in listOfEnemiesAround)
+                        {
+                            if (enemy.Equals(enemy2))
+                            {
+                                level.attackAnimations.Add(new AttackAnimation(content, mx, my, level.cellSize, gameTime));
+                                Global.CombatManager.Attack(this, enemy);
+                            }
+                        }
+                    }
+                }
+
+            }
+            pastButton2 = Mouse.GetState();
         }
 
         public void Exori(Level level, GraphicsDevice graphicsDevice, GameTime gameTime)
@@ -239,6 +275,8 @@ namespace Dungeon_Crawler
                 }
                 Teleport(level, graphicsDevice);
                 Fireball(level);
+                AutoAttack(level, graphicsDevice, gameTime);
+                Exori(level, graphicsDevice, gameTime);
             }
             else //Moving
             {
@@ -253,8 +291,9 @@ namespace Dungeon_Crawler
                     Global.Camera.CenterOn(Center);
                 }
                 Fireball(level);
+                Exori(level, graphicsDevice, gameTime);
             }
-            Exori(level, graphicsDevice, gameTime);
+            
             SetAnimations();
             _animationManager.Update(gameTime);
             Position += Velocity;
