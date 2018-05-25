@@ -9,6 +9,7 @@ namespace Dungeon_Crawler
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         LevelManager levelManager;
+        bool wasGameOverSoundPlayed = false;
 
         public Game1()
         {
@@ -33,6 +34,7 @@ namespace Dungeon_Crawler
             Global.Effects = new Effects(Content);
             Global.Gui.addLevelMananger(levelManager);
             Global.CombatManager = new CombatManager(levelManager);
+            Global.SoundManager = new SoundManager(Content);
         }
 
         protected override void UnloadContent()
@@ -52,6 +54,14 @@ namespace Dungeon_Crawler
 
                 Global.Gui.Update(gameTime);
                 Global.CombatManager.Update();
+            }
+            else
+            {
+                if (wasGameOverSoundPlayed == false)
+                {
+                    Global.SoundManager.playGameOver();
+                    wasGameOverSoundPlayed = true;
+                }
             }
             
             base.Update(gameTime);

@@ -50,6 +50,7 @@
     <Compile Include="Classes\Map\Sprite.cs" />
     <Compile Include="Classes\Map\Portal.cs" />
     <Compile Include="Classes\Map\PlayerProjectile.cs" />
+    <Compile Include="Classes\Utilities\SoundManager.cs" />
     <Compile Include="Classes\Utilities\Collision.cs" />
     <Compile Include="Classes\Characters\Enemy.cs" />
     <Compile Include="Classes\Game1.cs" />

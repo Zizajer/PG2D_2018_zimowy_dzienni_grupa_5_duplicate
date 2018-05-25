@@ -10,5 +10,6 @@ namespace Dungeon_Crawler
         public static bool GameState; //1- game on 0- game over
         public static CombatManager CombatManager;
         public static Effects Effects;
+        public static SoundManager SoundManager;
     }
 }
