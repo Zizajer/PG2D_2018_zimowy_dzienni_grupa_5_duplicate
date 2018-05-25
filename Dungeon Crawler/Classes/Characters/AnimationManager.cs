@@ -17,6 +17,11 @@ namespace Dungeon_Crawler
             Rectangle sourceRectangle = new Rectangle(_animation.CurrentFrame * _animation.FrameWidth, 0, _animation.FrameWidth, _animation.FrameHeight);
             spriteBatch.Draw(_animation.Texture, Position, sourceRectangle, Color.White, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, Layers.Figures);
         }
+        public void Draw(SpriteBatch spriteBatch,float layer)
+        {
+            Rectangle sourceRectangle = new Rectangle(_animation.CurrentFrame * _animation.FrameWidth, 0, _animation.FrameWidth, _animation.FrameHeight);
+            spriteBatch.Draw(_animation.Texture, Position, sourceRectangle, Color.White, 0.0f, Vector2.One, 1.0f, SpriteEffects.None, layer);
+        }
         public Rectangle getCurrentFrameRectangle()
         {
             return new Rectangle(_animation.CurrentFrame * _animation.FrameWidth, 0, _animation.FrameWidth, _animation.FrameHeight);

@@ -4,6 +4,7 @@ using RogueSharp;
 using Microsoft.Xna.Framework;
 using System;
 using RoyT.AStar;
+using System.Diagnostics;
 
 namespace Dungeon_Crawler
 {
@@ -19,7 +20,7 @@ namespace Dungeon_Crawler
         public List<Cell> occupiedCells;
         public List<PlayerProjectile> playerProjectiles;
         public List<EnemyProjectile> enemyProjectiles;
-
+        public List<AttackAnimation> attackAnimations;
         List<Texture2D> allItems;
         List<String> allItemsNames;
 
@@ -48,6 +49,7 @@ namespace Dungeon_Crawler
             this.fireball = fireball;
             playerProjectiles = new List<PlayerProjectile>();
             enemyProjectiles = new List<EnemyProjectile>();
+            attackAnimations = new List<AttackAnimation>();
             finished = false;
             isBossLevel = false;
         }
@@ -70,6 +72,7 @@ namespace Dungeon_Crawler
             this.fireballBoss = fireballBoss;
             playerProjectiles = new List<PlayerProjectile>();
             enemyProjectiles = new List<EnemyProjectile>();
+            attackAnimations = new List<AttackAnimation>();
             finished = false;
             isBossLevel = true;
         }
@@ -177,6 +180,20 @@ namespace Dungeon_Crawler
                 }
             }
 
+            foreach (AttackAnimation aa in attackAnimations)
+            {
+                aa.Update(gameTime);
+            }
+
+            for (int i = 0; i < attackAnimations.Count; i++)
+            {
+                if (attackAnimations[i].isActive == false)
+                {
+                    attackAnimations.Remove(attackAnimations[i]);
+                    i--;
+                }
+            }
+
         }
         public void Draw(GameTime gameTime,SpriteBatch spriteBatch)
         {
@@ -206,6 +223,11 @@ namespace Dungeon_Crawler
             foreach (var item in items)
             {
                 item.Draw(spriteBatch);
+            }
+
+            foreach (AttackAnimation aa in attackAnimations)
+            {
+                aa.Draw(spriteBatch);
             }
 
             if (!isBossLevel)

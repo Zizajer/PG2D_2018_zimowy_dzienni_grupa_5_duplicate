@@ -15,6 +15,7 @@ namespace Dungeon_Crawler
         public int teleportCost = 10;
         public int fireballCost = 10;
         public int exoriCost = 20;
+        public Dictionary<string, Animation> _animationsExori;
         public int maxFireballsOnScreen = 20;
         public MouseState mouse;
         public float rotation;
@@ -23,6 +24,7 @@ namespace Dungeon_Crawler
         KeyboardState pastKey;
         KeyboardState pastKey2;
         MouseState pastButton;
+        ContentManager content;
 
         public Player(ContentManager content, int cellSize, int playerCurrentMapLevel)
         {
@@ -40,6 +42,7 @@ namespace Dungeon_Crawler
                 {"WalkRight",new Animation(content.Load<Texture2D>("player/WalkingRight"),3 )}
             };
 
+            this.content = content;
             CurrentMapLevel = playerCurrentMapLevel;
             inventory = new List<Item>();
             _animationManager = new AnimationManager(_animations.First().Value);
@@ -99,7 +102,7 @@ namespace Dungeon_Crawler
 
         public void Teleport(Level level,GraphicsDevice graphicsDevice)
         {
-            if (Mouse.GetState().RightButton == ButtonState.Pressed && pastButton.RightButton==ButtonState.Released)
+            if (Mouse.GetState().RightButton == ButtonState.Pressed && pastButton.RightButton == ButtonState.Released)
             {
                 if (Mana > teleportCost)
                 {
@@ -127,12 +130,19 @@ namespace Dungeon_Crawler
             pastButton = Mouse.GetState();
         }
 
-        public void Exori(Level level, GraphicsDevice graphicsDevice)
+        public void Exori(Level level, GraphicsDevice graphicsDevice, GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && pastKey2.IsKeyUp(Keys.LeftShift))
             {
                 if (Mana > exoriCost)
                 {
+                    List <RogueSharp.Cell> cellsAroundTheCellList = level.map.GetCellsInArea(x, y, 1).ToList();
+                    foreach (RogueSharp.Cell cell in cellsAroundTheCellList)
+                    {
+                        if(cell.IsWalkable)
+                            level.attackAnimations.Add(new AttackAnimation(content, cell.X, cell.Y, level.cellSize, gameTime));
+                    }
+                    
                     List<Character> listOfEnemiesAround = Global.CombatManager.IsEnemyInCellAround(x, y);
                     if (listOfEnemiesAround.Count > 0)
                     {
@@ -228,7 +238,6 @@ namespace Dungeon_Crawler
                     }
                 }
                 Teleport(level, graphicsDevice);
-                Exori(level, graphicsDevice);
                 Fireball(level);
             }
             else //Moving
@@ -245,7 +254,7 @@ namespace Dungeon_Crawler
                 }
                 Fireball(level);
             }
-            
+            Exori(level, graphicsDevice, gameTime);
             SetAnimations();
             _animationManager.Update(gameTime);
             Position += Velocity;

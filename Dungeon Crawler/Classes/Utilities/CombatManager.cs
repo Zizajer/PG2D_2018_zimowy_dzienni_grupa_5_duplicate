@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Dungeon_Crawler
 {
@@ -105,7 +106,59 @@ namespace Dungeon_Crawler
                     listOfEnemiesAround.Add(enemy);
             }
 
-            return listOfEnemiesAround;
+            foreach (Character enemy in currentLevel.enemies)
+            {
+                if(enemy is Boss)
+                {
+                    List<RogueSharp.Cell> cellsAroundTheCellList = currentLevel.map.GetCellsInArea(enemy.x,enemy.y, 1).ToList();
+                    foreach (RogueSharp.Cell cell in cellsAroundTheCellList)
+                    {
+                        if (cell.X == x - 1 && cell.Y == y + 1)
+                        {
+                            listOfEnemiesAround.Add(enemy);
+                            break;
+                        }
+
+                        if (cell.X == x && cell.Y == y + 1)
+                        {
+                            listOfEnemiesAround.Add(enemy);
+                            break;
+                        }
+
+                        if (cell.X == x + 1 && cell.Y == y + 1)
+                        {
+                            listOfEnemiesAround.Add(enemy);
+                            break;
+                        }
+                        if (cell.X == x + 1 && cell.Y == y)
+                        {
+                            listOfEnemiesAround.Add(enemy);
+                            break;
+                        }
+                        if (cell.X == x + 1 && cell.Y == y - 1)
+                        {
+                            listOfEnemiesAround.Add(enemy);
+                            break;
+                        }
+                        if (cell.X == x && cell.Y == y - 1)
+                        {
+                            listOfEnemiesAround.Add(enemy);
+                            break;
+                        }
+                        if (cell.X == x - 1 && cell.Y == y - 1)
+                        {
+                            listOfEnemiesAround.Add(enemy);
+                            break;
+                        }
+                        if (cell.X == x - 1 && cell.Y == y)
+                        {
+                            listOfEnemiesAround.Add(enemy);
+                            break;
+                        }
+                    } 
+                }
+            }
+                return listOfEnemiesAround;
         }
     }
 }
