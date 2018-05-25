@@ -35,7 +35,7 @@ namespace Dungeon_Crawler
 
         public override void calculateStatistics()
         {
-            CurrentHealth = 210 + Level * 10;
+            Health = CurrentHealth = 210 + Level * 10;
             Defense = 210 + Level * 3;
             SpDefense = 210 + Level * 5;
             Attack = (int)Math.Floor(210 + Level * 2.5);
