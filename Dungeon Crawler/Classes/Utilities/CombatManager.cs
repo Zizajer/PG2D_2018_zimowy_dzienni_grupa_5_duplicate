@@ -25,9 +25,9 @@ namespace Dungeon_Crawler
             {
                 //(1-attacker.damage)
                 int damage = Global.random.Next(attacker.Attack) + 1;
-                defender.Health -= damage;
+                defender.CurrentHealth -= damage;
                 defender.isHitShaderOn = true;
-                if (defender.Health > 0)
+                if (defender.CurrentHealth > 0)
                 {
                     tempString = attacker.Name + " hit " + defender.Name + " for " + damage;
                 }
@@ -62,14 +62,14 @@ namespace Dungeon_Crawler
 
         public bool IsPlayerAt(int x, int y)
         {
-            return (_player.x == x && _player.y == y);
+            return (_player.CellX == x && _player.CellY == y);
         }
 
         public Character EnemyAt(int x, int y)
         {
             foreach (var enemy in currentLevel.enemies)
             {
-                if (enemy.x == x && enemy.y == y)
+                if (enemy.CellX == x && enemy.CellY == y)
                 {
                     return enemy;
                 }
@@ -87,21 +87,21 @@ namespace Dungeon_Crawler
             List<Character> listOfEnemiesAround = new List<Character>(8);
             foreach (Character enemy in currentLevel.enemies)
             {
-                if (enemy.x == x - 1 && enemy.y == y + 1)
+                if (enemy.CellX == x - 1 && enemy.CellY == y + 1)
                     listOfEnemiesAround.Add(enemy);
-                if (enemy.x == x && enemy.y == y + 1)
+                if (enemy.CellX == x && enemy.CellY == y + 1)
                     listOfEnemiesAround.Add(enemy);
-                if (enemy.x == x + 1 && enemy.y == y + 1)
+                if (enemy.CellX == x + 1 && enemy.CellY == y + 1)
                     listOfEnemiesAround.Add(enemy);
-                if (enemy.x == x + 1 && enemy.y == y)
+                if (enemy.CellX == x + 1 && enemy.CellY == y)
                     listOfEnemiesAround.Add(enemy);
-                if (enemy.x == x + 1 && enemy.y == y - 1)
+                if (enemy.CellX == x + 1 && enemy.CellY == y - 1)
                     listOfEnemiesAround.Add(enemy);
-                if (enemy.x == x && enemy.y == y - 1)
+                if (enemy.CellX == x && enemy.CellY == y - 1)
                     listOfEnemiesAround.Add(enemy);
-                if (enemy.x == x - 1 && enemy.y == y - 1)
+                if (enemy.CellX == x - 1 && enemy.CellY == y - 1)
                     listOfEnemiesAround.Add(enemy);
-                if (enemy.x == x - 1 && enemy.y == y)
+                if (enemy.CellX == x - 1 && enemy.CellY == y)
                     listOfEnemiesAround.Add(enemy);
             }
 

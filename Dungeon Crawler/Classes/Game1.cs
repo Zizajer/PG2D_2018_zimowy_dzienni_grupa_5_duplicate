@@ -29,6 +29,7 @@ namespace Dungeon_Crawler
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            Global.Gui = new GUI(graphics, Content.Load<SpriteFont>("fonts/Default"));
             levelManager = new LevelManager(Content);
 
             Global.Effects = new Effects(Content);

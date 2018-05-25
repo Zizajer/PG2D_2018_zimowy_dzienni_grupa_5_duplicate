@@ -24,16 +24,16 @@ namespace Dungeon_Crawler
             timer = 0;
             Speed = speed; // TODO: move it to calculateStatistics()
             _animationManager = new AnimationManager(_animations.First().Value);
-            x = (int)Math.Floor(Center.X / cellSize);
-            y = (int)Math.Floor(Center.Y / cellSize);
-            CurrentCell = map.GetCell(x, y);
+            CellX = (int)Math.Floor(Center.X / cellSize);
+            CellY = (int)Math.Floor(Center.Y / cellSize);
+            CurrentCell = map.GetCell(CellX, CellY);
             currentState = State.Standing;
             Name = "Blob";
         }
 
         public override void calculateStatistics()
         {
-            Health = 50 + Level * 10;
+            Health = CurrentHealth = 50 + Level * 10;
             Defense = 50 + Level * 3;
             SpDefense = 50 + Level * 5;
             Attack = (int)Math.Floor(50 + Level * 2.5);
@@ -69,11 +69,11 @@ namespace Dungeon_Crawler
                 }
             }
 
-            x = (int)Math.Floor(Center.X / level.cellSize);
-            y = (int)Math.Floor(Center.Y / level.cellSize);
-            if (x > 0 && x < level.map.Width && y > 0 && y < level.map.Height)
+            CellX = (int)Math.Floor(Center.X / level.cellSize);
+            CellY = (int)Math.Floor(Center.Y / level.cellSize);
+            if (CellX > 0 && CellX < level.map.Width && CellY > 0 && CellY < level.map.Height)
             {
-                CurrentCell = level.map.GetCell(x, y);
+                CurrentCell = level.map.GetCell(CellX, CellY);
             }
 
             if (currentState == State.Standing)
@@ -81,10 +81,10 @@ namespace Dungeon_Crawler
                 Cell futureNextCell;
                 if (Vector2.Distance(Center, level.player.Center) > level.cellSize * 1.5f)
                 {
-                    if (level.map.IsInFov(x, y))
+                    if (level.map.IsInFov(CellX, CellY))
                     {//can see player
                         futureNextCell = getNextCellFromPath(level);
-                        if (futureNextCell != null && x > 0 && x < level.map.Width && y > 0 && y < level.map.Height)
+                        if (futureNextCell != null && CellX > 0 && CellX < level.map.Width && CellY > 0 && CellY < level.map.Height)
                         {
                             if (!Collision.checkCollisionInGivenCell(futureNextCell, level, graphicsDevice))
                             {
@@ -136,13 +136,13 @@ namespace Dungeon_Crawler
 
             if (IsHitByProjectile(level, graphicsDevice))
             {
-                int damage = 20;
-                Health -=damage;
+                int damage = 2;
+                CurrentHealth -=damage;
                 level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
                 if (NextCell != null)
                     level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 1.0f);
                 string tempString;
-                if (Health <= 0)
+                if (CurrentHealth <= 0)
                 {
                     tempString = "Player's fireball killed " + Name;
                 }
@@ -162,11 +162,11 @@ namespace Dungeon_Crawler
 
         private Cell getNextCellFromPath(Level level)
         {
-            if (x != level.player.x || y != level.player.y)
+            if (CellX != level.player.CellX || CellY != level.player.CellY)
             {
-                if (NextCell == null || x == NextCell.X && y == NextCell.Y)
+                if (NextCell == null || CellX == NextCell.X && CellY == NextCell.Y)
                 {
-                    path = level.grid.GetPath(new Position(x, y), new Position(level.player.x, level.player.y), MovementPatterns.Full);
+                    path = level.grid.GetPath(new Position(CellX, CellY), new Position(level.player.CellX, level.player.CellY), MovementPatterns.Full);
                     if (path == null)
                     {
                         currentState = State.Standing;

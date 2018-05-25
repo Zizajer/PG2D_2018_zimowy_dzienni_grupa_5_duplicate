@@ -48,7 +48,7 @@ namespace Dungeon_Crawler
 
         public override void calculateStatistics()
         {
-            Health = 70 + Level * 10;
+            Health = CurrentHealth = 70 + Level * 10;
             Defense = 70 + Level * 3;
             SpDefense = 70 + Level * 5;
             Attack = (int)Math.Floor(70 + Level * 2.5);
@@ -106,20 +106,20 @@ namespace Dungeon_Crawler
                     MouseState mouse = Mouse.GetState();
                     Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
                     Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
-                    x = (int)Math.Floor(mousePos.X / level.cellSize);
-                    y = (int)Math.Floor(mousePos.Y / level.cellSize);
+                    CellX = (int)Math.Floor(mousePos.X / level.cellSize);
+                    CellY = (int)Math.Floor(mousePos.Y / level.cellSize);
 
-                    if (x < 0 || x >= level.map.Width || y < 0 || y >= level.map.Height)
+                    if (CellX < 0 || CellX >= level.map.Width || CellY < 0 || CellY >= level.map.Height)
                         return;
-                    if (level.grid.GetCellCost(new Position(x,y))==1.0f)
+                    if (level.grid.GetCellCost(new Position(CellX,CellY))==1.0f)
                     {
                         level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
-                        level.grid.SetCellCost(new Position(x, y), 5.0f);
-                        mousePos.X = x * level.cellSize + level.cellSize / 2 - getWidth() / 2;
-                        mousePos.Y = y * level.cellSize + level.cellSize / 2 - getHeight() / 2;
+                        level.grid.SetCellCost(new Position(CellX, CellY), 5.0f);
+                        mousePos.X = CellX * level.cellSize + level.cellSize / 2 - getWidth() / 2;
+                        mousePos.Y = CellY * level.cellSize + level.cellSize / 2 - getHeight() / 2;
                         Position = mousePos;
                         Mana = Mana - teleportCost;
-                        level.map.ComputeFov(x, y, 15, true);
+                        level.map.ComputeFov(CellX, CellY, 15, true);
                         Global.Camera.CenterOn(Center);
                     }
                 }
@@ -133,7 +133,7 @@ namespace Dungeon_Crawler
             {
                 if (Mana > exoriCost)
                 {
-                    List<Character> listOfEnemiesAround = Global.CombatManager.IsEnemyInCellAround(x, y);
+                    List<Character> listOfEnemiesAround = Global.CombatManager.IsEnemyInCellAround(CellX, CellY);
                     if (listOfEnemiesAround.Count > 0)
                     {
                         foreach (Character enemy in listOfEnemiesAround)
@@ -189,17 +189,17 @@ namespace Dungeon_Crawler
                 }
             }
 
-            x = (int)Math.Floor(Center.X / level.cellSize);
-            y = (int)Math.Floor(Center.Y / level.cellSize);
-            if (x > 0 && x < level.map.Width && y > 0 && y < level.map.Height)
+            CellX = (int)Math.Floor(Center.X / level.cellSize);
+            CellY = (int)Math.Floor(Center.Y / level.cellSize);
+            if (CellX > 0 && CellX < level.map.Width && CellY > 0 && CellY < level.map.Height)
             {
-                CurrentCell = level.map.GetCell(x, y);
+                CurrentCell = level.map.GetCell(CellX, CellY);
             }
 
             if (IsHitByProjectile(level, graphicsDevice))
             {
                 int damage = 20;
-                Health -= damage;
+                CurrentHealth -= damage;
                 string tempString = "Demon Oak's giant fireball hit player for " + damage;
                 Global.Gui.WriteToConsole(tempString);
             }
@@ -212,7 +212,7 @@ namespace Dungeon_Crawler
                 if (currentDirection != (int)Directions.None)
                 {
                     RogueSharp.Cell futureNextCell= Collision.getCellFromDirection(CurrentCell, currentDirection, level);
-                    if (x > 0 && x < level.map.Width && y > 0 && y < level.map.Height)
+                    if (CellX > 0 && CellX < level.map.Width && CellY > 0 && CellY < level.map.Height)
                     {
                         if (!Collision.checkCollisionInGivenCell(futureNextCell, level, graphicsDevice))
                         {
@@ -240,7 +240,7 @@ namespace Dungeon_Crawler
                 else
                 {
                     MoveToCenterOfGivenCell(NextCell, level, graphicsDevice);
-                    level.map.ComputeFov(x, y, 15, true);
+                    level.map.ComputeFov(CellX, CellY, 15, true);
                     Global.Camera.CenterOn(Center);
                 }
                 Fireball(level);

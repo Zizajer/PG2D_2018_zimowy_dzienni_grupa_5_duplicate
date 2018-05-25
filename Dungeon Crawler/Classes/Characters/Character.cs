@@ -16,7 +16,11 @@ namespace Dungeon_Crawler
         public string Name { get; set; }
 
         public int Level { get; set; }
+
         public int Health { get; set; }
+        public int CurrentHealth { get; set; }
+        public int CurrentHealthPercent { get { return ((int)(CurrentHealth / (double)Health * 100)); } }
+
         public int Defense { get; set; }
         public int SpDefense { get; set; }
         public int Attack { get; set; }
@@ -27,8 +31,8 @@ namespace Dungeon_Crawler
         public float hitTimer=0;
         public float howLongShouldShaderApply = 0.25f;
 
-        public int x { get; set; }
-        public int y { get; set; }
+        public int CellX { get; set; }
+        public int CellY { get; set; }
         public AnimationManager _animationManager;
         protected Dictionary<String, Animation> _animations;
         public Vector2 _position;
@@ -158,11 +162,11 @@ namespace Dungeon_Crawler
 
             if (isSpecialAttack)
             {
-                Health -= ((((((2 * Level) / 5) + 2) * attackPower * opponentAttackOrSpecialAttack / SpDefense) / 50) + 2) * modifier;
+                CurrentHealth -= ((((((2 * Level) / 5) + 2) * attackPower * opponentAttackOrSpecialAttack / SpDefense) / 50) + 2) * modifier;
             }
             else
             {
-                Health -= ((((((2 * Level) / 5) + 2) * attackPower * opponentAttackOrSpecialAttack / Defense) / 50) + 2) * modifier;
+                CurrentHealth -= ((((((2 * Level) / 5) + 2) * attackPower * opponentAttackOrSpecialAttack / Defense) / 50) + 2) * modifier;
             }
             
         }

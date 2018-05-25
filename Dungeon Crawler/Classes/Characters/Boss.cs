@@ -28,14 +28,14 @@ namespace Dungeon_Crawler
             actionTimer = 0;
 
             this.map = map;
-            x = (int)Math.Floor(Center.X / cellSize);
-            y = (int)Math.Floor(Center.Y / cellSize);
+            CellX = (int)Math.Floor(Center.X / cellSize);
+            CellY = (int)Math.Floor(Center.Y / cellSize);
             Name = "Demon Oak";
         }
 
         public override void calculateStatistics()
         {
-            Health = 210 + Level * 10;
+            CurrentHealth = 210 + Level * 10;
             Defense = 210 + Level * 3;
             SpDefense = 210 + Level * 5;
             Attack = (int)Math.Floor(210 + Level * 2.5);
@@ -72,16 +72,16 @@ namespace Dungeon_Crawler
             }
 
             actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            x = (int)Math.Floor(Center.X / level.cellSize);
-            y = (int)Math.Floor(Center.Y / level.cellSize);
+            CellX = (int)Math.Floor(Center.X / level.cellSize);
+            CellY = (int)Math.Floor(Center.Y / level.cellSize);
 
             if (IsHitByProjectile(level, graphicsDevice))
             {
                 int damage = 20;
-                Health -= damage;
+                CurrentHealth -= damage;
                 string tempString = "Player's fireball hit " + Name+ " for " + damage;
                 Global.Gui.WriteToConsole(tempString);
-                if (Health <= 0)
+                if (CurrentHealth <= 0)
                 {
                     level.grid.UnblockCell(new Position(5, 5));
                     level.grid.UnblockCell(new Position(6, 5));
@@ -100,7 +100,7 @@ namespace Dungeon_Crawler
 
             if (currentState == State.Standby)
             {
-                if (map.IsInFov(x, y))
+                if (map.IsInFov(CellX, CellY))
                 {
                     currentState = State.Attacking;
                 }
@@ -108,7 +108,7 @@ namespace Dungeon_Crawler
             }
             else if (currentState == State.Attacking)
             {
-                if (!map.IsInFov(x, y))
+                if (!map.IsInFov(CellX, CellY))
                 {
                     currentState = State.Standby;
                 }

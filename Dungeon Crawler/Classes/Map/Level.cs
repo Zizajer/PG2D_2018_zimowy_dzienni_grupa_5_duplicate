@@ -85,7 +85,7 @@ namespace Dungeon_Crawler
             {
                 if (portal.Position.X == 0 && portal.Position.Y == 0)
                 {
-                    Cell portalcell = GetRandomEmptyCellNearCoord(new Vector2(player.x, player.y), 3);
+                    Cell portalcell = GetRandomEmptyCellNearCoord(new Vector2(player.CellX, player.CellY), 3);
                     occupiedCells.Add(portalcell);
                     portal.Position = new Vector2(portalcell.X * cellSize, portalcell.Y * cellSize);
                     Global.SoundManager.playPortalActivated();
@@ -105,7 +105,7 @@ namespace Dungeon_Crawler
                 {
                     Character character = enemies[i];
                     character.Update(gameTime, this, graphicsDevice);
-                    if (character.Health <= 0)
+                    if (character.CurrentHealth <= 0)
                     {
                         enemies.RemoveAt(i);
                         if (Global.random.Next(10) > 0) //90% of chance
@@ -129,9 +129,9 @@ namespace Dungeon_Crawler
                 {
                     Character enemy = enemies[i];
                     enemy.Update(gameTime, this, graphicsDevice);
-                    if (enemy.Health <= 0)
+                    if (enemy.CurrentHealth <= 0)
                     {
-                        grid.SetCellCost(new Position(enemy.x, enemy.y), 1.0f);
+                        grid.SetCellCost(new Position(enemy.CellX, enemy.CellY), 1.0f);
                         enemies.RemoveAt(i);
                         if (Global.random.Next(20) == 19) //5% of chance
                         {

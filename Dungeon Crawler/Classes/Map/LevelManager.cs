@@ -87,8 +87,6 @@ namespace Dungeon_Crawler
             levels[0].map.ComputeFov(randomCell.X, randomCell.Y, 15, true);
             levels[0].addPlayer(player);
             Global.Camera.CenterOn(randomCell);
-
-            Global.Gui = new GUI(player, Content.Load<SpriteFont>("fonts/Default"));
         }
 
         public void incrementMapParameters(int increaseValue)
