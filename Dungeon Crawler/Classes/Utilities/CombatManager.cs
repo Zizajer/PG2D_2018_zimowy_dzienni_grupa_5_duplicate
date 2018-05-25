@@ -26,6 +26,7 @@ namespace Dungeon_Crawler
                 //(1-attacker.damage)
                 int damage = Global.random.Next(attacker.Attack) + 1;
                 defender.Health -= damage;
+                defender.isHitShaderOn = true;
                 if (defender.Health > 0)
                 {
                     tempString = attacker.Name + " hit " + defender.Name + " for " + damage;
