@@ -41,11 +41,6 @@ namespace Dungeon_Crawler
             float scale = Global.Camera.Zoom;
             if (lm.player.CurrentHealth > 0)
             {
-                DrawPlayerStatBars(spriteBatch, lm.player, tempX, tempY, tempX, tempY2, 0, 0, PlayerBarsWidth, PlayerBarsHeight, scale);
-                DrawHealthBarOverCharacter(spriteBatch, lm.player);
-
-                string s = lm.player.getItems() + " \nLevel " + (lm.player.CurrentMapLevel + 1);
-                spriteBatch.DrawString(font, s, new Vector2(tempX, tempY3), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
 
                 if (lm.levels[lm.player.CurrentMapLevel].isBossLevel)
                 {
@@ -85,6 +80,12 @@ namespace Dungeon_Crawler
                         spriteBatch.DrawString(font, enemy.Name, new Vector2((int)enemy.Position.X, (int)enemy.Position.Y - 39), Color.Black, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
                     }
                 }
+
+                DrawPlayerStatBars(spriteBatch, lm.player, tempX, tempY, tempX, tempY2, 0, 0, PlayerBarsWidth, PlayerBarsHeight, scale);
+                DrawHealthBarOverCharacter(spriteBatch, lm.player);
+
+                string s = lm.player.getItems() + " \nLevel " + (lm.player.CurrentMapLevel + 1);
+                spriteBatch.DrawString(font, s, new Vector2(tempX, tempY3), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
             }
             else
             {
