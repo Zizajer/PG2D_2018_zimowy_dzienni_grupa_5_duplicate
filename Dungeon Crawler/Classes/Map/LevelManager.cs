@@ -85,7 +85,7 @@ namespace Dungeon_Crawler
                  Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
              };
 
-            levels[0].map.ComputeFov(randomCell.X, randomCell.Y, 15, true);
+            levels[0].grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
             levels[0].addPlayer(player);
             Global.Camera.CenterOn(randomCell);
         }

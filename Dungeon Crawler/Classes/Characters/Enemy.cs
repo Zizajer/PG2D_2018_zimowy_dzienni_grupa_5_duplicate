@@ -138,12 +138,15 @@ namespace Dungeon_Crawler
             {
                 int damage = 2;
                 CurrentHealth -=damage;
-                level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
-                if (NextCell != null)
-                    level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 1.0f);
+                
                 string tempString;
                 if (CurrentHealth <= 0)
                 {
+                    level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
+                    if (NextCell != null)
+                    {
+                        level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 1.0f);
+                    }
                     tempString = "Player's fireball killed " + Name;
                 }
                 else

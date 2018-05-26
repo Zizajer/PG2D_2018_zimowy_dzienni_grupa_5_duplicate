@@ -273,6 +273,7 @@ namespace Dungeon_Crawler
                 y = Global.random.Next(map.Height);
                 tempCell = map.GetCell(x, y);
             } while (!tempCell.IsWalkable || occupiedCells.Contains(tempCell) || grid.GetCellCost(new Position(x, y)) > 1.0f);
+            grid.SetCellCost(new Position(x, y), 5.0f);
             return new Vector2(tempCell.X*floor.Width+ floor.Width/3, tempCell.Y * floor.Width +floor.Width / 3);
         }
 

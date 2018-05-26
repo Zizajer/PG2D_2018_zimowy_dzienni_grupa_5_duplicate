@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using RoyT.AStar;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Dungeon_Crawler
@@ -30,6 +31,11 @@ namespace Dungeon_Crawler
         MouseState pastButton2;
         ContentManager content;
 
+        float cantGoThereTimer = 0;
+        float timeBetweencantGoThere = 1f;
+        float actionTimer = 0;
+        float timeBetweenActions=0.4f;
+
         public Player(ContentManager content, int cellSize, int playerCurrentMapLevel, string name)
         {
             Level = 1;
@@ -50,7 +56,7 @@ namespace Dungeon_Crawler
             CurrentMapLevel = playerCurrentMapLevel;
             inventory = new List<Item>();
             _animationManager = new AnimationManager(_animations.First().Value);
-            this.Name = name;
+            Name = name;
         }
 
         public override void calculateStatistics()
@@ -100,6 +106,10 @@ namespace Dungeon_Crawler
                     CurrentMana = CurrentMana - fireballCost;
                     Global.SoundManager.playPew();
                 }
+                else
+                {
+                    Global.Gui.WriteToConsole("Not enough mana");
+                }
             }
             pastKey = Keyboard.GetState();
         }
@@ -127,9 +137,12 @@ namespace Dungeon_Crawler
                         mousePos.Y = my * level.cellSize + level.cellSize / 2 - getHeight() / 2;
                         Position = mousePos;
                         CurrentMana = CurrentMana - teleportCost;
-                        level.map.ComputeFov(mx, my, 15, true);
                         Global.Camera.CenterOn(Center);
                     }
+                }
+                else
+                {
+                    Global.Gui.WriteToConsole("Not enough mana");
                 }
             }
             pastButton = Mouse.GetState();
@@ -139,33 +152,52 @@ namespace Dungeon_Crawler
         {
             if (Mouse.GetState().LeftButton == ButtonState.Pressed && pastButton2.LeftButton == ButtonState.Released)
             {
-
-                MouseState mouse = Mouse.GetState();
-                Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
-                Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
-                int mx = (int)Math.Floor(mousePos.X / level.cellSize);
-                int my = (int)Math.Floor(mousePos.Y / level.cellSize);
-
-                if (mx < 0 || mx >= level.map.Width || my < 0 || my >= level.map.Height)
-                    return;
-                if (Global.CombatManager.IsEnemyAt(mx, my))
+                if (actionTimer > timeBetweenActions)
                 {
-                    Character enemy = Global.CombatManager.EnemyAt(mx, my);
+                    MouseState mouse = Mouse.GetState();
+                    Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
+                    Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
+                    int mx = (int)Math.Floor(mousePos.X / level.cellSize);
+                    int my = (int)Math.Floor(mousePos.Y / level.cellSize);
+
+                    if (mx < 0 || mx >= level.map.Width || my < 0 || my >= level.map.Height)
+                        return;
 
                     List<Character> listOfEnemiesAround = Global.CombatManager.IsEnemyInCellAround(CellX, CellY);
-                    if (listOfEnemiesAround.Count > 0)
+
+                    if(listOfEnemiesAround.Count == 0)
                     {
-                        foreach (Character enemy2 in listOfEnemiesAround)
+                        Global.Gui.WriteToConsole("There arent any enemies nearby");
+                        return;
+                    }
+                    //boss case
+                    if (listOfEnemiesAround.Count == 1)
+                    {
+                        Character enemy = listOfEnemiesAround[0];
+                        if (enemy is Boss)
                         {
-                            if (enemy.Equals(enemy2))
-                            {
-                                level.attackAnimations.Add(new AttackAnimation(content, mx, my, level.cellSize, gameTime));
-                                Global.CombatManager.Attack(this, enemy);
-                            }
+                            level.attackAnimations.Add(new AttackAnimation(content, enemy.CellX, enemy.CellY, level.cellSize * 3, gameTime));
+                            Global.CombatManager.Attack(this, enemy);
+                            actionTimer = 0;
+                        }
+                    }
+
+                    //normal enemy level case
+                    if (Global.CombatManager.IsEnemyAt(mx, my))
+                    {
+                        Character enemy = Global.CombatManager.EnemyAt(mx, my);
+                        if (listOfEnemiesAround.Contains(enemy))
+                        {
+                            level.attackAnimations.Add(new AttackAnimation(content, enemy.CellX, enemy.CellY, level.cellSize, gameTime));
+                            Global.CombatManager.Attack(this, enemy);
+                            actionTimer = 0;
                         }
                     }
                 }
-
+                else
+                {
+                    Global.Gui.WriteToConsole("Cant attack yet");
+                }
             }
             pastButton2 = Mouse.GetState();
         }
@@ -192,6 +224,10 @@ namespace Dungeon_Crawler
                         }
                     }
                     CurrentMana = CurrentMana - exoriCost;
+                }
+                else
+                {
+                    Global.Gui.WriteToConsole("Not enough mana");
                 }
             }
             pastKey2 = Keyboard.GetState();
@@ -229,6 +265,9 @@ namespace Dungeon_Crawler
 
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
+            level.map.ComputeFov(CellX, CellY, 15, true);
+            actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            cantGoThereTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (isHitShaderOn)
             {
                 hitTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -271,6 +310,15 @@ namespace Dungeon_Crawler
                             level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
                             level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 5.0f);
                         }
+                        else
+                        {
+                            if(cantGoThereTimer > timeBetweencantGoThere)
+                            {
+                                cantGoThereTimer = 0;
+                                Global.Gui.WriteToConsole("Cant go there");
+                            }
+                            
+                        }
                     }
                     else
                     {
@@ -291,7 +339,6 @@ namespace Dungeon_Crawler
                 else
                 {
                     MoveToCenterOfGivenCell(NextCell, level, graphicsDevice);
-                    level.map.ComputeFov(CellX, CellY, 15, true);
                     Global.Camera.CenterOn(Center);
                 }
                 Fireball(level);

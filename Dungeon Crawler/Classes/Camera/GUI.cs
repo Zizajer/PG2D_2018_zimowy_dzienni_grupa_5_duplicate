@@ -167,12 +167,12 @@ namespace Dungeon_Crawler
             //Draw HP ratio
             string HealthText = player.CurrentHealth + "/" + player.Health;
             Vector2 HealthTextOffsetFromCenter = font.MeasureString(HealthText);
-            spriteBatch.DrawString(font, HealthText, new Vector2(hpX + (float)width / 2 - HealthTextOffsetFromCenter.X / 2, hpY), Color.White, 0.0f, Vector2.One, 0.75f / scale, SpriteEffects.None, Layers.Text);
+            spriteBatch.DrawString(font, HealthText, new Vector2(hpX + (float)width / 2 - HealthTextOffsetFromCenter.X / 2 * 0.75f / scale, hpY), Color.White, 0.0f, Vector2.One, 0.75f / scale, SpriteEffects.None, Layers.Text);
 
             //Draw mana ratio
             string ManaText = (int)player.CurrentMana + "/" + player.Mana;
-            Vector2 ManaTextOffsetFromCenter = font.MeasureString(HealthText);
-            spriteBatch.DrawString(font, ManaText, new Vector2(manaX + (float)width / 2 - ManaTextOffsetFromCenter.X / 2, manaY), Color.White, 0.0f, Vector2.One, 0.75f / scale, SpriteEffects.None, Layers.Text);
+            Vector2 ManaTextOffsetFromCenter = font.MeasureString(ManaText);
+            spriteBatch.DrawString(font, ManaText, new Vector2(manaX + (float)width / 2 - ManaTextOffsetFromCenter.X / 2 * 0.75f / scale, manaY), Color.White, 0.0f, Vector2.One, 0.75f / scale, SpriteEffects.None, Layers.Text);
         }
 
         internal void addLevelMananger(LevelManager levelManager)
