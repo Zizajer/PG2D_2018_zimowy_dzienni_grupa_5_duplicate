@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -20,10 +21,13 @@ namespace Dungeon_Crawler
         private int HealthBarOverCharacterBackgroundWidth = 50;
         private int HealthBarOverCharacterHeight = 10;
 
-        public GUI(GraphicsDeviceManager graphics, SpriteFont f)
+        private Texture2D BossSkull;
+
+        public GUI(GraphicsDeviceManager graphics, ContentManager content)
         {
             this.graphics = graphics;
-            font = f;
+            font = content.Load<SpriteFont>("fonts/Default");
+            BossSkull = content.Load<Texture2D>("icons/Skull");
         }
         public void Draw(SpriteBatch spriteBatch)
         {
@@ -44,30 +48,23 @@ namespace Dungeon_Crawler
 
                 if (lm.levels[lm.player.CurrentMapLevel].isBossLevel)
                 {
-
+                    //**boss stats**//
                     if (lm.levels[lm.player.CurrentMapLevel].enemies.Count>0){
 
-
+                        //Draw healthbar
                         DrawHealthBarOverCharacter(spriteBatch, lm.levels[lm.player.CurrentMapLevel].enemies[0]);
 
                         //Draw level
-                        spriteBatch.DrawString(font, lm.levels[lm.player.CurrentMapLevel].enemies[0].Level.ToString(), new Vector2(lm.levels[lm.player.CurrentMapLevel].enemies[0].Position.X + HealthBarOverCharacterBackgroundWidth + 2, lm.levels[lm.player.CurrentMapLevel].enemies[0].Position.Y - 27), Color.Black, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
+                        spriteBatch.Draw(BossSkull, new Vector2(lm.levels[lm.player.CurrentMapLevel].enemies[0].Position.X + HealthBarOverCharacterBackgroundWidth + 2, lm.levels[lm.player.CurrentMapLevel].enemies[0].Position.Y - 27), null, Color.White, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
 
                         //Draw name
                         spriteBatch.DrawString(font, lm.levels[lm.player.CurrentMapLevel].enemies[0].Name, new Vector2((int)lm.levels[lm.player.CurrentMapLevel].enemies[0].Position.X, (int)lm.levels[lm.player.CurrentMapLevel].enemies[0].Position.Y - 39), Color.Black, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
-
-                        //string bossHealth = "Boss Health: " + lm.levels[lm.player.CurrentMapLevel].enemies[0].CurrentHealth;
-                        //spriteBatch.DrawString(font, bossHealth, new Vector2(tempX, tempY3), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
-                    }
-                    else
-                    {
-                        //string bossHealth = "Boss is dead";
-                        //spriteBatch.DrawString(font, bossHealth, new Vector2(tempX, tempY3), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
                     }
                     
                 }
                 else
                 {
+                    //**enemy stats**//
                     foreach(Character enemy in lm.levels[lm.player.CurrentMapLevel].enemies)
                     {
                         //Draw healthbar
@@ -81,9 +78,19 @@ namespace Dungeon_Crawler
                     }
                 }
 
+                //**player stats**//
                 DrawPlayerStatBars(spriteBatch, lm.player, tempX, tempY, tempX, tempY2, 0, 0, PlayerBarsWidth, PlayerBarsHeight, scale);
+
+                //Draw healthbar
                 DrawHealthBarOverCharacter(spriteBatch, lm.player);
 
+                //Draw level
+                spriteBatch.DrawString(font, lm.player.Level.ToString(), new Vector2(lm.player.Position.X + HealthBarOverCharacterBackgroundWidth + 2, lm.player.Position.Y - 27), Color.Black, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
+
+                //Draw name
+                spriteBatch.DrawString(font, lm.player.Name, new Vector2((int)lm.player.Position.X, (int)lm.player.Position.Y - 39), Color.Black, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
+
+                //Draw map level
                 string s = lm.player.getItems() + " \nLevel " + (lm.player.CurrentMapLevel + 1);
                 spriteBatch.DrawString(font, s, new Vector2(tempX, tempY3), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
             }
@@ -149,18 +156,7 @@ namespace Dungeon_Crawler
                 HealthBarCurrentHealthTexture.SetData<Color>(new Color[] { Color.Red });
             }
 
-            if (player.CurrentManaPercent > 65)
-            {
-                ManaBarCurrentManaTexture.SetData<Color>(new Color[] { Color.Blue });
-            }
-            else if (player.CurrentManaPercent > 35)
-            {
-                ManaBarCurrentManaTexture.SetData<Color>(new Color[] { Color.DarkViolet });
-            }
-            else
-            {
-                ManaBarCurrentManaTexture.SetData<Color>(new Color[] { Color.Red });
-            }
+            ManaBarCurrentManaTexture.SetData<Color>(new Color[] { Color.Blue });
 
             spriteBatch.Draw(HealthBarBackgroundTexture, new Rectangle(hpX, hpY, width, height), Color.White * 0.5f);
             spriteBatch.Draw(HealthBarCurrentHealthTexture, new Rectangle(hpX, hpY, HealthBarCurrentHealthWidth, height), Color.White * 0.7f);

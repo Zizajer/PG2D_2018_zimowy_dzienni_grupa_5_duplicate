@@ -27,7 +27,7 @@ namespace Dungeon_Crawler
         KeyboardState pastKey2;
         MouseState pastButton;
 
-        public Player(ContentManager content, int cellSize, int playerCurrentMapLevel)
+        public Player(ContentManager content, int cellSize, int playerCurrentMapLevel, string name)
         {
             Level = 1;
             Speed = 4f; // TODO: move it to calculateStatistics();
@@ -46,7 +46,7 @@ namespace Dungeon_Crawler
             CurrentMapLevel = playerCurrentMapLevel;
             inventory = new List<Item>();
             _animationManager = new AnimationManager(_animations.First().Value);
-            Name = "Player";
+            this.Name = name;
         }
 
         public override void calculateStatistics()

@@ -79,7 +79,7 @@ namespace Dungeon_Crawler
             CreateNormalLevel();
             Cell randomCell = GetRandomEmptyCell(levels[0].map, levels[0].occupiedCells, levels[0].grid);
             player =
-             new Player(Content, cellSize, 0)
+             new Player(Content, cellSize, 0, "Player") //TODO: Set player name at the game beginning
              {
                  Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
              };
