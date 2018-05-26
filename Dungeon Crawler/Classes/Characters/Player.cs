@@ -126,7 +126,7 @@ namespace Dungeon_Crawler
                         mousePos.X = mx * level.cellSize + level.cellSize / 2 - getWidth() / 2;
                         mousePos.Y = my * level.cellSize + level.cellSize / 2 - getHeight() / 2;
                         Position = mousePos;
-                        Mana = Mana - teleportCost;
+                        CurrentMana = CurrentMana - teleportCost;
                         level.map.ComputeFov(mx, my, 15, true);
                         Global.Camera.CenterOn(Center);
                     }

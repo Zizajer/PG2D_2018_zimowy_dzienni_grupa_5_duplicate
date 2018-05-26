@@ -82,14 +82,8 @@ namespace Dungeon_Crawler
                 string tempString = "Player's fireball hit " + Name + " for " + damage;
                 Global.Gui.WriteToConsole(tempString);
 
-                if (CurrentHealth <= 0)
-                {
-                    level.grid.UnblockCell(new Position(5, 5));
-                    level.grid.UnblockCell(new Position(6, 5));
-                    level.grid.UnblockCell(new Position(7, 5));
-                }
             }
-            if (Health <= 0)
+            if (CurrentHealth <= 0)
             {
                 level.grid.UnblockCell(new Position(5, 5));
                 level.grid.UnblockCell(new Position(6, 5));
