@@ -176,7 +176,7 @@ namespace Dungeon_Crawler
                         Character enemy = listOfEnemiesAround[0];
                         if (enemy is Boss)
                         {
-                            level.attackAnimations.Add(new AttackAnimation(content, enemy.CellX, enemy.CellY, level.cellSize * 3, gameTime));
+                            level.attackAnimations.Add(new AttackAnimation(content, mx, my, level.cellSize, gameTime));
                             Global.CombatManager.Attack(this, enemy);
                             actionTimer = 0;
                         }
