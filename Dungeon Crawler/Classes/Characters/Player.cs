@@ -11,7 +11,10 @@ namespace Dungeon_Crawler
 {
     public class Player : Character
     {
-        public float Mana;
+        public float Mana { get; set; }
+        public float CurrentMana { get; set; }
+        public int CurrentManaPercent { get { return ((int)(CurrentMana / (double)Mana * 100)); } }
+
         public int teleportCost = 10;
         public int fireballCost = 10;
         public int exoriCost = 20;
@@ -28,7 +31,7 @@ namespace Dungeon_Crawler
         {
             Level = 1;
             Speed = 4f; // TODO: move it to calculateStatistics();
-            Mana = 100; // TODO: move it to calculateStatistics();
+            CurrentMana = Mana = 100; // TODO: move it to calculateStatistics();
             calculateStatistics();
 
             currentState = State.Standing;
@@ -75,7 +78,7 @@ namespace Dungeon_Crawler
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Space) && pastKey.IsKeyUp(Keys.Space))
             {
-                if (level.playerProjectiles.Count() < maxFireballsOnScreen && Mana> fireballCost)
+                if (level.playerProjectiles.Count() < maxFireballsOnScreen && CurrentMana> fireballCost)
                 {
                     MouseState mouse = Mouse.GetState();
                     Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
@@ -90,7 +93,7 @@ namespace Dungeon_Crawler
                     PlayerProjectile newProjectile = new PlayerProjectile(tempVelocity, tempPosition, level.fireball, rotation);
 
                     level.playerProjectiles.Add(newProjectile);
-                    Mana = Mana - fireballCost;
+                    CurrentMana = CurrentMana - fireballCost;
                     Global.SoundManager.playPew();
                 }
             }
@@ -101,7 +104,7 @@ namespace Dungeon_Crawler
         {
             if (Mouse.GetState().RightButton == ButtonState.Pressed && pastButton.RightButton==ButtonState.Released)
             {
-                if (Mana > teleportCost)
+                if (CurrentMana > teleportCost)
                 {
                     MouseState mouse = Mouse.GetState();
                     Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
@@ -118,7 +121,7 @@ namespace Dungeon_Crawler
                         mousePos.X = CellX * level.cellSize + level.cellSize / 2 - getWidth() / 2;
                         mousePos.Y = CellY * level.cellSize + level.cellSize / 2 - getHeight() / 2;
                         Position = mousePos;
-                        Mana = Mana - teleportCost;
+                        CurrentMana = CurrentMana - teleportCost;
                         level.map.ComputeFov(CellX, CellY, 15, true);
                         Global.Camera.CenterOn(Center);
                     }
@@ -131,7 +134,7 @@ namespace Dungeon_Crawler
         {
             if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && pastKey2.IsKeyUp(Keys.LeftShift))
             {
-                if (Mana > exoriCost)
+                if (CurrentMana > exoriCost)
                 {
                     List<Character> listOfEnemiesAround = Global.CombatManager.IsEnemyInCellAround(CellX, CellY);
                     if (listOfEnemiesAround.Count > 0)
@@ -141,7 +144,7 @@ namespace Dungeon_Crawler
                             Global.CombatManager.Attack(this, enemy);
                         }
                     }
-                    Mana = Mana - exoriCost;
+                    CurrentMana = CurrentMana - exoriCost;
                 }
             }
             pastKey2 = Keyboard.GetState();
@@ -204,7 +207,7 @@ namespace Dungeon_Crawler
                 Global.Gui.WriteToConsole(tempString);
             }
 
-            if (Mana < 100) Mana = Mana + 0.95f; //0.15
+            if (CurrentMana < 100) CurrentMana = CurrentMana + 0.15f; //0.15
 
             if (currentState == State.Standing)
             {
