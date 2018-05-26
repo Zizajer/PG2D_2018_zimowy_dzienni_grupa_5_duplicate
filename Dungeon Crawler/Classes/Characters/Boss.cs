@@ -79,23 +79,29 @@ namespace Dungeon_Crawler
             {
                 int damage = 20;
                 CurrentHealth -= damage;
-                string tempString = "Player's fireball hit " + Name+ " for " + damage;
+                string tempString = "Player's fireball hit " + Name + " for " + damage;
                 Global.Gui.WriteToConsole(tempString);
+
                 if (CurrentHealth <= 0)
                 {
                     level.grid.UnblockCell(new Position(5, 5));
                     level.grid.UnblockCell(new Position(6, 5));
                     level.grid.UnblockCell(new Position(7, 5));
-
-                    level.grid.UnblockCell(new Position(5, 6));
-                    level.grid.UnblockCell(new Position(6, 6));
-                    level.grid.UnblockCell(new Position(7, 6));
-
-                    level.grid.UnblockCell(new Position(5, 7));
-                    level.grid.UnblockCell(new Position(6, 7));
-                    level.grid.UnblockCell(new Position(7, 7));
                 }
+            }
+            if (Health <= 0)
+            {
+                level.grid.UnblockCell(new Position(5, 5));
+                level.grid.UnblockCell(new Position(6, 5));
+                level.grid.UnblockCell(new Position(7, 5));
 
+                level.grid.UnblockCell(new Position(5, 6));
+                level.grid.UnblockCell(new Position(6, 6));
+                level.grid.UnblockCell(new Position(7, 6));
+
+                level.grid.UnblockCell(new Position(5, 7));
+                level.grid.UnblockCell(new Position(6, 7));
+                level.grid.UnblockCell(new Position(7, 7));
             }
 
             if (currentState == State.Standby)

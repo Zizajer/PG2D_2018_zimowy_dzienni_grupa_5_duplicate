@@ -18,6 +18,7 @@ namespace Dungeon_Crawler
         public int teleportCost = 10;
         public int fireballCost = 10;
         public int exoriCost = 20;
+        public Dictionary<string, Animation> _animationsExori;
         public int maxFireballsOnScreen = 20;
         public MouseState mouse;
         public float rotation;
@@ -26,6 +27,8 @@ namespace Dungeon_Crawler
         KeyboardState pastKey;
         KeyboardState pastKey2;
         MouseState pastButton;
+        MouseState pastButton2;
+        ContentManager content;
 
         public Player(ContentManager content, int cellSize, int playerCurrentMapLevel, string name)
         {
@@ -43,6 +46,7 @@ namespace Dungeon_Crawler
                 {"WalkRight",new Animation(content.Load<Texture2D>("player/WalkingRight"),3 )}
             };
 
+            this.content = content;
             CurrentMapLevel = playerCurrentMapLevel;
             inventory = new List<Item>();
             _animationManager = new AnimationManager(_animations.First().Value);
@@ -102,27 +106,28 @@ namespace Dungeon_Crawler
 
         public void Teleport(Level level,GraphicsDevice graphicsDevice)
         {
-            if (Mouse.GetState().RightButton == ButtonState.Pressed && pastButton.RightButton==ButtonState.Released)
+            if (Mouse.GetState().RightButton == ButtonState.Pressed && pastButton.RightButton == ButtonState.Released)
             {
                 if (CurrentMana > teleportCost)
                 {
                     MouseState mouse = Mouse.GetState();
                     Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
                     Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
-                    CellX = (int)Math.Floor(mousePos.X / level.cellSize);
-                    CellY = (int)Math.Floor(mousePos.Y / level.cellSize);
 
-                    if (CellX < 0 || CellX >= level.map.Width || CellY < 0 || CellY >= level.map.Height)
+                    int mx = (int)Math.Floor(mousePos.X / level.cellSize);
+                    int my = (int)Math.Floor(mousePos.Y / level.cellSize);
+
+                    if (mx < 0 || mx >= level.map.Width || my < 0 || my >= level.map.Height)
                         return;
-                    if (level.grid.GetCellCost(new Position(CellX,CellY))==1.0f)
+                    if (level.grid.GetCellCost(new Position(mx,my))==1.0f)
                     {
                         level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
-                        level.grid.SetCellCost(new Position(CellX, CellY), 5.0f);
-                        mousePos.X = CellX * level.cellSize + level.cellSize / 2 - getWidth() / 2;
-                        mousePos.Y = CellY * level.cellSize + level.cellSize / 2 - getHeight() / 2;
+                        level.grid.SetCellCost(new Position(mx, my), 5.0f);
+                        mousePos.X = mx * level.cellSize + level.cellSize / 2 - getWidth() / 2;
+                        mousePos.Y = my * level.cellSize + level.cellSize / 2 - getHeight() / 2;
                         Position = mousePos;
-                        CurrentMana = CurrentMana - teleportCost;
-                        level.map.ComputeFov(CellX, CellY, 15, true);
+                        Mana = Mana - teleportCost;
+                        level.map.ComputeFov(mx, my, 15, true);
                         Global.Camera.CenterOn(Center);
                     }
                 }
@@ -130,12 +135,54 @@ namespace Dungeon_Crawler
             pastButton = Mouse.GetState();
         }
 
-        public void Exori(Level level, GraphicsDevice graphicsDevice)
+        public void AutoAttack(Level level, GraphicsDevice graphicsDevice, GameTime gameTime)
+        {
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed && pastButton2.LeftButton == ButtonState.Released)
+            {
+
+                MouseState mouse = Mouse.GetState();
+                Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
+                Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
+                int mx = (int)Math.Floor(mousePos.X / level.cellSize);
+                int my = (int)Math.Floor(mousePos.Y / level.cellSize);
+
+                if (mx < 0 || mx >= level.map.Width || my < 0 || my >= level.map.Height)
+                    return;
+                if (Global.CombatManager.IsEnemyAt(mx, my))
+                {
+                    Character enemy = Global.CombatManager.EnemyAt(mx, my);
+
+                    List<Character> listOfEnemiesAround = Global.CombatManager.IsEnemyInCellAround(CellX, CellY);
+                    if (listOfEnemiesAround.Count > 0)
+                    {
+                        foreach (Character enemy2 in listOfEnemiesAround)
+                        {
+                            if (enemy.Equals(enemy2))
+                            {
+                                level.attackAnimations.Add(new AttackAnimation(content, mx, my, level.cellSize, gameTime));
+                                Global.CombatManager.Attack(this, enemy);
+                            }
+                        }
+                    }
+                }
+
+            }
+            pastButton2 = Mouse.GetState();
+        }
+
+        public void Exori(Level level, GraphicsDevice graphicsDevice, GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && pastKey2.IsKeyUp(Keys.LeftShift))
             {
                 if (CurrentMana > exoriCost)
                 {
+                    List <RogueSharp.Cell> cellsAroundTheCellList = level.map.GetCellsInArea(CellX, CellY, 1).ToList();
+                    foreach (RogueSharp.Cell cell in cellsAroundTheCellList)
+                    {
+                        if(cell.IsWalkable)
+                            level.attackAnimations.Add(new AttackAnimation(content, cell.X, cell.Y, level.cellSize, gameTime));
+                    }
+                    
                     List<Character> listOfEnemiesAround = Global.CombatManager.IsEnemyInCellAround(CellX, CellY);
                     if (listOfEnemiesAround.Count > 0)
                     {
@@ -231,8 +278,9 @@ namespace Dungeon_Crawler
                     }
                 }
                 Teleport(level, graphicsDevice);
-                Exori(level, graphicsDevice);
                 Fireball(level);
+                AutoAttack(level, graphicsDevice, gameTime);
+                Exori(level, graphicsDevice, gameTime);
             }
             else //Moving
             {
@@ -247,6 +295,7 @@ namespace Dungeon_Crawler
                     Global.Camera.CenterOn(Center);
                 }
                 Fireball(level);
+                Exori(level, graphicsDevice, gameTime);
             }
             
             SetAnimations();

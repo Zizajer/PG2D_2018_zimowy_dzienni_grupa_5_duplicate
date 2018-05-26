@@ -44,6 +44,7 @@
     <Compile Include="Classes\Characters\Animation.cs" />
     <Compile Include="Classes\Characters\AnimationManager.cs" />
     <Compile Include="Classes\Camera\CameraManager.cs" />
+    <Compile Include="Classes\Characters\AttackAnimation.cs" />
     <Compile Include="Classes\Characters\Boss.cs" />
     <Compile Include="Classes\Characters\Character.cs" />
     <Compile Include="Classes\Map\EnemyProjectile.cs" />

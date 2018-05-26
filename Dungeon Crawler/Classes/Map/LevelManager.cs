@@ -58,6 +58,7 @@ namespace Dungeon_Crawler
                     {"WalkLeft",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingLeft"),3 )},
                     {"WalkRight",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingRight"),3 )}
                 };
+
             _animationsBoss = new Dictionary<string, Animation>()
                 {
                     {"BossAlive",new Animation(Content.Load<Texture2D>("enemy/BossAlive"),3 )}
@@ -111,7 +112,6 @@ namespace Dungeon_Crawler
         {
             Map map = CreateMap(newMapWidth, newMapHeight, newMapRoomCount, newMapRoomWidth, newMapRoomHeight);
             var grid = new Grid(newMapWidth, newMapHeight, 1.0f);
-
 
             List<Cell> occupiedCells = new List<Cell>();
 
