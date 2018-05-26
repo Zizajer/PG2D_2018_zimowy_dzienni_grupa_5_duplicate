@@ -131,12 +131,33 @@ namespace Dungeon_Crawler
                 float distanceY = level.player.Center.Y - Center.Y;
 
                 float rotation = (float)Math.Atan2(distanceY, distanceX);
-                Vector2 tempVelocity = new Vector2((float)Math.Cos(rotation)*3f, ((float)Math.Sin(rotation)) * 3f);
                 Vector2 tempPosition = Center;
 
-                EnemyProjectile newProjectile = new EnemyProjectile(tempVelocity, tempPosition, level.fireballBoss, rotation);
+                float rotationIncrement = 0.8f;
+                float newrotationClockwise = rotation;
+                float newrotationCounterClockwise = rotation;
+                Vector2 tempVelocity;
+                EnemyProjectile newProjectile;
+
+                tempVelocity = new Vector2((float)Math.Cos(rotation) * 3f, ((float)Math.Sin(rotation)) * 3f);
+                newProjectile = new EnemyProjectile(tempVelocity, tempPosition, level.fireballBoss, rotation);
 
                 level.enemyProjectiles.Add(newProjectile);
+
+                for (int i = 0; i < 2; i++)
+                {
+                    newrotationClockwise += rotationIncrement;
+                    tempVelocity = new Vector2((float)Math.Cos(newrotationClockwise) * 3f, ((float)Math.Sin(newrotationClockwise)) * 3f);
+                    newProjectile = new EnemyProjectile(tempVelocity, tempPosition, level.fireballBoss, newrotationClockwise);
+
+                    level.enemyProjectiles.Add(newProjectile);
+
+                    newrotationCounterClockwise -= rotationIncrement;
+                    tempVelocity = new Vector2((float)Math.Cos(newrotationCounterClockwise) * 3f, ((float)Math.Sin(newrotationCounterClockwise)) * 3f);
+                    newProjectile = new EnemyProjectile(tempVelocity, tempPosition, level.fireballBoss, newrotationCounterClockwise);
+
+                    level.enemyProjectiles.Add(newProjectile);
+                }
             }
         }
         protected override void SetAnimations()

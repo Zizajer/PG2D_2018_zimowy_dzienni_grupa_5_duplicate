@@ -287,7 +287,7 @@ namespace Dungeon_Crawler
 
             if (IsHitByProjectile(level, graphicsDevice))
             {
-                int damage = 20;
+                int damage = 5;
                 CurrentHealth -= damage;
                 string tempString = "Demon Oak's giant fireball hit player for " + damage;
                 Global.Gui.WriteToConsole(tempString);
