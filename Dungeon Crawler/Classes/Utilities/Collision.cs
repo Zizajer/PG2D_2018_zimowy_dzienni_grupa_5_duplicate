@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using RoyT.AStar;
 using System;
+using System.Collections.Generic;
 
 namespace Dungeon_Crawler
 {
@@ -43,6 +44,65 @@ namespace Dungeon_Crawler
 
             return null;
         }
+
+        public static List<Character.Directions> checkIfOneOfDoubleDirectionsIsOk(RogueSharp.Cell currentCell, Character.Directions currentDirection, Level level, GraphicsDevice graphicsDevice)
+        {
+            List<Character.Directions> dirList = new List<Character.Directions>(2);
+
+            if (currentDirection == Character.Directions.TopLeft)
+            {
+                Character.Directions top = Character.Directions.Top;
+                Character.Directions left = Character.Directions.Left;
+
+                if (!checkCollisionInGivenCell(getCellFromDirection(currentCell, top, level), level, graphicsDevice))
+                    dirList.Add(top);
+                if (!checkCollisionInGivenCell(getCellFromDirection(currentCell, left, level), level, graphicsDevice))
+                    dirList.Add(left);
+
+                return dirList;
+            }
+
+            if (currentDirection == Character.Directions.TopRight)
+            {
+                Character.Directions top = Character.Directions.Top;
+                Character.Directions right = Character.Directions.Right;
+
+                if (!checkCollisionInGivenCell(getCellFromDirection(currentCell, top, level), level, graphicsDevice))
+                    dirList.Add(top);
+                if (!checkCollisionInGivenCell(getCellFromDirection(currentCell, right, level), level, graphicsDevice))
+                    dirList.Add(right);
+
+                return dirList;
+            }
+
+            if (currentDirection == Character.Directions.BottomLeft)
+            {
+                Character.Directions bottom = Character.Directions.Bottom;
+                Character.Directions left = Character.Directions.Left;
+
+                if (!checkCollisionInGivenCell(getCellFromDirection(currentCell, bottom, level), level, graphicsDevice))
+                    dirList.Add(bottom);
+                if (!checkCollisionInGivenCell(getCellFromDirection(currentCell, left, level), level, graphicsDevice))
+                    dirList.Add(left);
+
+                return dirList;
+            }
+
+            if (currentDirection == Character.Directions.BottomRight)
+            {
+                Character.Directions bottom = Character.Directions.Bottom;
+                Character.Directions right = Character.Directions.Right;
+
+                if (!checkCollisionInGivenCell(getCellFromDirection(currentCell, bottom, level), level, graphicsDevice))
+                    dirList.Add(bottom);
+                if (!checkCollisionInGivenCell(getCellFromDirection(currentCell, right, level), level, graphicsDevice))
+                    dirList.Add(right);
+
+                return dirList;
+            }
+            return dirList;
+        }
+
 
         public static bool isCollidingWithRocks(Rectangle characterRectangle, Character character, Level level, GraphicsDevice graphicsDevice)
         {

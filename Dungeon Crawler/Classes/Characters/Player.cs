@@ -312,12 +312,38 @@ namespace Dungeon_Crawler
                         }
                         else
                         {
-                            if(cantGoThereTimer > timeBetweencantGoThere)
-                            {
-                                cantGoThereTimer = 0;
-                                Global.Gui.WriteToConsole("Cant go there");
-                            }
+                            //there is a collision in current direction
+                            //we check if it is on of joined directions (top-left top-right bottom-left bottom-right)
+                            //we try separate direction for top-left we should try top, then left
+
                             
+                            List<Character.Directions> dirList = Collision.checkIfOneOfDoubleDirectionsIsOk(CurrentCell, currentDirection, level, graphicsDevice);
+                            if (dirList.Count > 0)
+                            {
+                                Debug.WriteLine(dirList);
+                                foreach (Character.Directions newdir in dirList)
+                                {
+                                    RogueSharp.Cell futureNextCell2 = Collision.getCellFromDirection(CurrentCell, newdir, level);
+                                    if (CellX > 0 && CellX < level.map.Width && CellY > 0 && CellY < level.map.Height)
+                                    {
+                                        if (!Collision.checkCollisionInGivenCell(futureNextCell2, level, graphicsDevice))
+                                        {
+                                            NextCell = futureNextCell2;
+                                            currentState = State.Moving;
+                                            level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
+                                            level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 5.0f);
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (cantGoThereTimer > timeBetweencantGoThere)
+                                {
+                                    cantGoThereTimer = 0;
+                                    Global.Gui.WriteToConsole("Cant go there");
+                                }
+                            }
                         }
                     }
                     else
