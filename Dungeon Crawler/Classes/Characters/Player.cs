@@ -313,8 +313,8 @@ namespace Dungeon_Crawler
                         else
                         {
                             //there is a collision in current direction
-                            //we check if it is on of joined directions (top-left top-right bottom-left bottom-right)
-                            //we try separate direction for top-left we should try top, then left
+                            //we check if it is one of joined directions (top-left top-right bottom-left bottom-right)
+                            //we try separate direction (for top-left we should try top, then left)
 
                             
                             List<Character.Directions> dirList = Collision.checkIfOneOfDoubleDirectionsIsOk(CurrentCell, currentDirection, level, graphicsDevice);
@@ -331,6 +331,7 @@ namespace Dungeon_Crawler
                                             currentState = State.Moving;
                                             level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
                                             level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 5.0f);
+                                            break;
                                         }
                                     }
                                 }
