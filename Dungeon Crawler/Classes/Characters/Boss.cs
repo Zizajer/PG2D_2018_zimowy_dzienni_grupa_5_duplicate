@@ -30,7 +30,6 @@ namespace Dungeon_Crawler
             this.map = map;
             CellX = (int)Math.Floor(Center.X / cellSize);
             CellY = (int)Math.Floor(Center.Y / cellSize);
-            Name = "Demon Oak";
         }
 
         public override void calculateStatistics()

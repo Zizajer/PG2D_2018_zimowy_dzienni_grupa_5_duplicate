@@ -28,7 +28,6 @@ namespace Dungeon_Crawler
             CellY = (int)Math.Floor(Center.Y / cellSize);
             CurrentCell = map.GetCell(CellX, CellY);
             currentState = State.Standing;
-            Name = "Blob";
         }
 
         public override void calculateStatistics()

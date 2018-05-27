@@ -6,6 +6,8 @@ using RogueSharp.MapCreation;
 using System;
 using System.Collections.Generic;
 using RoyT.AStar;
+using System.IO;
+using System.Diagnostics;
 
 namespace Dungeon_Crawler
 {
@@ -38,6 +40,11 @@ namespace Dungeon_Crawler
         public Texture2D rock;
 
         public Texture2D portalTexture;
+
+        List<String> BlobNamesList;
+        List<String> DemonOakNamesList;
+        List<String> SkeletonNamesList;
+        List<String> ZombieNamesList;
 
         public LevelManager(ContentManager Content)
         {
@@ -77,10 +84,22 @@ namespace Dungeon_Crawler
 
             cellSize = floor.Width;
 
+            try
+            {
+                BlobNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Blob.txt"));
+                DemonOakNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\DemonOak.txt"));
+                SkeletonNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Skeleton.txt"));
+                ZombieNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Zombie.txt"));
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Check enemy names files path's //Czareg\n" + e.Message);
+            }
+
             CreateNormalLevel();
             Cell randomCell = GetRandomEmptyCell(levels[0].map, levels[0].occupiedCells, levels[0].grid);
             player =
-             new Player(Content, cellSize, 0, "Player") //TODO: Set player name at the game beginning
+             new Player(Content, cellSize, 0, "The Postal Dude") //TODO: Set player name at the game beginning
              {
                  Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
              };
@@ -168,6 +187,7 @@ namespace Dungeon_Crawler
             Character tempBoss =
                 new Boss(_animationsBoss, cellSize, player.CurrentMapLevel, timeBetweenActions, map)
                 {
+                    Name = DemonOakNamesList[Global.random.Next(DemonOakNamesList.Count)],
                     Position = new Vector2((randomCell.X * cellSize), (randomCell.Y * cellSize))
                 };
                 enemies.Add(tempBoss);
@@ -245,6 +265,7 @@ namespace Dungeon_Crawler
                 Character tempEnemy =
                     new Enemy(_animations, cellSize, level, speed, timeBetweenActions, map)
                     {
+                        Name = BlobNamesList[Global.random.Next(BlobNamesList.Count)],
                         Position = new Vector2((randomCell.X * cellSize + cellSize /3), (randomCell.Y * cellSize) + cellSize /3)
                     };
                 enemies.Add(tempEnemy);
