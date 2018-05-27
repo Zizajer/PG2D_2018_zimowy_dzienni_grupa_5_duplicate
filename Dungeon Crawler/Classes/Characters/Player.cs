@@ -320,7 +320,6 @@ namespace Dungeon_Crawler
                             List<Character.Directions> dirList = Collision.checkIfOneOfDoubleDirectionsIsOk(CurrentCell, currentDirection, level, graphicsDevice);
                             if (dirList.Count > 0)
                             {
-                                Debug.WriteLine(dirList);
                                 foreach (Character.Directions newdir in dirList)
                                 {
                                     RogueSharp.Cell futureNextCell2 = Collision.getCellFromDirection(CurrentCell, newdir, level);
