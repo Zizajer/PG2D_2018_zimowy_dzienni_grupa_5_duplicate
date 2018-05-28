@@ -99,7 +99,7 @@ namespace Dungeon_Crawler
                     return;
                 }
             }
-
+            portal.Update();
             player.Update(gameTime, this, graphicsDevice);
 
             if (isBossLevel)
@@ -248,12 +248,12 @@ namespace Dungeon_Crawler
                 enemyProjectile.Draw(spriteBatch);
             }
 
+            spriteBatch.End();
+
             if (enemies.Count == 0)
             {
                 portal.Draw(spriteBatch);
             }
-            
-            spriteBatch.End();
 
             player.Draw(spriteBatch);
 
