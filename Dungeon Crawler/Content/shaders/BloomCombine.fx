@@ -21,7 +21,7 @@ float SampleWeights[SAMPLE_COUNT];
 
 //COMBINE
 float BloomIntensity=2;
-float BaseIntensity=1;
+float BaseIntensity=4;
 float BloomSaturation;
 float BaseSaturation=1;
 //COMBINE

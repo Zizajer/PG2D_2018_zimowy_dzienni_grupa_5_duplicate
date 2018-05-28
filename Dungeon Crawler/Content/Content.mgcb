@@ -242,12 +242,6 @@
 /processorParam:DebugMode=Auto
 /build:shaders/BloomCombine.fx
 
-#begin shaders/BloomExtract.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:shaders/BloomExtract.fx
-
 #begin shaders/Effec1.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -259,12 +253,6 @@
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:shaders/Effec2.fx
-
-#begin shaders/GaussianBlur.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:shaders/GaussianBlur.fx
 
 #begin sounds/gameover.mp3
 /importer:Mp3Importer
