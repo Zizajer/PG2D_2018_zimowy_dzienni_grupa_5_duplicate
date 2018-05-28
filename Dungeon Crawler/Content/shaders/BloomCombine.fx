@@ -68,7 +68,7 @@ float4 PixelShaderFunction(float4 pos : SV_POSITION, float4 color1 : COLOR0, flo
     base *= (1 - saturate(bloom));
     
     // Combine the two images.
-	return bloom * base + base + blur;
+	return bloom + base;
 }
 
 technique Technique1
