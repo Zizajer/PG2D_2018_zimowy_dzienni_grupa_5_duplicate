@@ -44,12 +44,13 @@ namespace Dungeon_Crawler
             calculateStatistics();
 
             currentState = State.Standing;
+
             _animations = new Dictionary<string, Animation>()
             {
-                {"WalkUp",new Animation(content.Load<Texture2D>("player/Walkingup"),3 )},
-                {"WalkDown",new Animation(content.Load<Texture2D>("player/WalkingDown"),3 )},
-                {"WalkLeft",new Animation(content.Load<Texture2D>("player/WalkingLeft"),3 )},
-                {"WalkRight",new Animation(content.Load<Texture2D>("player/WalkingRight"),3 )}
+                {"WalkUp",new Animation(content.Load<Texture2D>("player/"+Global.playerClass+"/Walkingup"),3 )},
+                {"WalkDown",new Animation(content.Load<Texture2D>("player/"+Global.playerClass+"/WalkingDown"),3 )},
+                {"WalkLeft",new Animation(content.Load<Texture2D>("player/"+Global.playerClass+"/WalkingLeft"),3 )},
+                {"WalkRight",new Animation(content.Load<Texture2D>("player/"+Global.playerClass+"/WalkingRight"),3 )}
             };
 
             this.content = content;

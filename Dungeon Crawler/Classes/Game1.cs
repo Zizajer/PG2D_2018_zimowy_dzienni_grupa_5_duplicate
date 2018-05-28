@@ -30,6 +30,8 @@ namespace Dungeon_Crawler
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             Global.Gui = new GUI(graphics, Content);
+
+            Global.playerClass =Global.classes[Global.random.Next(Global.classes.Length)];
             levelManager = new LevelManager(Content);
 
             Global.Effects = new Effects(Content);

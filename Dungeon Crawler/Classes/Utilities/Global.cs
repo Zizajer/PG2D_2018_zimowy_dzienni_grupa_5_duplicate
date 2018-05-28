@@ -11,5 +11,7 @@ namespace Dungeon_Crawler
         public static CombatManager CombatManager;
         public static Effects Effects;
         public static SoundManager SoundManager;
+        public static String[] classes= { "Warrior", "Ranger", "Mage" };
+        public static String playerClass;
     }
 }
