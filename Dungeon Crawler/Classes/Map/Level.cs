@@ -18,8 +18,11 @@ namespace Dungeon_Crawler
         public List<Character> enemies;
         public List<Rock> rocks;
         public List<Cell> occupiedCells;
+        public List<Projectile> Projectiles;
+        //TODO: Delete them
         public List<PlayerProjectile> playerProjectiles;
         public List<EnemyProjectile> enemyProjectiles;
+
         public List<AttackAnimation> attackAnimations;
         List<Texture2D> allItems;
         List<String> allItemsNames;
@@ -47,6 +50,7 @@ namespace Dungeon_Crawler
             this.portal = portal;
             this.occupiedCells = occupiedCells;
             this.fireball = fireball;
+            Projectiles = new List<Projectile>();
             playerProjectiles = new List<PlayerProjectile>();
             enemyProjectiles = new List<EnemyProjectile>();
             attackAnimations = new List<AttackAnimation>();
@@ -70,6 +74,7 @@ namespace Dungeon_Crawler
             this.occupiedCells = occupiedCells;
             this.fireball = fireball;
             this.fireballBoss = fireballBoss;
+            Projectiles = new List<Projectile>();
             playerProjectiles = new List<PlayerProjectile>();
             enemyProjectiles = new List<EnemyProjectile>();
             attackAnimations = new List<AttackAnimation>();
@@ -159,7 +164,7 @@ namespace Dungeon_Crawler
                 }
             }
 
-
+            //TODO: Delete
             for (int i = playerProjectiles.Count - 1; i >= 0; i--)
             {
                 PlayerProjectile playerProjectile = playerProjectiles[i];
@@ -170,6 +175,7 @@ namespace Dungeon_Crawler
                 }
             }
 
+            //TODO: Delete
             for (int i = enemyProjectiles.Count - 1; i >= 0; i--)
             {
                 EnemyProjectile enemyProjectile = enemyProjectiles[i];
@@ -177,6 +183,16 @@ namespace Dungeon_Crawler
                 if (enemyProjectile.isMarkedToDelete)
                 {
                     enemyProjectiles.RemoveAt(i);
+                }
+            }
+
+            for (int i = Projectiles.Count - 1; i >= 0; i--)
+            {
+                Projectile Projectile = Projectiles[i];
+                Projectile.Update(gameTime, this, graphicsDevice);
+                if (Projectile.isMarkedToDelete)
+                {
+                    Projectiles.RemoveAt(i);
                 }
             }
 
@@ -237,7 +253,12 @@ namespace Dungeon_Crawler
                     rock.Draw(spriteBatch);
                 }
             }
-            
+
+            foreach (var Projectile in Projectiles)
+            {
+                Projectile.Draw(spriteBatch);
+            }
+
             foreach (var playerProjectile in playerProjectiles)
             {
                 playerProjectile.Draw(spriteBatch);

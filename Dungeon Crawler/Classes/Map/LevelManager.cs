@@ -25,8 +25,10 @@ namespace Dungeon_Crawler
         public float enemySpeedFactor = 1.0f;
         public Texture2D floor;
         public Texture2D wall;
+        //TODO: Delete these from here
         public Texture2D fireball;
         public Texture2D bossFireball;
+
         public int cellSize;
 
         public Dictionary<string, Animation> _animations;

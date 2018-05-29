@@ -156,21 +156,6 @@ namespace Dungeon_Crawler
 
         public abstract void calculateStatistics();
 
-        public void deductHealth(int oponentLevel, int oponentCriticalAttackProbability, int opponentAttackOrSpecialAttack, int attackPower, bool isSpecialAttack)
-        {
-            int modifier = 1; //will depend on i.a. critial attack probabilty.
-
-            if (isSpecialAttack)
-            {
-                CurrentHealth -= ((((((2 * Level) / 5) + 2) * attackPower * opponentAttackOrSpecialAttack / SpDefense) / 50) + 2) * modifier;
-            }
-            else
-            {
-                CurrentHealth -= ((((((2 * Level) / 5) + 2) * attackPower * opponentAttackOrSpecialAttack / Defense) / 50) + 2) * modifier;
-            }
-            
-        }
-
         public void Move(Directions currentDirection, Level level, GraphicsDevice graphicsDevice)
         {
             if (currentDirection == Directions.Top)

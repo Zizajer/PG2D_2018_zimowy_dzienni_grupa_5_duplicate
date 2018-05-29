@@ -4,6 +4,7 @@ using System;
 
 namespace Dungeon_Crawler
 {
+    [Obsolete]
     public class EnemyProjectile : Sprite
     {
         public Vector2 Velocity { get; set; }

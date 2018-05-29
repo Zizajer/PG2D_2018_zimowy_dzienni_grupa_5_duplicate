@@ -36,6 +36,10 @@ namespace Dungeon_Crawler
         float actionTimer = 0;
         float timeBetweenActions=0.4f;
 
+        //Attacks
+        ICharacterTargetedAttack BaseAttack;
+        IPositionTargetedAttack ProjectileAttack;
+
         public Player(ContentManager content, int cellSize, int playerCurrentMapLevel, string name)
         {
             Level = 1;
@@ -57,18 +61,23 @@ namespace Dungeon_Crawler
             inventory = new List<Item>();
             _animationManager = new AnimationManager(_animations.First().Value);
             Name = name;
+
+            //Set attacks
+            BaseAttack = new Pound();
+            ProjectileAttack = new PenetratingFireball();
         }
 
         public override void calculateStatistics()
         {
             Health = CurrentHealth = 70 + Level * 10;
-            Defense = 70 + Level * 3;
+            Defense = 15 + Level * 3;
             SpDefense = 70 + Level * 5;
             Attack = (int)Math.Floor(70 + Level * 2.5);
             SpAttack = 70 + Level * 3;
             //Speed = todo..
         }
 
+        /*
         public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
         {
             EnemyProjectile projectile = null;
@@ -84,27 +93,18 @@ namespace Dungeon_Crawler
             }
             return false;
         }
-        public void Fireball(Level level)
+        */
+        public void UseProjectileAttack(Level level)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Space) && pastKey.IsKeyUp(Keys.Space))
             {
-                if (level.playerProjectiles.Count() < maxFireballsOnScreen && CurrentMana> fireballCost)
+                if (level.playerProjectiles.Count() < maxFireballsOnScreen && CurrentMana> ProjectileAttack.ManaCost)
                 {
                     MouseState mouse = Mouse.GetState();
                     Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
                     Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
-                    float distanceX = mousePos.X - this.Position.X;
-                    float distanceY = mousePos.Y - this.Position.Y;
-
-                    rotation = (float)Math.Atan2(distanceY, distanceX);
-                    Vector2 tempVelocity = new Vector2((float)Math.Cos(rotation) * 5f, ((float)Math.Sin(rotation)) * 5f) +Velocity/3;
-                    Vector2 tempPosition = Center + tempVelocity * 3;
-
-                    PlayerProjectile newProjectile = new PlayerProjectile(tempVelocity, tempPosition, level.fireball, rotation);
-
-                    level.playerProjectiles.Add(newProjectile);
-                    CurrentMana = CurrentMana - fireballCost;
-                    Global.SoundManager.playPew();
+                    ProjectileAttack.Use(this, mousePos);
+                    CurrentMana -= ProjectileAttack.ManaCost; 
                 }
                 else
                 {
@@ -177,7 +177,7 @@ namespace Dungeon_Crawler
                         if (enemy is Boss)
                         {
                             level.attackAnimations.Add(new AttackAnimation(content, mx, my, level.cellSize, gameTime));
-                            Global.CombatManager.Attack(this, enemy);
+                            BaseAttack.Use(this, enemy);
                             actionTimer = 0;
                         }
                     }
@@ -189,7 +189,7 @@ namespace Dungeon_Crawler
                         if (listOfEnemiesAround.Contains(enemy))
                         {
                             level.attackAnimations.Add(new AttackAnimation(content, enemy.CellX, enemy.CellY, level.cellSize, gameTime));
-                            Global.CombatManager.Attack(this, enemy);
+                            BaseAttack.Use(this, enemy);
                             actionTimer = 0;
                         }
                     }
@@ -285,6 +285,7 @@ namespace Dungeon_Crawler
                 CurrentCell = level.map.GetCell(CellX, CellY);
             }
 
+            /*
             if (IsHitByProjectile(level, graphicsDevice))
             {
                 int damage = 5;
@@ -292,6 +293,7 @@ namespace Dungeon_Crawler
                 string tempString = "Demon Oak's giant fireball hit player for " + damage;
                 Global.Gui.WriteToConsole(tempString);
             }
+            */
 
             if (CurrentMana < 100) CurrentMana = CurrentMana + 0.15f; //0.15
 
@@ -352,7 +354,7 @@ namespace Dungeon_Crawler
                     }
                 }
                 Teleport(level, graphicsDevice);
-                Fireball(level);
+                UseProjectileAttack(level);
                 AutoAttack(level, graphicsDevice, gameTime);
                 Exori(level, graphicsDevice, gameTime);
             }
@@ -367,7 +369,7 @@ namespace Dungeon_Crawler
                     MoveToCenterOfGivenCell(NextCell, level, graphicsDevice);
                     Global.Camera.CenterOn(Center);
                 }
-                Fireball(level);
+                UseProjectileAttack(level);
                 Exori(level, graphicsDevice, gameTime);
             }
             

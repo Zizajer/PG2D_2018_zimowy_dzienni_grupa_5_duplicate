@@ -18,6 +18,12 @@ namespace Dungeon_Crawler
             _player = levelManager.player;
         }
 
+        /*
+         !!!!!
+         Kept only for backward compatibility (for undone attacks)
+         !!!!!
+        */
+        [Obsolete]
         public void Attack(Character attacker, Character defender)
         {
             string tempString;
@@ -35,7 +41,7 @@ namespace Dungeon_Crawler
                 else
                 {
                     tempString = attacker.Name + " killed " + defender.Name;
-                } 
+                }
                 Global.Gui.WriteToConsole(tempString);
 
             }
@@ -44,6 +50,55 @@ namespace Dungeon_Crawler
                 tempString = attacker.Name + " missed " + defender.Name;
                 Global.Gui.WriteToConsole(tempString);
             }
+        }
+
+        public void Attack(Character attacker, IAttack attack, Character defender)
+        {
+            string tempString;
+            bool IsCritical = false;
+            if (Global.random.Next(100) >= 100 - attack.CriticalHitProbability)
+            {
+                IsCritical = true;
+            }
+            //(1-attacker.damage)
+            int Damage = CalculateDamage(attacker, attack, IsCritical, defender);
+            defender.CurrentHealth -= Damage;
+            defender.isHitShaderOn = true;
+
+            if (defender.CurrentHealth > 0)
+            {
+                tempString = attacker.Name + " hit " + defender.Name + " with " + attack.Name + " for " + Damage;
+            }
+            else
+            {
+                tempString = attacker.Name + " killed " + defender.Name + " with " + attack.Name;
+            }
+            if (IsCritical)
+            {
+                tempString += ". Critical hit!";
+            }
+            Global.Gui.WriteToConsole(tempString);
+
+        }
+
+        public int CalculateDamage(Character attacker, IAttack attack, Boolean isCritical, Character defender)
+        {
+            float Modifier = 1;
+
+            if (isCritical)
+            {
+                Modifier = Modifier * 1.5f;
+            }
+
+            if (attack.IsSpecial)
+            {
+                return (int)(((((((2f * attacker.Level) / 5f) + 2f) * attack.Power * attacker.SpAttack / defender.SpDefense) / 50f) + 2f) * Modifier);
+            }
+            else
+            {
+                return (int)(((((((2f * attacker.Level) / 5f) + 2f) * attack.Power * attacker.Attack / defender.Defense) / 50f) + 2f) * Modifier);
+            }
+
         }
 
         public void Update()
@@ -159,6 +214,12 @@ namespace Dungeon_Crawler
                 }
             }
                 return listOfEnemiesAround;
+        }
+
+        //CombatManager really should not be responsible for such things
+        public void PutProjectile(Projectile projectile)
+        {
+            currentLevel.Projectiles.Add(projectile);
         }
     }
 }

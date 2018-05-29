@@ -14,6 +14,9 @@ namespace Dungeon_Crawler
         float timer;
         Position[] path;
 
+        //Attacks
+        ICharacterTargetedAttack BaseAttack;
+
         public Enemy(Dictionary<string, Animation> _animations, int cellSize, int level, float speed, float timeBetweenActions, Map map)
         {
             Level = level;
@@ -29,18 +32,22 @@ namespace Dungeon_Crawler
             CurrentCell = map.GetCell(CellX, CellY);
             currentState = State.Standing;
             Name = "Blob";
+
+            //Set attacks
+            BaseAttack = new Pound();
         }
 
         public override void calculateStatistics()
         {
-            Health = CurrentHealth = 50 + Level * 10;
-            Defense = 50 + Level * 3;
+            Health = CurrentHealth = 10 + Level * 10;
+            Defense = 30 + Level * 3;
             SpDefense = 50 + Level * 5;
-            Attack = (int)Math.Floor(50 + Level * 2.5);
+            Attack = (int)Math.Floor(35 + Level * 2.5f);
             SpAttack = 50 + Level * 3;
             //Speed = todo..
         }
 
+        /*
         public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
         {
             PlayerProjectile projectile = null;
@@ -56,6 +63,7 @@ namespace Dungeon_Crawler
             }
             return false;
         }
+        */
 
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
@@ -112,7 +120,7 @@ namespace Dungeon_Crawler
 
                     if (timer > timeBetweenActions)
                     {
-                        Global.CombatManager.Attack(this, level.player);
+                        BaseAttack.Use(this, level.player);
                         timer = 0;
                     }
                     else
@@ -134,6 +142,7 @@ namespace Dungeon_Crawler
                 }
             }
 
+            /*
             if (IsHitByProjectile(level, graphicsDevice))
             {
                 int damage = 2;
@@ -156,6 +165,7 @@ namespace Dungeon_Crawler
                 
                 Global.Gui.WriteToConsole(tempString);
             }
+            */
 
             SetAnimations();
             _animationManager.Update(gameTime);

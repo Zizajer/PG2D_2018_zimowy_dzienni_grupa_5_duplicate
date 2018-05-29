@@ -45,8 +45,15 @@
     <Compile Include="Classes\Characters\AnimationManager.cs" />
     <Compile Include="Classes\Camera\CameraManager.cs" />
     <Compile Include="Classes\Characters\AttackAnimation.cs" />
+    <Compile Include="Classes\Characters\Attacks\Interface\IAttack.cs" />
+    <Compile Include="Classes\Characters\Attacks\Interface\ICharacterTargetedAttack.cs" />
+    <Compile Include="Classes\Characters\Attacks\Interface\IUnTargetedAttack.cs" />
+    <Compile Include="Classes\Characters\Attacks\PenetratingFireball.cs" />
+    <Compile Include="Classes\Characters\Attacks\Pound.cs" />
+    <Compile Include="Classes\Characters\Attacks\Interface\IPositionTargetedAttack.cs" />
     <Compile Include="Classes\Characters\Boss.cs" />
     <Compile Include="Classes\Characters\Character.cs" />
+    <Compile Include="Classes\Map\Projectile.cs" />
     <Compile Include="Classes\Map\EnemyProjectile.cs" />
     <Compile Include="Classes\Map\Sprite.cs" />
     <Compile Include="Classes\Map\Portal.cs" />
