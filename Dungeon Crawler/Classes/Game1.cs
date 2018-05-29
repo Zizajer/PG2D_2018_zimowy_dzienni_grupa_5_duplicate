@@ -98,6 +98,8 @@ namespace Dungeon_Crawler
             GraphicsDevice.SetRenderTarget(mainTarget);
             GraphicsDevice.Clear(Color.Transparent);
 
+
+
             levelManager.Draw(gameTime, spriteBatch);
 
             GraphicsDevice.SetRenderTarget(null);
@@ -110,11 +112,9 @@ namespace Dungeon_Crawler
             spriteBatch.Draw(mainTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
 
-
-            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
             Global.Gui.Draw(spriteBatch);
             spriteBatch.End();
-
             base.Draw(gameTime);
         }
     }
