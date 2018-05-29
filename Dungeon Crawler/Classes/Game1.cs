@@ -85,9 +85,13 @@ namespace Dungeon_Crawler
         {
             GraphicsDevice.SetRenderTarget(lightsTarget);
             GraphicsDevice.Clear(Color.Black);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Global.Camera.TranslationMatrix);
             //draw light mask where there should be torches etc...
-            spriteBatch.Draw(lightMask, new Vector2(levelManager.player.CellX, levelManager.player.CellY), Color.White);
+
+            Vector2 playerPos = levelManager.player.Center;
+            playerPos.X -= lightMask.Width / 2;
+            playerPos.Y -= lightMask.Height / 2;
+            spriteBatch.Draw(lightMask, playerPos, Color.White);
 
             spriteBatch.End();
 
