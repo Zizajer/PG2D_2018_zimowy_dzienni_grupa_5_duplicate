@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dungeon_Crawler
 {
-    class Pound : ICharacterTargetedAttack
+    public class Pound : ICharacterTargetedAttack
     {
         public string Name { get; set; }
         public int Power { get; set; }

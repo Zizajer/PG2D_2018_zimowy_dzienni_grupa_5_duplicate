@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dungeon_Crawler.Classes.Characters.Attacks.Interface
+namespace Dungeon_Crawler
 {
     /*
      * Interface for untargeted attacks (e.g. Exori)
