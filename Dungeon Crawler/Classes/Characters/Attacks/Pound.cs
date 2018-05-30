@@ -16,6 +16,8 @@ namespace Dungeon_Crawler
         public bool IsSpecial { get; set; }
         public int ManaCost { get; set; }
 
+        private readonly string AnimationName;
+
         public Pound()
         {
             Name = "Pound";
@@ -24,12 +26,15 @@ namespace Dungeon_Crawler
             CriticalHitProbability = 15;
             IsSpecial = false;
             ManaCost = 0;
+
+            AnimationName = "baseAttackAnim";
         }
 
         public bool Use(Character attacker, Character defender)
         {
             if (Global.random.Next(100) >= 100 - Accuracy)
             {
+                Global.CombatManager.SetAnimation(Name, AnimationName, defender.CellX, defender.CellY);
                 Global.CombatManager.Attack(attacker, this, defender);
                 return true; //Attack hit
             }

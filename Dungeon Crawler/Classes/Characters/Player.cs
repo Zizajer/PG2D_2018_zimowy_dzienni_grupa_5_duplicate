@@ -39,6 +39,7 @@ namespace Dungeon_Crawler
         //Attacks
         ICharacterTargetedAttack BaseAttack;
         IPositionTargetedAttack ProjectileAttack;
+        IUnTargetedAttack UnTargetedAttack;
 
         public Player(ContentManager content, int cellSize, int playerCurrentMapLevel, string name)
         {
@@ -65,6 +66,7 @@ namespace Dungeon_Crawler
             //Set attacks
             BaseAttack = new Pound();
             ProjectileAttack = new PenetratingFireball();
+            UnTargetedAttack = new Exori();
         }
 
         public override void calculateStatistics()
@@ -176,7 +178,6 @@ namespace Dungeon_Crawler
                         Character enemy = listOfEnemiesAround[0];
                         if (enemy is Boss)
                         {
-                            level.attackAnimations.Add(new AttackAnimation(content, "forTesting", "baseAttackAnim", mx, my, level.cellSize));
                             BaseAttack.Use(this, enemy);
                             actionTimer = 0;
                         }
@@ -188,7 +189,6 @@ namespace Dungeon_Crawler
                         Character enemy = Global.CombatManager.EnemyAt(mx, my);
                         if (listOfEnemiesAround.Contains(enemy))
                         {
-                            level.attackAnimations.Add(new AttackAnimation(content, "forTesting", "baseAttackAnim", mx, my, level.cellSize));
                             BaseAttack.Use(this, enemy);
                             actionTimer = 0;
                         }
@@ -202,28 +202,14 @@ namespace Dungeon_Crawler
             pastButton2 = Mouse.GetState();
         }
 
-        public void Exori(Level level, GraphicsDevice graphicsDevice, GameTime gameTime)
+        public void UseUnTargetedAttack(Level level, GraphicsDevice graphicsDevice, GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && pastKey2.IsKeyUp(Keys.LeftShift))
             {
-                if (CurrentMana > exoriCost)
+                if (CurrentMana > UnTargetedAttack.ManaCost)
                 {
-                    List <RogueSharp.Cell> cellsAroundTheCellList = level.map.GetCellsInArea(CellX, CellY, 1).ToList();
-                    foreach (RogueSharp.Cell cell in cellsAroundTheCellList)
-                    {
-                        if(cell.IsWalkable)
-                            level.attackAnimations.Add(new AttackAnimation(content, "forTesting", "baseAttackAnim", cell.X, cell.Y, level.cellSize));
-                    }
-                    
-                    List<Character> listOfEnemiesAround = Global.CombatManager.GetEnemiesInArea(CellX, CellY, 1);
-                    if (listOfEnemiesAround.Count > 0)
-                    {
-                        foreach (Character enemy in listOfEnemiesAround)
-                        {
-                            Global.CombatManager.Attack(this, enemy);
-                        }
-                    }
-                    CurrentMana = CurrentMana - exoriCost;
+                    UnTargetedAttack.Use(this);
+                    CurrentMana = CurrentMana - UnTargetedAttack.ManaCost;
                 }
                 else
                 {
@@ -356,7 +342,7 @@ namespace Dungeon_Crawler
                 Teleport(level, graphicsDevice);
                 UseProjectileAttack(level);
                 AutoAttack(level, graphicsDevice, gameTime);
-                Exori(level, graphicsDevice, gameTime);
+                UseUnTargetedAttack(level, graphicsDevice, gameTime);
             }
             else //Moving
             {
@@ -370,7 +356,7 @@ namespace Dungeon_Crawler
                     Global.Camera.CenterOn(Center);
                 }
                 UseProjectileAttack(level);
-                Exori(level, graphicsDevice, gameTime);
+                UseUnTargetedAttack(level, graphicsDevice, gameTime);
             }
             
             SetAnimations();
