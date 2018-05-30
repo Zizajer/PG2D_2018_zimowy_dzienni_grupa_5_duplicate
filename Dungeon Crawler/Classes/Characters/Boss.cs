@@ -17,6 +17,9 @@ namespace Dungeon_Crawler
 
         Map map;
 
+        //Attacks
+        IPositionTargetedAttack ProjectileAttack;
+
         public Boss(Dictionary<string, Animation> _animations, int cellSize, int level, float timeBetweenActions, Map map)
         {
             Level = level;
@@ -31,6 +34,9 @@ namespace Dungeon_Crawler
             CellX = (int)Math.Floor(Center.X / cellSize);
             CellY = (int)Math.Floor(Center.Y / cellSize);
             Name = "Demon Oak";
+
+            //Set attacks
+            ProjectileAttack = new BigFireballCanonade();
         }
 
         public override void calculateStatistics()
@@ -43,6 +49,7 @@ namespace Dungeon_Crawler
             Speed = 0f;
         }
 
+        /*
         public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
         {
             PlayerProjectile projectile =null;
@@ -58,6 +65,7 @@ namespace Dungeon_Crawler
             } 
             return false;
         }
+        */
 
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
@@ -75,6 +83,7 @@ namespace Dungeon_Crawler
             CellX = (int)Math.Floor(Center.X / level.cellSize);
             CellY = (int)Math.Floor(Center.Y / level.cellSize);
 
+            /*
             if (IsHitByProjectile(level, graphicsDevice))
             {
                 int damage = 20;
@@ -83,6 +92,7 @@ namespace Dungeon_Crawler
                 Global.Gui.WriteToConsole(tempString);
 
             }
+            */
             if (CurrentHealth <= 0)
             {
                 level.grid.UnblockCell(new Position(5, 5));
@@ -112,7 +122,7 @@ namespace Dungeon_Crawler
                 {
                     currentState = State.Standby;
                 }
-                Fireball(level);
+                UseProjectileAttack(level);
             }
             else
             {
@@ -121,43 +131,12 @@ namespace Dungeon_Crawler
             SetAnimations();
             _animationManager.Update(gameTime);
         }
-        public void Fireball(Level level)
+        public void UseProjectileAttack(Level level)
         {
             if (actionTimer>timeBetweenActions)
             {
                 actionTimer = 0;
-
-                float distanceX = level.player.Center.X - Center.X;
-                float distanceY = level.player.Center.Y - Center.Y;
-
-                float rotation = (float)Math.Atan2(distanceY, distanceX);
-                Vector2 tempPosition = Center;
-
-                float rotationIncrement = 0.8f;
-                float newrotationClockwise = rotation;
-                float newrotationCounterClockwise = rotation;
-                Vector2 tempVelocity;
-                EnemyProjectile newProjectile;
-
-                tempVelocity = new Vector2((float)Math.Cos(rotation) * 3f, ((float)Math.Sin(rotation)) * 3f);
-                newProjectile = new EnemyProjectile(tempVelocity, tempPosition, level.fireballBoss, rotation);
-
-                level.enemyProjectiles.Add(newProjectile);
-
-                for (int i = 0; i < 2; i++)
-                {
-                    newrotationClockwise += rotationIncrement;
-                    tempVelocity = new Vector2((float)Math.Cos(newrotationClockwise) * 3f, ((float)Math.Sin(newrotationClockwise)) * 3f);
-                    newProjectile = new EnemyProjectile(tempVelocity, tempPosition, level.fireballBoss, newrotationClockwise);
-
-                    level.enemyProjectiles.Add(newProjectile);
-
-                    newrotationCounterClockwise -= rotationIncrement;
-                    tempVelocity = new Vector2((float)Math.Cos(newrotationCounterClockwise) * 3f, ((float)Math.Sin(newrotationCounterClockwise)) * 3f);
-                    newProjectile = new EnemyProjectile(tempVelocity, tempPosition, level.fireballBoss, newrotationCounterClockwise);
-
-                    level.enemyProjectiles.Add(newProjectile);
-                }
+                ProjectileAttack.Use(this, level.player.Center);
             }
         }
         protected override void SetAnimations()

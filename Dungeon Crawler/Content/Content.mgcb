@@ -278,7 +278,7 @@
 /processorParam:TextureFormat=Color
 /build:spells/BaseAttackAnim.png
 
-#begin spells/BossFireball.png
+#begin spells/BigFireball.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -288,7 +288,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:spells/BossFireball.png
+/build:spells/BigFireball.png
 
 #begin spells/Fireball.png
 /importer:TextureImporter

@@ -48,8 +48,9 @@ namespace Dungeon_Crawler
             
             floor = Content.Load<Texture2D>("map/Floor");
             wall = Content.Load<Texture2D>("map/Wall");
+            //TODO: Delete these from here
             fireball = Content.Load<Texture2D>("spells/Fireball");
-            bossFireball= Content.Load<Texture2D>("spells/BossFireball");
+            bossFireball= Content.Load<Texture2D>("spells/BigFireball");
             rock = Content.Load<Texture2D>("map/rock");
             portalTexture = Content.Load<Texture2D>("map/portal");
 
