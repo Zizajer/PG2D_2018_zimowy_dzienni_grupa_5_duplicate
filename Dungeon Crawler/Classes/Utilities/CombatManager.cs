@@ -138,27 +138,30 @@ namespace Dungeon_Crawler
             return EnemyAt(x, y) != null;
         }
 
-        public List<Character> IsEnemyInCellAround(int x, int y)
+        public List<Character> GetEnemiesInArea(int cellX, int cellY, int distance)
         {
-            List<Character> listOfEnemiesAround = new List<Character>(8);
+            List<Character> listOfEnemiesAround = new List<Character>();
             foreach (Character enemy in currentLevel.enemies)
             {
-                if (enemy.CellX == x - 1 && enemy.CellY == y + 1)
-                    listOfEnemiesAround.Add(enemy);
-                if (enemy.CellX == x && enemy.CellY == y + 1)
-                    listOfEnemiesAround.Add(enemy);
-                if (enemy.CellX == x + 1 && enemy.CellY == y + 1)
-                    listOfEnemiesAround.Add(enemy);
-                if (enemy.CellX == x + 1 && enemy.CellY == y)
-                    listOfEnemiesAround.Add(enemy);
-                if (enemy.CellX == x + 1 && enemy.CellY == y - 1)
-                    listOfEnemiesAround.Add(enemy);
-                if (enemy.CellX == x && enemy.CellY == y - 1)
-                    listOfEnemiesAround.Add(enemy);
-                if (enemy.CellX == x - 1 && enemy.CellY == y - 1)
-                    listOfEnemiesAround.Add(enemy);
-                if (enemy.CellX == x - 1 && enemy.CellY == y)
-                    listOfEnemiesAround.Add(enemy);
+                for (int i = 0; i <= distance; i++)
+                {
+                    if (enemy.CellX == cellX - i && enemy.CellY == cellY + i)
+                        listOfEnemiesAround.Add(enemy);
+                    if (enemy.CellX == cellX && enemy.CellY == cellY + i)
+                        listOfEnemiesAround.Add(enemy);
+                    if (enemy.CellX == cellX + i && enemy.CellY == cellY + i)
+                        listOfEnemiesAround.Add(enemy);
+                    if (enemy.CellX == cellX + i && enemy.CellY == cellY)
+                        listOfEnemiesAround.Add(enemy);
+                    if (enemy.CellX == cellX + i && enemy.CellY == cellY - i)
+                        listOfEnemiesAround.Add(enemy);
+                    if (enemy.CellX == cellX && enemy.CellY == cellY - i)
+                        listOfEnemiesAround.Add(enemy);
+                    if (enemy.CellX == cellX - i && enemy.CellY == cellY - i)
+                        listOfEnemiesAround.Add(enemy);
+                    if (enemy.CellX == cellX - i && enemy.CellY == cellY)
+                        listOfEnemiesAround.Add(enemy);
+                }
             }
 
             foreach (Character enemy in currentLevel.enemies)
@@ -168,44 +171,44 @@ namespace Dungeon_Crawler
                     List<RogueSharp.Cell> cellsAroundTheCellList = currentLevel.map.GetCellsInArea(enemy.CellX, enemy.CellY, 1).ToList();
                     foreach (RogueSharp.Cell cell in cellsAroundTheCellList)
                     {
-                        if (cell.X == x - 1 && cell.Y == y + 1)
+                        if (cell.X == cellX - 1 && cell.Y == cellY + 1)
                         {
                             listOfEnemiesAround.Add(enemy);
                             break;
                         }
 
-                        if (cell.X == x && cell.Y == y + 1)
+                        if (cell.X == cellX && cell.Y == cellY + 1)
                         {
                             listOfEnemiesAround.Add(enemy);
                             break;
                         }
 
-                        if (cell.X == x + 1 && cell.Y == y + 1)
+                        if (cell.X == cellX + 1 && cell.Y == cellY + 1)
                         {
                             listOfEnemiesAround.Add(enemy);
                             break;
                         }
-                        if (cell.X == x + 1 && cell.Y == y)
+                        if (cell.X == cellX + 1 && cell.Y == cellY)
                         {
                             listOfEnemiesAround.Add(enemy);
                             break;
                         }
-                        if (cell.X == x + 1 && cell.Y == y - 1)
+                        if (cell.X == cellX + 1 && cell.Y == cellY - 1)
                         {
                             listOfEnemiesAround.Add(enemy);
                             break;
                         }
-                        if (cell.X == x && cell.Y == y - 1)
+                        if (cell.X == cellX && cell.Y == cellY - 1)
                         {
                             listOfEnemiesAround.Add(enemy);
                             break;
                         }
-                        if (cell.X == x - 1 && cell.Y == y - 1)
+                        if (cell.X == cellX - 1 && cell.Y == cellY - 1)
                         {
                             listOfEnemiesAround.Add(enemy);
                             break;
                         }
-                        if (cell.X == x - 1 && cell.Y == y)
+                        if (cell.X == cellX - 1 && cell.Y == cellY)
                         {
                             listOfEnemiesAround.Add(enemy);
                             break;
@@ -216,10 +219,28 @@ namespace Dungeon_Crawler
                 return listOfEnemiesAround;
         }
 
+        public void SetAnimationInArea(string attackName, string animationName, int cellX, int cellY, int distance)
+        {
+            List<RogueSharp.Cell> cellsAroundTheCellList = currentLevel.map.GetCellsInArea(cellX, cellY, 1).ToList();
+            foreach (RogueSharp.Cell cell in cellsAroundTheCellList)
+            {
+                if (cell.IsWalkable)
+                    currentLevel.attackAnimations.Add(new AttackAnimation(levelManager.Content, attackName, animationName, cell.X, cell.Y, currentLevel.cellSize));
+            }
+        }
+
+        public void SetAnimation(string attackName, string animationName, int cellX, int cellY)
+        {
+            RogueSharp.Cell cell = currentLevel.map.GetCell(cellX, cellY);
+            if (cell.IsWalkable)
+                currentLevel.attackAnimations.Add(new AttackAnimation(levelManager.Content, attackName, animationName, cellX, cellY, currentLevel.cellSize));
+        }
+
         //CombatManager really should not be responsible for such things
         public void PutProjectile(Projectile projectile)
         {
             currentLevel.Projectiles.Add(projectile);
         }
+
     }
 }

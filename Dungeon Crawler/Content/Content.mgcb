@@ -266,6 +266,18 @@
 /processorParam:Quality=Best
 /build:sounds/portalactivated.mp3
 
+#begin spells/BaseAttackAnim.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:spells/BaseAttackAnim.png
+
 #begin spells/BossFireball.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -277,18 +289,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:spells/BossFireball.png
-
-#begin spells/Exori.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:spells/Exori.png
 
 #begin spells/Fireball.png
 /importer:TextureImporter

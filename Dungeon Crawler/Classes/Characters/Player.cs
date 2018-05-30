@@ -163,7 +163,7 @@ namespace Dungeon_Crawler
                     if (mx < 0 || mx >= level.map.Width || my < 0 || my >= level.map.Height)
                         return;
 
-                    List<Character> listOfEnemiesAround = Global.CombatManager.IsEnemyInCellAround(CellX, CellY);
+                    List<Character> listOfEnemiesAround = Global.CombatManager.GetEnemiesInArea(CellX, CellY, 1);
 
                     if(listOfEnemiesAround.Count == 0)
                     {
@@ -176,7 +176,7 @@ namespace Dungeon_Crawler
                         Character enemy = listOfEnemiesAround[0];
                         if (enemy is Boss)
                         {
-                            level.attackAnimations.Add(new AttackAnimation(content, mx, my, level.cellSize, gameTime));
+                            level.attackAnimations.Add(new AttackAnimation(content, "forTesting", "baseAttackAnim", mx, my, level.cellSize));
                             BaseAttack.Use(this, enemy);
                             actionTimer = 0;
                         }
@@ -188,7 +188,7 @@ namespace Dungeon_Crawler
                         Character enemy = Global.CombatManager.EnemyAt(mx, my);
                         if (listOfEnemiesAround.Contains(enemy))
                         {
-                            level.attackAnimations.Add(new AttackAnimation(content, enemy.CellX, enemy.CellY, level.cellSize, gameTime));
+                            level.attackAnimations.Add(new AttackAnimation(content, "forTesting", "baseAttackAnim", mx, my, level.cellSize));
                             BaseAttack.Use(this, enemy);
                             actionTimer = 0;
                         }
@@ -212,10 +212,10 @@ namespace Dungeon_Crawler
                     foreach (RogueSharp.Cell cell in cellsAroundTheCellList)
                     {
                         if(cell.IsWalkable)
-                            level.attackAnimations.Add(new AttackAnimation(content, cell.X, cell.Y, level.cellSize, gameTime));
+                            level.attackAnimations.Add(new AttackAnimation(content, "forTesting", "baseAttackAnim", cell.X, cell.Y, level.cellSize));
                     }
                     
-                    List<Character> listOfEnemiesAround = Global.CombatManager.IsEnemyInCellAround(CellX, CellY);
+                    List<Character> listOfEnemiesAround = Global.CombatManager.GetEnemiesInArea(CellX, CellY, 1);
                     if (listOfEnemiesAround.Count > 0)
                     {
                         foreach (Character enemy in listOfEnemiesAround)

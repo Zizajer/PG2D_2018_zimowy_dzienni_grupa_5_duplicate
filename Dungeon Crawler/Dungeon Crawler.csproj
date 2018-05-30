@@ -45,9 +45,11 @@
     <Compile Include="Classes\Characters\AnimationManager.cs" />
     <Compile Include="Classes\Camera\CameraManager.cs" />
     <Compile Include="Classes\Characters\AttackAnimation.cs" />
+    <Compile Include="Classes\Characters\Attacks\Exori.cs" />
     <Compile Include="Classes\Characters\Attacks\Interface\IAttack.cs" />
     <Compile Include="Classes\Characters\Attacks\Interface\ICharacterTargetedAttack.cs" />
     <Compile Include="Classes\Characters\Attacks\Interface\IUnTargetedAttack.cs" />
+    <Compile Include="Classes\Characters\Attacks\Fireball.cs" />
     <Compile Include="Classes\Characters\Attacks\PenetratingFireball.cs" />
     <Compile Include="Classes\Characters\Attacks\Pound.cs" />
     <Compile Include="Classes\Characters\Attacks\Interface\IPositionTargetedAttack.cs" />
