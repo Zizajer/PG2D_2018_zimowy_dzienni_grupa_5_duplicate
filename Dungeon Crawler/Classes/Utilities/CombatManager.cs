@@ -221,7 +221,7 @@ namespace Dungeon_Crawler
 
         public void SetAnimationInArea(string attackName, string animationName, int cellX, int cellY, int distance)
         {
-            List<RogueSharp.Cell> cellsAroundTheCellList = currentLevel.map.GetCellsInArea(cellX, cellY, 1).ToList();
+            List<RogueSharp.Cell> cellsAroundTheCellList = currentLevel.map.GetCellsInArea(cellX, cellY, distance).ToList();
             foreach (RogueSharp.Cell cell in cellsAroundTheCellList)
             {
                 if (cell.IsWalkable)

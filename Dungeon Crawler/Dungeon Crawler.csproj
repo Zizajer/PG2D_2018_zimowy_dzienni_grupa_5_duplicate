@@ -46,6 +46,7 @@
     <Compile Include="Classes\Camera\CameraManager.cs" />
     <Compile Include="Classes\Characters\AttackAnimation.cs" />
     <Compile Include="Classes\Characters\Attacks\BigFireballCanonade.cs" />
+    <Compile Include="Classes\Characters\Attacks\Annihilation.cs" />
     <Compile Include="Classes\Characters\Attacks\Exori.cs" />
     <Compile Include="Classes\Characters\Attacks\BigFireball.cs" />
     <Compile Include="Classes\Characters\Attacks\Interface\IAttack.cs" />

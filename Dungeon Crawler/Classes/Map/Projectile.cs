@@ -57,6 +57,7 @@ namespace Dungeon_Crawler
             }
 
             //Vanish projectile when out of range
+            //Make range one of attack's parameter
             if (Vector2.Distance(Center, OriginalPosition) > 3 * level.cellSize)
             {
                 isMarkedToDelete = true;
