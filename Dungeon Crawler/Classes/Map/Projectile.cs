@@ -7,6 +7,7 @@ namespace Dungeon_Crawler
     public class Projectile : Sprite
     {
         public IPositionTargetedAttack Attack;
+        public Character Attacker;
         public Vector2 Velocity { get; set; }
         public Vector2 OriginalPosition { get; set; }
         public float Rotation;
@@ -14,9 +15,10 @@ namespace Dungeon_Crawler
         private float ProjectileTimer = 0;
         private readonly float VanishDelay;
         int x, y;
-        public Projectile(IPositionTargetedAttack attack, Vector2 velocity, Vector2 position, Texture2D texture, float rotation, float vanishDelay) : base(position, texture)
+        public Projectile(IPositionTargetedAttack attack, Character attacker, Vector2 velocity, Vector2 position, Texture2D texture, float rotation, float vanishDelay) : base(position, texture)
         {
             Attack = attack;
+            Attacker = attacker;
             OriginalPosition = position;
             Velocity = velocity;
             Rotation = rotation;
@@ -32,19 +34,26 @@ namespace Dungeon_Crawler
             //Moving by specified velocity
             Position += Velocity;
 
-            //Detect collision with character and notify attack about who took a hit
+            //Detect collision with character and notify parent attack about who took a hit. 
+            //Ignore collision with projectile creator. (Character shoudn't hit himself)
             foreach (Character character in level.enemies)
             {
                 if (Collision.checkCollision(character.getRectangle(), character, this, graphicsDevice))
                 {
-                    IsCharacterHit = true;
-                    Attack.Notify(character);
+                    if (character != Attacker)
+                    {
+                        IsCharacterHit = true;
+                        Attack.Notify(character);
+                    }
                 }
             }
             if (Collision.checkCollision(level.player.getRectangle(), level.player, this, graphicsDevice))
             {
-                IsCharacterHit = true;
-                Attack.Notify(level.player);
+                if (level.player != Attacker)
+                {
+                    IsCharacterHit = true;
+                    Attack.Notify(level.player);
+                }
             }
 
             //Vanish projectile when out of range

@@ -20,9 +20,9 @@ namespace Dungeon_Crawler
 
         private Texture2D ProjectileTexture;
         private readonly float VanishDelay;
-        private Character Attacker;
+        public Character Attacker { get; set; }
 
-        public Fireball()
+        public Fireball(Character attacker)
         {
             Name = "Fireball";
             Power = 100;
@@ -48,7 +48,7 @@ namespace Dungeon_Crawler
             Vector2 tempVelocity = new Vector2((float)Math.Cos(rotation) * 5f, ((float)Math.Sin(rotation)) * 5f) + attacker.Velocity / 3;
             Vector2 tempPosition = attacker.Center + tempVelocity * 10;
 
-            Projectile newProjectile = new Projectile(this, tempVelocity, tempPosition, ProjectileTexture, rotation, VanishDelay);
+            Projectile newProjectile = new Projectile(this, Attacker, tempVelocity, tempPosition, ProjectileTexture, rotation, VanishDelay);
             Global.CombatManager.PutProjectile(newProjectile);
             Global.SoundManager.playPew();
 

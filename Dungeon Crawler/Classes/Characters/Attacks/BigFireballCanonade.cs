@@ -43,8 +43,8 @@ namespace Dungeon_Crawler
                 ProjectileTexture = Global.CombatManager.levelManager.Content.Load<Texture2D>("spells/BigFireball");
                 Attacker = attacker;
 
-                float distanceX = position.X - attacker.Position.X;
-                float distanceY = position.Y - attacker.Position.Y;
+                float distanceX = position.X - attacker.Center.X;
+                float distanceY = position.Y - attacker.Center.Y;
 
                 float rotation = (float)Math.Atan2(distanceY, distanceX);
                 Vector2 tempPosition = attacker.Center;
@@ -55,22 +55,22 @@ namespace Dungeon_Crawler
                 Vector2 tempVelocity;
                 Projectile newProjectile;
 
-                tempVelocity = new Vector2((float)Math.Cos(rotation) * 3f, ((float)Math.Sin(rotation)) * 3f);
-                newProjectile = new Projectile(this, tempVelocity, tempPosition, ProjectileTexture, rotation, VanishDelay);
+                tempVelocity = new Vector2((float)Math.Cos(rotation) * 3f, ((float)Math.Sin(rotation)) * 3f) + attacker.Velocity / 3;
+                newProjectile = new Projectile(this, attacker, tempVelocity, tempPosition, ProjectileTexture, rotation, VanishDelay);
 
                 Global.CombatManager.PutProjectile(newProjectile);
 
                 for (int i = 0; i < 2; i++)
                 {
                     newrotationClockwise += rotationIncrement;
-                    tempVelocity = new Vector2((float)Math.Cos(rotation) * 3f, ((float)Math.Sin(newrotationClockwise)) * 3f);
-                    newProjectile = new Projectile(this, tempVelocity, tempPosition, ProjectileTexture, newrotationClockwise, VanishDelay);
+                    tempVelocity = new Vector2((float)Math.Cos(newrotationClockwise) * 3f, ((float)Math.Sin(newrotationClockwise)) * 3f);
+                    newProjectile = new Projectile(this, attacker, tempVelocity, tempPosition, ProjectileTexture, newrotationClockwise, VanishDelay);
 
                     Global.CombatManager.PutProjectile(newProjectile);
 
                     newrotationCounterClockwise -= rotationIncrement;
-                    tempVelocity = new Vector2((float)Math.Cos(rotation) * 3f, ((float)Math.Sin(newrotationClockwise)) * 3f);
-                    newProjectile = new Projectile(this, tempVelocity, tempPosition, ProjectileTexture, newrotationClockwise, VanishDelay);
+                    tempVelocity = new Vector2((float)Math.Cos(newrotationCounterClockwise) * 3f, ((float)Math.Sin(newrotationCounterClockwise)) * 3f);
+                    newProjectile = new Projectile(this, attacker, tempVelocity, tempPosition, ProjectileTexture, newrotationCounterClockwise, VanishDelay);
 
                     Global.CombatManager.PutProjectile(newProjectile);
                 }
@@ -85,7 +85,10 @@ namespace Dungeon_Crawler
 
         public void Notify(Character defender)
         {
-            Global.CombatManager.Attack(Attacker, this, defender);
+            if (defender != Attacker)
+            {
+                Global.CombatManager.Attack(Attacker, this, defender);
+            }
         }
     }
 }

@@ -65,7 +65,7 @@ namespace Dungeon_Crawler
 
             //Set attacks
             BaseAttack = new Pound();
-            ProjectileAttack = new PenetratingFireball();
+            ProjectileAttack = new BigFireballCanonade();
             UnTargetedAttack = new Exori();
         }
 
