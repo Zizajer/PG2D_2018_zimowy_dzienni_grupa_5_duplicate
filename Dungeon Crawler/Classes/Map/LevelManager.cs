@@ -285,7 +285,7 @@ namespace Dungeon_Crawler
                 }
                 
                 player.CurrentMapLevel++;
-                player.currentState = Player.State.Standing;
+                player.currentActionState = Player.ActionState.Standing;
                 levels[player.CurrentMapLevel].addPlayer(player);
                 Vector2 newPlayerPosition = levels[player.CurrentMapLevel].GetRandomEmptyCell();
                 player.Position = newPlayerPosition;

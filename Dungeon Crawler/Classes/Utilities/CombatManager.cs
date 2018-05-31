@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using static Dungeon_Crawler.Character;
 
 namespace Dungeon_Crawler
 {
@@ -56,10 +57,25 @@ namespace Dungeon_Crawler
         {
             string tempString;
             bool IsCritical = false;
+
             if (Global.random.Next(100) >= 100 - attack.CriticalHitProbability)
             {
                 IsCritical = true;
             }
+
+            if (defender.currentHealthState == HealthState.Normal)
+            {
+                if (Global.random.Next(100) >= 100 - attack.BurnProbability)
+                {
+                    defender.currentHealthState = HealthState.Burn;
+                }
+
+                if (Global.random.Next(100) >= 100 - attack.FreezeProbability)
+                {
+                    defender.currentHealthState = HealthState.Freeze;
+                }
+            }
+
             //(1-attacker.damage)
             int Damage = CalculateDamage(attacker, attack, IsCritical, defender);
             defender.CurrentHealth -= Damage;
@@ -77,6 +93,14 @@ namespace Dungeon_Crawler
             {
                 tempString += ". Critical hit!";
             }
+            if (defender.currentHealthState == HealthState.Freeze)
+            {
+                tempString += ". Frozen!";
+            }
+            if (defender.currentHealthState == HealthState.Burn)
+            {
+                tempString += ". Burned!";
+            }
             Global.Gui.WriteToConsole(tempString);
 
         }
@@ -88,6 +112,11 @@ namespace Dungeon_Crawler
             if (isCritical)
             {
                 Modifier = Modifier * 1.5f;
+            }
+
+            if (defender.currentHealthState == HealthState.Burn)
+            {
+                Modifier = Modifier * 0.5f;
             }
 
             if (attack.IsSpecial)

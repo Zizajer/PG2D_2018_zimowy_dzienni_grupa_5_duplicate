@@ -10,8 +10,8 @@ namespace Dungeon_Crawler
 {
     public class Boss : Character
     {
-        public new enum State { Standby, Attacking};
-        public new State currentState;
+        public new enum ActionState { Standby, Attacking};
+        public new ActionState currentActionState;
         float actionTimer;
         float timeBetweenActions;
 
@@ -25,6 +25,7 @@ namespace Dungeon_Crawler
             Level = level;
             calculateStatistics();
 
+            currentHealthState = HealthState.Normal;
             this._animations = _animations;
             this.timeBetweenActions = timeBetweenActions;
             _animationManager = new AnimationManager(_animations.First().Value);
@@ -72,10 +73,31 @@ namespace Dungeon_Crawler
             if (isHitShaderOn)
             {
                 hitTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (hitTimer > howLongShouldShaderApply)
+                if (hitTimer > howLongShouldHitShaderApply)
                 {
                     hitTimer = 0;
                     isHitShaderOn = false;
+                }
+            }
+
+            if (currentHealthState == HealthState.Freeze)
+            {
+                healthStateTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (healthStateTimer > howLongShouldHealthStateLast)
+                {
+                    healthStateTimer = 0;
+                    currentHealthState = HealthState.Normal;
+                }
+            }
+
+            if (currentHealthState == HealthState.Burn)
+            {
+                healthStateTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                CurrentHealth -= 1;
+                if (healthStateTimer > howLongShouldHealthStateLast)
+                {
+                    healthStateTimer = 0;
+                    currentHealthState = HealthState.Normal;
                 }
             }
 
@@ -108,28 +130,31 @@ namespace Dungeon_Crawler
                 level.grid.UnblockCell(new Position(7, 7));
             }
 
-            if (currentState == State.Standby)
+            if (currentHealthState != HealthState.Freeze)
             {
-                if (map.IsInFov(CellX, CellY))
+                if (currentActionState == ActionState.Standby)
                 {
-                    currentState = State.Attacking;
-                }
+                    if (map.IsInFov(CellX, CellY))
+                    {
+                        currentActionState = ActionState.Attacking;
+                    }
 
-            }
-            else if (currentState == State.Attacking)
-            {
-                if (!map.IsInFov(CellX, CellY))
-                {
-                    currentState = State.Standby;
                 }
-                UseProjectileAttack(level);
+                else if (currentActionState == ActionState.Attacking)
+                {
+                    if (!map.IsInFov(CellX, CellY))
+                    {
+                        currentActionState = ActionState.Standby;
+                    }
+                    UseProjectileAttack(level);
+                }
+                else
+                {
+                    Console.WriteLine("Error");
+                }
+                SetAnimations();
+                _animationManager.Update(gameTime);
             }
-            else
-            {
-                Console.WriteLine("Error");
-            }
-            SetAnimations();
-            _animationManager.Update(gameTime);
         }
         public void UseProjectileAttack(Level level)
         {

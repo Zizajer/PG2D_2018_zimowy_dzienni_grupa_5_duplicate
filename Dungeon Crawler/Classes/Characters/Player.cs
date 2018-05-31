@@ -48,7 +48,8 @@ namespace Dungeon_Crawler
             CurrentMana = Mana = 100; // TODO: move it to calculateStatistics();
             calculateStatistics();
 
-            currentState = State.Standing;
+            currentActionState = ActionState.Standing;
+            currentHealthState = HealthState.Normal;
             _animations = new Dictionary<string, Animation>()
             {
                 {"WalkUp",new Animation(content.Load<Texture2D>("player/Walkingup"),3 )},
@@ -65,7 +66,7 @@ namespace Dungeon_Crawler
 
             //Set attacks
             BaseAttack = new Pound();
-            ProjectileAttack = new BigFireballCanonade();
+            ProjectileAttack = new Iceball();
             UnTargetedAttack = new Annihilation();
         }
 
@@ -257,10 +258,31 @@ namespace Dungeon_Crawler
             if (isHitShaderOn)
             {
                 hitTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (hitTimer > howLongShouldShaderApply)
+                if (hitTimer > howLongShouldHitShaderApply)
                 {
                     hitTimer = 0;
                     isHitShaderOn = false;
+                }
+            }
+
+            if (currentHealthState == HealthState.Freeze)
+            {
+                healthStateTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (healthStateTimer > howLongShouldHealthStateLast)
+                {
+                    healthStateTimer = 0;
+                    currentHealthState = HealthState.Normal;
+                }
+            }
+
+            if (currentHealthState == HealthState.Burn)
+            {
+                healthStateTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                CurrentHealth -= 1;
+                if (healthStateTimer > howLongShouldHealthStateLast)
+                {
+                    healthStateTimer = 0;
+                    currentHealthState = HealthState.Normal;
                 }
             }
 
@@ -283,86 +305,90 @@ namespace Dungeon_Crawler
 
             if (CurrentMana < 100) CurrentMana = CurrentMana + 0.15f; //0.15
 
-            if (currentState == State.Standing)
+            if (currentHealthState != HealthState.Freeze)
             {
-                currentDirection = GetDirection();
-                if (currentDirection != (int)Directions.None)
+                if (currentActionState == ActionState.Standing)
                 {
-                    RogueSharp.Cell futureNextCell= Collision.getCellFromDirection(CurrentCell, currentDirection, level);
-                    if (CellX > 0 && CellX < level.map.Width && CellY > 0 && CellY < level.map.Height)
+                    currentDirection = GetDirection();
+                    if (currentDirection != (int)Directions.None)
                     {
-                        if (!Collision.checkCollisionInGivenCell(futureNextCell, level, graphicsDevice))
+                        RogueSharp.Cell futureNextCell = Collision.getCellFromDirection(CurrentCell, currentDirection, level);
+                        if (CellX > 0 && CellX < level.map.Width && CellY > 0 && CellY < level.map.Height)
                         {
-                            NextCell = futureNextCell;
-                            currentState = State.Moving;
-                            level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
-                            level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 5.0f);
-                        }
-                        else
-                        {
-                            //there is a collision in current direction
-                            //we check if it is one of joined directions (top-left top-right bottom-left bottom-right)
-                            //we try separate direction (for top-left we should try top, then left)
-
-                            
-                            List<Character.Directions> dirList = Collision.checkIfOneOfDoubleDirectionsIsOk(CurrentCell, currentDirection, level, graphicsDevice);
-                            if (dirList.Count > 0)
+                            if (!Collision.checkCollisionInGivenCell(futureNextCell, level, graphicsDevice))
                             {
-                                foreach (Character.Directions newdir in dirList)
-                                {
-                                    RogueSharp.Cell futureNextCell2 = Collision.getCellFromDirection(CurrentCell, newdir, level);
-                                    if (CellX > 0 && CellX < level.map.Width && CellY > 0 && CellY < level.map.Height)
-                                    {
-                                        if (!Collision.checkCollisionInGivenCell(futureNextCell2, level, graphicsDevice))
-                                        {
-                                            NextCell = futureNextCell2;
-                                            currentState = State.Moving;
-                                            level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
-                                            level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 5.0f);
-                                            break;
-                                        }
-                                    }
-                                }
+                                NextCell = futureNextCell;
+                                currentActionState = ActionState.Moving;
+                                level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
+                                level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 5.0f);
                             }
                             else
                             {
-                                if (cantGoThereTimer > timeBetweencantGoThere)
+                                //there is a collision in current direction
+                                //we check if it is one of joined directions (top-left top-right bottom-left bottom-right)
+                                //we try separate direction (for top-left we should try top, then left)
+
+
+                                List<Character.Directions> dirList = Collision.checkIfOneOfDoubleDirectionsIsOk(CurrentCell, currentDirection, level, graphicsDevice);
+                                if (dirList.Count > 0)
                                 {
-                                    cantGoThereTimer = 0;
-                                    Global.Gui.WriteToConsole("Cant go there");
+                                    foreach (Character.Directions newdir in dirList)
+                                    {
+                                        RogueSharp.Cell futureNextCell2 = Collision.getCellFromDirection(CurrentCell, newdir, level);
+                                        if (CellX > 0 && CellX < level.map.Width && CellY > 0 && CellY < level.map.Height)
+                                        {
+                                            if (!Collision.checkCollisionInGivenCell(futureNextCell2, level, graphicsDevice))
+                                            {
+                                                NextCell = futureNextCell2;
+                                                currentActionState = ActionState.Moving;
+                                                level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
+                                                level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 5.0f);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (cantGoThereTimer > timeBetweencantGoThere)
+                                    {
+                                        cantGoThereTimer = 0;
+                                        Global.Gui.WriteToConsole("Cant go there");
+                                    }
                                 }
                             }
                         }
+                        else
+                        {
+                            Global.Gui.WriteToConsole("Cant go there");
+                        }
+                    }
+                    Teleport(level, graphicsDevice);
+                    UseProjectileAttack(level);
+                    AutoAttack(level, graphicsDevice, gameTime);
+                    UseUnTargetedAttack(level, graphicsDevice, gameTime);
+                }
+                else //Moving
+                {
+                    if (isCenterOfGivenCell(NextCell, level, graphicsDevice))
+                    {
+                        currentActionState = ActionState.Standing;
                     }
                     else
                     {
-                        Global.Gui.WriteToConsole("Cant go there");
+                        MoveToCenterOfGivenCell(NextCell, level, graphicsDevice);
+                        Global.Camera.CenterOn(Center);
                     }
+                    UseProjectileAttack(level);
+                    UseUnTargetedAttack(level, graphicsDevice, gameTime);
                 }
-                Teleport(level, graphicsDevice);
-                UseProjectileAttack(level);
-                AutoAttack(level, graphicsDevice, gameTime);
-                UseUnTargetedAttack(level, graphicsDevice, gameTime);
+
+                SetAnimations();
+                _animationManager.Update(gameTime);
+                Position += Velocity;
+                Velocity = Vector2.Zero;
             }
-            else //Moving
-            {
-                if (isCenterOfGivenCell(NextCell, level, graphicsDevice))
-                {
-                    currentState = State.Standing;
-                }
-                else
-                {
-                    MoveToCenterOfGivenCell(NextCell, level, graphicsDevice);
-                    Global.Camera.CenterOn(Center);
-                }
-                UseProjectileAttack(level);
-                UseUnTargetedAttack(level, graphicsDevice, gameTime);
-            }
-            
-            SetAnimations();
-            _animationManager.Update(gameTime);
-            Position += Velocity;
-            Velocity = Vector2.Zero;
+
         }
         public string getItems()
         {

@@ -15,6 +15,8 @@ namespace Dungeon_Crawler
 
         public bool IsSpecial { get; set; }
         public int ManaCost { get; set; }
+        public int FreezeProbability { get; set; }
+        public int BurnProbability { get; set; }
 
         private readonly int Distance;
         private readonly string AnimationName;
@@ -25,6 +27,8 @@ namespace Dungeon_Crawler
             Power = 40;
             Accuracy = 80;
             CriticalHitProbability = 50;
+            FreezeProbability = 0;
+            BurnProbability = 0;
             IsSpecial = false;
             ManaCost = 70;
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Dungeon_Crawler
 {
-    public class Fireball : IPositionTargetedAttack
+    public class Iceball : IPositionTargetedAttack
     {
         public string Name { get; set; }
         public int Power { get; set; }
@@ -26,14 +26,14 @@ namespace Dungeon_Crawler
 
         private Character Attacker;
 
-        public Fireball()
+        public Iceball()
         {
-            Name = "Fireball";
-            Power = 100;
+            Name = "Iceball";
+            Power = 70;
             Accuracy = 100;
             CriticalHitProbability = 10;
-            FreezeProbability = 0;
-            BurnProbability = 25;
+            FreezeProbability = 100;
+            BurnProbability = 0;
             IsSpecial = true;
             ManaCost = 10;
 
@@ -45,7 +45,7 @@ namespace Dungeon_Crawler
         {
             //TODO: Move ContentManager to global because these workarounds are simply dumb
             //Also, move initializaition of this variable to constructor (for some reason it throws NullPointerException there)
-            ProjectileTexture = Global.CombatManager.levelManager.Content.Load<Texture2D>("spells/Fireball");
+            ProjectileTexture = Global.CombatManager.levelManager.Content.Load<Texture2D>("spells/Iceball");
             Attacker = attacker;
 
             float distanceX = position.X - attacker.Position.X;

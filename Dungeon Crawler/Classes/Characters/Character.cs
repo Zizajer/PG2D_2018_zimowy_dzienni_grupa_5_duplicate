@@ -8,10 +8,12 @@ namespace Dungeon_Crawler
 {
     public abstract class Character
     {
-        public enum State { Moving, Standing };
+        public enum ActionState { Moving, Standing };
+        public enum HealthState { Normal, Freeze, Burn };
         public enum Directions { None, Top, Bottom, Left, Right, TopLeft, TopRight, BottomLeft, BottomRight};
         public Directions currentDirection;
-        public State currentState;
+        public ActionState currentActionState;
+        public HealthState currentHealthState;
 
         public string Name { get; set; }
 
@@ -29,7 +31,10 @@ namespace Dungeon_Crawler
 
         public bool isHitShaderOn = false;
         public float hitTimer=0;
-        public float howLongShouldShaderApply = 0.25f;
+        public float howLongShouldHitShaderApply = 0.25f;
+
+        public float healthStateTimer = 0;
+        public float howLongShouldHealthStateLast = Global.random.Next(5, 15);
 
         public int CellX { get; set; }
         public int CellY { get; set; }
