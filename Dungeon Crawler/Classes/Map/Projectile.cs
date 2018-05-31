@@ -11,17 +11,19 @@ namespace Dungeon_Crawler
         public Vector2 Velocity { get; set; }
         public Vector2 OriginalPosition { get; set; }
         public float Rotation;
+        private readonly int Range;
         public bool IsCharacterHit = false;
         private float ProjectileTimer = 0;
         private readonly float VanishDelay;
         int x, y;
-        public Projectile(IPositionTargetedAttack attack, Character attacker, Vector2 velocity, Vector2 position, Texture2D texture, float rotation, float vanishDelay) : base(position, texture)
+        public Projectile(IPositionTargetedAttack attack, Character attacker, Vector2 velocity, Vector2 position, Texture2D texture, float rotation, int range, float vanishDelay) : base(position, texture)
         {
             Attack = attack;
             Attacker = attacker;
             OriginalPosition = position;
             Velocity = velocity;
             Rotation = rotation;
+            Range = range;
             IsCharacterHit = false;
             VanishDelay = vanishDelay;
         }
@@ -57,8 +59,7 @@ namespace Dungeon_Crawler
             }
 
             //Vanish projectile when out of range
-            //Make range one of attack's parameter
-            if (Vector2.Distance(Center, OriginalPosition) > 3 * level.cellSize)
+            if (Vector2.Distance(Center, OriginalPosition) > Range * level.cellSize)
             {
                 isMarkedToDelete = true;
             }
