@@ -128,6 +128,9 @@ namespace Dungeon_Crawler
 
             spriteBatch.Draw(HealthBarBackgroundTexture, new Rectangle((int)character.Position.X, (int)character.Position.Y - 25, HealthBarOverCharacterBackgroundWidth, HealthBarOverCharacterHeight), Color.White);
             spriteBatch.Draw(HealthBarCurrentHealthTexture, new Rectangle((int)character.Position.X, (int)character.Position.Y - 25, HealthBarCurrentHealthWidth, HealthBarOverCharacterHeight), Color.White);
+
+            HealthBarBackgroundTexture.Dispose();
+            HealthBarCurrentHealthTexture.Dispose();
         }
 
         private void DrawPlayerStatBars(SpriteBatch spriteBatch, Player player, int hpX, int hpY, int manaX, int manaY, int xpX, int xpY, int width, int height, float scale)
@@ -173,6 +176,11 @@ namespace Dungeon_Crawler
             string ManaText = (int)player.CurrentMana + "/" + player.Mana;
             Vector2 ManaTextOffsetFromCenter = font.MeasureString(ManaText);
             spriteBatch.DrawString(font, ManaText, new Vector2(manaX + (float)width / 2 - ManaTextOffsetFromCenter.X / 2 * 0.75f / scale, manaY), Color.White, 0.0f, Vector2.One, 0.75f / scale, SpriteEffects.None, Layers.Text);
+
+            HealthBarBackgroundTexture.Dispose();
+            HealthBarCurrentHealthTexture.Dispose();
+            ManaBarBackgroundTexture.Dispose();
+            ManaBarCurrentManaTexture.Dispose();
         }
 
         internal void addLevelMananger(LevelManager levelManager)
