@@ -19,9 +19,9 @@ namespace Dungeon_Crawler
 
         public int Level { get; set; }
 
-        public int Health { get; set; }
-        public int CurrentHealth { get; set; }
-        public int CurrentHealthPercent { get { return ((int)(CurrentHealth / (double)Health * 100)); } }
+        public float Health { get; set; }
+        public float CurrentHealth { get; set; }
+        public int CurrentHealthPercent { get { return ((int)(CurrentHealth / Health * 100)); } }
 
         public int Defense { get; set; }
         public int SpDefense { get; set; }

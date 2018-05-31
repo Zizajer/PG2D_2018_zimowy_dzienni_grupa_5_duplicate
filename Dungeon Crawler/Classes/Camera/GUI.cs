@@ -168,7 +168,7 @@ namespace Dungeon_Crawler
             spriteBatch.Draw(ManaBarCurrentManaTexture, new Rectangle(manaX, manaY, ManaBarCurrentManaWidth, height), Color.White * 0.7f);
 
             //Draw HP ratio
-            string HealthText = player.CurrentHealth + "/" + player.Health;
+            string HealthText = (int)player.CurrentHealth + "/" + player.Health;
             Vector2 HealthTextOffsetFromCenter = font.MeasureString(HealthText);
             spriteBatch.DrawString(font, HealthText, new Vector2(hpX + (float)width / 2 - HealthTextOffsetFromCenter.X / 2 * 0.75f / scale, hpY), Color.White, 0.0f, Vector2.One, 0.75f / scale, SpriteEffects.None, Layers.Text);
 

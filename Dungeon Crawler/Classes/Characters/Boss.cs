@@ -87,17 +87,19 @@ namespace Dungeon_Crawler
                 {
                     healthStateTimer = 0;
                     currentHealthState = HealthState.Normal;
+                    Global.Gui.WriteToConsole(Name + " is no longer frozen!");
                 }
             }
 
             if (currentHealthState == HealthState.Burn)
             {
                 healthStateTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                CurrentHealth -= 1;
+                CurrentHealth -= CurrentHealth / 1000f;
                 if (healthStateTimer > howLongShouldHealthStateLast)
                 {
                     healthStateTimer = 0;
                     currentHealthState = HealthState.Normal;
+                    Global.Gui.WriteToConsole(Name + " is no longer burned!");
                 }
             }
 
