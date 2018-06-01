@@ -128,7 +128,10 @@ namespace Dungeon_Crawler
                     if (enemy.CurrentHealth <= 0)
                     {
                         grid.SetCellCost(new Position(enemy.CellX, enemy.CellY), 1.0f);
-                        grid.SetCellCost(new Position(enemy.NextCell.X, enemy.NextCell.Y), 1.0f);
+                        if (enemy.NextCell != null)
+                        {
+                            grid.SetCellCost(new Position(enemy.NextCell.X, enemy.NextCell.Y), 1.0f);
+                        }
                         enemies.RemoveAt(i);
                         if (Global.random.Next(20) == 19) //5% of chance
                         {
