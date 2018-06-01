@@ -120,15 +120,6 @@ namespace Dungeon_Crawler
                     }
                 }
 
-                if (CurrentHealth <= 0)
-                {
-                    level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
-                    if (NextCell != null)
-                    {
-                        level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 1.0f);
-                    }
-                }
-
                 SetAnimations();
                 _animationManager.Update(gameTime);
                 Position += Velocity;
