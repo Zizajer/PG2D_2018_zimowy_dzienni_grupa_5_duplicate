@@ -68,11 +68,13 @@ namespace Dungeon_Crawler
                 if (Global.random.Next(100) >= 100 - attack.BurnProbability)
                 {
                     defender.currentHealthState = HealthState.Burn;
+                    defender.isBurnShaderOn = true;
                 }
 
                 if (Global.random.Next(100) >= 100 - attack.FreezeProbability)
                 {
                     defender.currentHealthState = HealthState.Freeze;
+                    defender.isFreezeShaderOn = true;
                 }
             }
 

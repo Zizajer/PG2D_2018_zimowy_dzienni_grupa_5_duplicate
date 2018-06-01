@@ -70,38 +70,9 @@ namespace Dungeon_Crawler
 
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
-            if (isHitShaderOn)
-            {
-                hitTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (hitTimer > howLongShouldHitShaderApply)
-                {
-                    hitTimer = 0;
-                    isHitShaderOn = false;
-                }
-            }
 
-            if (currentHealthState == HealthState.Freeze)
-            {
-                healthStateTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (healthStateTimer > howLongShouldHealthStateLast)
-                {
-                    healthStateTimer = 0;
-                    currentHealthState = HealthState.Normal;
-                    Global.Gui.WriteToConsole(Name + " is no longer frozen!");
-                }
-            }
-
-            if (currentHealthState == HealthState.Burn)
-            {
-                healthStateTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                CurrentHealth -= CurrentHealth / 1000f;
-                if (healthStateTimer > howLongShouldHealthStateLast)
-                {
-                    healthStateTimer = 0;
-                    currentHealthState = HealthState.Normal;
-                    Global.Gui.WriteToConsole(Name + " is no longer burned!");
-                }
-            }
+            HandleHitState(gameTime);
+            HandleHealthState(gameTime);
 
             actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             CellX = (int)Math.Floor(Center.X / level.cellSize);

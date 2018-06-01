@@ -33,6 +33,8 @@ namespace Dungeon_Crawler
         public float hitTimer=0;
         public float howLongShouldHitShaderApply = 0.25f;
 
+        public bool isBurnShaderOn = false;
+        public bool isFreezeShaderOn = false;
         public float healthStateTimer = 0;
         public float howLongShouldHealthStateLast = Global.random.Next(5, 15);
 
@@ -63,19 +65,61 @@ namespace Dungeon_Crawler
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
-            if (isHitShaderOn) {
-                if(this is Player)
-                {
-                    Global.Effects.hitPlayerEffect.CurrentTechnique.Passes[0].Apply();
-                }
-                if(this is Enemy || this is Boss)
-                {
-                    Global.Effects.hitEnemyEffect.CurrentTechnique.Passes[0].Apply();
-                }
-                
+            if (isBurnShaderOn)
+            {
+                Global.Effects.BurnEffect.CurrentTechnique.Passes[0].Apply();
+            }
+            if (isFreezeShaderOn)
+            {
+                Global.Effects.FreezeEffect.CurrentTechnique.Passes[0].Apply();
+            }
+            if (isHitShaderOn)
+            {
+                Global.Effects.HitEffect.CurrentTechnique.Passes[0].Apply();
             }
             _animationManager.Draw(spriteBatch);
             spriteBatch.End();
+        }
+
+        public void HandleHitState(GameTime gameTime)
+        {
+            if (isHitShaderOn)
+            {
+                hitTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (hitTimer > howLongShouldHitShaderApply)
+                {
+                    hitTimer = 0;
+                    isHitShaderOn = false;
+                }
+            }
+        }
+
+        public void HandleHealthState(GameTime gameTime)
+        {
+            if (currentHealthState == HealthState.Freeze)
+            {
+                healthStateTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (healthStateTimer > howLongShouldHealthStateLast)
+                {
+                    healthStateTimer = 0;
+                    currentHealthState = HealthState.Normal;
+                    isFreezeShaderOn = false;
+                    Global.Gui.WriteToConsole(Name + " is no longer frozen!");
+                }
+            }
+
+            if (currentHealthState == HealthState.Burn)
+            {
+                healthStateTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                CurrentHealth -= CurrentHealth / 1000f;
+                if (healthStateTimer > howLongShouldHealthStateLast)
+                {
+                    healthStateTimer = 0;
+                    currentHealthState = HealthState.Normal;
+                    isBurnShaderOn = false;
+                    Global.Gui.WriteToConsole(Name + " is no longer burned!");
+                }
+            }
         }
 
         protected virtual void SetAnimations()

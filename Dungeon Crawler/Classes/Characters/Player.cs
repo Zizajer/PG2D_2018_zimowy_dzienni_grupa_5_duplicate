@@ -255,38 +255,9 @@ namespace Dungeon_Crawler
             level.map.ComputeFov(CellX, CellY, 15, true);
             actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             cantGoThereTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (isHitShaderOn)
-            {
-                hitTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (hitTimer > howLongShouldHitShaderApply)
-                {
-                    hitTimer = 0;
-                    isHitShaderOn = false;
-                }
-            }
 
-            if (currentHealthState == HealthState.Freeze)
-            {
-                healthStateTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (healthStateTimer > howLongShouldHealthStateLast)
-                {
-                    healthStateTimer = 0;
-                    currentHealthState = HealthState.Normal;
-                    Global.Gui.WriteToConsole(Name + " is no longer frozen!");
-                }
-            }
-
-            if (currentHealthState == HealthState.Burn)
-            {
-                healthStateTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                CurrentHealth -= CurrentHealth / 1000f;
-                if (healthStateTimer > howLongShouldHealthStateLast)
-                {
-                    healthStateTimer = 0;
-                    currentHealthState = HealthState.Normal;
-                    Global.Gui.WriteToConsole(Name + " is no longer burned!");
-                }
-            }
+            HandleHitState(gameTime);
+            HandleHealthState(gameTime);
 
             CellX = (int)Math.Floor(Center.X / level.cellSize);
             CellY = (int)Math.Floor(Center.Y / level.cellSize);

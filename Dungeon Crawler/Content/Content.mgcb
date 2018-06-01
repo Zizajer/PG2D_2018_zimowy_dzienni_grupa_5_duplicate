@@ -236,17 +236,23 @@
 /processorParam:TextureFormat=Color
 /build:player/WalkingUp.png
 
-#begin shaders/Effec1.fx
+#begin shaders/BurnEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:shaders/Effec1.fx
+/build:shaders/BurnEffect.fx
 
-#begin shaders/Effec2.fx
+#begin shaders/FreezeEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:shaders/Effec2.fx
+/build:shaders/FreezeEffect.fx
+
+#begin shaders/HitEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/HitEffect.fx
 
 #begin sounds/gameover.mp3
 /importer:Mp3Importer
