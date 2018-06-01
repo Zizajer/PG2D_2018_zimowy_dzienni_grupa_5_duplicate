@@ -48,24 +48,6 @@ namespace Dungeon_Crawler
             //Speed = todo..
         }
 
-        /*
-        public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
-        {
-            PlayerProjectile projectile = null;
-            for (int i = 0; i < level.playerProjectiles.Count; i++)
-            {
-                projectile = level.playerProjectiles[i];
-                if (Collision.checkCollision(getRectangle(), this, projectile, graphicsDevice))
-                {
-                    isHitShaderOn = true;
-                    projectile.isEnemyHit = true;
-                    return true;
-                }
-            }
-            return false;
-        }
-        */
-
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
             HandleHitState(gameTime);
@@ -138,30 +120,14 @@ namespace Dungeon_Crawler
                     }
                 }
 
-                /*
-                if (IsHitByProjectile(level, graphicsDevice))
+                if (CurrentHealth <= 0)
                 {
-                    int damage = 2;
-                    CurrentHealth -=damage;
-
-                    string tempString;
-                    if (CurrentHealth <= 0)
+                    level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
+                    if (NextCell != null)
                     {
-                        level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
-                        if (NextCell != null)
-                        {
-                            level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 1.0f);
-                        }
-                        tempString = "Player's fireball killed " + Name;
+                        level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 1.0f);
                     }
-                    else
-                    {
-                        tempString = "Player's fireball hit " + Name + " for " + damage;
-                    }
-
-                    Global.Gui.WriteToConsole(tempString);
                 }
-                */
 
                 SetAnimations();
                 _animationManager.Update(gameTime);

@@ -25,9 +25,6 @@ namespace Dungeon_Crawler
         public float enemySpeedFactor = 1.0f;
         public Texture2D floor;
         public Texture2D wall;
-        //TODO: Delete these from here
-        public Texture2D fireball;
-        public Texture2D bossFireball;
 
         public int cellSize;
 
@@ -48,9 +45,6 @@ namespace Dungeon_Crawler
             
             floor = Content.Load<Texture2D>("map/Floor");
             wall = Content.Load<Texture2D>("map/Wall");
-            //TODO: Delete these from here
-            fireball = Content.Load<Texture2D>("spells/Fireball");
-            bossFireball= Content.Load<Texture2D>("spells/BigFireball");
             rock = Content.Load<Texture2D>("map/rock");
             portalTexture = Content.Load<Texture2D>("map/portal");
 
@@ -134,7 +128,7 @@ namespace Dungeon_Crawler
                 }
             }
 
-            Level level = new Level(map, grid, cellSize, enemies, allItems, allItemsNames, items, rocks, floor, wall, portal, occupiedCells, fireball);
+            Level level = new Level(map, grid, cellSize, enemies, allItems, allItemsNames, items, rocks, floor, wall, portal, occupiedCells);
 
             levels.Add(level);
 
@@ -185,7 +179,7 @@ namespace Dungeon_Crawler
                 }
             }
 
-            Level level = new Level(map, grid, cellSize, enemies, allItems, allItemsNames, floor, wall, portal, occupiedCells, fireball, bossFireball);
+            Level level = new Level(map, grid, cellSize, enemies, allItems, allItemsNames, floor, wall, portal, occupiedCells);
 
             levels.Add(level);
         }

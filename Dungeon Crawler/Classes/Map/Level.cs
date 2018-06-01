@@ -19,9 +19,6 @@ namespace Dungeon_Crawler
         public List<Rock> rocks;
         public List<Cell> occupiedCells;
         public List<Projectile> Projectiles;
-        //TODO: Delete them
-        public List<PlayerProjectile> playerProjectiles;
-        public List<EnemyProjectile> enemyProjectiles;
 
         public List<AttackAnimation> attackAnimations;
         List<Texture2D> allItems;
@@ -29,13 +26,11 @@ namespace Dungeon_Crawler
 
         public Texture2D floor;
         public Texture2D wall;
-        public Texture2D fireball;
         public Portal portal;
         public Player player;
-        public Texture2D fireballBoss;
 
         public bool finished { get; set; }
-        public Level(Map map, Grid grid, int cellSize, List<Character> enemies, List<Texture2D> allItems, List<String> allItemsNames, List<Item> items, List<Rock> rocks, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells, Texture2D fireball)
+        public Level(Map map, Grid grid, int cellSize, List<Character> enemies, List<Texture2D> allItems, List<String> allItemsNames, List<Item> items, List<Rock> rocks, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells)
         {
             this.map = map;
             this.grid = grid;
@@ -49,16 +44,13 @@ namespace Dungeon_Crawler
             this.wall = wall;
             this.portal = portal;
             this.occupiedCells = occupiedCells;
-            this.fireball = fireball;
             Projectiles = new List<Projectile>();
-            playerProjectiles = new List<PlayerProjectile>();
-            enemyProjectiles = new List<EnemyProjectile>();
             attackAnimations = new List<AttackAnimation>();
             finished = false;
             isBossLevel = false;
         }
 
-        public Level(Map map, Grid grid, int cellSize, List<Character> enemies1, List<Texture2D> allItems, List<String> allItemsNames, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells, Texture2D fireball, Texture2D fireballBoss)
+        public Level(Map map, Grid grid, int cellSize, List<Character> enemies1, List<Texture2D> allItems, List<String> allItemsNames, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells)
         {
             this.map = map;
             this.grid = grid;
@@ -72,11 +64,7 @@ namespace Dungeon_Crawler
             this.wall = wall;
             this.portal = portal;
             this.occupiedCells = occupiedCells;
-            this.fireball = fireball;
-            this.fireballBoss = fireballBoss;
             Projectiles = new List<Projectile>();
-            playerProjectiles = new List<PlayerProjectile>();
-            enemyProjectiles = new List<EnemyProjectile>();
             attackAnimations = new List<AttackAnimation>();
             finished = false;
             isBossLevel = true;
@@ -164,28 +152,6 @@ namespace Dungeon_Crawler
                 }
             }
 
-            //TODO: Delete
-            for (int i = playerProjectiles.Count - 1; i >= 0; i--)
-            {
-                PlayerProjectile playerProjectile = playerProjectiles[i];
-                playerProjectile.Update(gameTime, this, graphicsDevice);
-                if (playerProjectile.isMarkedToDelete)
-                {
-                    playerProjectiles.RemoveAt(i);
-                }
-            }
-
-            //TODO: Delete
-            for (int i = enemyProjectiles.Count - 1; i >= 0; i--)
-            {
-                EnemyProjectile enemyProjectile = enemyProjectiles[i];
-                enemyProjectile.Update(gameTime, this, graphicsDevice);
-                if (enemyProjectile.isMarkedToDelete)
-                {
-                    enemyProjectiles.RemoveAt(i);
-                }
-            }
-
             for (int i = Projectiles.Count - 1; i >= 0; i--)
             {
                 Projectile Projectile = Projectiles[i];
@@ -257,16 +223,6 @@ namespace Dungeon_Crawler
             foreach (var Projectile in Projectiles)
             {
                 Projectile.Draw(spriteBatch);
-            }
-
-            foreach (var playerProjectile in playerProjectiles)
-            {
-                playerProjectile.Draw(spriteBatch);
-            }
-
-            foreach (var enemyProjectile in enemyProjectiles)
-            {
-                enemyProjectile.Draw(spriteBatch);
             }
 
             if (enemies.Count == 0)

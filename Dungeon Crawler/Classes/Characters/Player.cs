@@ -80,28 +80,11 @@ namespace Dungeon_Crawler
             //Speed = todo..
         }
 
-        /*
-        public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
-        {
-            EnemyProjectile projectile = null;
-            for (int i = 0; i < level.enemyProjectiles.Count; i++)
-            {
-                projectile = level.enemyProjectiles[i];
-                if (Collision.checkCollision(getRectangle(), this, projectile, graphicsDevice))
-                {
-                    isHitShaderOn = true;
-                    projectile.isPlayerHit = true;
-                    return true;
-                }
-            }
-            return false;
-        }
-        */
         public void UseProjectileAttack(Level level)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Space) && pastKey.IsKeyUp(Keys.Space))
             {
-                if (level.playerProjectiles.Count() < maxFireballsOnScreen && CurrentMana> ProjectileAttack.ManaCost)
+                if (level.Projectiles.Count() < maxFireballsOnScreen && CurrentMana> ProjectileAttack.ManaCost)
                 {
                     MouseState mouse = Mouse.GetState();
                     Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
@@ -265,16 +248,6 @@ namespace Dungeon_Crawler
             {
                 CurrentCell = level.map.GetCell(CellX, CellY);
             }
-
-            /*
-            if (IsHitByProjectile(level, graphicsDevice))
-            {
-                int damage = 5;
-                CurrentHealth -= damage;
-                string tempString = "Demon Oak's giant fireball hit player for " + damage;
-                Global.Gui.WriteToConsole(tempString);
-            }
-            */
 
             if (CurrentMana < 100) CurrentMana = CurrentMana + 0.15f; //0.15
 

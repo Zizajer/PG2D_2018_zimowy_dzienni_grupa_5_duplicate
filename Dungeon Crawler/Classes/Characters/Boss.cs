@@ -50,24 +50,6 @@ namespace Dungeon_Crawler
             Speed = 0f;
         }
 
-        /*
-        public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
-        {
-            PlayerProjectile projectile =null;
-            for (int i = 0; i < level.playerProjectiles.Count; i++)
-            {
-                projectile = level.playerProjectiles[i];
-                if (Collision.checkCollision(getRectangle(), this, projectile, graphicsDevice))
-                {
-                    isHitShaderOn = true;
-                    projectile.isMarkedToDelete = true;
-                    return true;
-                }
-            } 
-            return false;
-        }
-        */
-
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
 
@@ -78,16 +60,6 @@ namespace Dungeon_Crawler
             CellX = (int)Math.Floor(Center.X / level.cellSize);
             CellY = (int)Math.Floor(Center.Y / level.cellSize);
 
-            /*
-            if (IsHitByProjectile(level, graphicsDevice))
-            {
-                int damage = 20;
-                CurrentHealth -= damage;
-                string tempString = "Player's fireball hit " + Name + " for " + damage;
-                Global.Gui.WriteToConsole(tempString);
-
-            }
-            */
             if (CurrentHealth <= 0)
             {
                 level.grid.UnblockCell(new Position(5, 5));

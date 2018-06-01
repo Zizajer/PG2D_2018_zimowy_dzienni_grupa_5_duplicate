@@ -19,40 +19,6 @@ namespace Dungeon_Crawler
             _player = levelManager.player;
         }
 
-        /*
-         !!!!!
-         Kept only for backward compatibility (for undone attacks)
-         !!!!!
-        */
-        [Obsolete]
-        public void Attack(Character attacker, Character defender)
-        {
-            string tempString;
-            // 80% chance to hit
-            if (Global.random.Next(10) < 8)
-            {
-                //(1-attacker.damage)
-                int damage = Global.random.Next(attacker.Attack) + 1;
-                defender.CurrentHealth -= damage;
-                defender.isHitShaderOn = true;
-                if (defender.CurrentHealth > 0)
-                {
-                    tempString = attacker.Name + " hit " + defender.Name + " for " + damage;
-                }
-                else
-                {
-                    tempString = attacker.Name + " killed " + defender.Name;
-                }
-                Global.Gui.WriteToConsole(tempString);
-
-            }
-            else
-            {
-                tempString = attacker.Name + " missed " + defender.Name;
-                Global.Gui.WriteToConsole(tempString);
-            }
-        }
-
         public void Attack(Character attacker, IAttack attack, Character defender)
         {
             string tempString;
@@ -152,6 +118,8 @@ namespace Dungeon_Crawler
             return (_player.CellX == x && _player.CellY == y);
         }
 
+        //TODO: Reimplement character detection by checking collision of charater's rectangle with cell's rectangle (enemies bigger than single cell doesn't actually occupy
+        //all of their cells in code, so we cannot simply check single cell
         public Character EnemyAt(int x, int y)
         {
             foreach (var enemy in currentLevel.enemies)
@@ -169,6 +137,8 @@ namespace Dungeon_Crawler
             return EnemyAt(x, y) != null;
         }
 
+        //TODO: Reimplement character detection by checking collision of charater's rectangle with cell's rectangle (enemies bigger than single cell doesn't actually occupy
+        //all of their cells in code, so we cannot simply check single cell. Current boss detection is buggy.
         public List<Character> GetEnemiesInArea(int cellX, int cellY, int distance)
         {
             List<Character> listOfEnemiesAround = new List<Character>();

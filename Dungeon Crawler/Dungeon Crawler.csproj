@@ -60,10 +60,8 @@
     <Compile Include="Classes\Characters\Boss.cs" />
     <Compile Include="Classes\Characters\Character.cs" />
     <Compile Include="Classes\Map\Projectile.cs" />
-    <Compile Include="Classes\Map\EnemyProjectile.cs" />
     <Compile Include="Classes\Map\Sprite.cs" />
     <Compile Include="Classes\Map\Portal.cs" />
-    <Compile Include="Classes\Map\PlayerProjectile.cs" />
     <Compile Include="Classes\Utilities\SoundManager.cs" />
     <Compile Include="Classes\Utilities\Collision.cs" />
     <Compile Include="Classes\Characters\Enemy.cs" />
