@@ -48,8 +48,8 @@ namespace Dungeon_Crawler
             ProjectileTexture = Global.CombatManager.levelManager.Content.Load<Texture2D>("spells/Fireball");
             Attacker = attacker;
 
-            float distanceX = position.X - attacker.Position.X;
-            float distanceY = position.Y - attacker.Position.Y;
+            float distanceX = position.X - attacker.Center.X;
+            float distanceY = position.Y - attacker.Center.Y;
 
             float rotation = (float)Math.Atan2(distanceY, distanceX);
             Vector2 tempVelocity = new Vector2((float)Math.Cos(rotation) * 5f, ((float)Math.Sin(rotation)) * 5f) + attacker.Velocity / 3;
