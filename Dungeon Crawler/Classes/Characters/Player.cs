@@ -31,8 +31,6 @@ namespace Dungeon_Crawler
         MouseState pastButton2;
         ContentManager content;
 
-        float cantGoThereTimer = 0;
-        float timeBetweencantGoThere = 1f;
         float actionTimer = 0;
         float timeBetweenActions=0.4f;
 
@@ -149,34 +147,51 @@ namespace Dungeon_Crawler
                     if (mx < 0 || mx >= level.map.Width || my < 0 || my >= level.map.Height)
                         return;
 
-                    List<Character> listOfEnemiesAround = Global.CombatManager.GetEnemiesInArea(CellX, CellY, 1);
-
-                    if(listOfEnemiesAround.Count == 0)
+                    if (level.isBossLevel)
                     {
-                        Global.Gui.WriteToConsole("There arent any enemies nearby");
-                        return;
-                    }
-                    //boss case
-                    if (listOfEnemiesAround.Count == 1)
-                    {
-                        Character enemy = listOfEnemiesAround[0];
-                        if (enemy is Boss)
+                        if (Global.CombatManager.IsEnemyAt(mx, my))
                         {
-                            BaseAttack.Use(this, enemy);
-                            actionTimer = 0;
+                            Character enemy = Global.CombatManager.EnemyAt(mx, my);
+                            if (Global.CombatManager.DistanceBetween2Points(CellX, CellY, mx, my) <= 1)
+                            {
+                                BaseAttack.Use(this, enemy);
+                                actionTimer = 0;
+                            }
+                            else
+                            {
+                                Global.Gui.WriteToConsole("You are too far away from this enemy");
+                                return;
+                            }
                         }
-                    }
-
-                    //normal enemy level case
-                    if (Global.CombatManager.IsEnemyAt(mx, my))
-                    {
-                        Character enemy = Global.CombatManager.EnemyAt(mx, my);
-                        if (listOfEnemiesAround.Contains(enemy))
+                        else
                         {
-                            BaseAttack.Use(this, enemy);
-                            actionTimer = 0;
+                            Global.Gui.WriteToConsole("There is no enemy here");
+                            return;
                         }
+
                     }
+                    else
+                    {
+                        if (Global.CombatManager.IsEnemyAt(mx, my))
+                        {
+                            Character enemy = Global.CombatManager.EnemyAt(mx, my);
+                            if (Global.CombatManager.DistanceBetween2Points(CellX,CellY,mx,my) <= 1)
+                            {
+                                BaseAttack.Use(this, enemy);
+                                actionTimer = 0;
+                            }
+                            else
+                            {
+                                Global.Gui.WriteToConsole("You are too far away from this enemy");
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            Global.Gui.WriteToConsole("There is no enemy here");
+                            return;
+                        }
+                    }   
                 }
                 else
                 {
@@ -237,7 +252,6 @@ namespace Dungeon_Crawler
         {
             level.map.ComputeFov(CellX, CellY, 15, true);
             actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            cantGoThereTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             HandleHitState(gameTime);
             HandleHealthState(gameTime);
@@ -249,7 +263,7 @@ namespace Dungeon_Crawler
                 CurrentCell = level.map.GetCell(CellX, CellY);
             }
 
-            if (CurrentMana < 100) CurrentMana = CurrentMana + 0.15f; //0.15
+            if (CurrentMana < 100) CurrentMana = CurrentMana + 1.15f; //0.15
 
             if (currentHealthState != HealthState.Freeze)
             {
@@ -296,11 +310,7 @@ namespace Dungeon_Crawler
                                 }
                                 else
                                 {
-                                    if (cantGoThereTimer > timeBetweencantGoThere)
-                                    {
-                                        cantGoThereTimer = 0;
-                                        Global.Gui.WriteToConsole("Cant go there");
-                                    }
+                                    Global.Gui.WriteToConsole("Cant go there");
                                 }
                             }
                         }

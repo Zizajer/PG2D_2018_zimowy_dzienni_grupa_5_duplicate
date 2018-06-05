@@ -104,31 +104,31 @@ namespace Dungeon_Crawler
             currentLevel = levelManager.levels[playerCurrentLevel];
         }
 
-        public Character CharacterAt(int x, int y)
-        {
-            if (IsPlayerAt(x, y))
-            {
-                return _player;
-            }
-            return EnemyAt(x, y);
-        }
-
-        public bool IsPlayerAt(int x, int y)
-        {
-            return (_player.CellX == x && _player.CellY == y);
-        }
-
-        //TODO: Reimplement character detection by checking collision of charater's rectangle with cell's rectangle (enemies bigger than single cell doesn't actually occupy
-        //all of their cells in code, so we cannot simply check single cell
         public Character EnemyAt(int x, int y)
         {
-            foreach (var enemy in currentLevel.enemies)
+            if (currentLevel.isBossLevel)
             {
-                if (enemy.CellX == x && enemy.CellY == y)
+                Boss boss = (Boss)currentLevel.enemies.ElementAt(0);
+
+                foreach (RogueSharp.Cell cell in boss.occupyingCells)
                 {
-                    return enemy;
+                    if (cell.X == x && cell.Y == y)
+                    {
+                        return boss;
+                    }
                 }
             }
+            else
+            {
+                foreach (var enemy in currentLevel.enemies)
+                {
+                    if (enemy.CellX == x && enemy.CellY == y)
+                    {
+                        return enemy;
+                    }
+                }
+            }
+            
             return null;
         }
 
@@ -137,87 +137,51 @@ namespace Dungeon_Crawler
             return EnemyAt(x, y) != null;
         }
 
-        //TODO: Reimplement character detection by checking collision of charater's rectangle with cell's rectangle (enemies bigger than single cell doesn't actually occupy
-        //all of their cells in code, so we cannot simply check single cell. Current boss detection is buggy.
         public List<Character> GetEnemiesInArea(int cellX, int cellY, int distance)
         {
             List<Character> listOfEnemiesAround = new List<Character>();
-            foreach (Character enemy in currentLevel.enemies)
-            {
-                for (int i = 0; i <= distance; i++)
-                {
-                    if (enemy.CellX == cellX - i && enemy.CellY == cellY + i)
-                        listOfEnemiesAround.Add(enemy);
-                    if (enemy.CellX == cellX && enemy.CellY == cellY + i)
-                        listOfEnemiesAround.Add(enemy);
-                    if (enemy.CellX == cellX + i && enemy.CellY == cellY + i)
-                        listOfEnemiesAround.Add(enemy);
-                    if (enemy.CellX == cellX + i && enemy.CellY == cellY)
-                        listOfEnemiesAround.Add(enemy);
-                    if (enemy.CellX == cellX + i && enemy.CellY == cellY - i)
-                        listOfEnemiesAround.Add(enemy);
-                    if (enemy.CellX == cellX && enemy.CellY == cellY - i)
-                        listOfEnemiesAround.Add(enemy);
-                    if (enemy.CellX == cellX - i && enemy.CellY == cellY - i)
-                        listOfEnemiesAround.Add(enemy);
-                    if (enemy.CellX == cellX - i && enemy.CellY == cellY)
-                        listOfEnemiesAround.Add(enemy);
-                }
-            }
 
-            foreach (Character enemy in currentLevel.enemies)
+            if (currentLevel.isBossLevel)
             {
-                if(enemy is Boss)
+                Boss boss = (Boss) currentLevel.enemies.ElementAt(0);
+
+                List<RogueSharp.Cell> cellsAroundTheGivenCellList = currentLevel.map.GetCellsInArea(cellX, cellX, distance).ToList();
+
+                foreach(RogueSharp.Cell cell in cellsAroundTheGivenCellList)
                 {
-                    List<RogueSharp.Cell> cellsAroundTheCellList = currentLevel.map.GetCellsInArea(enemy.CellX, enemy.CellY, 1).ToList();
-                    foreach (RogueSharp.Cell cell in cellsAroundTheCellList)
+                    if (boss.occupyingCells.Contains(cell))
                     {
-                        if (cell.X == cellX - 1 && cell.Y == cellY + 1)
-                        {
-                            listOfEnemiesAround.Add(enemy);
-                            break;
-                        }
-
-                        if (cell.X == cellX && cell.Y == cellY + 1)
-                        {
-                            listOfEnemiesAround.Add(enemy);
-                            break;
-                        }
-
-                        if (cell.X == cellX + 1 && cell.Y == cellY + 1)
-                        {
-                            listOfEnemiesAround.Add(enemy);
-                            break;
-                        }
-                        if (cell.X == cellX + 1 && cell.Y == cellY)
-                        {
-                            listOfEnemiesAround.Add(enemy);
-                            break;
-                        }
-                        if (cell.X == cellX + 1 && cell.Y == cellY - 1)
-                        {
-                            listOfEnemiesAround.Add(enemy);
-                            break;
-                        }
-                        if (cell.X == cellX && cell.Y == cellY - 1)
-                        {
-                            listOfEnemiesAround.Add(enemy);
-                            break;
-                        }
-                        if (cell.X == cellX - 1 && cell.Y == cellY - 1)
-                        {
-                            listOfEnemiesAround.Add(enemy);
-                            break;
-                        }
-                        if (cell.X == cellX - 1 && cell.Y == cellY)
-                        {
-                            listOfEnemiesAround.Add(enemy);
-                            break;
-                        }
-                    } 
+                        listOfEnemiesAround.Add(boss);
+                        break;
+                    }
                 }
             }
-                return listOfEnemiesAround;
+            else
+            {
+                foreach (Character enemy in currentLevel.enemies)
+                {
+                    for (int i = 0; i <= distance; i++)
+                    {
+                        if (enemy.CellX == cellX - i && enemy.CellY == cellY + i)
+                            listOfEnemiesAround.Add(enemy);
+                        if (enemy.CellX == cellX && enemy.CellY == cellY + i)
+                            listOfEnemiesAround.Add(enemy);
+                        if (enemy.CellX == cellX + i && enemy.CellY == cellY + i)
+                            listOfEnemiesAround.Add(enemy);
+                        if (enemy.CellX == cellX + i && enemy.CellY == cellY)
+                            listOfEnemiesAround.Add(enemy);
+                        if (enemy.CellX == cellX + i && enemy.CellY == cellY - i)
+                            listOfEnemiesAround.Add(enemy);
+                        if (enemy.CellX == cellX && enemy.CellY == cellY - i)
+                            listOfEnemiesAround.Add(enemy);
+                        if (enemy.CellX == cellX - i && enemy.CellY == cellY - i)
+                            listOfEnemiesAround.Add(enemy);
+                        if (enemy.CellX == cellX - i && enemy.CellY == cellY)
+                            listOfEnemiesAround.Add(enemy);
+                    }
+                }
+            }
+            return listOfEnemiesAround;
         }
 
         public void SetAnimationInArea(string attackName, string animationName, int cellX, int cellY, int distance)
@@ -243,5 +207,9 @@ namespace Dungeon_Crawler
             currentLevel.Projectiles.Add(projectile);
         }
 
+        public int DistanceBetween2Points(int x1, int y1, int x2, int y2)
+        {
+            return (int)Math.Floor(Math.Sqrt(Math.Pow((x1 - x2), 2) + Math.Pow((y1 - y2), 2)));
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace Dungeon_Crawler
         private string[] console = { "", "", "", "" };
         private double gameTime;
         private double lastMsgGametime = 0;
-        private double afterHowLongClearHighestMsg = 4; //sec
+        private double afterHowLongClearHighestMsg = 2; //sec
 
         private int HealthBarOverCharacterBackgroundWidth = 50;
         private int HealthBarOverCharacterHeight = 10;
@@ -199,6 +199,8 @@ namespace Dungeon_Crawler
         }
         public void WriteToConsole(string msg)
         {
+            if (console[3].Equals(msg)) return;
+
             console[0] = console[1];
             console[1] = console[2];
             console[2] = console[3];

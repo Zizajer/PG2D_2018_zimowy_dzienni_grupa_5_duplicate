@@ -6,6 +6,7 @@ using RogueSharp.MapCreation;
 using System;
 using System.Collections.Generic;
 using RoyT.AStar;
+using System.Linq;
 
 namespace Dungeon_Crawler
 {
@@ -142,28 +143,24 @@ namespace Dungeon_Crawler
             var grid = new Grid(15, 11, 1.0f);
 
             List<Cell> occupiedCells = new List<Cell>();
-
+            
             Portal portal = new Portal(portalTexture);
 
             List<Character> enemies =new List<Character>(1);
 
+            List<Cell> bossOccupyingCells = map.GetCellsInArea(6, 6, 1).ToList();
+
             Cell randomCell = map.GetCell(5, 5);
-            grid.BlockCell(new Position(5, 5));
-            grid.BlockCell(new Position(6, 5));
-            grid.BlockCell(new Position(7, 5));
+            foreach (Cell cell in bossOccupyingCells)
+            {
+                grid.SetCellCost(new Position(cell.X, cell.Y), 5.0f);
+            }
 
-            grid.BlockCell(new Position(5, 6));
-            grid.BlockCell(new Position(6, 6));
-            grid.BlockCell(new Position(7, 6));
-
-            grid.BlockCell(new Position(5, 7));
-            grid.BlockCell(new Position(6, 7));
-            grid.BlockCell(new Position(7, 7));
-            occupiedCells.Add(randomCell);
+            occupiedCells.Union(bossOccupyingCells);
 
             float timeBetweenActions = 1f;
             Character tempBoss =
-                new Boss(_animationsBoss, cellSize, player.CurrentMapLevel, timeBetweenActions, map)
+                new Boss(_animationsBoss, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
                 {
                     Position = new Vector2((randomCell.X * cellSize), (randomCell.Y * cellSize))
                 };

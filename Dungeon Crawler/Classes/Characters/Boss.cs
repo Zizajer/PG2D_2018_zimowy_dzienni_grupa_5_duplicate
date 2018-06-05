@@ -4,12 +4,14 @@ using RogueSharp;
 using RoyT.AStar;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Dungeon_Crawler
 {
     public class Boss : Character
     {
+        public List<Cell> occupyingCells;
         public new enum ActionState { Standby, Attacking};
         public new ActionState currentActionState;
         float actionTimer;
@@ -20,7 +22,7 @@ namespace Dungeon_Crawler
         //Attacks
         IPositionTargetedAttack ProjectileAttack;
 
-        public Boss(Dictionary<string, Animation> _animations, int cellSize, int level, float timeBetweenActions, Map map)
+        public Boss(Dictionary<string, Animation> _animations, int cellSize, int level, float timeBetweenActions, Map map, List<Cell> cells)
         {
             Level = level;
             calculateStatistics();
@@ -34,6 +36,9 @@ namespace Dungeon_Crawler
             this.map = map;
             CellX = (int)Math.Floor(Center.X / cellSize);
             CellY = (int)Math.Floor(Center.Y / cellSize);
+
+            occupyingCells = cells;
+
             Name = "Demon Oak";
 
             //Set attacks
@@ -57,22 +62,13 @@ namespace Dungeon_Crawler
             HandleHealthState(gameTime);
 
             actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            CellX = (int)Math.Floor(Center.X / level.cellSize);
-            CellY = (int)Math.Floor(Center.Y / level.cellSize);
 
             if (CurrentHealth <= 0)
             {
-                level.grid.UnblockCell(new Position(5, 5));
-                level.grid.UnblockCell(new Position(6, 5));
-                level.grid.UnblockCell(new Position(7, 5));
-
-                level.grid.UnblockCell(new Position(5, 6));
-                level.grid.UnblockCell(new Position(6, 6));
-                level.grid.UnblockCell(new Position(7, 6));
-
-                level.grid.UnblockCell(new Position(5, 7));
-                level.grid.UnblockCell(new Position(6, 7));
-                level.grid.UnblockCell(new Position(7, 7));
+                foreach(Cell cell in occupyingCells)
+                {
+                    level.grid.SetCellCost(new Position(cell.X, cell.Y),1.0f);
+                }
             }
 
             if (currentHealthState != HealthState.Freeze)

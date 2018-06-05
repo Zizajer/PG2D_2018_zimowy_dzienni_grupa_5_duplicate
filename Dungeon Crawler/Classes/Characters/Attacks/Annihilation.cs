@@ -25,7 +25,7 @@ namespace Dungeon_Crawler
         {
             Name = "Annihilation";
             Power = 100;
-            Accuracy = 70;
+            Accuracy = 100;
             CriticalHitProbability = 50;
             FreezeProbability = 0;
             BurnProbability = 0;
