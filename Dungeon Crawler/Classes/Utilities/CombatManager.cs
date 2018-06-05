@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using static Dungeon_Crawler.Character;
 
@@ -146,7 +145,6 @@ namespace Dungeon_Crawler
             {
                 if (currentLevel.enemies.Count == 0) return null;
                 Boss boss = (Boss)currentLevel.enemies.ElementAt(0);
-                Debug.WriteLine(Global.CombatManager.DistanceBetween2Points(cellX, cellY, boss.CellX, boss.CellY));
                 if (Global.CombatManager.DistanceBetween2Points(cellX, cellY, boss.CellX, boss.CellY) <= distance + 1)
                 {
                     listOfEnemiesAround.Add(boss);
