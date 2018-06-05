@@ -23,7 +23,7 @@ namespace Dungeon_Crawler
         public void Update()
         {
             BloomSatPulse += bloomSatDir;
-            if (BloomSatPulse > 1.5f) bloomSatDir = -0.01f;
+            if (BloomSatPulse > 1.25f) bloomSatDir = -0.01f;
             if (BloomSatPulse < 0.1f) bloomSatDir = 0.01f;
             Global.Effects.setPulse(BloomSatPulse);
         }

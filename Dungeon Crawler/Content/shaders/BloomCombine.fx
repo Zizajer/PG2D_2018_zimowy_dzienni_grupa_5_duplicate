@@ -21,9 +21,9 @@ float SampleWeights[SAMPLE_COUNT];
 
 //COMBINE
 float BloomIntensity=2;
-float BaseIntensity=4;
+float BaseIntensity=2;
 float BloomSaturation;
-float BaseSaturation=1;
+float BaseSaturation=2;
 //COMBINE
 
 // Helper for modifying the saturation of a color.
