@@ -26,7 +26,7 @@ namespace Dungeon_Crawler
         {
             Level = level;
             calculateStatistics();
-
+            currentActionState = ActionState.Attacking;
             currentHealthState = HealthState.Normal;
             this._animations = _animations;
             this.timeBetweenActions = timeBetweenActions;
@@ -57,7 +57,8 @@ namespace Dungeon_Crawler
 
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
-
+            CellX = (int)Math.Floor(Center.X / level.cellSize);
+            CellY = (int)Math.Floor(Center.Y / level.cellSize);
             HandleHitState(gameTime);
             HandleHealthState(gameTime);
 
@@ -73,29 +74,11 @@ namespace Dungeon_Crawler
 
             if (currentHealthState != HealthState.Freeze)
             {
-                if (currentActionState == ActionState.Standby)
-                {
-                    if (map.IsInFov(CellX, CellY))
-                    {
-                        currentActionState = ActionState.Attacking;
-                    }
-
-                }
-                else if (currentActionState == ActionState.Attacking)
-                {
-                    if (!map.IsInFov(CellX, CellY))
-                    {
-                        currentActionState = ActionState.Standby;
-                    }
-                    UseProjectileAttack(level);
-                }
-                else
-                {
-                    Console.WriteLine("Error");
-                }
-                SetAnimations();
-                _animationManager.Update(gameTime);
+                //UseProjectileAttack(level);
             }
+
+            SetAnimations();
+            _animationManager.Update(gameTime);
         }
         public void UseProjectileAttack(Level level)
         {

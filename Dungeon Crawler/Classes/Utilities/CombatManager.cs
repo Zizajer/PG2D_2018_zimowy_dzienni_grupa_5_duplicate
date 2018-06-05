@@ -108,6 +108,7 @@ namespace Dungeon_Crawler
         {
             if (currentLevel.isBossLevel)
             {
+                if (currentLevel.enemies.Count == 0) return null;
                 Boss boss = (Boss)currentLevel.enemies.ElementAt(0);
 
                 foreach (RogueSharp.Cell cell in boss.occupyingCells)
@@ -143,18 +144,15 @@ namespace Dungeon_Crawler
 
             if (currentLevel.isBossLevel)
             {
-                Boss boss = (Boss) currentLevel.enemies.ElementAt(0);
-
-                List<RogueSharp.Cell> cellsAroundTheGivenCellList = currentLevel.map.GetCellsInArea(cellX, cellX, distance).ToList();
-
-                foreach(RogueSharp.Cell cell in cellsAroundTheGivenCellList)
+                if (currentLevel.enemies.Count == 0) return null;
+                Boss boss = (Boss)currentLevel.enemies.ElementAt(0);
+                Debug.WriteLine(Global.CombatManager.DistanceBetween2Points(cellX, cellY, boss.CellX, boss.CellY));
+                if (Global.CombatManager.DistanceBetween2Points(cellX, cellY, boss.CellX, boss.CellY) <= distance + 1)
                 {
-                    if (boss.occupyingCells.Contains(cell))
-                    {
-                        listOfEnemiesAround.Add(boss);
-                        break;
-                    }
+                    listOfEnemiesAround.Add(boss);
+                    return listOfEnemiesAround;
                 }
+
             }
             else
             {
@@ -209,7 +207,9 @@ namespace Dungeon_Crawler
 
         public int DistanceBetween2Points(int x1, int y1, int x2, int y2)
         {
-            return (int)Math.Floor(Math.Sqrt(Math.Pow((x1 - x2), 2) + Math.Pow((y1 - y2), 2)));
+            //wow Im actually good at maths :d
+            return (int) Math.Max(Math.Ceiling(Math.Sqrt(Math.Pow(x2 - x1, 2))), Math.Ceiling(Math.Sqrt(Math.Pow(y2 - y1, 2))));
+            //return (int)Math.Round(Math.Sqrt(Math.Pow((x2 - x1), 2) + Math.Pow((y2 - y1), 2)));
         }
     }
 }

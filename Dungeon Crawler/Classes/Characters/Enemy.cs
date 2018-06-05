@@ -118,14 +118,12 @@ namespace Dungeon_Crawler
                     {
                         MoveToCenterOfGivenCell(NextCell, level, graphicsDevice);
                     }
-                }
-
-                SetAnimations();
-                _animationManager.Update(gameTime);
-                Position += Velocity;
-                Velocity = Vector2.Zero;
+                }  
             }
-
+            SetAnimations();
+            _animationManager.Update(gameTime);
+            Position += Velocity;
+            Velocity = Vector2.Zero;
         }
 
         private Cell getNextCellFromPath(Level level)
