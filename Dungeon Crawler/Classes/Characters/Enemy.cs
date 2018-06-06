@@ -17,7 +17,7 @@ namespace Dungeon_Crawler
         //Attacks
         ICharacterTargetedAttack BaseAttack;
 
-        public Enemy(Dictionary<string, Animation> _animations, int cellSize, int level, float speed, float timeBetweenActions, Map map)
+        public Enemy(Dictionary<string, Animation> _animations, int cellSize, int level, float speed, float timeBetweenActions, Map map, String name)
         {
             Level = level;
             calculateStatistics();
@@ -32,7 +32,7 @@ namespace Dungeon_Crawler
             CurrentCell = map.GetCell(CellX, CellY);
             currentActionState = ActionState.Standing;
             currentHealthState = HealthState.Normal;
-            Name = "Blob";
+            Name = name;
 
             //Set attacks
             BaseAttack = new Pound();

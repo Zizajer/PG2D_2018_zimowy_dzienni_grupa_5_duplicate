@@ -30,7 +30,9 @@ namespace Dungeon_Crawler
 
         public int cellSize;
 
-        public Dictionary<string, Animation> _animations;
+        public Dictionary<string, Animation> _animationsBlob;
+        public Dictionary<string, Animation> _animationsSkeleton;
+        public Dictionary<string, Animation> _animationsZombie;
         public Dictionary<string, Animation> _animationsBoss;
 
         public List<Texture2D> allItems;
@@ -55,17 +57,30 @@ namespace Dungeon_Crawler
             rock = Content.Load<Texture2D>("map/rock");
             portalTexture = Content.Load<Texture2D>("map/portal");
 
-            _animations = new Dictionary<string, Animation>()
+            _animationsBlob = new Dictionary<string, Animation>()
                 {
-                    {"WalkUp",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingup"),3 )},
-                    {"WalkDown",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingDown"),3 )},
-                    {"WalkLeft",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingLeft"),3 )},
-                    {"WalkRight",new Animation(Content.Load<Texture2D>("enemy/EnemyWalkingRight"),3 )}
+                    {"WalkUp",new Animation(Content.Load<Texture2D>("enemy/Blob/Walkingup"),3 )},
+                    {"WalkDown",new Animation(Content.Load<Texture2D>("enemy/Blob/WalkingDown"),3 )},
+                    {"WalkLeft",new Animation(Content.Load<Texture2D>("enemy/Blob/WalkingLeft"),3 )},
+                    {"WalkRight",new Animation(Content.Load<Texture2D>("enemy/Blob/WalkingRight"),3 )}
                 };
-
+            _animationsSkeleton = new Dictionary<string, Animation>()
+                {
+                    {"WalkUp",new Animation(Content.Load<Texture2D>("enemy/Skeleton/Walkingup"),3 )},
+                    {"WalkDown",new Animation(Content.Load<Texture2D>("enemy/Skeleton/WalkingDown"),3 )},
+                    {"WalkLeft",new Animation(Content.Load<Texture2D>("enemy/Skeleton/WalkingLeft"),3 )},
+                    {"WalkRight",new Animation(Content.Load<Texture2D>("enemy/Skeleton/WalkingRight"),3 )}
+                };
+            _animationsZombie = new Dictionary<string, Animation>()
+                {
+                    {"WalkUp",new Animation(Content.Load<Texture2D>("enemy/Zombie/Walkingup"),3 )},
+                    {"WalkDown",new Animation(Content.Load<Texture2D>("enemy/Zombie/WalkingDown"),3 )},
+                    {"WalkLeft",new Animation(Content.Load<Texture2D>("enemy/Zombie/WalkingLeft"),3 )},
+                    {"WalkRight",new Animation(Content.Load<Texture2D>("enemy/Zombie/WalkingRight"),3 )}
+                };
             _animationsBoss = new Dictionary<string, Animation>()
                 {
-                    {"BossAlive",new Animation(Content.Load<Texture2D>("enemy/BossAlive"),3 )}
+                    {"BossAlive",new Animation(Content.Load<Texture2D>("enemy/DemonOak/BossAlive"),3 )}
                 };
 
             allItems = new List<Texture2D>(3);
@@ -256,14 +271,47 @@ namespace Dungeon_Crawler
                     level = Global.random.Next(player.CurrentMapLevel, player.CurrentMapLevel + 3);
                 }
 
-                Character tempEnemy =
-                    new Enemy(_animations, cellSize, level, speed, timeBetweenActions, map)
+                string enemyName;
+                int whichEnemyToSpawn = Global.random.Next(3);
+                if(whichEnemyToSpawn==0)
+                {
+                    enemyName = "Blob";
+
+                    Character tempEnemy =
+                    new Enemy(_animationsBlob, cellSize, level, speed, timeBetweenActions, map, enemyName)
                     {
                         Name = BlobNamesList[Global.random.Next(BlobNamesList.Count)],
-                        Position = new Vector2((randomCell.X * cellSize + cellSize /3), (randomCell.Y * cellSize) + cellSize /3)
+                        Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
                     };
-                enemies.Add(tempEnemy);
-                grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
+                    enemies.Add(tempEnemy);
+                    grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
+                }
+                else if(whichEnemyToSpawn == 1)
+                {
+                    enemyName = "Skeleton";
+
+                    Character tempEnemy =
+                    new Enemy(_animationsSkeleton, cellSize, level, speed, timeBetweenActions, map, enemyName)
+                    {
+                        Name = SkeletonNamesList[Global.random.Next(SkeletonNamesList.Count)],
+                        Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
+                    };
+                    enemies.Add(tempEnemy);
+                    grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
+                }
+                else
+                {
+                    enemyName = "Zombie";
+
+                    Character tempEnemy =
+                    new Enemy(_animationsZombie, cellSize, level, speed, timeBetweenActions, map, enemyName)
+                    {
+                        Name = ZombieNamesList[Global.random.Next(ZombieNamesList.Count)],
+                        Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
+                    };
+                    enemies.Add(tempEnemy);
+                    grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
+                }
             }
 
             return enemies;
