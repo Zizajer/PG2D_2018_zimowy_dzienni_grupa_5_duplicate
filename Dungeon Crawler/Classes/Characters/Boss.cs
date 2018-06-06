@@ -4,24 +4,30 @@ using RogueSharp;
 using RoyT.AStar;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Dungeon_Crawler
 {
     public class Boss : Character
     {
-        public new enum State { Standby, Attacking};
-        public new State currentState;
+        public List<Cell> occupyingCells;
+        public new enum ActionState { Standby, Attacking};
+        public new ActionState currentActionState;
         float actionTimer;
         float timeBetweenActions;
 
         Map map;
 
-        public Boss(Dictionary<string, Animation> _animations, int cellSize, int level, float timeBetweenActions, Map map)
+        //Attacks
+        IPositionTargetedAttack ProjectileAttack;
+
+        public Boss(Dictionary<string, Animation> _animations, int cellSize, int level, float timeBetweenActions, Map map, List<Cell> cells)
         {
             Level = level;
             calculateStatistics();
-
+            currentActionState = ActionState.Attacking;
+            currentHealthState = HealthState.Normal;
             this._animations = _animations;
             this.timeBetweenActions = timeBetweenActions;
             _animationManager = new AnimationManager(_animations.First().Value);
@@ -30,7 +36,10 @@ namespace Dungeon_Crawler
             this.map = map;
             CellX = (int)Math.Floor(Center.X / cellSize);
             CellY = (int)Math.Floor(Center.Y / cellSize);
+            occupyingCells = cells;
             Name = "Demon Oak";
+            //Set attacks
+            ProjectileAttack = new BigFireballCanonade();
         }
 
         public override void calculateStatistics()
@@ -43,121 +52,37 @@ namespace Dungeon_Crawler
             Speed = 0f;
         }
 
-        public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
-        {
-            PlayerProjectile projectile =null;
-            for (int i = 0; i < level.playerProjectiles.Count; i++)
-            {
-                projectile = level.playerProjectiles[i];
-                if (Collision.checkCollision(getRectangle(), this, projectile, graphicsDevice))
-                {
-                    isHitShaderOn = true;
-                    projectile.isMarkedToDelete = true;
-                    return true;
-                }
-            } 
-            return false;
-        }
-
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
-            if (isHitShaderOn)
-            {
-                hitTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (hitTimer > howLongShouldShaderApply)
-                {
-                    hitTimer = 0;
-                    isHitShaderOn = false;
-                }
-            }
-
-            actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             CellX = (int)Math.Floor(Center.X / level.cellSize);
             CellY = (int)Math.Floor(Center.Y / level.cellSize);
+            HandleHitState(gameTime);
+            HandleHealthState(gameTime);
 
-            if (IsHitByProjectile(level, graphicsDevice))
-            {
-                int damage = 20;
-                CurrentHealth -= damage;
-                string tempString = "Player's fireball hit " + Name + " for " + damage;
-                Global.Gui.WriteToConsole(tempString);
+            actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            }
             if (CurrentHealth <= 0)
             {
-                level.grid.UnblockCell(new Position(5, 5));
-                level.grid.UnblockCell(new Position(6, 5));
-                level.grid.UnblockCell(new Position(7, 5));
-
-                level.grid.UnblockCell(new Position(5, 6));
-                level.grid.UnblockCell(new Position(6, 6));
-                level.grid.UnblockCell(new Position(7, 6));
-
-                level.grid.UnblockCell(new Position(5, 7));
-                level.grid.UnblockCell(new Position(6, 7));
-                level.grid.UnblockCell(new Position(7, 7));
-            }
-
-            if (currentState == State.Standby)
-            {
-                if (map.IsInFov(CellX, CellY))
+                foreach(Cell cell in occupyingCells)
                 {
-                    currentState = State.Attacking;
+                    level.grid.SetCellCost(new Position(cell.X, cell.Y),1.0f);
                 }
+            }
 
-            }
-            else if (currentState == State.Attacking)
+            if (currentHealthState != HealthState.Freeze)
             {
-                if (!map.IsInFov(CellX, CellY))
-                {
-                    currentState = State.Standby;
-                }
-                Fireball(level);
+                //UseProjectileAttack(level);
             }
-            else
-            {
-                Console.WriteLine("Error");
-            }
+
             SetAnimations();
             _animationManager.Update(gameTime);
         }
-        public void Fireball(Level level)
+        public void UseProjectileAttack(Level level)
         {
             if (actionTimer>timeBetweenActions)
             {
                 actionTimer = 0;
-
-                float distanceX = level.player.Center.X - Center.X;
-                float distanceY = level.player.Center.Y - Center.Y;
-
-                float rotation = (float)Math.Atan2(distanceY, distanceX);
-                Vector2 tempPosition = Center;
-
-                float rotationIncrement = 0.8f;
-                float newrotationClockwise = rotation;
-                float newrotationCounterClockwise = rotation;
-                Vector2 tempVelocity;
-                EnemyProjectile newProjectile;
-
-                tempVelocity = new Vector2((float)Math.Cos(rotation) * 3f, ((float)Math.Sin(rotation)) * 3f);
-                newProjectile = new EnemyProjectile(tempVelocity, tempPosition, level.fireballBoss, rotation);
-
-                level.enemyProjectiles.Add(newProjectile);
-
-                for (int i = 0; i < 2; i++)
-                {
-                    newrotationClockwise += rotationIncrement;
-                    tempVelocity = new Vector2((float)Math.Cos(newrotationClockwise) * 3f, ((float)Math.Sin(newrotationClockwise)) * 3f);
-                    newProjectile = new EnemyProjectile(tempVelocity, tempPosition, level.fireballBoss, newrotationClockwise);
-
-                    level.enemyProjectiles.Add(newProjectile);
-
-                    newrotationCounterClockwise -= rotationIncrement;
-                    tempVelocity = new Vector2((float)Math.Cos(newrotationCounterClockwise) * 3f, ((float)Math.Sin(newrotationCounterClockwise)) * 3f);
-                    newProjectile = new EnemyProjectile(tempVelocity, tempPosition, level.fireballBoss, newrotationCounterClockwise);
-
-                    level.enemyProjectiles.Add(newProjectile);
-                }
+                ProjectileAttack.Use(this, level.player.Center);
             }
         }
         protected override void SetAnimations()

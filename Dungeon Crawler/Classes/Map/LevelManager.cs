@@ -6,6 +6,8 @@ using RogueSharp.MapCreation;
 using System;
 using System.Collections.Generic;
 using RoyT.AStar;
+using System.IO;
+using System.Linq;
 
 namespace Dungeon_Crawler
 {
@@ -25,8 +27,7 @@ namespace Dungeon_Crawler
         public float enemySpeedFactor = 1.0f;
         public Texture2D floor;
         public Texture2D wall;
-        public Texture2D fireball;
-        public Texture2D bossFireball;
+
         public int cellSize;
 
         public Dictionary<string, Animation> _animations;
@@ -39,6 +40,11 @@ namespace Dungeon_Crawler
 
         public Texture2D portalTexture;
 
+        List<String> BlobNamesList;
+        List<String> DemonOakNamesList;
+        List<String> SkeletonNamesList;
+        List<String> ZombieNamesList;
+
         public LevelManager(ContentManager Content)
         {
             levels = new List<Level>();
@@ -46,8 +52,6 @@ namespace Dungeon_Crawler
             
             floor = Content.Load<Texture2D>("map/Floor");
             wall = Content.Load<Texture2D>("map/Wall");
-            fireball = Content.Load<Texture2D>("spells/Fireball");
-            bossFireball= Content.Load<Texture2D>("spells/BossFireball");
             rock = Content.Load<Texture2D>("map/rock");
             portalTexture = Content.Load<Texture2D>("map/portal");
 
@@ -77,11 +81,23 @@ namespace Dungeon_Crawler
 
             cellSize = floor.Width;
 
+            try
+            {
+                BlobNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Blob.txt"));
+                DemonOakNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\DemonOak.txt"));
+                SkeletonNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Skeleton.txt"));
+                ZombieNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Zombie.txt"));
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Check enemy names files path's //Czareg\n" + e.Message);
+            }
+
             CreateNormalLevel();
             Cell randomCell = GetRandomEmptyCell(levels[0].map, levels[0].occupiedCells, levels[0].grid);
 
             player =
-             new Player(Content, cellSize, 0, Global.playerClass.ToString()) //TODO: Set player name at the game beginning
+             new Player(Content, cellSize, 0, Global.playerName+" the "+ Global.playerClass.ToString())
              {
                  Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
              };
@@ -132,7 +148,7 @@ namespace Dungeon_Crawler
                 }
             }
 
-            Level level = new Level(map, grid, cellSize, enemies, allItems, allItemsNames, items, rocks, floor, wall, portal, occupiedCells, fireball);
+            Level level = new Level(map, grid, cellSize, enemies, allItems, allItemsNames, items, rocks, floor, wall, portal, occupiedCells);
 
             levels.Add(level);
 
@@ -146,29 +162,26 @@ namespace Dungeon_Crawler
             var grid = new Grid(15, 11, 1.0f);
 
             List<Cell> occupiedCells = new List<Cell>();
-
+            
             Portal portal = new Portal(portalTexture);
 
             List<Character> enemies =new List<Character>(1);
 
+            List<Cell> bossOccupyingCells = map.GetCellsInArea(6, 6, 1).ToList();
+
             Cell randomCell = map.GetCell(5, 5);
-            grid.BlockCell(new Position(5, 5));
-            grid.BlockCell(new Position(6, 5));
-            grid.BlockCell(new Position(7, 5));
+            foreach (Cell cell in bossOccupyingCells)
+            {
+                grid.SetCellCost(new Position(cell.X, cell.Y), 5.0f);
+            }
 
-            grid.BlockCell(new Position(5, 6));
-            grid.BlockCell(new Position(6, 6));
-            grid.BlockCell(new Position(7, 6));
-
-            grid.BlockCell(new Position(5, 7));
-            grid.BlockCell(new Position(6, 7));
-            grid.BlockCell(new Position(7, 7));
-            occupiedCells.Add(randomCell);
+            occupiedCells.Union(bossOccupyingCells);
 
             float timeBetweenActions = 1f;
             Character tempBoss =
-                new Boss(_animationsBoss, cellSize, player.CurrentMapLevel, timeBetweenActions, map)
+                new Boss(_animationsBoss, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
                 {
+                    Name = DemonOakNamesList[Global.random.Next(DemonOakNamesList.Count)],
                     Position = new Vector2((randomCell.X * cellSize), (randomCell.Y * cellSize))
                 };
                 enemies.Add(tempBoss);
@@ -183,7 +196,7 @@ namespace Dungeon_Crawler
                 }
             }
 
-            Level level = new Level(map, grid, cellSize, enemies, allItems, allItemsNames, floor, wall, portal, occupiedCells, fireball, bossFireball);
+            Level level = new Level(map, grid, cellSize, enemies, allItems, allItemsNames, floor, wall, portal, occupiedCells);
 
             levels.Add(level);
         }
@@ -246,6 +259,7 @@ namespace Dungeon_Crawler
                 Character tempEnemy =
                     new Enemy(_animations, cellSize, level, speed, timeBetweenActions, map)
                     {
+                        Name = BlobNamesList[Global.random.Next(BlobNamesList.Count)],
                         Position = new Vector2((randomCell.X * cellSize + cellSize /3), (randomCell.Y * cellSize) + cellSize /3)
                     };
                 enemies.Add(tempEnemy);
@@ -283,7 +297,7 @@ namespace Dungeon_Crawler
                 }
                 
                 player.CurrentMapLevel++;
-                player.currentState = Player.State.Standing;
+                player.currentActionState = Player.ActionState.Standing;
                 levels[player.CurrentMapLevel].addPlayer(player);
                 Vector2 newPlayerPosition = levels[player.CurrentMapLevel].GetRandomEmptyCell();
                 player.Position = newPlayerPosition;

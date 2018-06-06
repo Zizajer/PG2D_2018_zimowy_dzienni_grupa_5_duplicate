@@ -18,14 +18,17 @@ namespace Dungeon_Crawler
 
         public void playPew()
         {
+            MediaPlayer.Stop();
             MediaPlayer.Play(pew);
         }
         public void playGameOver()
         {
+            MediaPlayer.Stop();
             MediaPlayer.Play(gameover);
         }
         public void playPortalActivated()
         {
+            MediaPlayer.Stop();
             MediaPlayer.Play(portalactivated);
         }
     }
