@@ -49,13 +49,14 @@
     <Compile Include="Classes\Characters\Attacks\Boss\BigFireballCanonade.cs" />
     <Compile Include="Classes\Characters\Attacks\Exori.cs" />
     <Compile Include="Classes\Characters\Attacks\BigFireball.cs" />
+    <Compile Include="Classes\Characters\Attacks\LPM\ShootArrow.cs" />
     <Compile Include="Classes\Characters\Attacks\Iceball.cs" />
     <Compile Include="Classes\Characters\Attacks\Interface\IAttack.cs" />
     <Compile Include="Classes\Characters\Attacks\Interface\ICharacterTargetedAttack.cs" />
     <Compile Include="Classes\Characters\Attacks\Interface\IUnTargetedAttack.cs" />
-    <Compile Include="Classes\Characters\Attacks\Fireball.cs" />
+    <Compile Include="Classes\Characters\Attacks\LPM\Fireball.cs" />
     <Compile Include="Classes\Characters\Attacks\PenetratingFireball.cs" />
-    <Compile Include="Classes\Characters\Attacks\Pound.cs" />
+    <Compile Include="Classes\Characters\Attacks\LPM\Pound.cs" />
     <Compile Include="Classes\Characters\Attacks\Interface\IPositionTargetedAttack.cs" />
     <Compile Include="Classes\Characters\Boss.cs" />
     <Compile Include="Classes\Characters\Character.cs" />
@@ -112,7 +113,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Classes\Characters\Attacks\Mage\" />
     <Folder Include="Classes\Characters\Attacks\Ranger\" />
     <Folder Include="Classes\Characters\Attacks\Warrior\" />
   </ItemGroup>

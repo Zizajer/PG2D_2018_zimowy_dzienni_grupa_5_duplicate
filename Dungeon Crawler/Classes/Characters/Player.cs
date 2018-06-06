@@ -63,7 +63,7 @@ namespace Dungeon_Crawler
 
             //Set attacks
             BaseAttack = new Pound();
-            ProjectileAttack = new Iceball();
+            ProjectileAttack = new ShootArrow();
             UnTargetedAttack = new Annihilation();
         }
 
