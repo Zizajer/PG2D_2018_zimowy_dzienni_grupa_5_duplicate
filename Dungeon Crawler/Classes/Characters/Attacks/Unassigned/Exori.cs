@@ -54,6 +54,7 @@ namespace Dungeon_Crawler
             }
             else
             {
+                Global.Gui.WriteToConsole(attacker.Name + " missed " + Name);
                 return false; //Attack missed
             }
         }
