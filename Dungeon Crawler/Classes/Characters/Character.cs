@@ -132,7 +132,7 @@ namespace Dungeon_Crawler
                 _animationManager.Play(_animations["WalkUp"]);
             else if (Velocity.Y > 0)
                 _animationManager.Play(_animations["WalkDown"]);
-            else if(!(this is Enemy))
+            else 
                 _animationManager.Stop();
         }
         public int getWidth()
