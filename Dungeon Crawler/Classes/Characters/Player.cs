@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Input;
 using RoyT.AStar;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Dungeon_Crawler
@@ -31,10 +30,13 @@ namespace Dungeon_Crawler
         MouseState pastButton2;
         ContentManager content;
 
-        float cantGoThereTimer = 0;
-        float timeBetweencantGoThere = 1f;
         float actionTimer = 0;
         float timeBetweenActions=0.4f;
+
+        //Attacks
+        ICharacterTargetedAttack BaseAttack;
+        IPositionTargetedAttack ProjectileAttack;
+        IUnTargetedAttack UnTargetedAttack;
 
         public Player(ContentManager content, int cellSize, int playerCurrentMapLevel, string name)
         {
@@ -43,7 +45,8 @@ namespace Dungeon_Crawler
             CurrentMana = Mana = 100; // TODO: move it to calculateStatistics();
             calculateStatistics();
 
-            currentState = State.Standing;
+            currentActionState = ActionState.Standing;
+            currentHealthState = HealthState.Normal;
             _animations = new Dictionary<string, Animation>()
             {
                 {"WalkUp",new Animation(content.Load<Texture2D>("player/Walkingup"),3 )},
@@ -57,54 +60,34 @@ namespace Dungeon_Crawler
             inventory = new List<Item>();
             _animationManager = new AnimationManager(_animations.First().Value);
             Name = name;
+
+            //Set attacks
+            BaseAttack = new Pound();
+            ProjectileAttack = new Iceball();
+            UnTargetedAttack = new Annihilation();
         }
 
         public override void calculateStatistics()
         {
             Health = CurrentHealth = 70 + Level * 10;
-            Defense = 70 + Level * 3;
+            Defense = 15 + Level * 3;
             SpDefense = 70 + Level * 5;
             Attack = (int)Math.Floor(70 + Level * 2.5);
             SpAttack = 70 + Level * 3;
             //Speed = todo..
         }
 
-        public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
-        {
-            EnemyProjectile projectile = null;
-            for (int i = 0; i < level.enemyProjectiles.Count; i++)
-            {
-                projectile = level.enemyProjectiles[i];
-                if (Collision.checkCollision(getRectangle(), this, projectile, graphicsDevice))
-                {
-                    isHitShaderOn = true;
-                    projectile.isPlayerHit = true;
-                    return true;
-                }
-            }
-            return false;
-        }
-        public void Fireball(Level level)
+        public void UseProjectileAttack(Level level)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Space) && pastKey.IsKeyUp(Keys.Space))
             {
-                if (level.playerProjectiles.Count() < maxFireballsOnScreen && CurrentMana> fireballCost)
+                if (level.Projectiles.Count() < maxFireballsOnScreen && CurrentMana> ProjectileAttack.ManaCost)
                 {
                     MouseState mouse = Mouse.GetState();
                     Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
                     Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
-                    float distanceX = mousePos.X - this.Position.X;
-                    float distanceY = mousePos.Y - this.Position.Y;
-
-                    rotation = (float)Math.Atan2(distanceY, distanceX);
-                    Vector2 tempVelocity = new Vector2((float)Math.Cos(rotation) * 5f, ((float)Math.Sin(rotation)) * 5f) +Velocity/3;
-                    Vector2 tempPosition = Center + tempVelocity * 3;
-
-                    PlayerProjectile newProjectile = new PlayerProjectile(tempVelocity, tempPosition, level.fireball, rotation);
-
-                    level.playerProjectiles.Add(newProjectile);
-                    CurrentMana = CurrentMana - fireballCost;
-                    Global.SoundManager.playPew();
+                    ProjectileAttack.Use(this, mousePos);
+                    CurrentMana -= ProjectileAttack.ManaCost; 
                 }
                 else
                 {
@@ -163,36 +146,51 @@ namespace Dungeon_Crawler
                     if (mx < 0 || mx >= level.map.Width || my < 0 || my >= level.map.Height)
                         return;
 
-                    List<Character> listOfEnemiesAround = Global.CombatManager.IsEnemyInCellAround(CellX, CellY);
-
-                    if(listOfEnemiesAround.Count == 0)
+                    if (level.isBossLevel)
                     {
-                        Global.Gui.WriteToConsole("There arent any enemies nearby");
-                        return;
-                    }
-                    //boss case
-                    if (listOfEnemiesAround.Count == 1)
-                    {
-                        Character enemy = listOfEnemiesAround[0];
-                        if (enemy is Boss)
+                        if (Global.CombatManager.IsEnemyAt(mx, my))
                         {
-                            level.attackAnimations.Add(new AttackAnimation(content, mx, my, level.cellSize, gameTime));
-                            Global.CombatManager.Attack(this, enemy);
-                            actionTimer = 0;
+                            Character enemy = Global.CombatManager.EnemyAt(mx, my);
+                            if (Global.CombatManager.DistanceBetween2Points(CellX, CellY, mx, my) <= 1)
+                            {
+                                BaseAttack.Use(this, enemy);
+                                actionTimer = 0;
+                            }
+                            else
+                            {
+                                Global.Gui.WriteToConsole("You are too far away from this enemy");
+                                return;
+                            }
                         }
-                    }
-
-                    //normal enemy level case
-                    if (Global.CombatManager.IsEnemyAt(mx, my))
-                    {
-                        Character enemy = Global.CombatManager.EnemyAt(mx, my);
-                        if (listOfEnemiesAround.Contains(enemy))
+                        else
                         {
-                            level.attackAnimations.Add(new AttackAnimation(content, enemy.CellX, enemy.CellY, level.cellSize, gameTime));
-                            Global.CombatManager.Attack(this, enemy);
-                            actionTimer = 0;
+                            Global.Gui.WriteToConsole("There is no enemy here");
+                            return;
                         }
+
                     }
+                    else
+                    {
+                        if (Global.CombatManager.IsEnemyAt(mx, my))
+                        {
+                            Character enemy = Global.CombatManager.EnemyAt(mx, my);
+                            if (Global.CombatManager.DistanceBetween2Points(CellX,CellY,mx,my) <= 1)
+                            {
+                                BaseAttack.Use(this, enemy);
+                                actionTimer = 0;
+                            }
+                            else
+                            {
+                                Global.Gui.WriteToConsole("You are too far away from this enemy");
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            Global.Gui.WriteToConsole("There is no enemy here");
+                            return;
+                        }
+                    }   
                 }
                 else
                 {
@@ -202,28 +200,14 @@ namespace Dungeon_Crawler
             pastButton2 = Mouse.GetState();
         }
 
-        public void Exori(Level level, GraphicsDevice graphicsDevice, GameTime gameTime)
+        public void UseUnTargetedAttack(Level level, GraphicsDevice graphicsDevice, GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && pastKey2.IsKeyUp(Keys.LeftShift))
             {
-                if (CurrentMana > exoriCost)
+                if (CurrentMana > UnTargetedAttack.ManaCost)
                 {
-                    List <RogueSharp.Cell> cellsAroundTheCellList = level.map.GetCellsInArea(CellX, CellY, 1).ToList();
-                    foreach (RogueSharp.Cell cell in cellsAroundTheCellList)
-                    {
-                        if(cell.IsWalkable)
-                            level.attackAnimations.Add(new AttackAnimation(content, cell.X, cell.Y, level.cellSize, gameTime));
-                    }
-                    
-                    List<Character> listOfEnemiesAround = Global.CombatManager.IsEnemyInCellAround(CellX, CellY);
-                    if (listOfEnemiesAround.Count > 0)
-                    {
-                        foreach (Character enemy in listOfEnemiesAround)
-                        {
-                            Global.CombatManager.Attack(this, enemy);
-                        }
-                    }
-                    CurrentMana = CurrentMana - exoriCost;
+                    UnTargetedAttack.Use(this);
+                    CurrentMana = CurrentMana - UnTargetedAttack.ManaCost;
                 }
                 else
                 {
@@ -267,16 +251,9 @@ namespace Dungeon_Crawler
         {
             level.map.ComputeFov(CellX, CellY, 15, true);
             actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            cantGoThereTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (isHitShaderOn)
-            {
-                hitTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (hitTimer > howLongShouldShaderApply)
-                {
-                    hitTimer = 0;
-                    isHitShaderOn = false;
-                }
-            }
+
+            HandleHitState(gameTime);
+            HandleHealthState(gameTime);
 
             CellX = (int)Math.Floor(Center.X / level.cellSize);
             CellY = (int)Math.Floor(Center.Y / level.cellSize);
@@ -285,96 +262,88 @@ namespace Dungeon_Crawler
                 CurrentCell = level.map.GetCell(CellX, CellY);
             }
 
-            if (IsHitByProjectile(level, graphicsDevice))
-            {
-                int damage = 5;
-                CurrentHealth -= damage;
-                string tempString = "Demon Oak's giant fireball hit player for " + damage;
-                Global.Gui.WriteToConsole(tempString);
-            }
+            if (CurrentMana < 100) CurrentMana = CurrentMana + 1.15f; //0.15
 
-            if (CurrentMana < 100) CurrentMana = CurrentMana + 0.15f; //0.15
-
-            if (currentState == State.Standing)
+            if (currentHealthState != HealthState.Freeze)
             {
-                currentDirection = GetDirection();
-                if (currentDirection != (int)Directions.None)
+                if (currentActionState == ActionState.Standing)
                 {
-                    RogueSharp.Cell futureNextCell= Collision.getCellFromDirection(CurrentCell, currentDirection, level);
-                    if (CellX > 0 && CellX < level.map.Width && CellY > 0 && CellY < level.map.Height)
+                    currentDirection = GetDirection();
+                    if (currentDirection != (int)Directions.None)
                     {
-                        if (!Collision.checkCollisionInGivenCell(futureNextCell, level, graphicsDevice))
+                        RogueSharp.Cell futureNextCell = Collision.getCellFromDirection(CurrentCell, currentDirection, level);
+                        if (CellX > 0 && CellX < level.map.Width && CellY > 0 && CellY < level.map.Height)
                         {
-                            NextCell = futureNextCell;
-                            currentState = State.Moving;
-                            level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
-                            level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 5.0f);
-                        }
-                        else
-                        {
-                            //there is a collision in current direction
-                            //we check if it is one of joined directions (top-left top-right bottom-left bottom-right)
-                            //we try separate direction (for top-left we should try top, then left)
-
-                            
-                            List<Character.Directions> dirList = Collision.checkIfOneOfDoubleDirectionsIsOk(CurrentCell, currentDirection, level, graphicsDevice);
-                            if (dirList.Count > 0)
+                            if (!Collision.checkCollisionInGivenCell(futureNextCell, level, graphicsDevice))
                             {
-                                foreach (Character.Directions newdir in dirList)
-                                {
-                                    RogueSharp.Cell futureNextCell2 = Collision.getCellFromDirection(CurrentCell, newdir, level);
-                                    if (CellX > 0 && CellX < level.map.Width && CellY > 0 && CellY < level.map.Height)
-                                    {
-                                        if (!Collision.checkCollisionInGivenCell(futureNextCell2, level, graphicsDevice))
-                                        {
-                                            NextCell = futureNextCell2;
-                                            currentState = State.Moving;
-                                            level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
-                                            level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 5.0f);
-                                            break;
-                                        }
-                                    }
-                                }
+                                NextCell = futureNextCell;
+                                currentActionState = ActionState.Moving;
+                                level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
+                                level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 5.0f);
                             }
                             else
                             {
-                                if (cantGoThereTimer > timeBetweencantGoThere)
+                                //there is a collision in current direction
+                                //we check if it is one of joined directions (top-left top-right bottom-left bottom-right)
+                                //we try separate direction (for top-left we should try top, then left)
+
+
+                                List<Character.Directions> dirList = Collision.checkIfOneOfDoubleDirectionsIsOk(CurrentCell, currentDirection, level, graphicsDevice);
+                                if (dirList.Count > 0)
                                 {
-                                    cantGoThereTimer = 0;
+                                    foreach (Character.Directions newdir in dirList)
+                                    {
+                                        RogueSharp.Cell futureNextCell2 = Collision.getCellFromDirection(CurrentCell, newdir, level);
+                                        if (CellX > 0 && CellX < level.map.Width && CellY > 0 && CellY < level.map.Height)
+                                        {
+                                            if (!Collision.checkCollisionInGivenCell(futureNextCell2, level, graphicsDevice))
+                                            {
+                                                NextCell = futureNextCell2;
+                                                currentActionState = ActionState.Moving;
+                                                level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
+                                                level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 5.0f);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
                                     Global.Gui.WriteToConsole("Cant go there");
                                 }
                             }
                         }
+                        else
+                        {
+                            Global.Gui.WriteToConsole("Cant go there");
+                        }
+                    }
+                    Teleport(level, graphicsDevice);
+                    UseProjectileAttack(level);
+                    AutoAttack(level, graphicsDevice, gameTime);
+                    UseUnTargetedAttack(level, graphicsDevice, gameTime);
+                }
+                else //Moving
+                {
+                    if (isCenterOfGivenCell(NextCell, level, graphicsDevice))
+                    {
+                        currentActionState = ActionState.Standing;
                     }
                     else
                     {
-                        Global.Gui.WriteToConsole("Cant go there");
+                        MoveToCenterOfGivenCell(NextCell, level, graphicsDevice);
+                        Global.Camera.CenterOn(Center);
                     }
+                    UseProjectileAttack(level);
+                    UseUnTargetedAttack(level, graphicsDevice, gameTime);
                 }
-                Teleport(level, graphicsDevice);
-                Fireball(level);
-                AutoAttack(level, graphicsDevice, gameTime);
-                Exori(level, graphicsDevice, gameTime);
+
+                SetAnimations();
+                _animationManager.Update(gameTime);
+                Position += Velocity;
+                Velocity = Vector2.Zero;
             }
-            else //Moving
-            {
-                if (isCenterOfGivenCell(NextCell, level, graphicsDevice))
-                {
-                    currentState = State.Standing;
-                }
-                else
-                {
-                    MoveToCenterOfGivenCell(NextCell, level, graphicsDevice);
-                    Global.Camera.CenterOn(Center);
-                }
-                Fireball(level);
-                Exori(level, graphicsDevice, gameTime);
-            }
-            
-            SetAnimations();
-            _animationManager.Update(gameTime);
-            Position += Velocity;
-            Velocity = Vector2.Zero;
+
         }
         public string getItems()
         {
