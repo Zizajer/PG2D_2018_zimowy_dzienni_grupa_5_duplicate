@@ -45,12 +45,23 @@
     <Compile Include="Classes\Characters\AnimationManager.cs" />
     <Compile Include="Classes\Camera\CameraManager.cs" />
     <Compile Include="Classes\Characters\AttackAnimation.cs" />
+    <Compile Include="Classes\Characters\Attacks\Annihilation.cs" />
+    <Compile Include="Classes\Characters\Attacks\Boss\BigFireballCanonade.cs" />
+    <Compile Include="Classes\Characters\Attacks\Exori.cs" />
+    <Compile Include="Classes\Characters\Attacks\BigFireball.cs" />
+    <Compile Include="Classes\Characters\Attacks\Iceball.cs" />
+    <Compile Include="Classes\Characters\Attacks\Interface\IAttack.cs" />
+    <Compile Include="Classes\Characters\Attacks\Interface\ICharacterTargetedAttack.cs" />
+    <Compile Include="Classes\Characters\Attacks\Interface\IUnTargetedAttack.cs" />
+    <Compile Include="Classes\Characters\Attacks\Fireball.cs" />
+    <Compile Include="Classes\Characters\Attacks\PenetratingFireball.cs" />
+    <Compile Include="Classes\Characters\Attacks\Pound.cs" />
+    <Compile Include="Classes\Characters\Attacks\Interface\IPositionTargetedAttack.cs" />
     <Compile Include="Classes\Characters\Boss.cs" />
     <Compile Include="Classes\Characters\Character.cs" />
-    <Compile Include="Classes\Map\EnemyProjectile.cs" />
+    <Compile Include="Classes\Map\Projectile.cs" />
     <Compile Include="Classes\Map\Sprite.cs" />
     <Compile Include="Classes\Map\Portal.cs" />
-    <Compile Include="Classes\Map\PlayerProjectile.cs" />
     <Compile Include="Classes\Utilities\SoundManager.cs" />
     <Compile Include="Classes\Utilities\Collision.cs" />
     <Compile Include="Classes\Characters\Enemy.cs" />
@@ -100,7 +111,11 @@
     <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Classes\Characters\Attacks\Mage\" />
+    <Folder Include="Classes\Characters\Attacks\Ranger\" />
+    <Folder Include="Classes\Characters\Attacks\Warrior\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

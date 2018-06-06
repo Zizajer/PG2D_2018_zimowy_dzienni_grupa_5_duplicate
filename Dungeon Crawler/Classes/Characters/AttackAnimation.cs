@@ -13,21 +13,22 @@ namespace Dungeon_Crawler
         protected Dictionary <String, Animation> _animations;
         public bool isActive = true;
         public float timer = 0;
-        public float creationTime;
         public float howLongShouldAnimationPlay = 0.5f;
+        public string AttackName;
 
-        public AttackAnimation(ContentManager content,int x, int y, int cellSize, GameTime gameTime)
+        public AttackAnimation(ContentManager content, String attackName, String animationName, int x, int y, int cellSize)
         {
+            AttackName = attackName;
+
             _animations = new Dictionary<string, Animation>()
                 {
-                    {"Exori",new Animation(content.Load<Texture2D>("spells/Exori"),3 )}
+                    {attackName, new Animation(content.Load<Texture2D>("spells/" + animationName),3 )}
                 };
 
             _animationManager = new AnimationManager(_animations.First().Value);
             int newx = x * cellSize + cellSize / 2 - _animationManager.getCurrentFrameRectangle().Width / 2;
             int newy = y * cellSize + cellSize / 2 - _animationManager.getCurrentFrameRectangle().Height / 2;
 
-            creationTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             _animationManager.Position = new Vector2(newx, newy);
             
         }
@@ -41,11 +42,11 @@ namespace Dungeon_Crawler
             
             if (isActive)
             {
-                _animationManager.Play(_animations["Exori"]);
+                _animationManager.Play(_animations[AttackName]);
                 _animationManager.Update(gameTime);
                 timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 
-                if (timer > creationTime + howLongShouldAnimationPlay)
+                if (timer > howLongShouldAnimationPlay)
                 {
                     isActive = false;
                 }

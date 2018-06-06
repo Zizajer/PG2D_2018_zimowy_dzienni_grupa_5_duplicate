@@ -14,6 +14,9 @@ namespace Dungeon_Crawler
         float timer;
         Position[] path;
 
+        //Attacks
+        ICharacterTargetedAttack BaseAttack;
+
         public Enemy(Dictionary<string, Animation> _animations, int cellSize, int level, float speed, float timeBetweenActions, Map map)
         {
             Level = level;
@@ -27,47 +30,28 @@ namespace Dungeon_Crawler
             CellX = (int)Math.Floor(Center.X / cellSize);
             CellY = (int)Math.Floor(Center.Y / cellSize);
             CurrentCell = map.GetCell(CellX, CellY);
-            currentState = State.Standing;
+            currentActionState = ActionState.Standing;
+            currentHealthState = HealthState.Normal;
             Name = "Blob";
+
+            //Set attacks
+            BaseAttack = new Pound();
         }
 
         public override void calculateStatistics()
         {
-            Health = CurrentHealth = 50 + Level * 10;
-            Defense = 50 + Level * 3;
+            Health = CurrentHealth = 10 + Level * 10;
+            Defense = 30 + Level * 3;
             SpDefense = 50 + Level * 5;
-            Attack = (int)Math.Floor(50 + Level * 2.5);
+            Attack = (int)Math.Floor(35 + Level * 2.5f);
             SpAttack = 50 + Level * 3;
             //Speed = todo..
         }
 
-        public bool IsHitByProjectile(Level level, GraphicsDevice graphicsDevice)
-        {
-            PlayerProjectile projectile = null;
-            for (int i = 0; i < level.playerProjectiles.Count; i++)
-            {
-                projectile = level.playerProjectiles[i];
-                if (Collision.checkCollision(getRectangle(), this, projectile, graphicsDevice))
-                {
-                    isHitShaderOn = true;
-                    projectile.isEnemyHit = true;
-                    return true;
-                }
-            }
-            return false;
-        }
-
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
-            if (isHitShaderOn)
-            {
-                hitTimer+= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (hitTimer > howLongShouldShaderApply)
-                {
-                    hitTimer = 0;
-                    isHitShaderOn = false;
-                }
-            }
+            HandleHitState(gameTime);
+            HandleHealthState(gameTime);
 
             CellX = (int)Math.Floor(Center.X / level.cellSize);
             CellY = (int)Math.Floor(Center.Y / level.cellSize);
@@ -76,87 +60,66 @@ namespace Dungeon_Crawler
                 CurrentCell = level.map.GetCell(CellX, CellY);
             }
 
-            if (currentState == State.Standing)
+            if (currentHealthState != HealthState.Freeze)
             {
-                Cell futureNextCell;
-                if (Vector2.Distance(Center, level.player.Center) > level.cellSize * 1.5f)
+                if (currentActionState == ActionState.Standing)
                 {
-                    if (level.map.IsInFov(CellX, CellY))
-                    {//can see player
-                        futureNextCell = getNextCellFromPath(level);
-                        if (futureNextCell != null && CellX > 0 && CellX < level.map.Width && CellY > 0 && CellY < level.map.Height)
-                        {
-                            if (!Collision.checkCollisionInGivenCell(futureNextCell, level, graphicsDevice))
+                    Cell futureNextCell;
+                    if (Vector2.Distance(Center, level.player.Center) > level.cellSize * 1.5f)
+                    {
+                        if (level.map.IsInFov(CellX, CellY))
+                        {//can see player
+                            futureNextCell = getNextCellFromPath(level);
+                            if (futureNextCell != null && CellX > 0 && CellX < level.map.Width && CellY > 0 && CellY < level.map.Height)
+                            {
+                                if (!Collision.checkCollisionInGivenCell(futureNextCell, level, graphicsDevice))
+                                {
+                                    NextCell = futureNextCell;
+                                    currentActionState = ActionState.Moving;
+                                    level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
+                                    level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 5.0f);
+                                }
+                            }
+                        }
+                        else
+                        {//cant see player
+                            futureNextCell = getRandomEmptyCell(level, graphicsDevice);
+                            if (futureNextCell != null)
                             {
                                 NextCell = futureNextCell;
-                                currentState = State.Moving;
+                                currentActionState = ActionState.Moving;
                                 level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
                                 level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 5.0f);
                             }
                         }
                     }
                     else
-                    {//cant see player
-                        futureNextCell = getRandomEmptyCell(level, graphicsDevice);
-                        if (futureNextCell != null)
+                    {
+
+                        if (timer > timeBetweenActions)
                         {
-                            NextCell = futureNextCell;
-                            currentState = State.Moving;
-                            level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
-                            level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 5.0f);
+                            BaseAttack.Use(this, level.player);
+                            timer = 0;
                         }
+                        else
+                        {
+                            timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        }
+
                     }
                 }
-                else
+                else //Moving
                 {
-
-                    if (timer > timeBetweenActions)
+                    if (isCenterOfGivenCell(NextCell, level, graphicsDevice))
                     {
-                        Global.CombatManager.Attack(this, level.player);
-                        timer = 0;
+                        currentActionState = ActionState.Standing;
                     }
                     else
                     {
-                        timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        MoveToCenterOfGivenCell(NextCell, level, graphicsDevice);
                     }
-
-                }
+                }  
             }
-            else //Moving
-            {
-                if (isCenterOfGivenCell(NextCell, level, graphicsDevice))
-                {
-                    currentState = State.Standing;
-                }
-                else
-                {
-                    MoveToCenterOfGivenCell(NextCell, level, graphicsDevice);
-                }
-            }
-
-            if (IsHitByProjectile(level, graphicsDevice))
-            {
-                int damage = 2;
-                CurrentHealth -=damage;
-                
-                string tempString;
-                if (CurrentHealth <= 0)
-                {
-                    level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
-                    if (NextCell != null)
-                    {
-                        level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 1.0f);
-                    }
-                    tempString = "Player's fireball killed " + Name;
-                }
-                else
-                {
-                    tempString = "Player's fireball hit " + Name + " for " + damage;
-                }
-                
-                Global.Gui.WriteToConsole(tempString);
-            }
-
             SetAnimations();
             _animationManager.Update(gameTime);
             Position += Velocity;
@@ -172,7 +135,7 @@ namespace Dungeon_Crawler
                     path = level.grid.GetPath(new Position(CellX, CellY), new Position(level.player.CellX, level.player.CellY), MovementPatterns.Full);
                     if (path == null)
                     {
-                        currentState = State.Standing;
+                        currentActionState = ActionState.Standing;
                         return null;
                     }
                     else

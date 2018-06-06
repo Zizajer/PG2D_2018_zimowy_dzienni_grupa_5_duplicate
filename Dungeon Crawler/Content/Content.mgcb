@@ -236,17 +236,23 @@
 /processorParam:TextureFormat=Color
 /build:player/WalkingUp.png
 
-#begin shaders/Effec1.fx
+#begin shaders/BurnEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:shaders/Effec1.fx
+/build:shaders/BurnEffect.fx
 
-#begin shaders/Effec2.fx
+#begin shaders/FreezeEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:shaders/Effec2.fx
+/build:shaders/FreezeEffect.fx
+
+#begin shaders/HitEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/HitEffect.fx
 
 #begin shaders/lighteffect.fx
 /importer:EffectImporter
@@ -284,7 +290,7 @@
 /processorParam:Quality=Best
 /build:sounds/portalactivated.mp3
 
-#begin spells/BossFireball.png
+#begin spells/BaseAttackAnim.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -294,9 +300,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:spells/BossFireball.png
+/build:spells/BaseAttackAnim.png
 
-#begin spells/Exori.png
+#begin spells/BigFireball.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -306,7 +312,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:spells/Exori.png
+/build:spells/BigFireball.png
+
+#begin spells/BigIceball.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:spells/BigIceball.png
 
 #begin spells/Fireball.png
 /importer:TextureImporter
@@ -319,4 +337,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:spells/Fireball.png
+
+#begin spells/Iceball.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:spells/Iceball.png
 
