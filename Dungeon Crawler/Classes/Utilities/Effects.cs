@@ -7,14 +7,15 @@ namespace Dungeon_Crawler
 {
     public class Effects
     {
-        public Effect hitEnemyEffect;
-        public Effect hitPlayerEffect;
+        public Effect HitEffect;
+        public Effect BurnEffect;
+        public Effect FreezeEffect;
         public Effect bloomCombineEffect;
-
         public Effects(ContentManager Content)
         {
-            hitEnemyEffect = Content.Load<Effect>("shaders/Effec1");
-            hitPlayerEffect = Content.Load<Effect>("shaders/Effec2");
+            HitEffect = Content.Load<Effect>("shaders/HitEffect");
+            BurnEffect = Content.Load<Effect>("shaders/BurnEffect");
+            FreezeEffect = Content.Load<Effect>("shaders/FreezeEffect");
             bloomCombineEffect = Content.Load<Effect>("shaders/BloomCombine");
         }
 
@@ -86,7 +87,6 @@ namespace Dungeon_Crawler
         {
             bloomCombineEffect.Parameters["BloomSaturation"].SetValue(bloomSatPulse);
         }
-
 
         // C O M P U T E   G A U S S I A N 
         float ComputeGaussian(float n)

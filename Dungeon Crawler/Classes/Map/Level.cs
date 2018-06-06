@@ -18,21 +18,19 @@ namespace Dungeon_Crawler
         public List<Character> enemies;
         public List<Rock> rocks;
         public List<Cell> occupiedCells;
-        public List<PlayerProjectile> playerProjectiles;
-        public List<EnemyProjectile> enemyProjectiles;
+        public List<Projectile> Projectiles;
+
         public List<AttackAnimation> attackAnimations;
         List<Texture2D> allItems;
         List<String> allItemsNames;
 
         public Texture2D floor;
         public Texture2D wall;
-        public Texture2D fireball;
         public Portal portal;
         public Player player;
-        public Texture2D fireballBoss;
 
         public bool finished { get; set; }
-        public Level(Map map, Grid grid, int cellSize, List<Character> enemies, List<Texture2D> allItems, List<String> allItemsNames, List<Item> items, List<Rock> rocks, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells, Texture2D fireball)
+        public Level(Map map, Grid grid, int cellSize, List<Character> enemies, List<Texture2D> allItems, List<String> allItemsNames, List<Item> items, List<Rock> rocks, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells)
         {
             this.map = map;
             this.grid = grid;
@@ -46,15 +44,13 @@ namespace Dungeon_Crawler
             this.wall = wall;
             this.portal = portal;
             this.occupiedCells = occupiedCells;
-            this.fireball = fireball;
-            playerProjectiles = new List<PlayerProjectile>();
-            enemyProjectiles = new List<EnemyProjectile>();
+            Projectiles = new List<Projectile>();
             attackAnimations = new List<AttackAnimation>();
             finished = false;
             isBossLevel = false;
         }
 
-        public Level(Map map, Grid grid, int cellSize, List<Character> enemies1, List<Texture2D> allItems, List<String> allItemsNames, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells, Texture2D fireball, Texture2D fireballBoss)
+        public Level(Map map, Grid grid, int cellSize, List<Character> enemies1, List<Texture2D> allItems, List<String> allItemsNames, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells)
         {
             this.map = map;
             this.grid = grid;
@@ -68,10 +64,7 @@ namespace Dungeon_Crawler
             this.wall = wall;
             this.portal = portal;
             this.occupiedCells = occupiedCells;
-            this.fireball = fireball;
-            this.fireballBoss = fireballBoss;
-            playerProjectiles = new List<PlayerProjectile>();
-            enemyProjectiles = new List<EnemyProjectile>();
+            Projectiles = new List<Projectile>();
             attackAnimations = new List<AttackAnimation>();
             finished = false;
             isBossLevel = true;
@@ -135,6 +128,10 @@ namespace Dungeon_Crawler
                     if (enemy.CurrentHealth <= 0)
                     {
                         grid.SetCellCost(new Position(enemy.CellX, enemy.CellY), 1.0f);
+                        if (enemy.NextCell != null)
+                        {
+                            grid.SetCellCost(new Position(enemy.NextCell.X, enemy.NextCell.Y), 1.0f);
+                        }
                         enemies.RemoveAt(i);
                         if (Global.random.Next(20) == 19) //5% of chance
                         {
@@ -159,24 +156,13 @@ namespace Dungeon_Crawler
                 }
             }
 
-
-            for (int i = playerProjectiles.Count - 1; i >= 0; i--)
+            for (int i = Projectiles.Count - 1; i >= 0; i--)
             {
-                PlayerProjectile playerProjectile = playerProjectiles[i];
-                playerProjectile.Update(gameTime, this, graphicsDevice);
-                if (playerProjectile.isMarkedToDelete)
+                Projectile Projectile = Projectiles[i];
+                Projectile.Update(gameTime, this, graphicsDevice);
+                if (Projectile.isMarkedToDelete)
                 {
-                    playerProjectiles.RemoveAt(i);
-                }
-            }
-
-            for (int i = enemyProjectiles.Count - 1; i >= 0; i--)
-            {
-                EnemyProjectile enemyProjectile = enemyProjectiles[i];
-                enemyProjectile.Update(gameTime, this, graphicsDevice);
-                if (enemyProjectile.isMarkedToDelete)
-                {
-                    enemyProjectiles.RemoveAt(i);
+                    Projectiles.RemoveAt(i);
                 }
             }
 
@@ -197,7 +183,7 @@ namespace Dungeon_Crawler
         }
         public void Draw(GameTime gameTime,SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
 
             foreach (Cell cell in map.GetAllCells())
             {
@@ -237,15 +223,10 @@ namespace Dungeon_Crawler
                     rock.Draw(spriteBatch);
                 }
             }
-            
-            foreach (var playerProjectile in playerProjectiles)
-            {
-                playerProjectile.Draw(spriteBatch);
-            }
 
-            foreach (var enemyProjectile in enemyProjectiles)
+            foreach (var Projectile in Projectiles)
             {
-                enemyProjectile.Draw(spriteBatch);
+                Projectile.Draw(spriteBatch);
             }
 
             spriteBatch.End();

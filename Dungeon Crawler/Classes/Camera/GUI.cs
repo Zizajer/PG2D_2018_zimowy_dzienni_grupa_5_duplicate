@@ -1,9 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Dungeon_Crawler
 {
@@ -16,7 +13,7 @@ namespace Dungeon_Crawler
         private string[] console = { "", "", "", "" };
         private double gameTime;
         private double lastMsgGametime = 0;
-        private double afterHowLongClearHighestMsg = 4; //sec
+        private double afterHowLongClearHighestMsg = 2; //sec
 
         private int HealthBarOverCharacterBackgroundWidth = 50;
         private int HealthBarOverCharacterHeight = 10;
@@ -128,6 +125,9 @@ namespace Dungeon_Crawler
 
             spriteBatch.Draw(HealthBarBackgroundTexture, new Rectangle((int)character.Position.X, (int)character.Position.Y - 25, HealthBarOverCharacterBackgroundWidth, HealthBarOverCharacterHeight), Color.White);
             spriteBatch.Draw(HealthBarCurrentHealthTexture, new Rectangle((int)character.Position.X, (int)character.Position.Y - 25, HealthBarCurrentHealthWidth, HealthBarOverCharacterHeight), Color.White);
+
+            HealthBarBackgroundTexture.Dispose();
+            HealthBarCurrentHealthTexture.Dispose();
         }
 
         private void DrawPlayerStatBars(SpriteBatch spriteBatch, Player player, int hpX, int hpY, int manaX, int manaY, int xpX, int xpY, int width, int height, float scale)
@@ -165,7 +165,7 @@ namespace Dungeon_Crawler
             spriteBatch.Draw(ManaBarCurrentManaTexture, new Rectangle(manaX, manaY, ManaBarCurrentManaWidth, height), Color.White * 0.7f);
 
             //Draw HP ratio
-            string HealthText = player.CurrentHealth + "/" + player.Health;
+            string HealthText = (int)player.CurrentHealth + "/" + player.Health;
             Vector2 HealthTextOffsetFromCenter = font.MeasureString(HealthText);
             spriteBatch.DrawString(font, HealthText, new Vector2(hpX + (float)width / 2 - HealthTextOffsetFromCenter.X / 2 * 0.75f / scale, hpY), Color.White, 0.0f, Vector2.One, 0.75f / scale, SpriteEffects.None, Layers.Text);
 
@@ -173,6 +173,11 @@ namespace Dungeon_Crawler
             string ManaText = (int)player.CurrentMana + "/" + player.Mana;
             Vector2 ManaTextOffsetFromCenter = font.MeasureString(ManaText);
             spriteBatch.DrawString(font, ManaText, new Vector2(manaX + (float)width / 2 - ManaTextOffsetFromCenter.X / 2 * 0.75f / scale, manaY), Color.White, 0.0f, Vector2.One, 0.75f / scale, SpriteEffects.None, Layers.Text);
+
+            HealthBarBackgroundTexture.Dispose();
+            HealthBarCurrentHealthTexture.Dispose();
+            ManaBarBackgroundTexture.Dispose();
+            ManaBarCurrentManaTexture.Dispose();
         }
 
         internal void addLevelMananger(LevelManager levelManager)
@@ -187,14 +192,25 @@ namespace Dungeon_Crawler
             this.gameTime += gameTime.ElapsedGameTime.TotalSeconds;
 
             if (lastMsgGametime + afterHowLongClearHighestMsg < this.gameTime)
-                WriteToConsole("");
+                ScrollConsole();
         }
         public void WriteToConsole(string msg)
         {
+            if (console[3].Equals(msg)) return;
+
             console[0] = console[1];
             console[1] = console[2];
             console[2] = console[3];
             console[3] = msg;
+
+            lastMsgGametime = gameTime;
+        }
+        public void ScrollConsole()
+        {
+            console[0] = console[1];
+            console[1] = console[2];
+            console[2] = console[3];
+            console[3] = "";
 
             lastMsgGametime = gameTime;
         }

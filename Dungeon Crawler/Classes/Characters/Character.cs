@@ -8,18 +8,20 @@ namespace Dungeon_Crawler
 {
     public abstract class Character
     {
-        public enum State { Moving, Standing };
+        public enum ActionState { Moving, Standing };
+        public enum HealthState { Normal, Freeze, Burn };
         public enum Directions { None, Top, Bottom, Left, Right, TopLeft, TopRight, BottomLeft, BottomRight};
         public Directions currentDirection;
-        public State currentState;
+        public ActionState currentActionState;
+        public HealthState currentHealthState;
 
         public string Name { get; set; }
 
         public int Level { get; set; }
 
-        public int Health { get; set; }
-        public int CurrentHealth { get; set; }
-        public int CurrentHealthPercent { get { return ((int)(CurrentHealth / (double)Health * 100)); } }
+        public float Health { get; set; }
+        public float CurrentHealth { get; set; }
+        public int CurrentHealthPercent { get { return ((int)(CurrentHealth / Health * 100)); } }
 
         public int Defense { get; set; }
         public int SpDefense { get; set; }
@@ -29,7 +31,12 @@ namespace Dungeon_Crawler
 
         public bool isHitShaderOn = false;
         public float hitTimer=0;
-        public float howLongShouldShaderApply = 0.25f;
+        public float howLongShouldHitShaderApply = 0.25f;
+
+        public bool isBurnShaderOn = false;
+        public bool isFreezeShaderOn = false;
+        public float healthStateTimer = 0;
+        public float howLongShouldHealthStateLast = Global.random.Next(5, 15);
 
         public int CellX { get; set; }
         public int CellY { get; set; }
@@ -58,19 +65,61 @@ namespace Dungeon_Crawler
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
-            if (isHitShaderOn) {
-                if(this is Player)
-                {
-                    Global.Effects.hitPlayerEffect.CurrentTechnique.Passes[0].Apply();
-                }
-                if(this is Enemy || this is Boss)
-                {
-                    Global.Effects.hitEnemyEffect.CurrentTechnique.Passes[0].Apply();
-                }
-                
+            if (isBurnShaderOn)
+            {
+                Global.Effects.BurnEffect.CurrentTechnique.Passes[0].Apply();
+            }
+            if (isFreezeShaderOn)
+            {
+                Global.Effects.FreezeEffect.CurrentTechnique.Passes[0].Apply();
+            }
+            if (isHitShaderOn)
+            {
+                Global.Effects.HitEffect.CurrentTechnique.Passes[0].Apply();
             }
             _animationManager.Draw(spriteBatch);
             spriteBatch.End();
+        }
+
+        public void HandleHitState(GameTime gameTime)
+        {
+            if (isHitShaderOn)
+            {
+                hitTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (hitTimer > howLongShouldHitShaderApply)
+                {
+                    hitTimer = 0;
+                    isHitShaderOn = false;
+                }
+            }
+        }
+
+        public void HandleHealthState(GameTime gameTime)
+        {
+            if (currentHealthState == HealthState.Freeze)
+            {
+                healthStateTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (healthStateTimer > howLongShouldHealthStateLast)
+                {
+                    healthStateTimer = 0;
+                    currentHealthState = HealthState.Normal;
+                    isFreezeShaderOn = false;
+                    Global.Gui.WriteToConsole(Name + " is no longer frozen!");
+                }
+            }
+
+            if (currentHealthState == HealthState.Burn)
+            {
+                healthStateTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                CurrentHealth -= CurrentHealth / 1000f;
+                if (healthStateTimer > howLongShouldHealthStateLast)
+                {
+                    healthStateTimer = 0;
+                    currentHealthState = HealthState.Normal;
+                    isBurnShaderOn = false;
+                    Global.Gui.WriteToConsole(Name + " is no longer burned!");
+                }
+            }
         }
 
         protected virtual void SetAnimations()
@@ -83,7 +132,8 @@ namespace Dungeon_Crawler
                 _animationManager.Play(_animations["WalkUp"]);
             else if (Velocity.Y > 0)
                 _animationManager.Play(_animations["WalkDown"]);
-            else _animationManager.Stop();
+            else if(!(this is Enemy))
+                _animationManager.Stop();
         }
         public int getWidth()
         {
@@ -155,21 +205,6 @@ namespace Dungeon_Crawler
         }
 
         public abstract void calculateStatistics();
-
-        public void deductHealth(int oponentLevel, int oponentCriticalAttackProbability, int opponentAttackOrSpecialAttack, int attackPower, bool isSpecialAttack)
-        {
-            int modifier = 1; //will depend on i.a. critial attack probabilty.
-
-            if (isSpecialAttack)
-            {
-                CurrentHealth -= ((((((2 * Level) / 5) + 2) * attackPower * opponentAttackOrSpecialAttack / SpDefense) / 50) + 2) * modifier;
-            }
-            else
-            {
-                CurrentHealth -= ((((((2 * Level) / 5) + 2) * attackPower * opponentAttackOrSpecialAttack / Defense) / 50) + 2) * modifier;
-            }
-            
-        }
 
         public void Move(Directions currentDirection, Level level, GraphicsDevice graphicsDevice)
         {
