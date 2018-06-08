@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Dungeon_Crawler
 {
-    public class Boss : Character
+    public abstract class Boss : Character
     {
         public List<Cell> occupyingCells;
         public new enum ActionState { Standby, Attacking};
