@@ -14,15 +14,14 @@ namespace Dungeon_Crawler
         public float Mana { get; set; }
         public float CurrentMana { get; set; }
         public int CurrentManaPercent { get { return ((int)(CurrentMana / (double)Mana * 100)); } }
+        public float ManaRegenerationFactor { get; set; }
 
         public int teleportCost = 10;
-        public int fireballCost = 10;
-        public int exoriCost = 20;
         public Dictionary<string, Animation> _animationsExori;
         public int maxFireballsOnScreen = 20;
         public MouseState mouse;
         public float rotation;
-        public List<Item> inventory { get; set; }
+        public List<ItemSprite> inventory { get; set; }
         public int CurrentMapLevel { get; set; }
         KeyboardState pastKey;
         KeyboardState pastKey2;
@@ -43,6 +42,7 @@ namespace Dungeon_Crawler
             Level = 1;
             Speed = 4f; // TODO: move it to calculateStatistics();
             CurrentMana = Mana = 100; // TODO: move it to calculateStatistics();
+            ManaRegenerationFactor = 1.15f; //0.15
             calculateStatistics();
             currentActionState = ActionState.Standing;
             currentHealthState = HealthState.Normal;
@@ -57,7 +57,7 @@ namespace Dungeon_Crawler
 
             this.content = content;
             CurrentMapLevel = playerCurrentMapLevel;
-            inventory = new List<Item>();
+            inventory = new List<ItemSprite>();
             _animationManager = new AnimationManager(_animations.First().Value);
             Name = name;
 
@@ -262,7 +262,7 @@ namespace Dungeon_Crawler
                 CurrentCell = level.map.GetCell(CellX, CellY);
             }
 
-            if (CurrentMana < 100) CurrentMana = CurrentMana + 1.15f; //0.15
+            if (CurrentMana < 100) CurrentMana = CurrentMana + ManaRegenerationFactor;
 
             if (currentHealthState != HealthState.Freeze)
             {
@@ -349,7 +349,7 @@ namespace Dungeon_Crawler
         {
             if (inventory.Count == 0) return "Inventory is empty";
             string temp = "Inventory: ";
-            Item[] itemArray = inventory.ToArray();
+            ItemSprite[] itemArray = inventory.ToArray();
             for (int i = 0; i < inventory.Count; i++)
             {
                 temp += itemArray[i].name + ", ";

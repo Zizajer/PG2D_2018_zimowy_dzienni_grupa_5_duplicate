@@ -1,18 +1,20 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace Dungeon_Crawler
 {
-    public class Item : Sprite
+    [Obsolete]
+    public class ItemSprite : Sprite
     {
         public string name { get; }
         public string description { get;}
 
-        public Item(Vector2 pos, Texture2D tex, string name) : base(pos, tex)
+        public ItemSprite(Vector2 pos, Texture2D tex, string name) : base(pos, tex)
         {
             this.name = name;
         }
-        public Item(Vector2 pos, Texture2D tex, string name,string description) : base(pos, tex)
+        public ItemSprite(Vector2 pos, Texture2D tex, string name,string description) : base(pos, tex)
         {
             this.name = name;
             this.description = description;

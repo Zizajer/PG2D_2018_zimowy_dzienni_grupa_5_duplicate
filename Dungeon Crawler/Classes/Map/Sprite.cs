@@ -10,7 +10,7 @@ namespace Dungeon_Crawler
         public Texture2D Texture { get; set; }
         public Vector2 Position { get; set; }
         public bool isMarkedToDelete = false;
-        public Color[] TextureData { get; }
+        public Color[] TextureData { get; set;}
         public Sprite(Vector2 pos, Texture2D tex)
         {
             Position = pos;
@@ -19,6 +19,11 @@ namespace Dungeon_Crawler
                new Color[Texture.Width * Texture.Height];
             Texture.GetData(TextureData);
             Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
+            Size = 1.0f;
+        }
+        public Sprite(Vector2 pos)
+        {
+            Position = pos;
             Size = 1.0f;
         }
         public Sprite(Texture2D tex)

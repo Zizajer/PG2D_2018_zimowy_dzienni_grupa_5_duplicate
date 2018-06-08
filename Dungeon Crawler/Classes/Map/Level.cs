@@ -14,7 +14,7 @@ namespace Dungeon_Crawler
         public Map map;
         public Grid grid;
         public int cellSize;
-        public List<Item> items;
+        public List<ItemSprite> items;
         public List<Character> enemies;
         public List<Rock> rocks;
         public List<Cell> occupiedCells;
@@ -30,7 +30,7 @@ namespace Dungeon_Crawler
         public Player player;
 
         public bool finished { get; set; }
-        public Level(Map map, Grid grid, int cellSize, List<Character> enemies, List<Texture2D> allItems, List<String> allItemsNames, List<Item> items, List<Rock> rocks, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells)
+        public Level(Map map, Grid grid, int cellSize, List<Character> enemies, List<Texture2D> allItems, List<String> allItemsNames, List<ItemSprite> items, List<Rock> rocks, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells)
         {
             this.map = map;
             this.grid = grid;
@@ -56,7 +56,7 @@ namespace Dungeon_Crawler
             this.grid = grid;
             this.cellSize = cellSize;
             enemies = enemies1;
-            items = new List<Item>();
+            items = new List<ItemSprite>();
             this.allItems = allItems;
             this.allItemsNames = allItemsNames;
             rocks = new List<Rock>();
@@ -111,7 +111,7 @@ namespace Dungeon_Crawler
                             for (int j = 0; j < numberOfItems; j++)
                             {
                                 int itemId = Global.random.Next(allItemsNames.Count);
-                                Item tempItem = new Item(new Vector2(character.Center.X + positionOffset, character.Center.Y + positionOffset), allItems[itemId], allItemsNames[itemId]);
+                                ItemSprite tempItem = new ItemSprite(new Vector2(character.Center.X + positionOffset, character.Center.Y + positionOffset), allItems[itemId], allItemsNames[itemId]);
                                 items.Add(tempItem);
                                 positionOffset += cellSize / 2;
                             }
@@ -136,14 +136,14 @@ namespace Dungeon_Crawler
                         if (Global.random.Next(20) == 19) //5% of chance
                         {
                             int itemId = Global.random.Next(allItemsNames.Count);
-                            Item tempItem = new Item(new Vector2(enemy.Center.X, enemy.Center.Y), allItems[itemId], allItemsNames[itemId]);
+                            ItemSprite tempItem = new ItemSprite(new Vector2(enemy.Center.X, enemy.Center.Y), allItems[itemId], allItemsNames[itemId]);
                             items.Add(tempItem);
                         }
                     }
                 }
             }
 
-            Item[] itemArray = items.ToArray();
+            ItemSprite[] itemArray = items.ToArray();
             for (int i = 0; i < items.Count; i++)
             {
                 if ((Math.Abs(player.Position.X - player.Position.X) < player.getWidth() + itemArray[i].Texture.Width) && (Math.Abs(player.Position.Y - player.Position.Y) < player.getHeight() + itemArray[i].Texture.Height))

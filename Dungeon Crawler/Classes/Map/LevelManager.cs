@@ -150,7 +150,7 @@ namespace Dungeon_Crawler
             Portal portal = new Portal(portalTexture);
 
             List<Character> enemies = CreateEnemiesList(Content, map, cellSize, enemiesCount, occupiedCells, grid);
-            List<Item> items = CreateItemsList(Content, map, cellSize, itemsCount, occupiedCells, allItems, allItemsNames, grid);
+            List<ItemSprite> items = CreateItemsList(Content, map, cellSize, itemsCount, occupiedCells, allItems, allItemsNames, grid);
             List<Rock> rocks = CreateRocksList(Content, map, cellSize, rocksCount, occupiedCells, rock, grid);
             
             Global.Camera.setParams(map.Width, map.Height, cellSize);
@@ -234,16 +234,16 @@ namespace Dungeon_Crawler
             return rocks;
         }
 
-        private List<Item> CreateItemsList(ContentManager Content, Map map, int cellSize, int itemCount, List<Cell> occupiedCells, List<Texture2D> allItems, List<String> allItemsNames, Grid grid)
+        private List<ItemSprite> CreateItemsList(ContentManager Content, Map map, int cellSize, int itemCount, List<Cell> occupiedCells, List<Texture2D> allItems, List<String> allItemsNames, Grid grid)
         {
-            List <Item> items = new List<Item>(itemCount);
+            List <ItemSprite> items = new List<ItemSprite>(itemCount);
 
             for (int i = 0; i < itemCount; i++)
             {
                 Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid);
                 occupiedCells.Add(randomCell);
                 int rand = Global.random.Next(2) + 1;
-                Item tempItem=new Item(new Vector2(randomCell.X * cellSize + cellSize / 3, randomCell.Y * cellSize + cellSize / 3), allItems[rand], allItemsNames[rand]);
+                ItemSprite tempItem=new ItemSprite(new Vector2(randomCell.X * cellSize + cellSize / 3, randomCell.Y * cellSize + cellSize / 3), allItems[rand], allItemsNames[rand]);
                 items.Add(tempItem);
             }
 
