@@ -11,6 +11,9 @@ namespace Dungeon_Crawler
         public Vector2 Position { get; set; }
         public bool isMarkedToDelete = false;
         public Color[] TextureData { get; set;}
+
+        public Sprite() { Size = 1.0f; }
+
         public Sprite(Vector2 pos, Texture2D tex)
         {
             Position = pos;
