@@ -110,6 +110,11 @@ namespace Dungeon_Crawler
                     int mx = (int)Math.Floor(mousePos.X / level.cellSize);
                     int my = (int)Math.Floor(mousePos.Y / level.cellSize);
 
+                    if (currentDirection != Directions.None)
+                    {
+                        Global.Gui.WriteToConsole("Can't teleport while moving");
+                        return;
+                    }
                     if (mx < 0 || mx >= level.map.Width || my < 0 || my >= level.map.Height)
                         return;
                     if (level.grid.GetCellCost(new Position(mx,my))==1.0f)
@@ -289,7 +294,6 @@ namespace Dungeon_Crawler
             {
                 CurrentCell = level.map.GetCell(CellX, CellY);
             }
-
             if (CurrentMana < 100) CurrentMana = CurrentMana + 1.15f; //0.15
 
             if (currentHealthState != HealthState.Freeze)
