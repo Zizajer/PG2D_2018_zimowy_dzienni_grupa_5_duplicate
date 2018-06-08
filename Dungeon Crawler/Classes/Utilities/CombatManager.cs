@@ -143,7 +143,7 @@ namespace Dungeon_Crawler
 
             if (currentLevel.isBossLevel)
             {
-                if (currentLevel.enemies.Count == 0) return null;
+                if (currentLevel.enemies.Count == 0) return listOfEnemiesAround;
                 Boss boss = (Boss)currentLevel.enemies.ElementAt(0);
                 if (Global.CombatManager.DistanceBetween2Points(cellX, cellY, boss.CellX, boss.CellY) <= distance + 1)
                 {

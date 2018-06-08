@@ -324,7 +324,7 @@ namespace Dungeon_Crawler
                     new Blob(_animationsBlob, cellSize, level, speed, timeBetweenActions, map, enemyName)
                     {
                         Name = BlobNamesList[Global.random.Next(BlobNamesList.Count)],
-                        Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
+                        Position = new Vector2((randomCell.X * cellSize + cellSize / 4), (randomCell.Y * cellSize) + cellSize / 4)
                     };
                     enemies.Add(tempEnemy);
                     grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
