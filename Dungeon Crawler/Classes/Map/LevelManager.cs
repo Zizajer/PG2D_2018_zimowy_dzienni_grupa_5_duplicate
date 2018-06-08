@@ -84,8 +84,6 @@ namespace Dungeon_Crawler
 
             allItemsNames = new List<String>
             {
-                "Bow",
-                "Sword",
                 "Wand"
             };
 
@@ -238,8 +236,8 @@ namespace Dungeon_Crawler
             {
                 Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid);
                 occupiedCells.Add(randomCell);
-                int rand = Global.random.Next(2) + 1;
-                Item tempItem = (Item)Activator.CreateInstance(Type.GetType("Dungeon_Crawler.Wand"), Content, new Vector2(randomCell.X * cellSize + cellSize / 3, randomCell.Y * cellSize + cellSize / 3));
+                String randomItem = allItemsNames[Global.random.Next(allItemsNames.Count)];
+                Item tempItem = (Item)Activator.CreateInstance(Type.GetType("Dungeon_Crawler." + randomItem), Content, new Vector2(randomCell.X * cellSize + cellSize / 3, randomCell.Y * cellSize + cellSize / 3));
                 items.Add(tempItem);
             }
 
