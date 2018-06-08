@@ -45,21 +45,25 @@
     <Compile Include="Classes\Characters\AnimationManager.cs" />
     <Compile Include="Classes\Camera\CameraManager.cs" />
     <Compile Include="Classes\Characters\AttackAnimation.cs" />
-    <Compile Include="Classes\Characters\Attacks\Annihilation.cs" />
-    <Compile Include="Classes\Characters\Attacks\Boss\BigFireballCanonade.cs" />
-    <Compile Include="Classes\Characters\Attacks\Exori.cs" />
-    <Compile Include="Classes\Characters\Attacks\BigFireball.cs" />
-    <Compile Include="Classes\Characters\Attacks\LPM\ShootArrow.cs" />
-    <Compile Include="Classes\Characters\Attacks\Iceball.cs" />
-    <Compile Include="Classes\Characters\Attacks\Interface\IAttack.cs" />
-    <Compile Include="Classes\Characters\Attacks\Interface\ICharacterTargetedAttack.cs" />
-    <Compile Include="Classes\Characters\Attacks\Interface\IUnTargetedAttack.cs" />
-    <Compile Include="Classes\Characters\Attacks\LPM\Fireball.cs" />
-    <Compile Include="Classes\Characters\Attacks\PenetratingFireball.cs" />
-    <Compile Include="Classes\Characters\Attacks\LPM\Pound.cs" />
-    <Compile Include="Classes\Characters\Attacks\Interface\IPositionTargetedAttack.cs" />
+    <Compile Include="Classes\Attacks\Annihilation.cs" />
+    <Compile Include="Classes\Attacks\Boss\BigFireballCanonade.cs" />
+    <Compile Include="Classes\Attacks\Exori.cs" />
+    <Compile Include="Classes\Attacks\BigFireball.cs" />
+    <Compile Include="Classes\Attacks\LPM\ShootArrow.cs" />
+    <Compile Include="Classes\Attacks\Iceball.cs" />
+    <Compile Include="Classes\Attacks\Interface\IAttack.cs" />
+    <Compile Include="Classes\Attacks\Interface\ICharacterTargetedAttack.cs" />
+    <Compile Include="Classes\Attacks\Interface\IUnTargetedAttack.cs" />
+    <Compile Include="Classes\Attacks\LPM\Fireball.cs" />
+    <Compile Include="Classes\Attacks\PenetratingFireball.cs" />
+    <Compile Include="Classes\Attacks\LPM\Pound.cs" />
+    <Compile Include="Classes\Attacks\Interface\IPositionTargetedAttack.cs" />
     <Compile Include="Classes\Characters\Boss.cs" />
+    <Compile Include="Classes\Characters\Bosses\DemonOak.cs" />
     <Compile Include="Classes\Characters\Character.cs" />
+    <Compile Include="Classes\Characters\Enemies\Blob.cs" />
+    <Compile Include="Classes\Characters\Enemies\Skeleton.cs" />
+    <Compile Include="Classes\Characters\Enemies\Zombie.cs" />
     <Compile Include="Classes\Map\Projectile.cs" />
     <Compile Include="Classes\Map\Sprite.cs" />
     <Compile Include="Classes\Map\Portal.cs" />
@@ -113,8 +117,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Classes\Characters\Attacks\Ranger\" />
-    <Folder Include="Classes\Characters\Attacks\Warrior\" />
+    <Folder Include="Classes\Attacks\Ranger\" />
+    <Folder Include="Classes\Attacks\Warrior\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

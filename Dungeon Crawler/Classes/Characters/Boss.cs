@@ -20,7 +20,7 @@ namespace Dungeon_Crawler
         Map map;
 
         //Attacks
-        IPositionTargetedAttack ProjectileAttack;
+        public IPositionTargetedAttack ProjectileAttack;
 
         public Boss(Dictionary<string, Animation> _animations, int cellSize, int level, float timeBetweenActions, Map map, List<Cell> cells)
         {
@@ -38,7 +38,12 @@ namespace Dungeon_Crawler
             CellY = (int)Math.Floor(Center.Y / cellSize);
             occupyingCells = cells;
             Name = "Demon Oak";
-            //Set attacks
+
+            SetAttack();
+        }
+
+        public virtual void SetAttack()
+        {
             ProjectileAttack = new BigFireballCanonade();
         }
 

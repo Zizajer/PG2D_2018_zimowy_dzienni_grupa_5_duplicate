@@ -194,7 +194,7 @@ namespace Dungeon_Crawler
 
             float timeBetweenActions = 1f;
             Character tempBoss =
-                new Boss(_animationsBoss, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
+                new DemonOak(_animationsBoss, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
                 {
                     Name = DemonOakNamesList[Global.random.Next(DemonOakNamesList.Count)],
                     Position = new Vector2((randomCell.X * cellSize), (randomCell.Y * cellSize))
@@ -278,7 +278,7 @@ namespace Dungeon_Crawler
                     enemyName = "Blob";
 
                     Character tempEnemy =
-                    new Enemy(_animationsBlob, cellSize, level, speed, timeBetweenActions, map, enemyName)
+                    new Blob(_animationsBlob, cellSize, level, speed, timeBetweenActions, map, enemyName)
                     {
                         Name = BlobNamesList[Global.random.Next(BlobNamesList.Count)],
                         Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
@@ -291,7 +291,7 @@ namespace Dungeon_Crawler
                     enemyName = "Skeleton";
 
                     Character tempEnemy =
-                    new Enemy(_animationsSkeleton, cellSize, level, speed, timeBetweenActions, map, enemyName)
+                    new Skeleton(_animationsSkeleton, cellSize, level, speed, timeBetweenActions, map, enemyName)
                     {
                         Name = SkeletonNamesList[Global.random.Next(SkeletonNamesList.Count)],
                         Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
@@ -304,7 +304,7 @@ namespace Dungeon_Crawler
                     enemyName = "Zombie";
 
                     Character tempEnemy =
-                    new Enemy(_animationsZombie, cellSize, level, speed, timeBetweenActions, map, enemyName)
+                    new Zombie(_animationsZombie, cellSize, level, speed, timeBetweenActions, map, enemyName)
                     {
                         Name = ZombieNamesList[Global.random.Next(ZombieNamesList.Count)],
                         Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
