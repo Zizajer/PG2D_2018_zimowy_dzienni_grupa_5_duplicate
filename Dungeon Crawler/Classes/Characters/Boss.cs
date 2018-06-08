@@ -38,6 +38,9 @@ namespace Dungeon_Crawler
             CellY = (int)Math.Floor(Center.Y / cellSize);
             occupyingCells = cells;
             Name = "Demon Oak";
+
+            Inventory = new List<Item>();
+
             //Set attacks
             ProjectileAttack = new BigFireballCanonade();
         }

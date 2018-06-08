@@ -34,6 +34,8 @@ namespace Dungeon_Crawler
             currentHealthState = HealthState.Normal;
             Name = name;
 
+            Inventory = new List<Item>();
+
             //Set attacks
             BaseAttack = new Pound();
         }

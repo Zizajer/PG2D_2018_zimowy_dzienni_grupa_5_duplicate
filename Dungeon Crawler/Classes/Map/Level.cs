@@ -14,15 +14,13 @@ namespace Dungeon_Crawler
         public Map map;
         public Grid grid;
         public int cellSize;
-        public List<ItemSprite> items;
+        public List<Item> items;
         public List<Character> enemies;
         public List<Rock> rocks;
         public List<Cell> occupiedCells;
         public List<Projectile> Projectiles;
 
         public List<AttackAnimation> attackAnimations;
-        List<Texture2D> allItems;
-        List<String> allItemsNames;
 
         public Texture2D floor;
         public Texture2D wall;
@@ -30,15 +28,13 @@ namespace Dungeon_Crawler
         public Player player;
 
         public bool finished { get; set; }
-        public Level(Map map, Grid grid, int cellSize, List<Character> enemies, List<Texture2D> allItems, List<String> allItemsNames, List<ItemSprite> items, List<Rock> rocks, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells)
+        public Level(Map map, Grid grid, int cellSize, List<Character> enemies, List<Item> items, List<Rock> rocks, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells)
         {
             this.map = map;
             this.grid = grid;
             this.cellSize = cellSize;
             this.enemies = enemies;
             this.items = items;
-            this.allItems = allItems;
-            this.allItemsNames = allItemsNames;
             this.rocks = rocks;
             this.floor = floor;
             this.wall = wall;
@@ -50,15 +46,13 @@ namespace Dungeon_Crawler
             isBossLevel = false;
         }
 
-        public Level(Map map, Grid grid, int cellSize, List<Character> enemies1, List<Texture2D> allItems, List<String> allItemsNames, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells)
+        public Level(Map map, Grid grid, int cellSize, List<Character> enemies1, List<Item> items, Texture2D floor, Texture2D wall, Portal portal, List<Cell> occupiedCells)
         {
             this.map = map;
             this.grid = grid;
             this.cellSize = cellSize;
             enemies = enemies1;
-            items = new List<ItemSprite>();
-            this.allItems = allItems;
-            this.allItemsNames = allItemsNames;
+            this.items = items;
             rocks = new List<Rock>();
             this.floor = floor;
             this.wall = wall;
@@ -104,6 +98,7 @@ namespace Dungeon_Crawler
                     if (character.CurrentHealth <= 0)
                     {
                         enemies.RemoveAt(i);
+                        /*
                         if (Global.random.Next(10) > 0) //90% of chance
                         {
                             int numberOfItems = Global.random.Next(2, 5);
@@ -116,6 +111,7 @@ namespace Dungeon_Crawler
                                 positionOffset += cellSize / 2;
                             }
                         }
+                        */
                     }
                 } 
             }
@@ -133,24 +129,26 @@ namespace Dungeon_Crawler
                             grid.SetCellCost(new Position(enemy.NextCell.X, enemy.NextCell.Y), 1.0f);
                         }
                         enemies.RemoveAt(i);
+                        /*
                         if (Global.random.Next(20) == 19) //5% of chance
                         {
                             int itemId = Global.random.Next(allItemsNames.Count);
                             ItemSprite tempItem = new ItemSprite(new Vector2(enemy.Center.X, enemy.Center.Y), allItems[itemId], allItemsNames[itemId]);
                             items.Add(tempItem);
                         }
+                        */
                     }
                 }
             }
 
-            ItemSprite[] itemArray = items.ToArray();
+            Item[] itemArray = items.ToArray();
             for (int i = 0; i < items.Count; i++)
             {
                 if ((Math.Abs(player.Position.X - player.Position.X) < player.getWidth() + itemArray[i].Texture.Width) && (Math.Abs(player.Position.Y - player.Position.Y) < player.getHeight() + itemArray[i].Texture.Height))
                 {
                     if (Collision.checkCollision(player.getRectangle(), player, itemArray[i], graphicsDevice))
                     {
-                        player.inventory.Add(itemArray[i]);
+                        player.Inventory.Add(itemArray[i]);
                         items.Remove(itemArray[i]);
                     }
                 }

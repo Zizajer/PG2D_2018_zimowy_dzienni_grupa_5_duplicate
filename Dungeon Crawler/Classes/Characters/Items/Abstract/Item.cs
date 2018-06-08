@@ -30,14 +30,7 @@ namespace Dungeon_Crawler
         public bool FreezeInvulnerability { get; set; } = false;
         public bool BurnInvulnerability { get; set; } = false;
 
-        public Item(ContentManager content, Vector2 position) : base(position)
-        {
-            Texture = content.Load<Texture2D>("items/" + TextureName);
-            TextureData =
-               new Color[Texture.Width * Texture.Height];
-            Texture.GetData(TextureData);
-            Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
-        }
+        public Item(ContentManager content, Vector2 position) : base(position) { }
 
         public void ApplyEffect(Character owner)
         {
@@ -54,8 +47,8 @@ namespace Dungeon_Crawler
                 //((Player)Owner).ExpMultiplier = ExpMultiplier;
             }
             //TODO: Add these properties to Character class
-            //Owner.FreezeInvulnerability *= HealthMultiplier;
-            //Owner.BurnInvulnerability *= HealthMultiplier;
+            //Owner.FreezeInvulnerability = FreezeInvulnerability;
+            //Owner.BurnInvulnerability = BurnInvulnerability;
         }
         public void RevertEffect(Character owner)
         {
@@ -71,9 +64,31 @@ namespace Dungeon_Crawler
                 //TODO: Add this property to Character class
                 //((Player)Owner).ExpMultiplier = 1f;
             }
-            //TODO: Add these properties to Character class
-            //Owner.FreezeInvulnerability /= HealthMultiplier;
-            //Owner.BurnInvulnerability /= HealthMultiplier;
+            /* TODO: Add these properties to Character class
+            if (FreezeInvulnerability == true)
+            {
+                Owner.FreezeInvulnerability = false;
+            }
+            //Owner.FreezeInvulnerability *= HealthMultiplier;
+            if (BurnInvulnerability == true)
+            {
+                Owner.BurnInvulnerability = false;
+            }
+            */
+        }
+
+        public void LoadTexture(ContentManager content)
+        {
+            Texture = content.Load<Texture2D>("items/" + TextureName);
+            TextureData =
+               new Color[Texture.Width * Texture.Height];
+            Texture.GetData(TextureData);
+            Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Texture, Position, null, Color.White, 0.0f, Vector2.One, Size, SpriteEffects.None, Layers.Items);
         }
     }
 }

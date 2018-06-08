@@ -21,7 +21,6 @@ namespace Dungeon_Crawler
         public int maxFireballsOnScreen = 20;
         public MouseState mouse;
         public float rotation;
-        public List<ItemSprite> inventory { get; set; }
         public int CurrentMapLevel { get; set; }
         KeyboardState pastKey;
         KeyboardState pastKey2;
@@ -57,9 +56,10 @@ namespace Dungeon_Crawler
 
             this.content = content;
             CurrentMapLevel = playerCurrentMapLevel;
-            inventory = new List<ItemSprite>();
             _animationManager = new AnimationManager(_animations.First().Value);
             Name = name;
+
+            Inventory = new List<Item>();
 
             //Set attacks
             BaseAttack = new Pound();
@@ -347,12 +347,12 @@ namespace Dungeon_Crawler
         }
         public string getItems()
         {
-            if (inventory.Count == 0) return "Inventory is empty";
+            if (Inventory.Count == 0) return "Inventory is empty";
             string temp = "Inventory: ";
-            ItemSprite[] itemArray = inventory.ToArray();
-            for (int i = 0; i < inventory.Count; i++)
+            Item[] itemArray = Inventory.ToArray();
+            for (int i = 0; i < Inventory.Count; i++)
             {
-                temp += itemArray[i].name + ", ";
+                temp += itemArray[i].Name + ", ";
             }
 
             return temp;

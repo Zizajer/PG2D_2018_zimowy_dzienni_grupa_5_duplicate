@@ -29,6 +29,8 @@ namespace Dungeon_Crawler
         public int SpAttack { get; set; }
         public float Speed { get; set; }
 
+        public List<Item> Inventory { get; set; }
+
         public bool isHitShaderOn = false;
         public float hitTimer=0;
         public float howLongShouldHitShaderApply = 0.25f;
