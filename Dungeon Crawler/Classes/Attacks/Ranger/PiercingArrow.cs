@@ -25,7 +25,7 @@ namespace Dungeon_Crawler
         public PiercingArrow()
         {
             Name = "Piercing Arrow";
-            Power = 15;
+            Power = 10;
             Accuracy = 80;
             CriticalHitProbability = 5;
             FreezeProbability = 0;

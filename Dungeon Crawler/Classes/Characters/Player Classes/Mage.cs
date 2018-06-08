@@ -12,6 +12,18 @@ namespace Dungeon_Crawler
         public Mage(ContentManager content, int cellSize, int playerCurrentMapLevel, string name) : base(content, cellSize, playerCurrentMapLevel, name)
         {
         }
+        public override void calculateStatistics()
+        {
+            Health = CurrentHealth = 70 + Level * 10;
+            Defense = 15 + Level * 3;
+            SpDefense = 70 + Level * 5;
+            Attack = (int)Math.Floor(70 + Level * 2.5);
+            SpAttack = 70 + Level * 3;
+
+            Speed = 4f;
+            CurrentResource = Resource = 100;
+            ResourceRegenerationFactor = 0.15f; //0.15 is fine
+        }
         public override void setAttacks()
         {
             ProjectileAttack = new Fireball();
@@ -21,12 +33,13 @@ namespace Dungeon_Crawler
         {
             if (Mouse.GetState().LeftButton == ButtonState.Pressed && pastButton.LeftButton == ButtonState.Released)
             {
-                if (CurrentMana > ProjectileAttack.ManaCost)
+                if (CurrentResource > ProjectileAttack.ManaCost)
                 {
                     MouseState mouse = Mouse.GetState();
                     Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
                     Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
                     ProjectileAttack.Use(this, mousePos);
+                    CurrentResource -= ProjectileAttack.ManaCost;
                 }
                 else
                 {
@@ -35,14 +48,20 @@ namespace Dungeon_Crawler
             }
             pastButton = Mouse.GetState();
         }
+        public override void ManageResource()
+        {
+            CurrentResource += ResourceRegenerationFactor;
+            if (CurrentResource > Resource)
+                CurrentResource = Resource;
+        }
         public override void SecondaryAttack(Level level)
         {
             if (Mouse.GetState().RightButton == ButtonState.Pressed && pastButton2.RightButton == ButtonState.Released)
             {
-                if (CurrentMana > UnTargetedAttack.ManaCost)
+                if (CurrentResource > UnTargetedAttack.ManaCost)
                 {
                     UnTargetedAttack.Use(this);
-                    CurrentMana -= UnTargetedAttack.ManaCost;
+                    CurrentResource -= UnTargetedAttack.ManaCost;
                 }
                 else
                 {
@@ -55,7 +74,7 @@ namespace Dungeon_Crawler
         {
             if (Mouse.GetState().RightButton == ButtonState.Pressed && pastButton.RightButton == ButtonState.Released)
             {
-                if (CurrentMana > teleportCost)
+                if (CurrentResource > teleportCost)
                 {
                     MouseState mouse = Mouse.GetState();
                     Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
@@ -106,7 +125,7 @@ namespace Dungeon_Crawler
                         }
                         //play red particle
                         Global.CombatManager.SetAnimation("Teleportation2", "MagicAnim2", mx, my);
-                        CurrentMana = CurrentMana - teleportCost;
+                        CurrentResource = CurrentResource - teleportCost;
                         Global.Camera.CenterOn(Center);
                     }
                     else

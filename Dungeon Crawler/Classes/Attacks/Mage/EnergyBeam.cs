@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Dungeon_Crawler
 {
@@ -24,7 +20,7 @@ namespace Dungeon_Crawler
         public EnergyBeam()
         {
             Name = "Energy Beam";
-            Power = 100;
+            Power = 400;
             Accuracy = 100;
             CriticalHitProbability = 50;
             FreezeProbability = 0;

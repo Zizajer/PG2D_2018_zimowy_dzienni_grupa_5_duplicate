@@ -43,7 +43,7 @@ namespace Dungeon_Crawler
             owner.Speed *= (int)SpeedMultiplier;
             if (owner is Player)
             {
-                ((Player)owner).ManaRegenerationFactor *= ManaRegenerationFactorMultiplier;
+                ((Player)owner).ResourceRegenerationFactor *= ManaRegenerationFactorMultiplier;
                 //TODO: Add this property to Character class
                 //((Player)Owner).ExpMultiplier = ExpMultiplier;
             }
@@ -61,7 +61,7 @@ namespace Dungeon_Crawler
             owner.Speed /= (int)SpeedMultiplier;
             if (owner is Player)
             {
-                ((Player)owner).ManaRegenerationFactor /= ManaRegenerationFactorMultiplier;
+                ((Player)owner).ResourceRegenerationFactor /= ManaRegenerationFactorMultiplier;
                 //TODO: Add this property to Character class
                 //((Player)Owner).ExpMultiplier = 1f;
             }

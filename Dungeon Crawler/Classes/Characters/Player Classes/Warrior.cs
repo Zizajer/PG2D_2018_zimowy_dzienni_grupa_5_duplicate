@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 
@@ -10,6 +9,20 @@ namespace Dungeon_Crawler
     {
         public Warrior(ContentManager content, int cellSize, int playerCurrentMapLevel, string name) : base(content, cellSize, playerCurrentMapLevel, name)
         {
+        }
+
+        public override void calculateStatistics()
+        {
+            Health = CurrentHealth = 70 + Level * 10;
+            Defense = 15 + Level * 3;
+            SpDefense = 70 + Level * 5;
+            Attack = (int)Math.Floor(70 + Level * 2.5);
+            SpAttack = 70 + Level * 3;
+
+            Speed = 4f;
+            Resource = 100;
+            CurrentResource = 0;
+            ResourceRegenerationFactor = -0.1f; //rage should decay slowly
         }
         public override void setAttacks()
         {
@@ -87,17 +100,31 @@ namespace Dungeon_Crawler
             pastButton = Mouse.GetState();
         }
 
+        internal void addResource(int v)
+        {
+            CurrentResource += v;
+            if (CurrentResource > Resource)
+                CurrentResource = Resource;
+        }
+
+        public override void ManageResource()
+        {
+            CurrentResource += ResourceRegenerationFactor;
+            if (CurrentResource < 0)
+                CurrentResource = 0;
+        }
+
         public override void SecondaryAttack(Level level)
         {
             if (Mouse.GetState().RightButton == ButtonState.Pressed && pastButton2.RightButton == ButtonState.Released)
             {
-                if (CurrentMana > ProjectileAttack.ManaCost)
+                if (CurrentResource > ProjectileAttack.ManaCost)
                 {
                     MouseState mouse = Mouse.GetState();
                     Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
                     Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
                     ProjectileAttack.Use(this, mousePos);
-                    CurrentMana -= ProjectileAttack.ManaCost;
+                    CurrentResource -= ProjectileAttack.ManaCost;
                 }
                 else
                 {

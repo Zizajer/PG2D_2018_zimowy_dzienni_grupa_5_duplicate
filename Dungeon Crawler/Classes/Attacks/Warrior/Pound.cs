@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Dungeon_Crawler
+﻿namespace Dungeon_Crawler
 {
     public class Pound : ICharacterTargetedAttack
     {
@@ -40,6 +34,11 @@ namespace Dungeon_Crawler
             {
                 Global.CombatManager.SetAnimation(Name, AnimationName, defender.CellX, defender.CellY);
                 Global.CombatManager.Attack(attacker, this, defender);
+                if(attacker is Warrior)
+                {
+                    Warrior war = (Warrior)attacker;
+                    war.addResource(20);
+                }
                 return true; //Attack hit
             }
             else

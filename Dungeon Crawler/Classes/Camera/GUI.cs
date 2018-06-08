@@ -130,18 +130,18 @@ namespace Dungeon_Crawler
             HealthBarCurrentHealthTexture.Dispose();
         }
 
-        private void DrawPlayerStatBars(SpriteBatch spriteBatch, Player player, int hpX, int hpY, int manaX, int manaY, int xpX, int xpY, int width, int height, float scale)
+        private void DrawPlayerStatBars(SpriteBatch spriteBatch, Player player, int hpX, int hpY, int resourceX, int resourceY, int xpX, int xpY, int width, int height, float scale)
         {
             int HealthBarCurrentHealthWidth = (int)((double)player.CurrentHealthPercent / 100 * width);
-            int ManaBarCurrentManaWidth = (int)((double)player.CurrentManaPercent / 100 * width);
+            int ResourceBarCurrentResourceWidth = (int)((double)player.CurrentResourcePercent / 100 * width);
 
             Texture2D HealthBarCurrentHealthTexture = new Texture2D(graphics.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
             Texture2D HealthBarBackgroundTexture = new Texture2D(graphics.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
             HealthBarBackgroundTexture.SetData<Color>(new Color[] { Color.Black });
 
-            Texture2D ManaBarCurrentManaTexture = new Texture2D(graphics.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
-            Texture2D ManaBarBackgroundTexture = new Texture2D(graphics.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
-            ManaBarBackgroundTexture.SetData<Color>(new Color[] { Color.Black });
+            Texture2D ResourceBarCurrentResourceTexture = new Texture2D(graphics.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+            Texture2D ResourceBarBackgroundTexture = new Texture2D(graphics.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+            ResourceBarBackgroundTexture.SetData<Color>(new Color[] { Color.Black });
 
             if (player.CurrentHealthPercent > 65)
             {
@@ -153,16 +153,28 @@ namespace Dungeon_Crawler
             }
             else
             {
-                HealthBarCurrentHealthTexture.SetData<Color>(new Color[] { Color.Red });
+                HealthBarCurrentHealthTexture.SetData<Color>(new Color[] { Color.DarkRed });
             }
 
-            ManaBarCurrentManaTexture.SetData<Color>(new Color[] { Color.Blue });
+            if (Global.playerClass.Equals("Warrior"))
+            {
+                ResourceBarCurrentResourceTexture.SetData<Color>(new Color[] { Color.Red });
+            }
+            else if (Global.playerClass.Equals("Ranger"))
+            {
+                ResourceBarCurrentResourceTexture.SetData<Color>(new Color[] { Color.Yellow });
+            }
+            else
+            {
+                ResourceBarCurrentResourceTexture.SetData<Color>(new Color[] { Color.Blue });
+            }
+                
 
             spriteBatch.Draw(HealthBarBackgroundTexture, new Rectangle(hpX, hpY, width, height), Color.White * 0.5f);
             spriteBatch.Draw(HealthBarCurrentHealthTexture, new Rectangle(hpX, hpY, HealthBarCurrentHealthWidth, height), Color.White * 0.7f);
 
-            spriteBatch.Draw(ManaBarBackgroundTexture, new Rectangle(manaX, manaY, width, height), Color.White * 0.5f);
-            spriteBatch.Draw(ManaBarCurrentManaTexture, new Rectangle(manaX, manaY, ManaBarCurrentManaWidth, height), Color.White * 0.7f);
+            spriteBatch.Draw(ResourceBarBackgroundTexture, new Rectangle(resourceX, resourceY, width, height), Color.White * 0.5f);
+            spriteBatch.Draw(ResourceBarCurrentResourceTexture, new Rectangle(resourceX, resourceY, ResourceBarCurrentResourceWidth, height), Color.White * 0.7f);
 
             //Draw HP ratio
             string HealthText = (int)player.CurrentHealth + "/" + player.Health;
@@ -170,14 +182,14 @@ namespace Dungeon_Crawler
             spriteBatch.DrawString(font, HealthText, new Vector2(hpX + (float)width / 2 - HealthTextOffsetFromCenter.X / 2 * 0.75f / scale, hpY), Color.White, 0.0f, Vector2.One, 0.75f / scale, SpriteEffects.None, Layers.Text);
 
             //Draw mana ratio
-            string ManaText = (int)player.CurrentMana + "/" + player.Mana;
+            string ManaText = (int)player.CurrentResource + "/" + player.Resource;
             Vector2 ManaTextOffsetFromCenter = font.MeasureString(ManaText);
-            spriteBatch.DrawString(font, ManaText, new Vector2(manaX + (float)width / 2 - ManaTextOffsetFromCenter.X / 2 * 0.75f / scale, manaY), Color.White, 0.0f, Vector2.One, 0.75f / scale, SpriteEffects.None, Layers.Text);
+            spriteBatch.DrawString(font, ManaText, new Vector2(resourceX + (float)width / 2 - ManaTextOffsetFromCenter.X / 2 * 0.75f / scale, resourceY), Color.White, 0.0f, Vector2.One, 0.75f / scale, SpriteEffects.None, Layers.Text);
 
             HealthBarBackgroundTexture.Dispose();
             HealthBarCurrentHealthTexture.Dispose();
-            ManaBarBackgroundTexture.Dispose();
-            ManaBarCurrentManaTexture.Dispose();
+            ResourceBarBackgroundTexture.Dispose();
+            ResourceBarCurrentResourceTexture.Dispose();
         }
 
         internal void addLevelMananger(LevelManager levelManager)

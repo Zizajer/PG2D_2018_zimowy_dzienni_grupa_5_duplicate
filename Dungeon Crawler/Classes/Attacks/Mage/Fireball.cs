@@ -1,10 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dungeon_Crawler
 {
@@ -33,10 +29,9 @@ namespace Dungeon_Crawler
             Accuracy = 100;
             CriticalHitProbability = 10;
             FreezeProbability = 0;
-            BurnProbability = 25;
+            BurnProbability = 5;
             IsSpecial = true;
             ManaCost = 10;
-
             Range = 3;
             VanishDelay = 0;
         }

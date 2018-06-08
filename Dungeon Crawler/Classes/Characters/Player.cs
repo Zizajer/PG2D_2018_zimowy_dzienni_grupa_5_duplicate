@@ -11,10 +11,10 @@ namespace Dungeon_Crawler
 {
     public abstract class Player : Character
     {
-        public float Mana { get; set; }
-        public float CurrentMana { get; set; }
-        public int CurrentManaPercent { get { return ((int)(CurrentMana / (double)Mana * 100)); } }
-        public float ManaRegenerationFactor { get; set; }
+        public float Resource { get; set; }
+        public float CurrentResource { get; set; }
+        public int CurrentResourcePercent { get { return ((int)(CurrentResource / (double)Resource * 100)); } }
+        public float ResourceRegenerationFactor { get; set; }
 
         public int teleportCost = 10;
 
@@ -43,9 +43,6 @@ namespace Dungeon_Crawler
         public Player(ContentManager content, int cellSize, int playerCurrentMapLevel, string name)
         {
             Level = 1;
-            Speed = 4f; // TODO: move it to calculateStatistics();
-            CurrentMana = Mana = 100; // TODO: move it to calculateStatistics();
-            ManaRegenerationFactor = 0.99f; //0.15 //its 0.99 for testing
             calculateStatistics();
             currentActionState = ActionState.Standing;
             currentHealthState = HealthState.Normal;
@@ -74,16 +71,6 @@ namespace Dungeon_Crawler
             BaseAttack = new Pound();
             ProjectileAttack = new ShootArrow();
             UnTargetedAttack = new Annihilation();
-        }
-
-        public override void calculateStatistics()
-        {
-            Health = CurrentHealth = 70 + Level * 10;
-            Defense = 15 + Level * 3;
-            SpDefense = 70 + Level * 5;
-            Attack = (int)Math.Floor(70 + Level * 2.5);
-            SpAttack = 70 + Level * 3;
-            //Speed = todo..
         }
 
         public abstract void BasicAttack(Level level);
@@ -136,7 +123,7 @@ namespace Dungeon_Crawler
                 CurrentCell = level.map.GetCell(CellX, CellY);
             }
 
-            if (CurrentMana < 100) CurrentMana = CurrentMana + ManaRegenerationFactor;
+            ManageResource();
 
             if (currentHealthState != HealthState.Freeze)
             {
@@ -150,7 +137,7 @@ namespace Dungeon_Crawler
                     {
                         currentDirection = GetDirection();
                     }
-                    
+
                     if (currentDirection != (int)Directions.None)
                     {
                         RogueSharp.Cell futureNextCell = Collision.getCellFromDirection(CurrentCell, currentDirection, level);
@@ -224,6 +211,8 @@ namespace Dungeon_Crawler
                 Velocity = Vector2.Zero;
             }
         }
+
+        public abstract void ManageResource();
 
         public virtual Directions GetDirection()
         {
