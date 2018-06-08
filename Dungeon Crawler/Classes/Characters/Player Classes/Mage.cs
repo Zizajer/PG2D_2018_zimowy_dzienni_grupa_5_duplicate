@@ -1,0 +1,125 @@
+﻿using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System;
+using RoyT.AStar;
+
+namespace Dungeon_Crawler
+{
+    class Mage : Player
+    {
+        public Mage(ContentManager content, int cellSize, int playerCurrentMapLevel, string name) : base(content, cellSize, playerCurrentMapLevel, name)
+        {
+        }
+        public override void setAttacks()
+        {
+            ProjectileAttack = new Fireball();
+            UnTargetedAttack = new EnergyBeam();
+        }
+        public override void BasicAttack(Level level)
+        {
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed && pastButton.LeftButton == ButtonState.Released)
+            {
+                if (CurrentMana > ProjectileAttack.ManaCost)
+                {
+                    MouseState mouse = Mouse.GetState();
+                    Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
+                    Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
+                    ProjectileAttack.Use(this, mousePos);
+                }
+                else
+                {
+                    Global.Gui.WriteToConsole("Not enough mana");
+                }
+            }
+            pastButton = Mouse.GetState();
+        }
+        public override void SecondaryAttack(Level level)
+        {
+            if (Mouse.GetState().RightButton == ButtonState.Pressed && pastButton2.RightButton == ButtonState.Released)
+            {
+                if (CurrentMana > UnTargetedAttack.ManaCost)
+                {
+                    UnTargetedAttack.Use(this);
+                    CurrentMana -= UnTargetedAttack.ManaCost;
+                }
+                else
+                {
+                    Global.Gui.WriteToConsole("Not enough mana");
+                }
+            }
+            pastButton2 = Mouse.GetState();
+        }
+        public void Abillity1(Level level, GraphicsDevice graphicsDevice) //TELEPORT NOT WORKING YET
+        {
+            if (Mouse.GetState().RightButton == ButtonState.Pressed && pastButton.RightButton == ButtonState.Released)
+            {
+                if (CurrentMana > teleportCost)
+                {
+                    MouseState mouse = Mouse.GetState();
+                    Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
+                    Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
+
+                    int mx = (int)Math.Floor(mousePos.X / level.cellSize);
+                    int my = (int)Math.Floor(mousePos.Y / level.cellSize);
+
+                    if (currentDirection != Directions.None)
+                    {
+                        Global.Gui.WriteToConsole("Can't teleport while moving");
+                        return;
+                    }
+                    if (mx < 0 || mx >= level.map.Width || my < 0 || my >= level.map.Height)
+                        return;
+                    if (level.grid.GetCellCost(new Position(mx, my)) == 1.0f)
+                    {
+                        //play blue particle
+                        Global.CombatManager.SetAnimation("Teleportation", "MagicAnim", CellX, CellY);
+                        level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
+                        level.grid.SetCellCost(new Position(mx, my), 5.0f);
+                        mousePos.X = mx * level.cellSize + level.cellSize / 2 - getWidth() / 2;
+                        mousePos.Y = my * level.cellSize + level.cellSize / 2 - getHeight() / 2;
+                        Position = mousePos;
+                        //change player facing when ,,leaving tp"
+                        if (mx > CellX)
+                        {
+                            _animationManager.Play(_animations["WalkRight"]);
+                            currentFaceDirection = FaceDirections.Right;
+                        }
+                        else if (mx < CellX)
+                        {
+                            _animationManager.Play(_animations["WalkLeft"]);
+                            currentFaceDirection = FaceDirections.Left;
+                        }
+                        else
+                        {
+                            if (my > CellY)
+                            {
+                                _animationManager.Play(_animations["WalkDown"]);
+                                currentFaceDirection = FaceDirections.Down;
+                            }
+                            else
+                            {
+                                _animationManager.Play(_animations["WalkUp"]);
+                                currentFaceDirection = FaceDirections.Up;
+                            }
+                        }
+                        //play red particle
+                        Global.CombatManager.SetAnimation("Teleportation2", "MagicAnim2", mx, my);
+                        CurrentMana = CurrentMana - teleportCost;
+                        Global.Camera.CenterOn(Center);
+                    }
+                    else
+                    {
+                        Global.Gui.WriteToConsole("Can't teleport there");
+                    }
+                }
+                else
+                {
+                    Global.Gui.WriteToConsole("Not enough mana");
+                }
+            }
+            pastButton = Mouse.GetState();
+        }
+    }
+}

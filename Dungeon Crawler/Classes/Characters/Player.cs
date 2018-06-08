@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Dungeon_Crawler
 {
-    public class Player : Character
+    public abstract class Player : Character
     {
         public float Mana { get; set; }
         public float CurrentMana { get; set; }
@@ -17,31 +17,35 @@ namespace Dungeon_Crawler
         public float ManaRegenerationFactor { get; set; }
 
         public int teleportCost = 10;
-        public Dictionary<string, Animation> _animationsExori;
-        public int maxFireballsOnScreen = 20;
+
         public MouseState mouse;
         public float rotation;
         public int CurrentMapLevel { get; set; }
-        KeyboardState pastKey;
-        KeyboardState pastKey2;
-        MouseState pastButton;
-        MouseState pastButton2;
-        ContentManager content;
 
-        float actionTimer = 0;
-        float timeBetweenActions=0.4f;
+        public KeyboardState pastKey; //1
+        public KeyboardState pastKey2; //2
+        public KeyboardState pastKey3; //3
+        public KeyboardState pastKey4; //CTRL
+
+        public MouseState pastButton; //LMB
+        public MouseState pastButton2; //RMB
+        public ContentManager content;
+
+        public float actionTimer = 0;
+        public float timeBetweenActions =0.4f;
 
         //Attacks
-        ICharacterTargetedAttack BaseAttack;
-        IPositionTargetedAttack ProjectileAttack;
-        IUnTargetedAttack UnTargetedAttack;
+        public ICharacterTargetedAttack BaseAttack;
+        public IPositionTargetedAttack ProjectileAttack;
+        public IPositionTargetedAttack ProjectileAttack2;
+        public IUnTargetedAttack UnTargetedAttack;
 
         public Player(ContentManager content, int cellSize, int playerCurrentMapLevel, string name)
         {
             Level = 1;
             Speed = 4f; // TODO: move it to calculateStatistics();
             CurrentMana = Mana = 100; // TODO: move it to calculateStatistics();
-            ManaRegenerationFactor = 1.15f; //0.15
+            ManaRegenerationFactor = 0.99f; //0.15 //its 0.99 for testing
             calculateStatistics();
             currentActionState = ActionState.Standing;
             currentHealthState = HealthState.Normal;
@@ -62,6 +66,11 @@ namespace Dungeon_Crawler
             Inventory = new List<Item>();
 
             //Set attacks
+            setAttacks();
+        }
+
+        public virtual void setAttacks()
+        {
             BaseAttack = new Pound();
             ProjectileAttack = new ShootArrow();
             UnTargetedAttack = new Annihilation();
@@ -77,207 +86,39 @@ namespace Dungeon_Crawler
             //Speed = todo..
         }
 
-        public void UseProjectileAttack(Level level)
+        public abstract void BasicAttack(Level level);
+        public abstract void SecondaryAttack(Level level);
+
+        public bool ChangeDirection(Level level)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Space) && pastKey.IsKeyUp(Keys.Space))
+            if (Keyboard.GetState().IsKeyDown(Keys.LeftControl))
             {
-                if (level.Projectiles.Count() < maxFireballsOnScreen && CurrentMana> ProjectileAttack.ManaCost)
+                if (Keyboard.GetState().IsKeyDown(Keys.W))
                 {
-                    MouseState mouse = Mouse.GetState();
-                    Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
-                    Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
-                    ProjectileAttack.Use(this, mousePos);
-                    CurrentMana -= ProjectileAttack.ManaCost; 
+                    _animationManager.Play(_animations["WalkUp"]);
+                    currentFaceDirection = FaceDirections.Up;
+                    return true;
                 }
-                else
+                if (Keyboard.GetState().IsKeyDown(Keys.S))
                 {
-                    Global.Gui.WriteToConsole("Not enough mana");
+                    _animationManager.Play(_animations["WalkDown"]);
+                    currentFaceDirection = FaceDirections.Down;
+                    return true;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.A))
+                {
+                    _animationManager.Play(_animations["WalkLeft"]);
+                    currentFaceDirection = FaceDirections.Left;
+                    return true;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.D))
+                {
+                    _animationManager.Play(_animations["WalkRight"]);
+                    currentFaceDirection = FaceDirections.Right;
+                    return true;
                 }
             }
-            pastKey = Keyboard.GetState();
-        }
-
-        public void Teleport(Level level,GraphicsDevice graphicsDevice)
-        {
-            if (Mouse.GetState().RightButton == ButtonState.Pressed && pastButton.RightButton == ButtonState.Released)
-            {
-                if (CurrentMana > teleportCost)
-                {
-                    MouseState mouse = Mouse.GetState();
-                    Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
-                    Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
-
-                    int mx = (int)Math.Floor(mousePos.X / level.cellSize);
-                    int my = (int)Math.Floor(mousePos.Y / level.cellSize);
-
-                    if (currentDirection != Directions.None)
-                    {
-                        Global.Gui.WriteToConsole("Can't teleport while moving");
-                        return;
-                    }
-                    if (mx < 0 || mx >= level.map.Width || my < 0 || my >= level.map.Height)
-                        return;
-                    if (level.grid.GetCellCost(new Position(mx,my))==1.0f)
-                    {
-                        //play blue particle
-                        Global.CombatManager.SetAnimation("Teleportation", "MagicAnim", CellX, CellY);
-                        level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
-                        level.grid.SetCellCost(new Position(mx, my), 5.0f);
-                        mousePos.X = mx * level.cellSize + level.cellSize / 2 - getWidth() / 2;
-                        mousePos.Y = my * level.cellSize + level.cellSize / 2 - getHeight() / 2;
-                        Position = mousePos;
-                        //change player facing when ,,leaving tp"
-                        if (mx > CellX)
-                        {
-                            _animationManager.Play(_animations["WalkRight"]);
-                        }
-                        else if(mx < CellX)
-                        {
-                            _animationManager.Play(_animations["WalkLeft"]);
-                        }
-                        else
-                        {
-                            if (my > CellY)
-                            {
-                                _animationManager.Play(_animations["WalkDown"]);
-                            }
-                            else
-                            {
-                                _animationManager.Play(_animations["WalkUp"]);
-                            }
-                        }
-                        //play red particle
-                        Global.CombatManager.SetAnimation("Teleportation2", "MagicAnim2", mx, my);
-                        CurrentMana = CurrentMana - teleportCost;
-                        Global.Camera.CenterOn(Center);
-                    }
-                    else
-                    {
-                        Global.Gui.WriteToConsole("Can't teleport there");
-                    }
-                }
-                else
-                {
-                    Global.Gui.WriteToConsole("Not enough mana");
-                }
-            }
-            pastButton = Mouse.GetState();
-        }
-
-        public void AutoAttack(Level level, GraphicsDevice graphicsDevice, GameTime gameTime)
-        {
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed && pastButton2.LeftButton == ButtonState.Released)
-            {
-                if (actionTimer > timeBetweenActions)
-                {
-                    MouseState mouse = Mouse.GetState();
-                    Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
-                    Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
-                    int mx = (int)Math.Floor(mousePos.X / level.cellSize);
-                    int my = (int)Math.Floor(mousePos.Y / level.cellSize);
-
-                    if (mx < 0 || mx >= level.map.Width || my < 0 || my >= level.map.Height)
-                        return;
-
-                    if (level.isBossLevel)
-                    {
-                        if (Global.CombatManager.IsEnemyAt(mx, my))
-                        {
-                            Character enemy = Global.CombatManager.EnemyAt(mx, my);
-                            if (Global.CombatManager.DistanceBetween2Points(CellX, CellY, mx, my) <= 1)
-                            {
-                                BaseAttack.Use(this, enemy);
-                                actionTimer = 0;
-                            }
-                            else
-                            {
-                                Global.Gui.WriteToConsole("You are too far away from this enemy");
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            Global.Gui.WriteToConsole("There is no enemy here");
-                            return;
-                        }
-
-                    }
-                    else
-                    {
-                        if (Global.CombatManager.IsEnemyAt(mx, my))
-                        {
-                            Character enemy = Global.CombatManager.EnemyAt(mx, my);
-                            if (Global.CombatManager.DistanceBetween2Points(CellX,CellY,mx,my) <= 1)
-                            {
-                                BaseAttack.Use(this, enemy);
-                                actionTimer = 0;
-                            }
-                            else
-                            {
-                                Global.Gui.WriteToConsole("You are too far away from this enemy");
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            Global.Gui.WriteToConsole("There is no enemy here");
-                            return;
-                        }
-                    }   
-                }
-                else
-                {
-                    Global.Gui.WriteToConsole("Cant attack yet");
-                }
-            }
-            pastButton2 = Mouse.GetState();
-        }
-
-        public void UseUnTargetedAttack(Level level, GraphicsDevice graphicsDevice, GameTime gameTime)
-        {
-            if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && pastKey2.IsKeyUp(Keys.LeftShift))
-            {
-                if (CurrentMana > UnTargetedAttack.ManaCost)
-                {
-                    UnTargetedAttack.Use(this);
-                    CurrentMana = CurrentMana - UnTargetedAttack.ManaCost;
-                }
-                else
-                {
-                    Global.Gui.WriteToConsole("Not enough mana");
-                }
-            }
-            pastKey2 = Keyboard.GetState();
-        }
-
-
-        public virtual Directions GetDirection()
-        {
-            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.A))
-                return Directions.TopLeft;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.D))
-                return Directions.TopRight;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.S) && Keyboard.GetState().IsKeyDown(Keys.A))
-                return Directions.BottomLeft;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.S) && Keyboard.GetState().IsKeyDown(Keys.D))
-                return Directions.BottomRight;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.W))
-                return Directions.Top;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
-                return Directions.Bottom;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-                return Directions.Left;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
-                return Directions.Right;
-
-            return Directions.None;
+            return false;
         }
 
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
@@ -301,7 +142,15 @@ namespace Dungeon_Crawler
             {
                 if (currentActionState == ActionState.Standing)
                 {
-                    currentDirection = GetDirection();
+                    if (ChangeDirection(level))
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        currentDirection = GetDirection();
+                    }
+                    
                     if (currentDirection != (int)Directions.None)
                     {
                         RogueSharp.Cell futureNextCell = Collision.getCellFromDirection(CurrentCell, currentDirection, level);
@@ -319,7 +168,6 @@ namespace Dungeon_Crawler
                                 //there is a collision in current direction
                                 //we check if it is one of joined directions (top-left top-right bottom-left bottom-right)
                                 //we try separate direction (for top-left we should try top, then left)
-
 
                                 List<Character.Directions> dirList = Collision.checkIfOneOfDoubleDirectionsIsOk(CurrentCell, currentDirection, level, graphicsDevice);
                                 if (dirList.Count > 0)
@@ -351,10 +199,9 @@ namespace Dungeon_Crawler
                             Global.Gui.WriteToConsole("Cant go there");
                         }
                     }
-                    Teleport(level, graphicsDevice);
-                    UseProjectileAttack(level);
-                    AutoAttack(level, graphicsDevice, gameTime);
-                    UseUnTargetedAttack(level, graphicsDevice, gameTime);
+                    //Abillity1(level, graphicsDevice); //currently in mage class
+                    SecondaryAttack(level);
+                    BasicAttack(level);
                 }
                 else //Moving
                 {
@@ -367,17 +214,46 @@ namespace Dungeon_Crawler
                         MoveToCenterOfGivenCell(NextCell, level, graphicsDevice);
                         Global.Camera.CenterOn(Center);
                     }
-                    UseProjectileAttack(level);
-                    UseUnTargetedAttack(level, graphicsDevice, gameTime);
                 }
+                SecondaryAttack(level);
+                BasicAttack(level);
 
                 SetAnimations();
                 _animationManager.Update(gameTime);
                 Position += Velocity;
                 Velocity = Vector2.Zero;
             }
-
         }
+
+        public virtual Directions GetDirection()
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.A))
+                return Directions.TopLeft;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.D))
+                return Directions.TopRight;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.S) && Keyboard.GetState().IsKeyDown(Keys.A))
+                return Directions.BottomLeft;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.S) && Keyboard.GetState().IsKeyDown(Keys.D))
+                return Directions.BottomRight;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.W))
+                return Directions.Top;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.S))
+                return Directions.Bottom;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.A))
+                return Directions.Left;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.D))
+                return Directions.Right;
+
+            return Directions.None;
+        }
+
         public string getItems()
         {
             if (Inventory.Count == 0) return "Inventory is empty";

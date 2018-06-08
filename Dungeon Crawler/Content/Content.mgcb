@@ -85,6 +85,18 @@
 /processorParam:TextureFormat=Color
 /build:enemy/DemonOak/BossAlive.png
 
+#begin enemy/Dragon/BossAlive.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:enemy/Dragon/BossAlive.png
+
 #begin enemy/Skeleton/WalkingDown.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -572,6 +584,18 @@
 /processorParam:TextureFormat=Color
 /build:spells/BigIceball.png
 
+#begin spells/EnergyAttackAnim.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:spells/EnergyAttackAnim.png
+
 #begin spells/Fireball.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -608,6 +632,18 @@
 /processorParam:TextureFormat=Color
 /build:spells/MagicAnim.png
 
+#begin spells/PiercingArrow.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:spells/PiercingArrow.png
+
 #begin spells/MagicAnim2.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -620,3 +656,14 @@
 /processorParam:TextureFormat=Color
 /build:spells/MagicAnim2.png
 
+#begin spells/ThrowingWeapon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:spells/ThrowingWeapon.png

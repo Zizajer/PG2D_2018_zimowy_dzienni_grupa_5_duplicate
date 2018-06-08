@@ -103,6 +103,18 @@ namespace Dungeon_Crawler
             return dirList;
         }
 
+        public static bool isCollidingWithPortal(Sprite sprite, Level level, GraphicsDevice graphicsDevice)
+        {
+            Portal portal = level.portal;
+            {
+                if (Vector2.Distance(sprite.Center, portal.Center) < level.cellSize)
+                {
+                    if (checkCollision(sprite, portal, graphicsDevice))
+                        return true;
+                }
+            }
+            return false;
+        }
 
         public static bool isCollidingWithRocks(Rectangle characterRectangle, Character character, Level level, GraphicsDevice graphicsDevice)
         {

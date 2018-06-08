@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Diagnostics;
 
 namespace Dungeon_Crawler
 {
@@ -37,6 +36,7 @@ namespace Dungeon_Crawler
 
             Global.Gui = new GUI(graphics, Content);
 
+            //Global.playerClass = Global.classes[2];
             Global.playerClass =Global.classes[Global.random.Next(Global.classes.Length)];
             levelManager = new LevelManager(Content);
 

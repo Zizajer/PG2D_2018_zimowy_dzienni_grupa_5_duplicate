@@ -33,7 +33,8 @@ namespace Dungeon_Crawler
         public Dictionary<string, Animation> _animationsBlob;
         public Dictionary<string, Animation> _animationsSkeleton;
         public Dictionary<string, Animation> _animationsZombie;
-        public Dictionary<string, Animation> _animationsBoss;
+        public Dictionary<string, Animation> _animationsDemonOak;
+        public Dictionary<string, Animation> _animationsDragon;
 
         public List<String> allItemsNames;
 
@@ -43,6 +44,7 @@ namespace Dungeon_Crawler
 
         List<String> BlobNamesList;
         List<String> DemonOakNamesList;
+        List<String> DragonNamesList;
         List<String> SkeletonNamesList;
         List<String> ZombieNamesList;
 
@@ -77,9 +79,13 @@ namespace Dungeon_Crawler
                     {"WalkLeft",new Animation(Content.Load<Texture2D>("enemy/Zombie/WalkingLeft"),3 )},
                     {"WalkRight",new Animation(Content.Load<Texture2D>("enemy/Zombie/WalkingRight"),3 )}
                 };
-            _animationsBoss = new Dictionary<string, Animation>()
+            _animationsDemonOak = new Dictionary<string, Animation>()
                 {
                     {"BossAlive",new Animation(Content.Load<Texture2D>("enemy/DemonOak/BossAlive"),3 )}
+                };
+            _animationsDragon = new Dictionary<string, Animation>()
+                {
+                    {"BossAlive",new Animation(Content.Load<Texture2D>("enemy/Dragon/BossAlive"),3 )}
                 };
 
             allItemsNames = new List<String>
@@ -93,6 +99,7 @@ namespace Dungeon_Crawler
             {
                 BlobNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Blob.txt"));
                 DemonOakNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\DemonOak.txt"));
+                DragonNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Dragon.txt"));
                 SkeletonNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Skeleton.txt"));
                 ZombieNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Zombie.txt"));
             }
@@ -104,12 +111,33 @@ namespace Dungeon_Crawler
             CreateNormalLevel();
             Cell randomCell = GetRandomEmptyCell(levels[0].map, levels[0].occupiedCells, levels[0].grid);
 
-            player =
-             new Player(Content, cellSize, 0, Global.playerName+" the "+ Global.playerClass.ToString())
-             {
-                 Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
-             };
+            if (Global.playerClass.Equals("Warrior"))
+            {
+                player =
+                new Warrior(Content, cellSize, 0, Global.playerName + " the " + Global.playerClass)
+                {
+                    Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
+                };
 
+            }
+            else if(Global.playerClass.Equals("Ranger"))
+            {
+                player =
+                new Ranger(Content, cellSize, 0, Global.playerName + " the " + Global.playerClass)
+                {
+                    Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
+                };
+            }
+            else
+            {
+                player =
+                new Mage(Content, cellSize, 0, Global.playerName + " the " + Global.playerClass)
+                {
+                    Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
+                };
+            }
+
+            
             levels[0].grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
             levels[0].addPlayer(player);
             Global.Camera.CenterOn(randomCell);
@@ -192,17 +220,32 @@ namespace Dungeon_Crawler
                 int numberOfItems = Global.random.Next(2, 5);
                 BossInventory = CreateItemsList(Content, numberOfItems, allItemsNames);
             }
-
-
-            float timeBetweenActions = 1f;
-            Character tempBoss =
-                new Boss(_animationsBoss, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
-                {
-                    Name = DemonOakNamesList[Global.random.Next(DemonOakNamesList.Count)],
-                    Position = new Vector2((randomCell.X * cellSize), (randomCell.Y * cellSize))
-                };
-            tempBoss.TakeItems(BossInventory);
-            enemies.Add(tempBoss);
+        
+            int whichBossToSpawn = Global.random.Next(2);
+            if (whichBossToSpawn == 0)
+            {
+                float timeBetweenActions = 1f; //we should move that to each boss class but w/e
+                Character tempBoss =
+                    new Dragon(_animationsDragon, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
+                    {
+                        Name = DragonNamesList[Global.random.Next(DragonNamesList.Count)],
+                        Position = new Vector2((randomCell.X * cellSize), (randomCell.Y * cellSize))
+                    };
+                enemies.Add(tempBoss);
+                tempBoss.TakeItems(BossInventory);
+            }
+            else
+            {
+                float timeBetweenActions = 1f; //we should move that to each boss class but w/e
+                Character tempBoss =
+                    new DemonOak(_animationsDemonOak, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
+                    {
+                        Name = DemonOakNamesList[Global.random.Next(DemonOakNamesList.Count)],
+                        Position = new Vector2((randomCell.X * cellSize), (randomCell.Y * cellSize))
+                    };
+                enemies.Add(tempBoss);
+                tempBoss.TakeItems(BossInventory);
+            }
 
             Global.Camera.setParams(map.Width, map.Height, cellSize);
 
@@ -301,10 +344,10 @@ namespace Dungeon_Crawler
                     enemyName = "Blob";
 
                     Character tempEnemy =
-                    new Enemy(_animationsBlob, cellSize, level, speed, timeBetweenActions, map, enemyName)
+                    new Blob(_animationsBlob, cellSize, level, speed, timeBetweenActions, map, enemyName)
                     {
                         Name = BlobNamesList[Global.random.Next(BlobNamesList.Count)],
-                        Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
+                        Position = new Vector2((randomCell.X * cellSize + cellSize / 4), (randomCell.Y * cellSize) + cellSize / 4)
                     };
                     tempEnemy.TakeItems(EnemyInventory);
                     enemies.Add(tempEnemy);
@@ -315,7 +358,7 @@ namespace Dungeon_Crawler
                     enemyName = "Skeleton";
 
                     Character tempEnemy =
-                    new Enemy(_animationsSkeleton, cellSize, level, speed, timeBetweenActions, map, enemyName)
+                    new Skeleton(_animationsSkeleton, cellSize, level, speed, timeBetweenActions, map, enemyName)
                     {
                         Name = SkeletonNamesList[Global.random.Next(SkeletonNamesList.Count)],
                         Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
@@ -329,7 +372,7 @@ namespace Dungeon_Crawler
                     enemyName = "Zombie";
 
                     Character tempEnemy =
-                    new Enemy(_animationsZombie, cellSize, level, speed, timeBetweenActions, map, enemyName)
+                    new Zombie(_animationsZombie, cellSize, level, speed, timeBetweenActions, map, enemyName)
                     {
                         Name = ZombieNamesList[Global.random.Next(ZombieNamesList.Count)],
                         Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)

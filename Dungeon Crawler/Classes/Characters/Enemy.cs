@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Dungeon_Crawler
 {
-    public class Enemy : Character
+    public abstract class Enemy : Character
     {
         float timeBetweenActions;
         float timer;

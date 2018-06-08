@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Dungeon_Crawler
 {
-    public class Boss : Character
+    public abstract class Boss : Character
     {
         public List<Cell> occupyingCells;
         public new enum ActionState { Standby, Attacking};
@@ -20,7 +20,7 @@ namespace Dungeon_Crawler
         Map map;
 
         //Attacks
-        IPositionTargetedAttack ProjectileAttack;
+        public IPositionTargetedAttack ProjectileAttack;
 
         public Boss(Dictionary<string, Animation> _animations, int cellSize, int level, float timeBetweenActions, Map map, List<Cell> cells)
         {
@@ -41,7 +41,11 @@ namespace Dungeon_Crawler
 
             Inventory = new List<Item>();
 
-            //Set attacks
+            SetAttack();
+        }
+
+        public virtual void SetAttack()
+        {
             ProjectileAttack = new BigFireballCanonade();
         }
 
