@@ -31,6 +31,7 @@ namespace Dungeon_Crawler
         public bool BurnInvulnerability { get; set; } = false;
 
         public Item(ContentManager content, Vector2 position) : base(position) { }
+        public Item(ContentManager content) { }
 
         public void ApplyEffect(Character owner)
         {

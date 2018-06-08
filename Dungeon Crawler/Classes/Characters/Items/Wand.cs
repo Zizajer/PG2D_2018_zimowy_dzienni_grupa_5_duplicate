@@ -12,6 +12,14 @@ namespace Dungeon_Crawler
     {
         public Wand(ContentManager content, Vector2 position) : base(content, position)
         {
+            Initialize(content);
+        }
+        public Wand(ContentManager content) : base(content)
+        {
+            Initialize(content);
+        }
+        private void Initialize(ContentManager content)
+        {
             Name = "Wand";
             Description = "";
             Category = "Wand";
