@@ -16,26 +16,25 @@ namespace Dungeon_Crawler
         public int CurrentManaPercent { get { return ((int)(CurrentMana / (double)Mana * 100)); } }
 
         public int teleportCost = 10;
-        public int fireballCost = 10;
-        public int exoriCost = 20;
-        public Dictionary<string, Animation> _animationsExori;
-        public int maxFireballsOnScreen = 20;
+
         public MouseState mouse;
         public float rotation;
         public List<Item> inventory { get; set; }
         public int CurrentMapLevel { get; set; }
-        KeyboardState pastKey;
-        KeyboardState pastKey2;
-        MouseState pastButton;
-        MouseState pastButton2;
-        ContentManager content;
+        public KeyboardState pastKey;
+        public KeyboardState pastKey2;
+        public KeyboardState pastKey3;
+        public MouseState pastButton; //LMB
+        public MouseState pastButton2; //RMB
+        public ContentManager content;
 
-        float actionTimer = 0;
-        float timeBetweenActions=0.4f;
+        public float actionTimer = 0;
+        public float timeBetweenActions =0.4f;
 
         //Attacks
         public ICharacterTargetedAttack BaseAttack;
         public IPositionTargetedAttack ProjectileAttack;
+        public IPositionTargetedAttack ProjectileAttack2;
         public IUnTargetedAttack UnTargetedAttack;
 
         public Player(ContentManager content, int cellSize, int playerCurrentMapLevel, string name)
@@ -82,27 +81,10 @@ namespace Dungeon_Crawler
             //Speed = todo..
         }
 
-        public void UseProjectileAttack(Level level)
-        {
-            if (Keyboard.GetState().IsKeyDown(Keys.Space) && pastKey.IsKeyUp(Keys.Space))
-            {
-                if (level.Projectiles.Count() < maxFireballsOnScreen && CurrentMana> ProjectileAttack.ManaCost)
-                {
-                    MouseState mouse = Mouse.GetState();
-                    Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
-                    Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
-                    ProjectileAttack.Use(this, mousePos);
-                    CurrentMana -= ProjectileAttack.ManaCost; 
-                }
-                else
-                {
-                    Global.Gui.WriteToConsole("Not enough mana");
-                }
-            }
-            pastKey = Keyboard.GetState();
-        }
+        public abstract void BasicAttack(Level level);
+        public abstract void SecondaryAttack(Level level);
 
-        public void Teleport(Level level,GraphicsDevice graphicsDevice)
+        public void Abillity1(Level level,GraphicsDevice graphicsDevice)
         {
             if (Mouse.GetState().RightButton == ButtonState.Pressed && pastButton.RightButton == ButtonState.Released)
             {
@@ -134,122 +116,6 @@ namespace Dungeon_Crawler
                 }
             }
             pastButton = Mouse.GetState();
-        }
-
-        public void AutoAttack(Level level, GraphicsDevice graphicsDevice, GameTime gameTime)
-        {
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed && pastButton2.LeftButton == ButtonState.Released)
-            {
-                if (actionTimer > timeBetweenActions)
-                {
-                    MouseState mouse = Mouse.GetState();
-                    Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
-                    Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
-                    int mx = (int)Math.Floor(mousePos.X / level.cellSize);
-                    int my = (int)Math.Floor(mousePos.Y / level.cellSize);
-
-                    if (mx < 0 || mx >= level.map.Width || my < 0 || my >= level.map.Height)
-                        return;
-
-                    if (level.isBossLevel)
-                    {
-                        if (Global.CombatManager.IsEnemyAt(mx, my))
-                        {
-                            Character enemy = Global.CombatManager.EnemyAt(mx, my);
-                            if (Global.CombatManager.DistanceBetween2Points(CellX, CellY, mx, my) <= 1)
-                            {
-                                BaseAttack.Use(this, enemy);
-                                actionTimer = 0;
-                            }
-                            else
-                            {
-                                Global.Gui.WriteToConsole("You are too far away from this enemy");
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            Global.Gui.WriteToConsole("There is no enemy here");
-                            return;
-                        }
-
-                    }
-                    else
-                    {
-                        if (Global.CombatManager.IsEnemyAt(mx, my))
-                        {
-                            Character enemy = Global.CombatManager.EnemyAt(mx, my);
-                            if (Global.CombatManager.DistanceBetween2Points(CellX,CellY,mx,my) <= 1)
-                            {
-                                BaseAttack.Use(this, enemy);
-                                actionTimer = 0;
-                            }
-                            else
-                            {
-                                Global.Gui.WriteToConsole("You are too far away from this enemy");
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            Global.Gui.WriteToConsole("There is no enemy here");
-                            return;
-                        }
-                    }   
-                }
-                else
-                {
-                    Global.Gui.WriteToConsole("Cant attack yet");
-                }
-            }
-            pastButton2 = Mouse.GetState();
-        }
-
-        public void UseUnTargetedAttack(Level level, GraphicsDevice graphicsDevice, GameTime gameTime)
-        {
-            if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && pastKey2.IsKeyUp(Keys.LeftShift))
-            {
-                if (CurrentMana > UnTargetedAttack.ManaCost)
-                {
-                    UnTargetedAttack.Use(this);
-                    CurrentMana = CurrentMana - UnTargetedAttack.ManaCost;
-                }
-                else
-                {
-                    Global.Gui.WriteToConsole("Not enough mana");
-                }
-            }
-            pastKey2 = Keyboard.GetState();
-        }
-
-
-        public virtual Directions GetDirection()
-        {
-            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.A))
-                return Directions.TopLeft;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.D))
-                return Directions.TopRight;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.S) && Keyboard.GetState().IsKeyDown(Keys.A))
-                return Directions.BottomLeft;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.S) && Keyboard.GetState().IsKeyDown(Keys.D))
-                return Directions.BottomRight;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.W))
-                return Directions.Top;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
-                return Directions.Bottom;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-                return Directions.Left;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
-                return Directions.Right;
-
-            return Directions.None;
         }
 
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
@@ -323,10 +189,9 @@ namespace Dungeon_Crawler
                             Global.Gui.WriteToConsole("Cant go there");
                         }
                     }
-                    Teleport(level, graphicsDevice);
-                    UseProjectileAttack(level);
-                    AutoAttack(level, graphicsDevice, gameTime);
-                    UseUnTargetedAttack(level, graphicsDevice, gameTime);
+                    //Abillity1(level, graphicsDevice);
+                    SecondaryAttack(level);
+                    BasicAttack(level);
                 }
                 else //Moving
                 {
@@ -339,8 +204,6 @@ namespace Dungeon_Crawler
                         MoveToCenterOfGivenCell(NextCell, level, graphicsDevice);
                         Global.Camera.CenterOn(Center);
                     }
-                    UseProjectileAttack(level);
-                    UseUnTargetedAttack(level, graphicsDevice, gameTime);
                 }
 
                 SetAnimations();
@@ -348,8 +211,37 @@ namespace Dungeon_Crawler
                 Position += Velocity;
                 Velocity = Vector2.Zero;
             }
-
         }
+
+        public virtual Directions GetDirection()
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.A))
+                return Directions.TopLeft;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.D))
+                return Directions.TopRight;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.S) && Keyboard.GetState().IsKeyDown(Keys.A))
+                return Directions.BottomLeft;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.S) && Keyboard.GetState().IsKeyDown(Keys.D))
+                return Directions.BottomRight;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.W))
+                return Directions.Top;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.S))
+                return Directions.Bottom;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.A))
+                return Directions.Left;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.D))
+                return Directions.Right;
+
+            return Directions.None;
+        }
+
         public string getItems()
         {
             if (inventory.Count == 0) return "Inventory is empty";

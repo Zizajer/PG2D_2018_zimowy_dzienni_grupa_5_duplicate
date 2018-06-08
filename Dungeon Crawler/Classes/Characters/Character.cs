@@ -11,6 +11,8 @@ namespace Dungeon_Crawler
         public enum ActionState { Moving, Standing };
         public enum HealthState { Normal, Freeze, Burn };
         public enum Directions { None, Top, Bottom, Left, Right, TopLeft, TopRight, BottomLeft, BottomRight};
+        public enum FaceDirections { Up, Down, Left, Right};
+        public FaceDirections currentFaceDirection;
         public Directions currentDirection;
         public ActionState currentActionState;
         public HealthState currentHealthState;
@@ -125,13 +127,25 @@ namespace Dungeon_Crawler
         protected virtual void SetAnimations()
         {
             if (Velocity.X > 0)
+            {
                 _animationManager.Play(_animations["WalkRight"]);
+                currentFaceDirection = FaceDirections.Right;
+            } 
             else if (Velocity.X < 0)
+            {
                 _animationManager.Play(_animations["WalkLeft"]);
+                currentFaceDirection = FaceDirections.Left;
+            }    
             else if (Velocity.Y < 0)
+            {
                 _animationManager.Play(_animations["WalkUp"]);
+                currentFaceDirection = FaceDirections.Up;
+            }    
             else if (Velocity.Y > 0)
+            {
                 _animationManager.Play(_animations["WalkDown"]);
+                currentFaceDirection = FaceDirections.Down;
+            }    
             else 
                 _animationManager.Stop();
         }
