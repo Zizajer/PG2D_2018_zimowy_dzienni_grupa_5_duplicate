@@ -24,7 +24,7 @@ namespace Dungeon_Crawler
         {
             Name = "Pound";
             Power = 25;
-            Accuracy = 100;
+            Accuracy = 95;
             CriticalHitProbability = 15;
             FreezeProbability = 0;
             BurnProbability = 0;
@@ -44,6 +44,7 @@ namespace Dungeon_Crawler
             }
             else
             {
+                Global.Gui.WriteToConsole(attacker.Name+" missed "+ Name);
                 return false; //Attack missed
             }
         }

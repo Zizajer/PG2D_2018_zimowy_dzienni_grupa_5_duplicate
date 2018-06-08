@@ -34,7 +34,7 @@ namespace Dungeon_Crawler
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            _animationManager.Draw(spriteBatch);
+            _animationManager.Draw(spriteBatch,Layers.Text);
         }
 
         public void Update(GameTime gameTime)

@@ -110,17 +110,50 @@ namespace Dungeon_Crawler
                     int mx = (int)Math.Floor(mousePos.X / level.cellSize);
                     int my = (int)Math.Floor(mousePos.Y / level.cellSize);
 
+                    if (currentDirection != Directions.None)
+                    {
+                        Global.Gui.WriteToConsole("Can't teleport while moving");
+                        return;
+                    }
                     if (mx < 0 || mx >= level.map.Width || my < 0 || my >= level.map.Height)
                         return;
                     if (level.grid.GetCellCost(new Position(mx,my))==1.0f)
                     {
+                        //play blue particle
+                        Global.CombatManager.SetAnimation("Teleportation", "MagicAnim", CellX, CellY);
                         level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
                         level.grid.SetCellCost(new Position(mx, my), 5.0f);
                         mousePos.X = mx * level.cellSize + level.cellSize / 2 - getWidth() / 2;
                         mousePos.Y = my * level.cellSize + level.cellSize / 2 - getHeight() / 2;
                         Position = mousePos;
+                        //change player facing when ,,leaving tp"
+                        if (mx > CellX)
+                        {
+                            _animationManager.Play(_animations["WalkRight"]);
+                        }
+                        else if(mx < CellX)
+                        {
+                            _animationManager.Play(_animations["WalkLeft"]);
+                        }
+                        else
+                        {
+                            if (my > CellY)
+                            {
+                                _animationManager.Play(_animations["WalkDown"]);
+                            }
+                            else
+                            {
+                                _animationManager.Play(_animations["WalkUp"]);
+                            }
+                        }
+                        //play red particle
+                        Global.CombatManager.SetAnimation("Teleportation2", "MagicAnim2", mx, my);
                         CurrentMana = CurrentMana - teleportCost;
                         Global.Camera.CenterOn(Center);
+                    }
+                    else
+                    {
+                        Global.Gui.WriteToConsole("Can't teleport there");
                     }
                 }
                 else

@@ -45,18 +45,18 @@
     <Compile Include="Classes\Characters\AnimationManager.cs" />
     <Compile Include="Classes\Camera\CameraManager.cs" />
     <Compile Include="Classes\Characters\AttackAnimation.cs" />
-    <Compile Include="Classes\Characters\Attacks\Annihilation.cs" />
+    <Compile Include="Classes\Characters\Attacks\Unassigned\Annihilation.cs" />
     <Compile Include="Classes\Characters\Attacks\Boss\BigFireballCanonade.cs" />
-    <Compile Include="Classes\Characters\Attacks\Exori.cs" />
-    <Compile Include="Classes\Characters\Attacks\BigFireball.cs" />
-    <Compile Include="Classes\Characters\Attacks\LPM\ShootArrow.cs" />
-    <Compile Include="Classes\Characters\Attacks\Iceball.cs" />
+    <Compile Include="Classes\Characters\Attacks\Unassigned\Exori.cs" />
+    <Compile Include="Classes\Characters\Attacks\Unassigned\BigFireball.cs" />
+    <Compile Include="Classes\Characters\Attacks\Ranger\ShootArrow.cs" />
+    <Compile Include="Classes\Characters\Attacks\Unassigned\Iceball.cs" />
     <Compile Include="Classes\Characters\Attacks\Interface\IAttack.cs" />
     <Compile Include="Classes\Characters\Attacks\Interface\ICharacterTargetedAttack.cs" />
     <Compile Include="Classes\Characters\Attacks\Interface\IUnTargetedAttack.cs" />
-    <Compile Include="Classes\Characters\Attacks\LPM\Fireball.cs" />
-    <Compile Include="Classes\Characters\Attacks\PenetratingFireball.cs" />
-    <Compile Include="Classes\Characters\Attacks\LPM\Pound.cs" />
+    <Compile Include="Classes\Characters\Attacks\Mage\Fireball.cs" />
+    <Compile Include="Classes\Characters\Attacks\Unassigned\PenetratingFireball.cs" />
+    <Compile Include="Classes\Characters\Attacks\Warrior\Pound.cs" />
     <Compile Include="Classes\Characters\Attacks\Interface\IPositionTargetedAttack.cs" />
     <Compile Include="Classes\Characters\Boss.cs" />
     <Compile Include="Classes\Characters\Character.cs" />
@@ -115,10 +115,7 @@
     <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Classes\Characters\Attacks\Ranger\" />
-    <Folder Include="Classes\Characters\Attacks\Warrior\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
