@@ -41,6 +41,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Classes\Attacks\Boss\DragonAttack.cs" />
     <Compile Include="Classes\Characters\Animation.cs" />
     <Compile Include="Classes\Characters\AnimationManager.cs" />
     <Compile Include="Classes\Camera\CameraManager.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="Classes\Attacks\LPM\Pound.cs" />
     <Compile Include="Classes\Attacks\Interface\IPositionTargetedAttack.cs" />
     <Compile Include="Classes\Characters\Boss.cs" />
+    <Compile Include="Classes\Characters\Bosses\Dragon.cs" />
     <Compile Include="Classes\Characters\Bosses\DemonOak.cs" />
     <Compile Include="Classes\Characters\Character.cs" />
     <Compile Include="Classes\Characters\Enemies\Blob.cs" />

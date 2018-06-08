@@ -4,10 +4,11 @@ using System;
 
 namespace Dungeon_Crawler
 {
-    public class DemonOak : Boss
+    public class Dragon : Boss
     {
-        public DemonOak(Dictionary<string, Animation> _animations, int cellSize, int level, float timeBetweenActions, Map map, List<Cell> cells) : base(_animations, cellSize, level, timeBetweenActions, map, cells)
-        { 
+        public Dragon(Dictionary<string, Animation> _animations, int cellSize, int level, float timeBetweenActions, Map map, List<Cell> cells) : base(_animations, cellSize, level, timeBetweenActions, map, cells)
+        {
+            timeBetweenActions = 0.2f;
         }
 
         public override void calculateStatistics()
@@ -21,7 +22,7 @@ namespace Dungeon_Crawler
         }
         public override void SetAttack()
         {
-            ProjectileAttack = new BigFireballCanonade();
+            ProjectileAttack = new DragonAttack();
         }
     }
 }

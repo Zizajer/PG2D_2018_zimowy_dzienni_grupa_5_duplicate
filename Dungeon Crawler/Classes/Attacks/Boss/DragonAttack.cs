@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Dungeon_Crawler
 {
-    public class BigFireballCanonade : IPositionTargetedAttack
+    public class DragonAttack : IPositionTargetedAttack
     {
         public string Name { get; set; }
         public int Power { get; set; }
@@ -26,9 +26,9 @@ namespace Dungeon_Crawler
 
         private Character Attacker;
 
-        public BigFireballCanonade()
+        public DragonAttack()
         {
-            Name = "Big Fireball Canonade";
+            Name = "Big Dragon Attack";
             Power = 150;
             Accuracy = 80;
             CriticalHitProbability = 15;
@@ -56,31 +56,13 @@ namespace Dungeon_Crawler
                 float rotation = (float)Math.Atan2(distanceY, distanceX);
                 Vector2 tempPosition = attacker.Center;
 
-                float rotationIncrement = 0.8f;
-                float newrotationClockwise = rotation;
-                float newrotationCounterClockwise = rotation;
                 Vector2 tempVelocity;
                 Projectile newProjectile;
 
-                tempVelocity = new Vector2((float)Math.Cos(rotation) * 2f, ((float)Math.Sin(rotation)) * 2f);
+                tempVelocity = new Vector2((float)Math.Cos(rotation)*2.5f, ((float)Math.Sin(rotation)*2.5f));
                 newProjectile = new Projectile(this, attacker, tempVelocity, tempPosition, ProjectileTexture, rotation, Range, VanishDelay);
 
                 Global.CombatManager.PutProjectile(newProjectile);
-
-                for (int i = 0; i < 2; i++)
-                {
-                    newrotationClockwise += rotationIncrement;
-                    tempVelocity = new Vector2((float)Math.Cos(newrotationClockwise) * 2f, ((float)Math.Sin(newrotationClockwise)) * 2f);
-                    newProjectile = new Projectile(this, attacker, tempVelocity, tempPosition, ProjectileTexture, newrotationClockwise, Range, VanishDelay);
-
-                    Global.CombatManager.PutProjectile(newProjectile);
-
-                    newrotationCounterClockwise -= rotationIncrement;
-                    tempVelocity = new Vector2((float)Math.Cos(newrotationCounterClockwise) * 2f, ((float)Math.Sin(newrotationCounterClockwise)) * 2f);
-                    newProjectile = new Projectile(this, attacker, tempVelocity, tempPosition, ProjectileTexture, newrotationCounterClockwise, Range, VanishDelay);
-
-                    Global.CombatManager.PutProjectile(newProjectile);
-                }
 
                 return true; //Attack hit
             }

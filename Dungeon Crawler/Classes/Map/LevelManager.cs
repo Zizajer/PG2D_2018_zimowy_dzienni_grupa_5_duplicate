@@ -33,7 +33,8 @@ namespace Dungeon_Crawler
         public Dictionary<string, Animation> _animationsBlob;
         public Dictionary<string, Animation> _animationsSkeleton;
         public Dictionary<string, Animation> _animationsZombie;
-        public Dictionary<string, Animation> _animationsBoss;
+        public Dictionary<string, Animation> _animationsDemonOak;
+        public Dictionary<string, Animation> _animationsDragon;
 
         public List<Texture2D> allItems;
         public List<String> allItemsNames;
@@ -44,6 +45,7 @@ namespace Dungeon_Crawler
 
         List<String> BlobNamesList;
         List<String> DemonOakNamesList;
+        List<String> DragonNamesList;
         List<String> SkeletonNamesList;
         List<String> ZombieNamesList;
 
@@ -78,9 +80,13 @@ namespace Dungeon_Crawler
                     {"WalkLeft",new Animation(Content.Load<Texture2D>("enemy/Zombie/WalkingLeft"),3 )},
                     {"WalkRight",new Animation(Content.Load<Texture2D>("enemy/Zombie/WalkingRight"),3 )}
                 };
-            _animationsBoss = new Dictionary<string, Animation>()
+            _animationsDemonOak = new Dictionary<string, Animation>()
                 {
                     {"BossAlive",new Animation(Content.Load<Texture2D>("enemy/DemonOak/BossAlive"),3 )}
+                };
+            _animationsDragon = new Dictionary<string, Animation>()
+                {
+                    {"BossAlive",new Animation(Content.Load<Texture2D>("enemy/Dragon/BossAlive"),3 )}
                 };
 
             allItems = new List<Texture2D>(3);
@@ -100,6 +106,7 @@ namespace Dungeon_Crawler
             {
                 BlobNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Blob.txt"));
                 DemonOakNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\DemonOak.txt"));
+                DragonNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Dragon.txt"));
                 SkeletonNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Skeleton.txt"));
                 ZombieNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Zombie.txt"));
             }
@@ -192,14 +199,29 @@ namespace Dungeon_Crawler
 
             occupiedCells.Union(bossOccupyingCells);
 
-            float timeBetweenActions = 1f;
-            Character tempBoss =
-                new DemonOak(_animationsBoss, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
-                {
-                    Name = DemonOakNamesList[Global.random.Next(DemonOakNamesList.Count)],
-                    Position = new Vector2((randomCell.X * cellSize), (randomCell.Y * cellSize))
-                };
+            int whichBossToSpawn = Global.random.Next(2);
+            if (whichBossToSpawn == 0)
+            {
+                float timeBetweenActions = 1f; //we should move that to each boss class but w/e
+                Character tempBoss =
+                    new Dragon(_animationsDragon, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
+                    {
+                        Name = DragonNamesList[Global.random.Next(DragonNamesList.Count)],
+                        Position = new Vector2((randomCell.X * cellSize), (randomCell.Y * cellSize))
+                    };
                 enemies.Add(tempBoss);
+            }
+            else
+            {
+                float timeBetweenActions = 1f; //we should move that to each boss class but w/e
+                Character tempBoss =
+                    new DemonOak(_animationsDemonOak, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
+                    {
+                        Name = DemonOakNamesList[Global.random.Next(DemonOakNamesList.Count)],
+                        Position = new Vector2((randomCell.X * cellSize), (randomCell.Y * cellSize))
+                    };
+                enemies.Add(tempBoss);
+            }
 
             Global.Camera.setParams(map.Width, map.Height, cellSize);
 
