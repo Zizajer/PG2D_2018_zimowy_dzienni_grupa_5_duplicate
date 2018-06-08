@@ -118,12 +118,33 @@ namespace Dungeon_Crawler
             CreateNormalLevel();
             Cell randomCell = GetRandomEmptyCell(levels[0].map, levels[0].occupiedCells, levels[0].grid);
 
-            player =
-             new Player(Content, cellSize, 0, Global.playerName+" the "+ Global.playerClass.ToString())
-             {
-                 Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
-             };
+            if (Global.playerClass.Equals("Warrior"))
+            {
+                player =
+                new Warrior(Content, cellSize, 0, Global.playerName + " the " + Global.playerClass)
+                {
+                    Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
+                };
 
+            }
+            else if(Global.playerClass.Equals("Ranger"))
+            {
+                player =
+                new Ranger(Content, cellSize, 0, Global.playerName + " the " + Global.playerClass)
+                {
+                    Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
+                };
+            }
+            else
+            {
+                player =
+                new Mage(Content, cellSize, 0, Global.playerName + " the " + Global.playerClass)
+                {
+                    Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
+                };
+            }
+
+            
             levels[0].grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
             levels[0].addPlayer(player);
             Global.Camera.CenterOn(randomCell);

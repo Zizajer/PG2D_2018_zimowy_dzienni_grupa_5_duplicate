@@ -74,6 +74,9 @@ namespace Dungeon_Crawler
             if (Collision.isCollidingWithRocks(this, level, graphicsDevice))
                 isMarkedToDelete = true;
 
+            if (Collision.isCollidingWithPortal(this, level, graphicsDevice))
+                isMarkedToDelete = true;
+
             //Vanish projectile when hit an enemy after certain delay. (If we destroyed the projectile just after hitting first enemy, we couldn't kill a group of enemies staying nearby)
             if (IsCharacterHit)
             {

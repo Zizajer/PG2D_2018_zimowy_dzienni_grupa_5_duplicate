@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Dungeon_Crawler
 {
-    public class Player : Character
+    public abstract class Player : Character
     {
         public float Mana { get; set; }
         public float CurrentMana { get; set; }
@@ -34,9 +34,9 @@ namespace Dungeon_Crawler
         float timeBetweenActions=0.4f;
 
         //Attacks
-        ICharacterTargetedAttack BaseAttack;
-        IPositionTargetedAttack ProjectileAttack;
-        IUnTargetedAttack UnTargetedAttack;
+        public ICharacterTargetedAttack BaseAttack;
+        public IPositionTargetedAttack ProjectileAttack;
+        public IUnTargetedAttack UnTargetedAttack;
 
         public Player(ContentManager content, int cellSize, int playerCurrentMapLevel, string name)
         {
@@ -62,6 +62,11 @@ namespace Dungeon_Crawler
             Name = name;
 
             //Set attacks
+            setAttacks();
+        }
+
+        public virtual void setAttacks()
+        {
             BaseAttack = new Pound();
             ProjectileAttack = new ShootArrow();
             UnTargetedAttack = new Annihilation();
@@ -262,7 +267,7 @@ namespace Dungeon_Crawler
                 CurrentCell = level.map.GetCell(CellX, CellY);
             }
 
-            if (CurrentMana < 100) CurrentMana = CurrentMana + 1.15f; //0.15
+            if (CurrentMana < 100) CurrentMana = CurrentMana + 0.99f; //0.15
 
             if (currentHealthState != HealthState.Freeze)
             {
