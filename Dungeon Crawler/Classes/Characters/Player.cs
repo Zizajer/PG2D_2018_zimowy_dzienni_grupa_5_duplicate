@@ -21,9 +21,12 @@ namespace Dungeon_Crawler
         public float rotation;
         public List<Item> inventory { get; set; }
         public int CurrentMapLevel { get; set; }
-        public KeyboardState pastKey;
-        public KeyboardState pastKey2;
-        public KeyboardState pastKey3;
+
+        public KeyboardState pastKey; //1
+        public KeyboardState pastKey2; //2
+        public KeyboardState pastKey3; //3
+        public KeyboardState pastKey4; //CTRL
+
         public MouseState pastButton; //LMB
         public MouseState pastButton2; //RMB
         public ContentManager content;
@@ -84,6 +87,37 @@ namespace Dungeon_Crawler
         public abstract void BasicAttack(Level level);
         public abstract void SecondaryAttack(Level level);
 
+        public bool ChangeDirection(Level level)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.LeftControl))
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.W))
+                {
+                    _animationManager.Play(_animations["WalkUp"]);
+                    currentFaceDirection = FaceDirections.Up;
+                    return true;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.S))
+                {
+                    _animationManager.Play(_animations["WalkDown"]);
+                    currentFaceDirection = FaceDirections.Down;
+                    return true;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.A))
+                {
+                    _animationManager.Play(_animations["WalkLeft"]);
+                    currentFaceDirection = FaceDirections.Left;
+                    return true;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.D))
+                {
+                    _animationManager.Play(_animations["WalkRight"]);
+                    currentFaceDirection = FaceDirections.Right;
+                    return true;
+                }
+            }
+            return false;
+        }
         public void Abillity1(Level level,GraphicsDevice graphicsDevice)
         {
             if (Mouse.GetState().RightButton == ButtonState.Pressed && pastButton.RightButton == ButtonState.Released)
@@ -139,7 +173,15 @@ namespace Dungeon_Crawler
             {
                 if (currentActionState == ActionState.Standing)
                 {
-                    currentDirection = GetDirection();
+                    if (ChangeDirection(level))
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        currentDirection = GetDirection();
+                    }
+                    
                     if (currentDirection != (int)Directions.None)
                     {
                         RogueSharp.Cell futureNextCell = Collision.getCellFromDirection(CurrentCell, currentDirection, level);

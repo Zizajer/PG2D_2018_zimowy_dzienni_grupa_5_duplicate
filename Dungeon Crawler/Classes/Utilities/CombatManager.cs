@@ -152,22 +152,22 @@ namespace Dungeon_Crawler
                 {
                     if (attaker.currentFaceDirection == Character.FaceDirections.Up)
                     {
-                        startingCell = currentLevel.map.GetCell(cellX, cellY - 1);
+                        //startingCell = currentLevel.map.GetCell(cellX, cellY - 1);
                         endingCell = currentLevel.map.GetCell(cellX, cellY - tempdist);
                     }
                     else if (attaker.currentFaceDirection == Character.FaceDirections.Down)
                     {
-                        startingCell = currentLevel.map.GetCell(cellX, cellY + 1);
+                        //startingCell = currentLevel.map.GetCell(cellX, cellY + 1);
                         endingCell = currentLevel.map.GetCell(cellX, cellY + tempdist);
                     }
                     else if (attaker.currentFaceDirection == Character.FaceDirections.Left)
                     {
-                        startingCell = currentLevel.map.GetCell(cellX - 1, cellY);
+                        //startingCell = currentLevel.map.GetCell(cellX - 1, cellY);
                         endingCell = currentLevel.map.GetCell(cellX - tempdist, cellY);
                     }
                     else
                     {
-                        startingCell = currentLevel.map.GetCell(cellX + 1, cellY);
+                        //startingCell = currentLevel.map.GetCell(cellX + 1, cellY);
                         endingCell = currentLevel.map.GetCell(cellX + tempdist, cellY);
                     }
                     didExceptionPop = false;
