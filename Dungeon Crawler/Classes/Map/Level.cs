@@ -97,6 +97,7 @@ namespace Dungeon_Crawler
                     character.Update(gameTime, this, graphicsDevice);
                     if (character.CurrentHealth <= 0)
                     {
+                        character.DropAllItems(this);
                         enemies.RemoveAt(i);
                         /*
                         if (Global.random.Next(10) > 0) //90% of chance
@@ -128,6 +129,7 @@ namespace Dungeon_Crawler
                         {
                             grid.SetCellCost(new Position(enemy.NextCell.X, enemy.NextCell.Y), 1.0f);
                         }
+                        enemy.DropAllItems(this);
                         enemies.RemoveAt(i);
                         /*
                         if (Global.random.Next(20) == 19) //5% of chance

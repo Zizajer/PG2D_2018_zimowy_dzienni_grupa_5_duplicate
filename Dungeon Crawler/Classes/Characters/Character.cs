@@ -247,5 +247,45 @@ namespace Dungeon_Crawler
             }
         }
 
+        public virtual void TakeItem(Item item)
+        {
+            Inventory.Add(item);
+            item.ApplyEffect(this);
+        }
+
+        public virtual void TakeItems(List<Item> items)
+        {
+            foreach (Item Item in items)
+            {
+                Inventory.Add(Item);
+                Item.ApplyEffect(this);
+            }
+        }
+
+        public virtual void DropItem(Level level, int i)
+        {
+            Item DroppedItem = Inventory[i];
+            DroppedItem.RevertEffect(this);
+
+            DroppedItem.Position = Center;
+            level.items.Add(DroppedItem);
+
+            Inventory.RemoveAt(i);
+        }
+
+        public virtual void DropAllItems(Level level)
+        {
+            foreach (Item Item in Inventory)
+            {
+                Item.RevertEffect(this);
+
+                Vector2 ScatteringOffset = new Vector2(Global.random.Next(-8, 8), Global.random.Next(-8, 8));
+                Item.Position = Center + ScatteringOffset;
+
+                level.items.Add(Item);
+            }
+            Inventory.Clear();
+        }
+
     }
 }

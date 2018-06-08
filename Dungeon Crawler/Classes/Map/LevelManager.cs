@@ -186,6 +186,14 @@ namespace Dungeon_Crawler
 
             occupiedCells.Union(bossOccupyingCells);
 
+            List<Item> BossInventory = new List<Item>();
+            if (Global.random.Next(10) > 0) //Boss has 90% of chance to be equipped with 2-4 items
+            {
+                int numberOfItems = Global.random.Next(2, 5);
+                BossInventory = CreateItemsList(Content, numberOfItems, allItemsNames);
+            }
+
+
             float timeBetweenActions = 1f;
             Character tempBoss =
                 new Boss(_animationsBoss, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
@@ -193,7 +201,8 @@ namespace Dungeon_Crawler
                     Name = DemonOakNamesList[Global.random.Next(DemonOakNamesList.Count)],
                     Position = new Vector2((randomCell.X * cellSize), (randomCell.Y * cellSize))
                 };
-                enemies.Add(tempBoss);
+            tempBoss.TakeItems(BossInventory);
+            enemies.Add(tempBoss);
 
             Global.Camera.setParams(map.Width, map.Height, cellSize);
 
@@ -244,6 +253,20 @@ namespace Dungeon_Crawler
             return items;
         }
 
+        private List<Item> CreateItemsList(ContentManager Content, int itemCount, List<String> allItemsNames)
+        {
+            List<Item> items = new List<Item>(itemCount);
+
+            for (int i = 0; i < itemCount; i++)
+            {
+                String randomItem = allItemsNames[Global.random.Next(allItemsNames.Count)];
+                Item tempItem = (Item)Activator.CreateInstance(Type.GetType("Dungeon_Crawler." + randomItem), Content);
+                items.Add(tempItem);
+            }
+
+            return items;
+        }
+
         private List<Character> CreateEnemiesList(ContentManager Content, Map map, int cellSize, int enemyCount, List<Cell> occupiedCells,Grid grid)
         {
             List<Character> enemies = new List<Character>(enemyCount);
@@ -265,6 +288,12 @@ namespace Dungeon_Crawler
                     level = Global.random.Next(player.CurrentMapLevel, player.CurrentMapLevel + 3);
                 }
 
+                List<Item> EnemyInventory = new List<Item>();
+                if (Global.random.Next(20) > -1)  // Enemy has 5% of chance to be equipped with one item (for testing I changed it to 100%)
+                {
+                    EnemyInventory = CreateItemsList(Content, 1, allItemsNames);
+                }
+
                 string enemyName;
                 int whichEnemyToSpawn = Global.random.Next(3);
                 if(whichEnemyToSpawn==0)
@@ -277,6 +306,7 @@ namespace Dungeon_Crawler
                         Name = BlobNamesList[Global.random.Next(BlobNamesList.Count)],
                         Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
                     };
+                    tempEnemy.TakeItems(EnemyInventory);
                     enemies.Add(tempEnemy);
                     grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
                 }
@@ -290,6 +320,7 @@ namespace Dungeon_Crawler
                         Name = SkeletonNamesList[Global.random.Next(SkeletonNamesList.Count)],
                         Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
                     };
+                    tempEnemy.TakeItems(EnemyInventory);
                     enemies.Add(tempEnemy);
                     grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
                 }
@@ -303,6 +334,7 @@ namespace Dungeon_Crawler
                         Name = ZombieNamesList[Global.random.Next(ZombieNamesList.Count)],
                         Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
                     };
+                    tempEnemy.TakeItems(EnemyInventory);
                     enemies.Add(tempEnemy);
                     grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
                 }
