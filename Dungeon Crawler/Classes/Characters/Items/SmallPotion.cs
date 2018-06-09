@@ -10,7 +10,7 @@ namespace Dungeon_Crawler
 {
     public class SmallPotion : UsableItem
     {
-        float Health;
+        float healthGained;
 
         public SmallPotion(ContentManager content, Vector2 position) : base(content, position)
         {
@@ -23,24 +23,36 @@ namespace Dungeon_Crawler
         private void Initialize(ContentManager content)
         {
             Name = "Small Potion";
-            Description = "Drink this potion to heal fro 25 health";
+            healthGained = 25;
+            Description = "Drink this potion to heal for "+ healthGained+" health";
             Category = "Potion";
 
             TextureName = "potion1";
             LoadTexture(content);
 
-            Health = 25;
+            
         }
         public override void Use(Character owner)
         {
-            if (owner.CurrentHealth + Health > owner.Health)
+            if (owner.CurrentHealth == owner.Health)
             {
-                owner.CurrentHealth = owner.Health;
+                Global.Gui.WriteToConsole("You drank the potion. It had no effect on you");
             }
             else
             {
-                owner.CurrentHealth += Health;
-            }          
+                float healed=0;
+                if (owner.CurrentHealth + healthGained > owner.Health)
+                {
+                    healed = owner.Health - owner.CurrentHealth;
+                    owner.CurrentHealth = owner.Health;
+                }
+                else
+                {
+                    healed = healthGained;
+                    owner.CurrentHealth += healthGained;
+                }
+                Global.Gui.WriteToConsole("The potion healed you for " + Math.Ceiling(healed));
+            }   
         }
     }
 }

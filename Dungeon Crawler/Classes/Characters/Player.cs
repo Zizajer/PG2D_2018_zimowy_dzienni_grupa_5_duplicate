@@ -32,6 +32,7 @@ namespace Dungeon_Crawler
         public KeyboardState pastKey9; //>
         public KeyboardState pastKey10; //ENTER
         public short SelectedItem = -1; // -1 == No item in inventory yet
+        public int inventoryPickUpLimit = 5;
 
         public MouseState pastButton; //LMB
         public MouseState pastButton2; //RMB
@@ -199,11 +200,7 @@ namespace Dungeon_Crawler
                             Global.Gui.WriteToConsole("Cant go there");
                         }
                     }
-                    BasicAttack(level);
-                    TakeItem(level, graphicsDevice);
-                    SecondaryAttack(level);
-                    Abillity1(level);
-                    Abillity2(level); 
+                    
                 }
                 else //Moving
                 {
@@ -217,11 +214,14 @@ namespace Dungeon_Crawler
                         Global.Camera.CenterOn(Center);
                     }
                 }
-                SecondaryAttack(level);
-                BasicAttack(level);
 
-                TakeItem(level, graphicsDevice);
+                BasicAttack(level);
+                SecondaryAttack(level);
+                Abillity1(level);
+                Abillity2(level);
+
                 DropItem(level, SelectedItem);
+                TakeItem(level, graphicsDevice);
                 SwapItem(level, SelectedItem, graphicsDevice);
                 SelectItem();
                 UseItem(SelectedItem);
@@ -293,19 +293,27 @@ namespace Dungeon_Crawler
 
             return Directions.None;
         }
-
         public override bool TakeItem(Level level, GraphicsDevice graphicsDevice)
         {
             bool IsItemTaken = false;
             if (Keyboard.GetState().IsKeyDown(Keys.F) && pastKey5.IsKeyUp(Keys.F)) {
-                if (base.TakeItem(level, graphicsDevice))
+                if (Inventory.Count < inventoryPickUpLimit)
                 {
-                    IsItemTaken = true;
-                    if (SelectedItem == -1)
+                    if (base.TakeItem(level, graphicsDevice))
                     {
-                        SelectedItem = 0;
+                        Global.Gui.WriteToConsole("You picked up " + Inventory.ElementAt(Inventory.Count-1).Name);
+                        IsItemTaken = true;
+                        if (SelectedItem == -1)
+                        {
+                            SelectedItem = 0;
+                        }
                     }
                 }
+                else
+                {
+                    Global.Gui.WriteToConsole("You cant pick up more items");
+                }
+               
             }
             pastKey5 = Keyboard.GetState();
             return IsItemTaken;
@@ -328,7 +336,13 @@ namespace Dungeon_Crawler
                     {
                         SelectedItem--;
                     }
+                    Global.Gui.WriteToConsole("You dropped " + Inventory.ElementAt(i).Name);
                     base.DropItem(level, i);
+                    
+                }
+                else
+                {
+                    Global.Gui.WriteToConsole("You dont have any items to drop");
                 }
             }
             pastKey6 = Keyboard.GetState();
@@ -340,6 +354,7 @@ namespace Dungeon_Crawler
             {
                 if (base.TakeItem(level, graphicsDevice))
                 {
+                    Global.Gui.WriteToConsole("You swapped " + Inventory.ElementAt(i).Name +" for "+Inventory.ElementAt(Inventory.Count - 1).Name);
                     base.DropItem(level, i);
                 }
             }
