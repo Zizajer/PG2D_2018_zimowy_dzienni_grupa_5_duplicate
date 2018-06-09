@@ -260,24 +260,16 @@ namespace Dungeon_Crawler
             return Directions.None;
         }
 
-        public bool TakeItem(Level level, GraphicsDevice graphicsDevice)
+        public override bool TakeItem(Level level, GraphicsDevice graphicsDevice)
         {
             bool IsItemTaken = false;
             if (Keyboard.GetState().IsKeyDown(Keys.F) && pastKey5.IsKeyUp(Keys.F)) {
-                Item[] LevelItemArray = level.items.ToArray();
-                for (int i = LevelItemArray.Length - 1; i >= 0; i--)
+                if (base.TakeItem(level, graphicsDevice))
                 {
-                    Item item = LevelItemArray[i];
-                    if (Collision.checkCollision(getRectangle(), this, item, graphicsDevice))
+                    IsItemTaken = true;
+                    if (SelectedItem == -1)
                     {
-                        TakeItem(item);
-                        level.items.RemoveAt(i);
-                        IsItemTaken = true;
-                        if (SelectedItem == -1)
-                        {
-                            SelectedItem = 0;
-                        }
-                        break;
+                        SelectedItem = 0;
                     }
                 }
             }
@@ -312,7 +304,7 @@ namespace Dungeon_Crawler
         {
             if (Keyboard.GetState().IsKeyDown(Keys.R) && pastKey7.IsKeyUp(Keys.R))
             {
-                if (TakeItem(level, graphicsDevice))
+                if (base.TakeItem(level, graphicsDevice))
                 {
                     base.DropItem(level, i);
                 }

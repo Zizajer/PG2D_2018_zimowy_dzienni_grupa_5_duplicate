@@ -267,6 +267,24 @@ namespace Dungeon_Crawler
             item.ApplyEffect(this);
         }
 
+        public virtual bool TakeItem(Level level, GraphicsDevice graphicsDevice)
+        {
+            bool IsItemTaken = false;
+            Item[] LevelItemArray = level.items.ToArray();
+            for (int i = LevelItemArray.Length - 1; i >= 0; i--)
+            {
+                Item item = LevelItemArray[i];
+                if (Collision.checkCollision(getRectangle(), this, item, graphicsDevice))
+                {
+                    TakeItem(item);
+                    level.items.RemoveAt(i);
+                    IsItemTaken = true;
+                    break;
+                }
+            }         
+            return IsItemTaken;
+        }
+
         public virtual void TakeItems(List<Item> items)
         {
             foreach (Item Item in items)
