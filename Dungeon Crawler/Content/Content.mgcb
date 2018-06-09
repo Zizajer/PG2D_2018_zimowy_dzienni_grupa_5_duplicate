@@ -500,6 +500,12 @@
 /processorParam:DebugMode=Auto
 /build:shaders/HitEffect.fx
 
+#begin shaders/Invis.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/Invis.fx
+
 #begin shaders/lighteffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -632,18 +638,6 @@
 /processorParam:TextureFormat=Color
 /build:spells/MagicAnim.png
 
-#begin spells/PiercingArrow.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:spells/PiercingArrow.png
-
 #begin spells/MagicAnim2.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -656,6 +650,18 @@
 /processorParam:TextureFormat=Color
 /build:spells/MagicAnim2.png
 
+#begin spells/PiercingArrow.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:spells/PiercingArrow.png
+
 #begin spells/ThrowingWeapon.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -667,3 +673,4 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:spells/ThrowingWeapon.png
+

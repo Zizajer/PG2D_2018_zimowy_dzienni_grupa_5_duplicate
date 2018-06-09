@@ -97,17 +97,29 @@ namespace Dungeon_Crawler
                     }
                     else
                     {
-
-                        if (timer > timeBetweenActions)
+                        if (level.map.IsInFov(CellX, CellY))
                         {
-                            BaseAttack.Use(this, level.player);
-                            timer = 0;
+                            if (timer > timeBetweenActions)
+                            {
+                                BaseAttack.Use(this, level.player);
+                                timer = 0;
+                            }
+                            else
+                            {
+                                timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                            }
                         }
                         else
                         {
-                            timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                            futureNextCell = getRandomEmptyCell(level, graphicsDevice);
+                            if (futureNextCell != null)
+                            {
+                                NextCell = futureNextCell;
+                                currentActionState = ActionState.Moving;
+                                level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
+                                level.grid.SetCellCost(new Position(NextCell.X, NextCell.Y), 5.0f);
+                            }
                         }
-
                     }
                 }
                 else //Moving

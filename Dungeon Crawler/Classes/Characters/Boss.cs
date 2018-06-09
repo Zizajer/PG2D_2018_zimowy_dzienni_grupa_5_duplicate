@@ -78,7 +78,8 @@ namespace Dungeon_Crawler
 
             if (currentHealthState != HealthState.Freeze)
             {
-                UseProjectileAttack(level);
+                if (level.map.IsInFov(CellX, CellY))
+                    UseProjectileAttack(level);
             }
 
             SetAnimations();

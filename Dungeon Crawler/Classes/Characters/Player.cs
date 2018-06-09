@@ -29,7 +29,7 @@ namespace Dungeon_Crawler
         public ContentManager content;
 
         public float actionTimer = 0;
-        public float timeBetweenActions =0.4f;
+        public float timeBetweenActions =0.2f;
 
         //Attacks
         public ICharacterTargetedAttack BaseAttack;
@@ -37,6 +37,8 @@ namespace Dungeon_Crawler
         public IPositionTargetedAttack ProjectileAttack2;
         public IUnTargetedAttack UnTargetedAttack;
 
+        public bool isRangerInvisible = false;
+        public float invisDecay = 0.4f;
         public Player(ContentManager content, int cellSize, int playerCurrentMapLevel, string name)
         {
             Level = 1;
@@ -70,7 +72,27 @@ namespace Dungeon_Crawler
 
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
-            level.map.ComputeFov(CellX, CellY, 15, true);
+            if (!isRangerInvisible) {
+                level.map.ComputeFov(CellX, CellY, 15, true);
+                isInvisShaderOn = false;
+            }
+            else
+            {
+                level.map.ComputeFov(0, 0, 1, false);
+                isInvisShaderOn = true;
+                CurrentResource -= invisDecay;
+                invisDecay += 0.01f;
+                if (CurrentResource < 0)
+                {
+                    Global.Gui.WriteToConsole("You are no longer invisible");
+                    CurrentResource = 0;
+                    isRangerInvisible = false;
+                    isInvisShaderOn = false;
+                    invisDecay = 0.4f;
+                }
+
+            }
+            
             actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             HandleHitState(gameTime);

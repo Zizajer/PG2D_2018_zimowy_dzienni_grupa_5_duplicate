@@ -36,7 +36,7 @@ namespace Dungeon_Crawler
 
             Global.Gui = new GUI(graphics, Content);
 
-            Global.playerClass = Global.classes[0];
+            Global.playerClass = Global.classes[1];
             //Global.playerClass =Global.classes[Global.random.Next(Global.classes.Length)];
             levelManager = new LevelManager(Content);
 
