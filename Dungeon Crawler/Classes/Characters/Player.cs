@@ -353,14 +353,21 @@ namespace Dungeon_Crawler
         {
             if (Keyboard.GetState().IsKeyDown(Keys.R) && pastKey7.IsKeyUp(Keys.R))
             {
-                if (base.TakeItem(level, graphicsDevice))
+                if (SelectedItem != -1)
                 {
-                    Global.Gui.WriteToConsole("You swapped " + Inventory.ElementAt(i).Name +" for "+Inventory.ElementAt(Inventory.Count - 1).Name);
-                    base.DropItem(level, i);
+                    if (base.TakeItem(level, graphicsDevice))
+                    {
+                        Global.Gui.WriteToConsole("You swapped " + Inventory.ElementAt(i).Name + " for " + Inventory.ElementAt(Inventory.Count - 1).Name);
+                        base.DropItem(level, i);
+                    }
+                    else
+                    {
+                        Global.Gui.WriteToConsole("Nothing on the floor to swap for");
+                    }
                 }
                 else
                 {
-                    Global.Gui.WriteToConsole("Nothing on the floor to swap for");
+                    Global.Gui.WriteToConsole("You dont have any items");
                 }
             }
             pastKey7 = Keyboard.GetState();
