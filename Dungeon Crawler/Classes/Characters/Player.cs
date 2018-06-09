@@ -27,6 +27,12 @@ namespace Dungeon_Crawler
         public KeyboardState pastKey3; //3
         public KeyboardState pastKey4; //CTRL
 
+        //Inventory management vars
+        public KeyboardState pastKey5; //F
+        public KeyboardState pastKey6; //E
+        public KeyboardState pastKey7; //R
+        public short SelectedItem = -1; // -1 == No item in inventory yet
+
         public MouseState pastButton; //LMB
         public MouseState pastButton2; //RMB
         public ContentManager content;
@@ -189,6 +195,8 @@ namespace Dungeon_Crawler
                     //Abillity1(level, graphicsDevice); //currently in mage class
                     SecondaryAttack(level);
                     BasicAttack(level);
+
+                    TakeItem(level, graphicsDevice);
                 }
                 else //Moving
                 {
@@ -204,6 +212,10 @@ namespace Dungeon_Crawler
                 }
                 SecondaryAttack(level);
                 BasicAttack(level);
+
+                TakeItem(level, graphicsDevice);
+                DropItem(level, 0);
+                SwapItem(level, SelectedItem, graphicsDevice);
 
                 SetAnimations();
                 _animationManager.Update(gameTime);
@@ -241,6 +253,59 @@ namespace Dungeon_Crawler
                 return Directions.Right;
 
             return Directions.None;
+        }
+
+        public bool TakeItem(Level level, GraphicsDevice graphicsDevice)
+        {
+            bool IsItemTaken = false;
+            if (Keyboard.GetState().IsKeyDown(Keys.F) && pastKey5.IsKeyUp(Keys.F)) {
+                Item[] LevelItemArray = level.items.ToArray();
+                for (int i = LevelItemArray.Length - 1; i >= 0; i--)
+                {
+                    Item item = LevelItemArray[i];
+                    if (Collision.checkCollision(getRectangle(), this, item, graphicsDevice))
+                    {
+                        TakeItem(item);
+                        level.items.RemoveAt(i);
+                        IsItemTaken = true;
+                        if (SelectedItem == -1)
+                        {
+                            SelectedItem = 0;
+                        }
+                        break;
+                    }
+                }
+            }
+            pastKey5 = Keyboard.GetState();
+            return IsItemTaken;
+        }
+
+        public override void DropItem(Level level, int i)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.E) && pastKey6.IsKeyUp(Keys.E))
+            {
+                if (SelectedItem == 0)
+                {
+                    if (Inventory.Count == 1)
+                    {
+                        SelectedItem = -1;
+                    }
+                }
+                base.DropItem(level, i);
+            }
+            pastKey6 = Keyboard.GetState();
+        }
+
+        public void SwapItem(Level level, int i, GraphicsDevice graphicsDevice)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.R) && pastKey7.IsKeyUp(Keys.R))
+            {
+                if (TakeItem(level, graphicsDevice))
+                {
+                    base.DropItem(level, i);
+                }
+            }
+            pastKey7 = Keyboard.GetState();
         }
 
         public string getItems()

@@ -86,7 +86,6 @@
     <Compile Include="Classes\Utilities\Effects.cs" />
     <Compile Include="Classes\Utilities\Global.cs" />
     <Compile Include="Classes\Camera\GUI.cs" />
-    <Compile Include="Classes\Map\ItemSprite.cs" />
     <Compile Include="Classes\Utilities\Layers.cs" />
     <Compile Include="Classes\Map\Level.cs" />
     <Compile Include="Classes\Map\LevelManager.cs" />

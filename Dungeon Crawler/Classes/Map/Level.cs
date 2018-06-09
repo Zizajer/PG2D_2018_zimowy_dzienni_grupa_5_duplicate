@@ -143,6 +143,7 @@ namespace Dungeon_Crawler
                 }
             }
 
+            /*
             Item[] itemArray = items.ToArray();
             for (int i = 0; i < items.Count; i++)
             {
@@ -155,6 +156,7 @@ namespace Dungeon_Crawler
                     }
                 }
             }
+            */
 
             for (int i = Projectiles.Count - 1; i >= 0; i--)
             {
