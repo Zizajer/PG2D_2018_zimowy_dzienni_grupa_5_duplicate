@@ -10,7 +10,7 @@ namespace Dungeon_Crawler
 
         GraphicsDeviceManager graphics;
         private SpriteFont font;
-        private string[] console = { "", "", "", "" };
+        private string[] console = { "", "", "", "", "" };
         private double gameTime;
         private double lastMsgGametime = 0;
         private double afterHowLongClearHighestMsg = 2; //sec
@@ -33,7 +33,7 @@ namespace Dungeon_Crawler
             int tempX2 = Global.Camera.ViewportWorldBoundry().X + (int)(Global.Camera.ViewportWorldBoundry().Width * 0.28);
             int tempY2 = Global.Camera.ViewportWorldBoundry().Y + (int)(Global.Camera.ViewportWorldBoundry().Height * 0.07);
             int tempY3 = Global.Camera.ViewportWorldBoundry().Y + (int)(Global.Camera.ViewportWorldBoundry().Height * 0.14);
-            int tempY4 = Global.Camera.ViewportWorldBoundry().Y + (int)(Global.Camera.ViewportWorldBoundry().Height * 0.21);
+            int tempY4 = Global.Camera.ViewportWorldBoundry().Y + (int)(Global.Camera.ViewportWorldBoundry().Height * 0.25);
             int PlayerBarsWidth = (int)(Global.Camera.ViewportWorldBoundry().Width * 0.35);
             int PlayerBarsHeight = (int)(Global.Camera.ViewportWorldBoundry().Height * 0.05);
 
@@ -97,8 +97,8 @@ namespace Dungeon_Crawler
             {
                 spriteBatch.DrawString(font, "Game Over", new Vector2(gameOverX, gameOverY), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
             }
-            tempY += (int)(0.8 * Global.Camera.ViewportWorldBoundry().Height);
-            string tempString = console[0] + "\n" + console[1] + "\n" + console[2] + "\n" + console[3];
+            tempY += (int)(0.84 * Global.Camera.ViewportWorldBoundry().Height);
+            string tempString = console[0] + "\n" + console[1] + "\n" + console[2] + "\n" + console[3] +"\n" + console[4];
             spriteBatch.DrawString(font, tempString, new Vector2(tempX, tempY), Color.White, 0.0f, Vector2.One, 0.7f * (1 / scale), SpriteEffects.None, Layers.Text);
         }
 
@@ -213,12 +213,12 @@ namespace Dungeon_Crawler
             //Draw HP ratio
             string HealthText = (int)player.CurrentHealth + "/" + player.Health;
             Vector2 HealthTextOffsetFromCenter = font.MeasureString(HealthText);
-            spriteBatch.DrawString(font, HealthText, new Vector2(hpX + (float)width / 2 - HealthTextOffsetFromCenter.X / 2 * 0.75f / scale, hpY), Color.White, 0.0f, Vector2.One, 0.75f / scale, SpriteEffects.None, Layers.Text);
+            spriteBatch.DrawString(font, HealthText, new Vector2(hpX + (float)width / 2 - HealthTextOffsetFromCenter.X / 2 * 0.75f / scale, hpY+10* 0.75f / scale), Color.White, 0.0f, Vector2.One, 0.75f / scale, SpriteEffects.None, Layers.Text);
 
             //Draw mana ratio
             string ManaText = (int)player.CurrentResource + "/" + player.Resource;
             Vector2 ManaTextOffsetFromCenter = font.MeasureString(ManaText);
-            spriteBatch.DrawString(font, ManaText, new Vector2(resourceX + (float)width / 2 - ManaTextOffsetFromCenter.X / 2 * 0.75f / scale, resourceY), Color.White, 0.0f, Vector2.One, 0.75f / scale, SpriteEffects.None, Layers.Text);
+            spriteBatch.DrawString(font, ManaText, new Vector2(resourceX + (float)width / 2 - ManaTextOffsetFromCenter.X / 2 * 0.75f / scale, resourceY+10* 0.75f / scale), Color.White, 0.0f, Vector2.One, 0.75f / scale, SpriteEffects.None, Layers.Text);
 
             HealthBarBackgroundTexture.Dispose();
             HealthBarCurrentHealthTexture.Dispose();
@@ -247,7 +247,8 @@ namespace Dungeon_Crawler
             console[0] = console[1];
             console[1] = console[2];
             console[2] = console[3];
-            console[3] = msg;
+            console[3] = console[4];
+            console[4] = msg;
 
             lastMsgGametime = gameTime;
         }
@@ -256,7 +257,8 @@ namespace Dungeon_Crawler
             console[0] = console[1];
             console[1] = console[2];
             console[2] = console[3];
-            console[3] = "";
+            console[3] = console[4];
+            console[4] = "";
 
             lastMsgGametime = gameTime;
         }

@@ -19,6 +19,13 @@ namespace Dungeon_Crawler
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = 1280;  
+            graphics.PreferredBackBufferHeight = 768;  
+            graphics.ApplyChanges();
+            /*
+            graphics.IsFullScreen = true;
+            graphics.ApplyChanges();
+            */
             Content.RootDirectory = "Content";
         }
 
@@ -26,6 +33,7 @@ namespace Dungeon_Crawler
         {
             IsMouseVisible = true;
             Global.Camera.setViewports(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height);
+            Global.Camera.setZoom(1.5f);
             Global.GameState = true;
             base.Initialize();
         }

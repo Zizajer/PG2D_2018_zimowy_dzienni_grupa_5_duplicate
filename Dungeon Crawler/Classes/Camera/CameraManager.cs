@@ -32,6 +32,11 @@ namespace Dungeon_Crawler
             this.ViewportHeight = ViewportHeight;
         }
 
+        public void setZoom(float f)
+        {
+            Zoom = f;
+        }
+
         public void setViewports(int ViewportWidth, int ViewportHeight)
         {
             this.ViewportWidth = ViewportWidth;
