@@ -360,7 +360,8 @@ namespace Dungeon_Crawler
                         {
                             SelectedItem--;
                         }
-                        ((UsableItem)Item).Use();
+                        ((UsableItem)Item).Use(this);
+                        Inventory.RemoveAt(i);
                     }
                     else
                     {
