@@ -87,8 +87,23 @@ namespace Dungeon_Crawler
                 //Draw name
                 spriteBatch.DrawString(font, lm.player.Name, new Vector2((int)lm.player.Position.X, (int)lm.player.Position.Y - 39), Color.Black, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
 
-                //Draw map level
-                string s = lm.player.getItems() + " \nLevel " + (lm.player.CurrentMapLevel + 1);
+                //Draw iventory and map level
+                float InventoryStringPixelLength = 0;
+                for (int i = 0 ; i < lm.player.Inventory.Count; i++)
+                {
+                    string ItemName = lm.player.Inventory[i].Name;
+                    if (lm.player.SelectedItem == i)
+                    {
+                        spriteBatch.DrawString(font, ItemName, new Vector2(tempX + InventoryStringPixelLength, tempY3), Color.Blue, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
+                    }
+                    else
+                    {
+                        spriteBatch.DrawString(font, ItemName, new Vector2(tempX + InventoryStringPixelLength, tempY3), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
+                    }
+                    
+                    InventoryStringPixelLength += font.MeasureString(ItemName).Length();
+                }
+                string s = " \nLevel " + (lm.player.CurrentMapLevel + 1);
                 spriteBatch.DrawString(font, s, new Vector2(tempX, tempY3), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
             }
             else

@@ -31,6 +31,8 @@ namespace Dungeon_Crawler
         public KeyboardState pastKey5; //F
         public KeyboardState pastKey6; //E
         public KeyboardState pastKey7; //R
+        public KeyboardState pastKey8; //<
+        public KeyboardState pastKey9; //>
         public short SelectedItem = -1; // -1 == No item in inventory yet
 
         public MouseState pastButton; //LMB
@@ -214,8 +216,9 @@ namespace Dungeon_Crawler
                 BasicAttack(level);
 
                 TakeItem(level, graphicsDevice);
-                DropItem(level, 0);
+                DropItem(level, SelectedItem);
                 SwapItem(level, SelectedItem, graphicsDevice);
+                SelectItem();
 
                 SetAnimations();
                 _animationManager.Update(gameTime);
@@ -284,14 +287,21 @@ namespace Dungeon_Crawler
         {
             if (Keyboard.GetState().IsKeyDown(Keys.E) && pastKey6.IsKeyUp(Keys.E))
             {
-                if (SelectedItem == 0)
+                if (SelectedItem != -1)
                 {
-                    if (Inventory.Count == 1)
+                    if (SelectedItem == 0)
                     {
-                        SelectedItem = -1;
+                        if (Inventory.Count == 1)
+                        {
+                            SelectedItem = -1;
+                        }
                     }
+                    else
+                    {
+                        SelectedItem--;
+                    }
+                    base.DropItem(level, i);
                 }
-                base.DropItem(level, i);
             }
             pastKey6 = Keyboard.GetState();
         }
@@ -308,17 +318,24 @@ namespace Dungeon_Crawler
             pastKey7 = Keyboard.GetState();
         }
 
-        public string getItems()
+        public void SelectItem()
         {
-            if (Inventory.Count == 0) return "Inventory is empty";
-            string temp = "Inventory: ";
-            Item[] itemArray = Inventory.ToArray();
-            for (int i = 0; i < Inventory.Count; i++)
+            if (Keyboard.GetState().IsKeyDown(Keys.OemOpenBrackets) && pastKey8.IsKeyUp(Keys.OemOpenBrackets))
             {
-                temp += itemArray[i].Name + ", ";
+                if (SelectedItem - 1 > -1)
+                {
+                    SelectedItem--;
+                }
             }
-
-            return temp;
+            if (Keyboard.GetState().IsKeyDown(Keys.OemCloseBrackets) && pastKey8.IsKeyUp(Keys.OemCloseBrackets))
+            {
+                if (SelectedItem + 1 < Inventory.Count)
+                {
+                    SelectedItem++;
+                }
+            }
+            pastKey8 = Keyboard.GetState();
+            pastKey9 = Keyboard.GetState();
         }
     }
 }
