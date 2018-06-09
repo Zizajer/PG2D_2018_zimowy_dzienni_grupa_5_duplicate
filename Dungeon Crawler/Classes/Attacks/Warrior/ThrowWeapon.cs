@@ -25,7 +25,7 @@ namespace Dungeon_Crawler
         public ThrowWeapon()
         {
             Name = "Throw Weapon";
-            Power = 100;
+            Power = 300;
             Accuracy = 100;
             CriticalHitProbability = 10;
             FreezeProbability = 0;
@@ -34,7 +34,7 @@ namespace Dungeon_Crawler
             ManaCost = 10;
 
             Range = 4;
-            VanishDelay = 0;
+            VanishDelay = 0; //useless since PiercingProjectille doesnt care
         }
 
         public bool Use(Character attacker, Vector2 position)
@@ -51,7 +51,7 @@ namespace Dungeon_Crawler
             Vector2 tempVelocity = new Vector2((float)Math.Cos(rotation) * 5f, ((float)Math.Sin(rotation)) * 5f) + attacker.Velocity / 3;
             Vector2 tempPosition = attacker.Center + tempVelocity * 10;
 
-            Projectile newProjectile = new Projectile(this, Attacker, tempVelocity, tempPosition, ProjectileTexture, rotation, Range, VanishDelay);
+            Projectile newProjectile = new PiercingProjectile(this, Attacker, tempVelocity, tempPosition, ProjectileTexture, rotation, Range, VanishDelay);
             Global.CombatManager.PutProjectile(newProjectile);
             Global.SoundManager.playPew();
 

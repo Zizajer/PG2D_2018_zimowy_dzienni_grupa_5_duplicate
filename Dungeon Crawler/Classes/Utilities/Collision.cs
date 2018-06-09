@@ -103,6 +103,25 @@ namespace Dungeon_Crawler
             return dirList;
         }
 
+        internal static void deleteCollidingRock(PiercingProjectile piercingProjectile, Level level, GraphicsDevice graphicsDevice)
+        {
+            Rock tempRock;
+            for(int i = 0; i < level.rocks.Count; i++)
+            {
+                tempRock = level.rocks[i];
+                if (Vector2.Distance(piercingProjectile.Center, tempRock.Center) < level.cellSize)
+                {
+                    if (checkCollision(piercingProjectile, tempRock, graphicsDevice)){
+                        int CellX = (int)Math.Floor(tempRock.Center.X / level.cellSize);
+                        int CellY = (int)Math.Floor(tempRock.Center.Y / level.cellSize);
+                        level.grid.SetCellCost(new Position(CellX, CellY), 1.0f);
+                        level.rocks.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
+        }
+
         public static bool isCollidingWithPortal(Sprite sprite, Level level, GraphicsDevice graphicsDevice)
         {
             Portal portal = level.portal;

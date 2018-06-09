@@ -32,7 +32,7 @@ namespace Dungeon_Crawler
         {
             if (Mouse.GetState().LeftButton == ButtonState.Pressed && pastButton.LeftButton == ButtonState.Released)
             {
-                if (CurrentResource > ProjectileAttack.ManaCost)
+                if (CurrentResource >= ProjectileAttack.ManaCost)
                 {
                     MouseState mouse = Mouse.GetState();
                     Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
@@ -63,7 +63,7 @@ namespace Dungeon_Crawler
         {
             if (Mouse.GetState().RightButton == ButtonState.Pressed && pastButton2.RightButton == ButtonState.Released)
             {
-                if (CurrentResource > ProjectileAttack2.ManaCost)
+                if (CurrentResource >= ProjectileAttack2.ManaCost)
                 {
                     MouseState mouse = Mouse.GetState();
                     Vector2 tempVector = new Vector2(mouse.X, mouse.Y);

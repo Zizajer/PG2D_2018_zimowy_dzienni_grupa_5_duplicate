@@ -25,16 +25,16 @@ namespace Dungeon_Crawler
         public PiercingArrow()
         {
             Name = "Piercing Arrow";
-            Power = 10;
+            Power = 300;
             Accuracy = 80;
-            CriticalHitProbability = 5;
+            CriticalHitProbability = 50;
             FreezeProbability = 0;
             BurnProbability = 0;
             IsSpecial = true;
             ManaCost = 60;
 
             Range = 5;
-            VanishDelay = 3;
+            VanishDelay = 0; //useless since PiercingProjectille doesnt care
         }
 
         public bool Use(Character attacker, Vector2 position)
@@ -53,7 +53,7 @@ namespace Dungeon_Crawler
                 Vector2 tempVelocity = new Vector2((float)Math.Cos(rotation) * 4f, ((float)Math.Sin(rotation)) * 4f);
                 Vector2 tempPosition = attacker.Center + tempVelocity * 10;
 
-                Projectile newProjectile = new Projectile(this, Attacker, tempVelocity, tempPosition, ProjectileTexture, rotation, Range, VanishDelay);
+                Projectile newProjectile = new PiercingProjectile(this, Attacker, tempVelocity, tempPosition, ProjectileTexture, rotation, Range, VanishDelay);
                 Global.CombatManager.PutProjectile(newProjectile);
                 Global.SoundManager.playPew();
 

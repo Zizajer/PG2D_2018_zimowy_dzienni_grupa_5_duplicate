@@ -64,7 +64,7 @@ namespace Dungeon_Crawler
             if (Attacker is Ranger)
             {
                 Ranger ranger = (Ranger)Attacker;
-                ranger.addResource(15);
+                ranger.addResource(10);
             }
         }
     }
