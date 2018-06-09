@@ -173,7 +173,7 @@ namespace Dungeon_Crawler
             return listOfEnemiesAround;
         }
 
-        public void SetAnimationInAreaInFrontOfAttacker(Character attaker, string attackName, string animationName, int cellX, int cellY, int distance)
+        public bool SetAnimationInAreaInFrontOfAttacker(Character attaker, string attackName, string animationName, int cellX, int cellY, int distance)
         {
             List<RogueSharp.Cell> cells = GetCellsInFrontOfCharacter(attaker, cellX, cellY, distance);
 
@@ -181,6 +181,8 @@ namespace Dungeon_Crawler
             {
                 currentLevel.attackAnimations.Add(new AttackAnimation(levelManager.Content, attackName, animationName, cell.X, cell.Y, currentLevel.cellSize));
             }
+            if (cells.Count > 0) return true;
+            return false;
         }
 
         private List<RogueSharp.Cell> GetCellsInFrontOfCharacter(Character attaker, int cellX, int cellY, int distance)

@@ -16,10 +16,7 @@ namespace Dungeon_Crawler
         public int CurrentResourcePercent { get { return ((int)(CurrentResource / (double)Resource * 100)); } }
         public float ResourceRegenerationFactor { get; set; }
 
-        public int teleportCost = 10;
-
         public MouseState mouse;
-        public float rotation;
         public int CurrentMapLevel { get; set; }
 
         public KeyboardState pastKey; //1
@@ -62,51 +59,14 @@ namespace Dungeon_Crawler
 
             Inventory = new List<Item>();
 
-            //Set attacks
             setAttacks();
         }
 
-        public virtual void setAttacks()
-        {
-            BaseAttack = new Pound();
-            ProjectileAttack = new ShootArrow();
-            UnTargetedAttack = new Annihilation();
-        }
-
+        public abstract void setAttacks();
         public abstract void BasicAttack(Level level);
         public abstract void SecondaryAttack(Level level);
-
-        public bool ChangeDirection(Level level)
-        {
-            if (Keyboard.GetState().IsKeyDown(Keys.LeftControl))
-            {
-                if (Keyboard.GetState().IsKeyDown(Keys.W))
-                {
-                    _animationManager.Play(_animations["WalkUp"]);
-                    currentFaceDirection = FaceDirections.Up;
-                    return true;
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.S))
-                {
-                    _animationManager.Play(_animations["WalkDown"]);
-                    currentFaceDirection = FaceDirections.Down;
-                    return true;
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.A))
-                {
-                    _animationManager.Play(_animations["WalkLeft"]);
-                    currentFaceDirection = FaceDirections.Left;
-                    return true;
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.D))
-                {
-                    _animationManager.Play(_animations["WalkRight"]);
-                    currentFaceDirection = FaceDirections.Right;
-                    return true;
-                }
-            }
-            return false;
-        }
+        public abstract void Abillity1(Level level);
+        public abstract void ManageResource();
 
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
@@ -186,7 +146,7 @@ namespace Dungeon_Crawler
                             Global.Gui.WriteToConsole("Cant go there");
                         }
                     }
-                    //Abillity1(level, graphicsDevice); //currently in mage class
+                    Abillity1(level);
                     SecondaryAttack(level);
                     BasicAttack(level);
                 }
@@ -212,7 +172,37 @@ namespace Dungeon_Crawler
             }
         }
 
-        public abstract void ManageResource();
+        public bool ChangeDirection(Level level)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.LeftControl))
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.W))
+                {
+                    _animationManager.Play(_animations["WalkUp"]);
+                    currentFaceDirection = FaceDirections.Up;
+                    return true;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.S))
+                {
+                    _animationManager.Play(_animations["WalkDown"]);
+                    currentFaceDirection = FaceDirections.Down;
+                    return true;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.A))
+                {
+                    _animationManager.Play(_animations["WalkLeft"]);
+                    currentFaceDirection = FaceDirections.Left;
+                    return true;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.D))
+                {
+                    _animationManager.Play(_animations["WalkRight"]);
+                    currentFaceDirection = FaceDirections.Right;
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public virtual Directions GetDirection()
         {
