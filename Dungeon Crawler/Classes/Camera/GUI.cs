@@ -106,20 +106,32 @@ namespace Dungeon_Crawler
         {
             //Draw iventory and map level
             float InventoryStringPixelLength = 0;
-            for (int i = 0; i < lm.player.Inventory.Count; i++)
+            if (lm.player.Inventory.Count > 0)
             {
-                string ItemName = lm.player.Inventory[i].Name+", ";
-                if (lm.player.SelectedItem == i)
+                string s = "Inventory: ";
+                spriteBatch.DrawString(font, s, new Vector2(tempX + InventoryStringPixelLength, tempY3), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
+                InventoryStringPixelLength += font.MeasureString(s).Length() * 1 / scale;
+                for (int i = 0; i < lm.player.Inventory.Count; i++)
                 {
-                    spriteBatch.DrawString(font, ItemName, new Vector2(tempX + InventoryStringPixelLength, tempY3), Color.Blue, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
-                }
-                else
-                {
-                    spriteBatch.DrawString(font, ItemName, new Vector2(tempX + InventoryStringPixelLength, tempY3), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
-                }
+                    string ItemName = lm.player.Inventory[i].Name + ", ";
+                    if (lm.player.SelectedItem == i)
+                    {
+                        spriteBatch.DrawString(font, ItemName, new Vector2(tempX + InventoryStringPixelLength, tempY3), Color.Blue, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
+                    }
+                    else
+                    {
+                        spriteBatch.DrawString(font, ItemName, new Vector2(tempX + InventoryStringPixelLength, tempY3), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
+                    }
 
-                InventoryStringPixelLength += font.MeasureString(ItemName).Length()* 1 / scale;
+                    InventoryStringPixelLength += font.MeasureString(ItemName).Length() * 1 / scale;
+                }
             }
+            else
+            {
+                string s = "No items in inventory";
+                spriteBatch.DrawString(font, s, new Vector2(tempX + InventoryStringPixelLength, tempY3), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
+            }
+            
         }
 
         private void DrawHealthBarOverCharacter(SpriteBatch spriteBatch, Character character)
