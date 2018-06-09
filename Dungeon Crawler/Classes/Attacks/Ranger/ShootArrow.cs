@@ -43,11 +43,7 @@ namespace Dungeon_Crawler
             //Also, move initializaition of this variable to constructor (for some reason it throws NullPointerException there)
             ProjectileTexture = Global.CombatManager.levelManager.Content.Load<Texture2D>("spells/Arrow");
             Attacker = attacker;
-            if (attacker is Ranger)
-            {
-                Ranger ranger = (Ranger)attacker;
-                ranger.addResource(15);
-            }
+
             float distanceX = position.X - attacker.Center.X;
             float distanceY = position.Y - attacker.Center.Y;
 
@@ -65,6 +61,11 @@ namespace Dungeon_Crawler
         public void Notify(Character defender)
         {
             Global.CombatManager.Attack(Attacker, this, defender);
+            if (Attacker is Ranger)
+            {
+                Ranger ranger = (Ranger)Attacker;
+                ranger.addResource(15);
+            }
         }
     }
 }

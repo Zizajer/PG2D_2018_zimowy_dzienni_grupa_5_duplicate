@@ -278,7 +278,6 @@ namespace Dungeon_Crawler
                     listOfEnemiesAround.Add(boss);
                     return listOfEnemiesAround;
                 }
-
             }
             else
             {
