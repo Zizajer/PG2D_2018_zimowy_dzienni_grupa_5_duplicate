@@ -8,7 +8,7 @@ namespace Dungeon_Crawler
     {
         public DemonOak(Dictionary<string, Animation> _animations, int cellSize, int level, float timeBetweenActions, Map map, List<Cell> cells) : base(_animations, cellSize, level, timeBetweenActions, map, cells)
         {
-            timeBetweenActions = 1f;
+            timeBetweenActions = 1.2f;
         }
 
         public override void calculateStatistics()

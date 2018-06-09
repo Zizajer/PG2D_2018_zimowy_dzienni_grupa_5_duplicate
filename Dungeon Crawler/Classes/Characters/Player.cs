@@ -38,7 +38,7 @@ namespace Dungeon_Crawler
         public IUnTargetedAttack UnTargetedAttack;
 
         public bool isRangerInvisible = false;
-        public float invisDecay = 0.4f;
+        public float invisDecay = 0.3f;
         public Player(ContentManager content, int cellSize, int playerCurrentMapLevel, string name)
         {
             Level = 1;
@@ -81,14 +81,14 @@ namespace Dungeon_Crawler
                 level.map.ComputeFov(0, 0, 1, false);
                 isInvisShaderOn = true;
                 CurrentResource -= invisDecay;
-                invisDecay += 0.01f;
+                invisDecay += 0.02f;
                 if (CurrentResource < 0)
                 {
                     Global.Gui.WriteToConsole("You are no longer invisible");
                     CurrentResource = 0;
                     isRangerInvisible = false;
                     isInvisShaderOn = false;
-                    invisDecay = 0.4f;
+                    invisDecay = 0.3f;
                 }
 
             }

@@ -87,6 +87,8 @@ namespace Dungeon_Crawler
                 if (isRangerInvisible)
                 {
                     isRangerInvisible = false;
+                    isInvisShaderOn = false;
+                    Global.Gui.WriteToConsole("You are no longer invisible");
                 }
                 else
                 {

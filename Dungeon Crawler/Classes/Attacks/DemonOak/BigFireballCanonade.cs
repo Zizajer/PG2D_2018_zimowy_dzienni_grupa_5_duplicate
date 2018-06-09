@@ -29,7 +29,7 @@ namespace Dungeon_Crawler
             Accuracy = 80;
             CriticalHitProbability = 15;
             FreezeProbability = 0;
-            BurnProbability = 100;
+            BurnProbability = 20;
             IsSpecial = true;
             ManaCost = 90;
 
@@ -58,7 +58,9 @@ namespace Dungeon_Crawler
                 Vector2 tempVelocity;
                 Projectile newProjectile;
 
-                tempVelocity = new Vector2((float)Math.Cos(rotation) * 2f, ((float)Math.Sin(rotation)) * 2f);
+                float additionalSpeed = 1.5f;
+
+                tempVelocity = new Vector2((float)Math.Cos(rotation) * additionalSpeed, ((float)Math.Sin(rotation)) * additionalSpeed);
                 newProjectile = new Projectile(this, attacker, tempVelocity, tempPosition, ProjectileTexture, rotation, Range, VanishDelay);
 
                 Global.CombatManager.PutProjectile(newProjectile);
@@ -66,13 +68,13 @@ namespace Dungeon_Crawler
                 for (int i = 0; i < 2; i++)
                 {
                     newrotationClockwise += rotationIncrement;
-                    tempVelocity = new Vector2((float)Math.Cos(newrotationClockwise) * 2f, ((float)Math.Sin(newrotationClockwise)) * 2f);
+                    tempVelocity = new Vector2((float)Math.Cos(newrotationClockwise) * additionalSpeed, ((float)Math.Sin(newrotationClockwise)) * additionalSpeed);
                     newProjectile = new Projectile(this, attacker, tempVelocity, tempPosition, ProjectileTexture, newrotationClockwise, Range, VanishDelay);
 
                     Global.CombatManager.PutProjectile(newProjectile);
 
                     newrotationCounterClockwise -= rotationIncrement;
-                    tempVelocity = new Vector2((float)Math.Cos(newrotationCounterClockwise) * 2f, ((float)Math.Sin(newrotationCounterClockwise)) * 2f);
+                    tempVelocity = new Vector2((float)Math.Cos(newrotationCounterClockwise) * additionalSpeed, ((float)Math.Sin(newrotationCounterClockwise)) * additionalSpeed);
                     newProjectile = new Projectile(this, attacker, tempVelocity, tempPosition, ProjectileTexture, newrotationCounterClockwise, Range, VanishDelay);
 
                     Global.CombatManager.PutProjectile(newProjectile);
