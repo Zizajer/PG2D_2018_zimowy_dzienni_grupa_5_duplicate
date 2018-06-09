@@ -214,7 +214,7 @@ namespace Dungeon_Crawler
 
         public void Update(GameTime gameTime)
         {
-            if (lm.player.CurrentHealth <= 0)
+            if (lm.player.CurrentHealth < 0)
                 Global.GameState = false;
             this.gameTime += gameTime.ElapsedGameTime.TotalSeconds;
 

@@ -488,6 +488,12 @@
 /processorParam:TextureFormat=Color
 /build:player/Warrior/WalkingUp.png
 
+#begin shaders/Berserk.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/Berserk.fx
+
 #begin shaders/BloomCombine.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -511,6 +517,12 @@
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:shaders/HitEffect.fx
+
+#begin shaders/Invis.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/Invis.fx
 
 #begin shaders/lighteffect.fx
 /importer:EffectImporter

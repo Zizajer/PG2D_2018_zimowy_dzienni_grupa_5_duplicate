@@ -28,7 +28,7 @@ namespace Dungeon_Crawler
             Power = 70;
             Accuracy = 100;
             CriticalHitProbability = 10;
-            FreezeProbability = 5;
+            FreezeProbability = 25;
             BurnProbability = 0;
             IsSpecial = true;
             ManaCost = 10;

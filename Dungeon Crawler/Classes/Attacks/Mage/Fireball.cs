@@ -29,9 +29,9 @@ namespace Dungeon_Crawler
             Accuracy = 100;
             CriticalHitProbability = 10;
             FreezeProbability = 0;
-            BurnProbability = 5;
+            BurnProbability = 15;
             IsSpecial = true;
-            ManaCost = 10;
+            ManaCost = 0;
             Range = 3;
             VanishDelay = 0;
         }

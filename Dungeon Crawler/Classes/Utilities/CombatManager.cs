@@ -69,6 +69,17 @@ namespace Dungeon_Crawler
                 tempString += ". Burned!";
             }
             Global.Gui.WriteToConsole(tempString);
+            if(attacker is Warrior)
+            {
+                Warrior war = (Warrior)attacker;
+                if (war.isBerserkerRageOn)
+                {
+                    int heal = (int)Math.Ceiling(Damage * 0.1f);
+                    war.addHealth(heal);
+                    Global.Gui.WriteToConsole("Berserker Rage healed "+war.Name + " for " + heal);
+                }
+            }
+            
         }
 
         public int CalculateDamage(Character attacker, IAttack attack, Boolean isCritical, Character defender)
@@ -141,45 +152,7 @@ namespace Dungeon_Crawler
         {
             List<Character> listOfEnemiesAround = new List<Character>();
 
-            RogueSharp.Cell startingCell = currentLevel.map.GetCell(cellX, cellY);
-            RogueSharp.Cell endingCell = null;
-
-            int tempdist = distance;
-            bool didExceptionPop = true;
-            do
-            {
-                try
-                {
-                    if (attaker.currentFaceDirection == Character.FaceDirections.Up)
-                    {
-                        //startingCell = currentLevel.map.GetCell(cellX, cellY - 1);
-                        endingCell = currentLevel.map.GetCell(cellX, cellY - tempdist);
-                    }
-                    else if (attaker.currentFaceDirection == Character.FaceDirections.Down)
-                    {
-                        //startingCell = currentLevel.map.GetCell(cellX, cellY + 1);
-                        endingCell = currentLevel.map.GetCell(cellX, cellY + tempdist);
-                    }
-                    else if (attaker.currentFaceDirection == Character.FaceDirections.Left)
-                    {
-                        //startingCell = currentLevel.map.GetCell(cellX - 1, cellY);
-                        endingCell = currentLevel.map.GetCell(cellX - tempdist, cellY);
-                    }
-                    else
-                    {
-                        //startingCell = currentLevel.map.GetCell(cellX + 1, cellY);
-                        endingCell = currentLevel.map.GetCell(cellX + tempdist, cellY);
-                    }
-                    didExceptionPop = false;
-                }
-                catch (IndexOutOfRangeException)
-                {
-                    tempdist -= 1;
-                }
-            } while (didExceptionPop);
-
-            List<RogueSharp.Cell> cells = currentLevel.map.GetCellsAlongLine(startingCell.X, startingCell.Y, endingCell.X, endingCell.Y).ToList();
-
+            List<RogueSharp.Cell> cells = GetCellsInFrontOfCharacter(attaker, cellX, cellY, distance);
 
             if (currentLevel.isBossLevel)
             {
@@ -211,51 +184,98 @@ namespace Dungeon_Crawler
             return listOfEnemiesAround;
         }
 
-        public void SetAnimationInAreaInFrontOfAttacker(Character attaker, string attackName, string animationName, int cellX, int cellY, int distance)
+        public bool SetAnimationInAreaInFrontOfAttacker(Character attaker, string attackName, string animationName, int cellX, int cellY, int distance)
         {
-            RogueSharp.Cell startingCell = currentLevel.map.GetCell(cellX, cellY);
-            RogueSharp.Cell endingCell = null;
+            List<RogueSharp.Cell> cells = GetCellsInFrontOfCharacter(attaker, cellX, cellY, distance);
 
-            int tempdist = distance;
-            bool didExceptionPop = true;
-            do
-            {
-                try
-                {
-                    if (attaker.currentFaceDirection == Character.FaceDirections.Up)
-                    {
-                        startingCell = currentLevel.map.GetCell(cellX, cellY - 1);
-                        endingCell = currentLevel.map.GetCell(cellX, cellY - tempdist);
-                    }
-                    else if (attaker.currentFaceDirection == Character.FaceDirections.Down)
-                    {
-                        startingCell = currentLevel.map.GetCell(cellX, cellY + 1);
-                        endingCell = currentLevel.map.GetCell(cellX, cellY + tempdist);
-                    }
-                    else if (attaker.currentFaceDirection == Character.FaceDirections.Left)
-                    {
-                        startingCell = currentLevel.map.GetCell(cellX - 1, cellY);
-                        endingCell = currentLevel.map.GetCell(cellX - tempdist, cellY);
-                    }
-                    else
-                    { 
-                        startingCell = currentLevel.map.GetCell(cellX + 1, cellY);
-                        endingCell = currentLevel.map.GetCell(cellX + tempdist, cellY);
-                    }
-                    didExceptionPop = false;
-                }
-                catch (IndexOutOfRangeException)
-                {
-                    tempdist -= 1;
-                }
-            } while (didExceptionPop);
-
-            List <RogueSharp.Cell> cells = currentLevel.map.GetCellsAlongLine(startingCell.X, startingCell.Y, endingCell.X, endingCell.Y).ToList();
             foreach (RogueSharp.Cell cell in cells)
             {
-                if (cell.IsWalkable)
-                    currentLevel.attackAnimations.Add(new AttackAnimation(levelManager.Content, attackName, animationName, cell.X, cell.Y, currentLevel.cellSize));
+                currentLevel.attackAnimations.Add(new AttackAnimation(levelManager.Content, attackName, animationName, cell.X, cell.Y, currentLevel.cellSize));
             }
+            if (cells.Count > 0) return true;
+            return false;
+        }
+
+        private List<RogueSharp.Cell> GetCellsInFrontOfCharacter(Character attaker, int cellX, int cellY, int distance)
+        {
+            List<RogueSharp.Cell> cells = new List<RogueSharp.Cell>(distance);
+            RogueSharp.Cell nextCell = null;
+            int nextX, nextY;
+
+            if (attaker.currentFaceDirection == Character.FaceDirections.Up)
+            {
+                for (int dist = 1; dist <= distance; dist++)
+                {
+                    nextX = cellX;
+                    nextY = cellY - dist;
+
+                    if (nextX < 0 || nextX >= currentLevel.map.Width || nextY < 0 || nextY >= currentLevel.map.Height)
+                        break;
+                    else
+                    {
+                        nextCell = currentLevel.map.GetCell(nextX, nextY);
+                        if (!nextCell.IsWalkable)
+                            break;
+                        cells.Add(nextCell);
+                    }
+                }
+            }
+            else if (attaker.currentFaceDirection == Character.FaceDirections.Down)
+            {
+                for (int dist = 1; dist < distance; dist++)
+                {
+                    nextX = cellX;
+                    nextY = cellY + dist;
+
+                    if (nextX < 0 || nextX >= currentLevel.map.Width || nextY < 0 || nextY >= currentLevel.map.Height)
+                        break;
+                    else
+                    {
+                        nextCell = currentLevel.map.GetCell(nextX, nextY);
+                        if (!nextCell.IsWalkable)
+                            break;
+                        cells.Add(nextCell);
+                    }
+                }
+            }
+            else if (attaker.currentFaceDirection == Character.FaceDirections.Left)
+            {
+                for (int dist = 1; dist < distance; dist++)
+                {
+                    nextX = cellX - dist;
+                    nextY = cellY;
+
+                    if (nextX < 0 || nextX >= currentLevel.map.Width || nextY < 0 || nextY >= currentLevel.map.Height)
+                        break;
+                    else
+                    {
+                        nextCell = currentLevel.map.GetCell(nextX, nextY);
+                        if (!nextCell.IsWalkable)
+                            break;
+                        cells.Add(nextCell);
+                    }
+                }
+            }
+            else
+            {
+                for (int dist = 1; dist < distance; dist++)
+                {
+                    nextX = cellX + dist;
+                    nextY = cellY;
+
+                    if (nextX < 0 || nextX >= currentLevel.map.Width || nextY < 0 || nextY >= currentLevel.map.Height)
+                        break;
+                    else
+                    {
+                        nextCell = currentLevel.map.GetCell(nextX, nextY);
+                        if (!nextCell.IsWalkable)
+                            break;
+                        cells.Add(nextCell);
+                    }
+                }
+            }
+
+            return cells;
         }
 
         public List<Character> GetEnemiesInArea(int cellX, int cellY, int distance)
@@ -271,7 +291,6 @@ namespace Dungeon_Crawler
                     listOfEnemiesAround.Add(boss);
                     return listOfEnemiesAround;
                 }
-
             }
             else
             {

@@ -23,7 +23,7 @@ namespace Dungeon_Crawler
         private void Initialize(ContentManager content)
         {
             Name = "Small Potion";
-            Description = "";
+            Description = "Drink this potion to heal fro 25 health";
             Category = "Potion";
 
             TextureName = "potion1";

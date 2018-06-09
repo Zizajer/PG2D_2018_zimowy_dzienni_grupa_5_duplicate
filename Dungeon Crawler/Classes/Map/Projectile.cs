@@ -11,11 +11,11 @@ namespace Dungeon_Crawler
         public Vector2 Velocity { get; set; }
         public Vector2 OriginalPosition { get; set; }
         public float Rotation;
-        private readonly int Range;
+        public readonly int Range;
         public bool IsCharacterHit = false;
-        private float ProjectileTimer = 0;
-        private readonly float VanishDelay;
-        int x, y;
+        public float ProjectileTimer = 0;
+        public readonly float VanishDelay;
+        public int x, y;
         public Projectile(IPositionTargetedAttack attack, Character attacker, Vector2 velocity, Vector2 position, Texture2D texture, float rotation, int range, float vanishDelay) : base(position, texture)
         {
             Attack = attack;
@@ -31,7 +31,7 @@ namespace Dungeon_Crawler
         {
             spriteBatch.Draw(Texture, Position, null, Color.White, Rotation, Origin, Size, SpriteEffects.None, Layers.Projectiles);
         }
-        public void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
+        public virtual void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
             //Moving by specified velocity
             Position += Velocity;

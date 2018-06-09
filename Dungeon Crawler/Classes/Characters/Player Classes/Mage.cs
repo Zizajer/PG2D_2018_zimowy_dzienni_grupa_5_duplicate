@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using RoyT.AStar;
@@ -9,6 +8,7 @@ namespace Dungeon_Crawler
 {
     class Mage : Player
     {
+        int teleportResourceCost = 60;
         public Mage(ContentManager content, int cellSize, int playerCurrentMapLevel, string name) : base(content, cellSize, playerCurrentMapLevel, name)
         {
         }
@@ -33,7 +33,7 @@ namespace Dungeon_Crawler
         {
             if (Mouse.GetState().LeftButton == ButtonState.Pressed && pastButton.LeftButton == ButtonState.Released)
             {
-                if (CurrentResource > ProjectileAttack.ManaCost)
+                if (CurrentResource >= ProjectileAttack.ManaCost)
                 {
                     MouseState mouse = Mouse.GetState();
                     Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
@@ -58,10 +58,10 @@ namespace Dungeon_Crawler
         {
             if (Mouse.GetState().RightButton == ButtonState.Pressed && pastButton2.RightButton == ButtonState.Released)
             {
-                if (CurrentResource > UnTargetedAttack.ManaCost)
+                if (CurrentResource >= UnTargetedAttack.ManaCost)
                 {
-                    UnTargetedAttack.Use(this);
-                    CurrentResource -= UnTargetedAttack.ManaCost;
+                    if(UnTargetedAttack.Use(this))
+                        CurrentResource -= UnTargetedAttack.ManaCost;
                 }
                 else
                 {
@@ -70,11 +70,11 @@ namespace Dungeon_Crawler
             }
             pastButton2 = Mouse.GetState();
         }
-        public void Abillity1(Level level, GraphicsDevice graphicsDevice) //TELEPORT NOT WORKING YET
+        public override void Abillity1(Level level)
         {
-            if (Mouse.GetState().RightButton == ButtonState.Pressed && pastButton.RightButton == ButtonState.Released)
+            if (Keyboard.GetState().IsKeyDown(Keys.D1) && pastKey.IsKeyUp(Keys.D1))
             {
-                if (CurrentResource > teleportCost)
+                if (CurrentResource >= teleportResourceCost)
                 {
                     MouseState mouse = Mouse.GetState();
                     Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
@@ -125,7 +125,7 @@ namespace Dungeon_Crawler
                         }
                         //play red particle
                         Global.CombatManager.SetAnimation("Teleportation2", "MagicAnim2", mx, my);
-                        CurrentResource = CurrentResource - teleportCost;
+                        CurrentResource -= teleportResourceCost;
                         Global.Camera.CenterOn(Center);
                     }
                     else
@@ -138,7 +138,15 @@ namespace Dungeon_Crawler
                     Global.Gui.WriteToConsole("Not enough mana");
                 }
             }
-            pastButton = Mouse.GetState();
+            pastKey = Keyboard.GetState();
+        }
+        public override void Abillity2(Level level)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.D2) && pastKey2.IsKeyUp(Keys.D2))
+            {
+
+            }
+            pastKey2 = Keyboard.GetState();
         }
     }
 }

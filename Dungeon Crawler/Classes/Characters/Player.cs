@@ -16,10 +16,7 @@ namespace Dungeon_Crawler
         public int CurrentResourcePercent { get { return ((int)(CurrentResource / (double)Resource * 100)); } }
         public float ResourceRegenerationFactor { get; set; }
 
-        public int teleportCost = 10;
-
         public MouseState mouse;
-        public float rotation;
         public int CurrentMapLevel { get; set; }
 
         public KeyboardState pastKey; //1
@@ -41,13 +38,22 @@ namespace Dungeon_Crawler
         public ContentManager content;
 
         public float actionTimer = 0;
-        public float timeBetweenActions =0.4f;
+        public float timeBetweenActions = 0.4f;
 
         //Attacks
         public ICharacterTargetedAttack BaseAttack;
         public IPositionTargetedAttack ProjectileAttack;
         public IPositionTargetedAttack ProjectileAttack2;
         public IUnTargetedAttack UnTargetedAttack;
+
+        public bool isRangerInvisible = false;
+        public float invisDecay = 0.3f;
+
+        public bool isBerserkerRageOn = false;
+        public float berserkerTimer;
+        public float howLongShouldBerserkerWork = 10f;
+        public float normalTimeBetweenActions = 0.4f;
+        public float berserkerTimeBetweenActions = 0.2f;
 
         public Player(ContentManager content, int cellSize, int playerCurrentMapLevel, string name)
         {
@@ -71,66 +77,64 @@ namespace Dungeon_Crawler
 
             Inventory = new List<Item>();
 
-            //Set attacks
             setAttacks();
         }
 
-        public virtual void setAttacks()
-        {
-            BaseAttack = new Pound();
-            ProjectileAttack = new ShootArrow();
-            UnTargetedAttack = new Annihilation();
-        }
-
+        public abstract void setAttacks();
         public abstract void BasicAttack(Level level);
         public abstract void SecondaryAttack(Level level);
-
-        public bool ChangeDirection(Level level)
-        {
-            if (Keyboard.GetState().IsKeyDown(Keys.LeftControl))
-            {
-                if (Keyboard.GetState().IsKeyDown(Keys.W))
-                {
-                    _animationManager.Play(_animations["WalkUp"]);
-                    currentFaceDirection = FaceDirections.Up;
-                    return true;
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.S))
-                {
-                    _animationManager.Play(_animations["WalkDown"]);
-                    currentFaceDirection = FaceDirections.Down;
-                    return true;
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.A))
-                {
-                    _animationManager.Play(_animations["WalkLeft"]);
-                    currentFaceDirection = FaceDirections.Left;
-                    return true;
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.D))
-                {
-                    _animationManager.Play(_animations["WalkRight"]);
-                    currentFaceDirection = FaceDirections.Right;
-                    return true;
-                }
-            }
-            return false;
-        }
+        public abstract void Abillity1(Level level);
+        public abstract void Abillity2(Level level);
+        public abstract void ManageResource();
 
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
-            level.map.ComputeFov(CellX, CellY, 15, true);
-            actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            HandleHitState(gameTime);
-            HandleHealthState(gameTime);
-
             CellX = (int)Math.Floor(Center.X / level.cellSize);
             CellY = (int)Math.Floor(Center.Y / level.cellSize);
             if (CellX > 0 && CellX < level.map.Width && CellY > 0 && CellY < level.map.Height)
             {
                 CurrentCell = level.map.GetCell(CellX, CellY);
             }
+
+            if (!isRangerInvisible) {
+                level.map.ComputeFov(CellX, CellY, 15, true);
+                isInvisShaderOn = false;
+            }
+            else
+            {
+                level.map.ComputeFov(0, 0, 1, false);
+                isInvisShaderOn = true;
+                CurrentResource -= invisDecay;
+                invisDecay += 0.02f;
+                if (CurrentResource < 0)
+                {
+                    Global.Gui.WriteToConsole("You are no longer invisible");
+                    CurrentResource = 0;
+                    isRangerInvisible = false;
+                    isInvisShaderOn = false;
+                    invisDecay = 0.3f;
+                }
+
+            }
+            
+            actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (isBerserkerRageOn)
+            {
+                berserkerTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if(berserkerTimer > howLongShouldBerserkerWork)
+                {
+                    timeBetweenActions = normalTimeBetweenActions;
+                    isBerserkerRageOn = false;
+                    isBerserkerShaderOn = false;
+                    Global.Gui.WriteToConsole("You are no longer in Berserker Rage");
+                    berserkerTimer = 0;
+                }
+            }
+
+
+            HandleHitState(gameTime);
+            HandleHealthState(gameTime);
 
             ManageResource();
 
@@ -195,11 +199,11 @@ namespace Dungeon_Crawler
                             Global.Gui.WriteToConsole("Cant go there");
                         }
                     }
-                    //Abillity1(level, graphicsDevice); //currently in mage class
-                    SecondaryAttack(level);
                     BasicAttack(level);
-
                     TakeItem(level, graphicsDevice);
+                    SecondaryAttack(level);
+                    Abillity1(level);
+                    Abillity2(level); 
                 }
                 else //Moving
                 {
@@ -229,7 +233,37 @@ namespace Dungeon_Crawler
             }
         }
 
-        public abstract void ManageResource();
+        public bool ChangeDirection(Level level)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.LeftControl))
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.W))
+                {
+                    _animationManager.Play(_animations["WalkUp"]);
+                    currentFaceDirection = FaceDirections.Up;
+                    return true;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.S))
+                {
+                    _animationManager.Play(_animations["WalkDown"]);
+                    currentFaceDirection = FaceDirections.Down;
+                    return true;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.A))
+                {
+                    _animationManager.Play(_animations["WalkLeft"]);
+                    currentFaceDirection = FaceDirections.Left;
+                    return true;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.D))
+                {
+                    _animationManager.Play(_animations["WalkRight"]);
+                    currentFaceDirection = FaceDirections.Right;
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public virtual Directions GetDirection()
         {

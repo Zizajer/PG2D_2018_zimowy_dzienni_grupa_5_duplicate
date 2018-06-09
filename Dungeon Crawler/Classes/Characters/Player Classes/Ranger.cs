@@ -6,9 +6,12 @@ namespace Dungeon_Crawler
 {
     class Ranger : Player
     {
+        int invisibilityResourceCost = 10;
+
         public Ranger(ContentManager content, int cellSize, int playerCurrentMapLevel, string name) : base(content, cellSize, playerCurrentMapLevel, name)
         {
         }
+
         public override void calculateStatistics()
         {
             Health = CurrentHealth = 70 + Level * 10;
@@ -26,13 +29,24 @@ namespace Dungeon_Crawler
         {
             ProjectileAttack = new ShootArrow();
             ProjectileAttack2 = new PiercingArrow();
-            //UnTargetedAttack = new Annihilation();
         }
+
+        internal void addResource(int v)
+        {
+            CurrentResource += v;
+            if (CurrentResource > Resource)
+                CurrentResource = Resource;
+        }
+
+        public override void ManageResource()
+        {
+        }
+
         public override void BasicAttack(Level level)
         {
             if (Mouse.GetState().LeftButton == ButtonState.Pressed && pastButton.LeftButton == ButtonState.Released)
             {
-                if (CurrentResource > ProjectileAttack.ManaCost)
+                if (CurrentResource >= ProjectileAttack.ManaCost)
                 {
                     MouseState mouse = Mouse.GetState();
                     Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
@@ -47,23 +61,11 @@ namespace Dungeon_Crawler
             pastButton = Mouse.GetState();
         }
 
-        internal void addResource(int v)
-        {
-            CurrentResource += v;
-            if (CurrentResource > Resource)
-                CurrentResource = Resource;
-        }
-
-        public override void ManageResource()
-        {
-
-        }
-
         public override void SecondaryAttack(Level level)
         {
             if (Mouse.GetState().RightButton == ButtonState.Pressed && pastButton2.RightButton == ButtonState.Released)
             {
-                if (CurrentResource > ProjectileAttack2.ManaCost)
+                if (CurrentResource >= ProjectileAttack2.ManaCost)
                 {
                     MouseState mouse = Mouse.GetState();
                     Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
@@ -77,6 +79,39 @@ namespace Dungeon_Crawler
                 }
             }
             pastButton2 = Mouse.GetState();
+        }
+        public override void Abillity1(Level level)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.D1) && pastKey.IsKeyUp(Keys.D1))
+            {
+                if (isRangerInvisible)
+                {
+                    isRangerInvisible = false;
+                    isInvisShaderOn = false;
+                    Global.Gui.WriteToConsole("You are no longer invisible");
+                }
+                else
+                {
+                    if (CurrentResource >= invisibilityResourceCost)
+                    {
+                        isRangerInvisible = true;
+                        Global.Gui.WriteToConsole("You are now invisible");
+                    }
+                    else
+                    {
+                        Global.Gui.WriteToConsole("Not enough focus");
+                    }
+                }
+            }
+            pastKey = Keyboard.GetState();
+        }
+        public override void Abillity2(Level level)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.D2) && pastKey2.IsKeyUp(Keys.D2))
+            {
+                
+            }
+            pastKey2 = Keyboard.GetState();
         }
     }
 }

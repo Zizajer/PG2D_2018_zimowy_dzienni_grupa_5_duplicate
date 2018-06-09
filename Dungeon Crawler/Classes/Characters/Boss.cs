@@ -14,8 +14,8 @@ namespace Dungeon_Crawler
         public List<Cell> occupyingCells;
         public new enum ActionState { Standby, Attacking};
         public new ActionState currentActionState;
-        float actionTimer;
-        float timeBetweenActions;
+        public float actionTimer;
+        public float timeBetweenActions;
 
         Map map;
 
@@ -78,7 +78,8 @@ namespace Dungeon_Crawler
 
             if (currentHealthState != HealthState.Freeze)
             {
-                UseProjectileAttack(level);
+                if (level.map.IsInFov(CellX, CellY))
+                    UseProjectileAttack(level);
             }
 
             SetAnimations();

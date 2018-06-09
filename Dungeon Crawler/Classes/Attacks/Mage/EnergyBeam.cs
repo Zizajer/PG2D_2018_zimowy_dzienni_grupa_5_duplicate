@@ -36,9 +36,12 @@ namespace Dungeon_Crawler
         {
             if (Global.random.Next(100) >= 100 - Accuracy)
             {
-
-                Global.CombatManager.SetAnimationInAreaInFrontOfAttacker(attacker, Name, AnimationName, attacker.CellX, attacker.CellY, Distance);
-
+                if (!Global.CombatManager.SetAnimationInAreaInFrontOfAttacker(attacker, Name, AnimationName, attacker.CellX, attacker.CellY, Distance))
+                {
+                    Global.Gui.WriteToConsole(attacker.Name + " failed " + Name + " and got his mana refunded");
+                    return false;
+                }
+                    
                 List<Character> listOfEnemiesAround = Global.CombatManager.GetEnemiesInAreaInFrontOfAttacker(attacker, attacker.CellX, attacker.CellY, Distance);
                 if (listOfEnemiesAround.Count > 0)
                 {
@@ -51,6 +54,7 @@ namespace Dungeon_Crawler
             }
             else
             {
+                Global.Gui.WriteToConsole(attacker.Name + " missed " + Name);
                 return false; //Attack missed
             }
         }
