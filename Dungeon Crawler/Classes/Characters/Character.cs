@@ -299,7 +299,7 @@ namespace Dungeon_Crawler
             Item DroppedItem = Inventory[i];
             DroppedItem.RevertEffect(this);
 
-            DroppedItem.Position = Center;
+            DroppedItem.Position = Position;
             level.items.Add(DroppedItem);
 
             Inventory.RemoveAt(i);
