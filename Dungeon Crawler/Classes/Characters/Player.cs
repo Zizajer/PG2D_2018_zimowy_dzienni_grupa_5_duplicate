@@ -33,6 +33,7 @@ namespace Dungeon_Crawler
         public KeyboardState pastKey7; //R
         public KeyboardState pastKey8; //<
         public KeyboardState pastKey9; //>
+        public KeyboardState pastKey10; //ENTER
         public short SelectedItem = -1; // -1 == No item in inventory yet
 
         public MouseState pastButton; //LMB
@@ -219,6 +220,7 @@ namespace Dungeon_Crawler
                 DropItem(level, SelectedItem);
                 SwapItem(level, SelectedItem, graphicsDevice);
                 SelectItem();
+                UseItem(SelectedItem);
 
                 SetAnimations();
                 _animationManager.Update(gameTime);
@@ -336,6 +338,37 @@ namespace Dungeon_Crawler
             }
             pastKey8 = Keyboard.GetState();
             pastKey9 = Keyboard.GetState();
+        }
+
+        public void UseItem(int i)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.Enter) && pastKey10.IsKeyUp(Keys.Enter))
+            {
+                if (SelectedItem != -1)
+                {
+                    Item Item = Inventory[i];
+                    if (Item is UsableItem)
+                    {
+                        if (SelectedItem == 0)
+                        {
+                            if (Inventory.Count == 1)
+                            {
+                                SelectedItem = -1;
+                            }
+                        }
+                        else
+                        {
+                            SelectedItem--;
+                        }
+                        ((UsableItem)Item).Use();
+                    }
+                    else
+                    {
+                        Global.Gui.WriteToConsole("You can't use this item.");
+                    }
+                }
+            }
+            pastKey10 = Keyboard.GetState();
         }
     }
 }
