@@ -236,7 +236,7 @@ namespace Dungeon_Crawler
             }
             else
             {
-                float timeBetweenActions = 1f; //we should move that to each boss class but w/e
+                float timeBetweenActions = 1.2f; //we should move that to each boss class but w/e
                 Character tempBoss =
                     new DemonOak(_animationsDemonOak, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
                     {

@@ -140,5 +140,13 @@ namespace Dungeon_Crawler
             }
             pastKey = Keyboard.GetState();
         }
+        public override void Abillity2(Level level)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.D2) && pastKey2.IsKeyUp(Keys.D2))
+            {
+
+            }
+            pastKey2 = Keyboard.GetState();
+        }
     }
 }

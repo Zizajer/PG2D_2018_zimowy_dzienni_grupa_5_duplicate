@@ -14,8 +14,8 @@ namespace Dungeon_Crawler
         public List<Cell> occupyingCells;
         public new enum ActionState { Standby, Attacking};
         public new ActionState currentActionState;
-        float actionTimer;
-        float timeBetweenActions;
+        public float actionTimer;
+        public float timeBetweenActions;
 
         Map map;
 
@@ -61,6 +61,7 @@ namespace Dungeon_Crawler
 
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
+            Debug.WriteLine(timeBetweenActions);
             CellX = (int)Math.Floor(Center.X / level.cellSize);
             CellY = (int)Math.Floor(Center.Y / level.cellSize);
             HandleHitState(gameTime);

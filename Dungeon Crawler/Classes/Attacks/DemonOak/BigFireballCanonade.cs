@@ -52,13 +52,13 @@ namespace Dungeon_Crawler
                 float rotation = (float)Math.Atan2(distanceY, distanceX);
                 Vector2 tempPosition = attacker.Center;
 
-                float rotationIncrement = 0.8f;
+                float rotationIncrement = 0.9f;
                 float newrotationClockwise = rotation;
                 float newrotationCounterClockwise = rotation;
                 Vector2 tempVelocity;
                 Projectile newProjectile;
 
-                float additionalSpeed = 1.5f;
+                float additionalSpeed = 1.7f;
 
                 tempVelocity = new Vector2((float)Math.Cos(rotation) * additionalSpeed, ((float)Math.Sin(rotation)) * additionalSpeed);
                 newProjectile = new Projectile(this, attacker, tempVelocity, tempPosition, ProjectileTexture, rotation, Range, VanishDelay);

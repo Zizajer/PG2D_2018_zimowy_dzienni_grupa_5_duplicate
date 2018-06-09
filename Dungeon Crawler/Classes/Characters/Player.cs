@@ -29,7 +29,7 @@ namespace Dungeon_Crawler
         public ContentManager content;
 
         public float actionTimer = 0;
-        public float timeBetweenActions =0.2f;
+        public float timeBetweenActions = 0.4f;
 
         //Attacks
         public ICharacterTargetedAttack BaseAttack;
@@ -39,6 +39,13 @@ namespace Dungeon_Crawler
 
         public bool isRangerInvisible = false;
         public float invisDecay = 0.3f;
+
+        public bool isBerserkerRageOn = false;
+        public float berserkerTimer;
+        public float howLongShouldBerserkerWork = 10f;
+        public float normalTimeBetweenActions = 0.4f;
+        public float berserkerTimeBetweenActions = 0.2f;
+
         public Player(ContentManager content, int cellSize, int playerCurrentMapLevel, string name)
         {
             Level = 1;
@@ -68,10 +75,18 @@ namespace Dungeon_Crawler
         public abstract void BasicAttack(Level level);
         public abstract void SecondaryAttack(Level level);
         public abstract void Abillity1(Level level);
+        public abstract void Abillity2(Level level);
         public abstract void ManageResource();
 
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
+            CellX = (int)Math.Floor(Center.X / level.cellSize);
+            CellY = (int)Math.Floor(Center.Y / level.cellSize);
+            if (CellX > 0 && CellX < level.map.Width && CellY > 0 && CellY < level.map.Height)
+            {
+                CurrentCell = level.map.GetCell(CellX, CellY);
+            }
+
             if (!isRangerInvisible) {
                 level.map.ComputeFov(CellX, CellY, 15, true);
                 isInvisShaderOn = false;
@@ -94,16 +109,23 @@ namespace Dungeon_Crawler
             }
             
             actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (isBerserkerRageOn)
+            {
+                berserkerTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if(berserkerTimer > howLongShouldBerserkerWork)
+                {
+                    timeBetweenActions = normalTimeBetweenActions;
+                    isBerserkerRageOn = false;
+                    isBerserkerShaderOn = false;
+                    Global.Gui.WriteToConsole("You are no longer in Berserker Rage");
+                    berserkerTimer = 0;
+                }
+            }
+
 
             HandleHitState(gameTime);
             HandleHealthState(gameTime);
-
-            CellX = (int)Math.Floor(Center.X / level.cellSize);
-            CellY = (int)Math.Floor(Center.Y / level.cellSize);
-            if (CellX > 0 && CellX < level.map.Width && CellY > 0 && CellY < level.map.Height)
-            {
-                CurrentCell = level.map.GetCell(CellX, CellY);
-            }
 
             ManageResource();
 
@@ -168,9 +190,10 @@ namespace Dungeon_Crawler
                             Global.Gui.WriteToConsole("Cant go there");
                         }
                     }
-                    Abillity1(level);
-                    SecondaryAttack(level);
                     BasicAttack(level);
+                    SecondaryAttack(level);
+                    Abillity1(level);
+                    Abillity2(level); 
                 }
                 else //Moving
                 {

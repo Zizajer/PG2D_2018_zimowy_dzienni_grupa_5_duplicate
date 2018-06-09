@@ -11,6 +11,7 @@ namespace Dungeon_Crawler
     {
         public int leapResourceCost = 30;
         public int leapDistance = 5;
+        public int berserkerRageResourceCost = 10;
         public Warrior(ContentManager content, int cellSize, int playerCurrentMapLevel, string name) : base(content, cellSize, playerCurrentMapLevel, name)
         {
         }
@@ -33,6 +34,13 @@ namespace Dungeon_Crawler
             BaseAttack = new Pound();
             ProjectileAttack = new ThrowWeapon();
             //UnTargetedAttack = new Annihilation();
+        }
+
+        internal void addHealth(int v)
+        {
+            CurrentHealth += v;
+            if (CurrentHealth > Health)
+                CurrentHealth = Health;
         }
 
         internal void addResource(int v)
@@ -226,6 +234,28 @@ namespace Dungeon_Crawler
             }
             CurrentResource -= leapResourceCost;
             Global.Camera.CenterOn(Center);
+        }
+        public override void Abillity2(Level level)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.D2) && pastKey2.IsKeyUp(Keys.D2))
+            {
+                if (CurrentResource >= berserkerRageResourceCost)
+                {
+                    timeBetweenActions = berserkerTimeBetweenActions;
+                    isBerserkerRageOn = true;
+                    isBerserkerShaderOn = true;
+                    berserkerTimer = 0;
+                    CurrentResource -= berserkerRageResourceCost;
+                    if (CurrentResource < 0)
+                        CurrentResource = 0;
+                    Global.Gui.WriteToConsole("You are now in Berserker Rage");
+                }
+                else
+                {
+                    Global.Gui.WriteToConsole("Not enough rage");
+                }               
+            }
+            pastKey2 = Keyboard.GetState();
         }
     }
 }

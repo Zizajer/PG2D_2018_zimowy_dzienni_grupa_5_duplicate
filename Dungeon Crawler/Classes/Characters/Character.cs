@@ -40,6 +40,8 @@ namespace Dungeon_Crawler
         public bool isBurnShaderOn = false;
         public bool isFreezeShaderOn = false;
         public bool isInvisShaderOn = false;
+        public bool isBerserkerShaderOn = false;
+        
         public float healthStateTimer = 0;
         public float howLongShouldHealthStateLast = Global.random.Next(5, 15);
 
@@ -85,6 +87,10 @@ namespace Dungeon_Crawler
             if (isInvisShaderOn)
             {
                 Global.Effects.InvisEffect.CurrentTechnique.Passes[0].Apply();
+            }
+            if (isBerserkerShaderOn)
+            {
+                Global.Effects.BerserkEffect.CurrentTechnique.Passes[0].Apply();
             }
             _animationManager.Draw(spriteBatch);
             spriteBatch.End();

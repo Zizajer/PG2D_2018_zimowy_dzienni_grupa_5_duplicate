@@ -69,6 +69,17 @@ namespace Dungeon_Crawler
                 tempString += ". Burned!";
             }
             Global.Gui.WriteToConsole(tempString);
+            if(attacker is Warrior)
+            {
+                Warrior war = (Warrior)attacker;
+                if (war.isBerserkerRageOn)
+                {
+                    int heal = (int)Math.Ceiling(Damage * 0.1f);
+                    war.addHealth(heal);
+                    Global.Gui.WriteToConsole("Berserker Rage healed "+war.Name + " for " + heal);
+                }
+            }
+            
         }
 
         public int CalculateDamage(Character attacker, IAttack attack, Boolean isCritical, Character defender)
