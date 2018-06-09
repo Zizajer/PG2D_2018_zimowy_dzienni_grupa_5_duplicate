@@ -3,13 +3,14 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using RoyT.AStar;
 using System;
+using System.Collections.Generic;
 
 namespace Dungeon_Crawler
 {
     class Warrior : Player
     {
         public int leapResourceCost = 30;
-        public int leapDistance = 2;
+        public int leapDistance = 5;
         public Warrior(ContentManager content, int cellSize, int playerCurrentMapLevel, string name) : base(content, cellSize, playerCurrentMapLevel, name)
         {
         }
@@ -185,8 +186,6 @@ namespace Dungeon_Crawler
         private void Leap(Level level, int mx, int my)
         {
             Vector2 mousePos;
-            //play blue particle
-            Global.CombatManager.SetAnimation("Leap", "MagicAnim", CellX, CellY);
             level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
             level.grid.SetCellCost(new Position(mx, my), 5.0f);
             mousePos.X = mx * level.cellSize + level.cellSize / 2 - getWidth() / 2;
@@ -216,8 +215,15 @@ namespace Dungeon_Crawler
                     currentFaceDirection = FaceDirections.Up;
                 }
             }
-            //play red particle
-            Global.CombatManager.SetAnimation("Leap2", "MagicAnim2", mx, my);
+            Global.CombatManager.SetAnimationInArea("Leap2", "baseAttackAnim", mx, my, 2);
+            List<Character> listOfEnemiesAround = Global.CombatManager.GetEnemiesInArea(mx, my, 2);
+            if (listOfEnemiesAround.Count > 0)
+            {
+                foreach (Character defender in listOfEnemiesAround)
+                {
+                    Global.CombatManager.Attack(this, new Leap(), defender);
+                }
+            }
             CurrentResource -= leapResourceCost;
             Global.Camera.CenterOn(Center);
         }

@@ -44,6 +44,7 @@
     <Compile Include="Classes\Attacks\Dragon\DragonAttack.cs" />
     <Compile Include="Classes\Attacks\Mage\EnergyBeam.cs" />
     <Compile Include="Classes\Attacks\Ranger\PiercingArrow.cs" />
+    <Compile Include="Classes\Attacks\Warrior\Leap.cs" />
     <Compile Include="Classes\Attacks\Warrior\ThrowWeapon.cs" />
     <Compile Include="Classes\Characters\Animation.cs" />
     <Compile Include="Classes\Characters\AnimationManager.cs" />
