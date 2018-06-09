@@ -90,7 +90,8 @@ namespace Dungeon_Crawler
 
             allItemsNames = new List<String>
             {
-                "Wand"
+                "Wand",
+                "SmallPotion"
             };
 
             cellSize = floor.Width;

@@ -68,6 +68,7 @@
     <Compile Include="Classes\Characters\Character.cs" />
     <Compile Include="Classes\Characters\Items\Abstract\Item.cs" />
     <Compile Include="Classes\Characters\Items\Abstract\UsableItem.cs" />
+    <Compile Include="Classes\Characters\Items\SmallPotion.cs" />
     <Compile Include="Classes\Characters\Items\Wand.cs" />
     <Compile Include="Classes\Characters\Enemies\Blob.cs" />
     <Compile Include="Classes\Characters\Enemies\Skeleton.cs" />

@@ -11,6 +11,7 @@ namespace Dungeon_Crawler
     public abstract class UsableItem : Item
     {
         public UsableItem(ContentManager content, Vector2 position) : base(content, position) { }
-        public abstract void Use();
+        public UsableItem(ContentManager content) : base (content) { }
+        public abstract void Use(Character owner);
     }
 }
