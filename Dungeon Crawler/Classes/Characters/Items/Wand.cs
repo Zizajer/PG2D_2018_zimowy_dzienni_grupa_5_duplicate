@@ -21,7 +21,7 @@ namespace Dungeon_Crawler
         private void Initialize(ContentManager content)
         {
             Name = "Wand";
-            Description = "";
+            Description = "Magic wand that increases your magic damage. How? Magic";
             Category = "Wand";
 
             TextureName = "wand1";

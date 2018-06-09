@@ -25,12 +25,12 @@ namespace Dungeon_Crawler
         public KeyboardState pastKey4; //CTRL
 
         //Inventory management vars
-        public KeyboardState pastKey5; //F
-        public KeyboardState pastKey6; //E
-        public KeyboardState pastKey7; //R
-        public KeyboardState pastKey8; //<
-        public KeyboardState pastKey9; //>
-        public KeyboardState pastKey10; //ENTER
+        public KeyboardState pastKey5; //F PICKING UP ITEMS
+        public KeyboardState pastKey6; //Z DROPING ITEMS
+        public KeyboardState pastKey7; //R SWAPING ITEMS
+        public KeyboardState pastKey8; //Tab SCROLLING INVENTORY
+        public KeyboardState pastKey9; //E USING ITEMS
+        public KeyboardState pastKey10; //Q EXAMINE SELECTED ITEM
         public short SelectedItem = -1; // -1 == No item in inventory yet
         public int inventoryPickUpLimit = 5;
 
@@ -220,6 +220,7 @@ namespace Dungeon_Crawler
                 Abillity1(level);
                 Abillity2(level);
 
+                ExamineSelectedItem();
                 DropItem(level, SelectedItem);
                 TakeItem(level, graphicsDevice);
                 SwapItem(level, SelectedItem, graphicsDevice);
@@ -321,7 +322,7 @@ namespace Dungeon_Crawler
 
         public override void DropItem(Level level, int i)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.E) && pastKey6.IsKeyUp(Keys.E))
+            if (Keyboard.GetState().IsKeyDown(Keys.Z) && pastKey6.IsKeyUp(Keys.Z))
             {
                 if (SelectedItem != -1)
                 {
@@ -357,33 +358,41 @@ namespace Dungeon_Crawler
                     Global.Gui.WriteToConsole("You swapped " + Inventory.ElementAt(i).Name +" for "+Inventory.ElementAt(Inventory.Count - 1).Name);
                     base.DropItem(level, i);
                 }
+                else
+                {
+                    Global.Gui.WriteToConsole("Nothing on the floor to swap for");
+                }
             }
             pastKey7 = Keyboard.GetState();
         }
 
         public void SelectItem()
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.OemOpenBrackets) && pastKey8.IsKeyUp(Keys.OemOpenBrackets))
+            if (Keyboard.GetState().IsKeyDown(Keys.Tab) && pastKey8.IsKeyUp(Keys.Tab))
             {
-                if (SelectedItem - 1 > -1)
+                if (Inventory.Count > 0)
                 {
-                    SelectedItem--;
+                    if (SelectedItem + 1 < Inventory.Count)
+                    {
+                        SelectedItem++;
+                    }
+                    else
+                    {
+                        SelectedItem = 0;
+                    }
                 }
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.OemCloseBrackets) && pastKey8.IsKeyUp(Keys.OemCloseBrackets))
-            {
-                if (SelectedItem + 1 < Inventory.Count)
+                else
                 {
-                    SelectedItem++;
+                    Global.Gui.WriteToConsole("You dont have any items");
                 }
+                
             }
             pastKey8 = Keyboard.GetState();
-            pastKey9 = Keyboard.GetState();
         }
 
         public void UseItem(int i)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Enter) && pastKey10.IsKeyUp(Keys.Enter))
+            if (Keyboard.GetState().IsKeyDown(Keys.E) && pastKey9.IsKeyUp(Keys.E))
             {
                 if (SelectedItem != -1)
                 {
@@ -409,6 +418,22 @@ namespace Dungeon_Crawler
                         Global.Gui.WriteToConsole("You can't use this item.");
                     }
                 }
+            }
+            pastKey9 = Keyboard.GetState();
+        }
+        public void ExamineSelectedItem()
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.Q) && pastKey10.IsKeyUp(Keys.Q))
+            {
+                if (SelectedItem != -1)
+                {
+                    Global.Gui.WriteToConsole(Inventory.ElementAt(SelectedItem).Description);
+                }
+                else
+                {
+                    Global.Gui.WriteToConsole("Nothing to examine");
+                }
+
             }
             pastKey10 = Keyboard.GetState();
         }

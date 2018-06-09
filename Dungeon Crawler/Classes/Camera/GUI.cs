@@ -242,7 +242,7 @@ namespace Dungeon_Crawler
         }
         public void WriteToConsole(string msg)
         {
-            if (console[3].Equals(msg)) return;
+            if (console[4].Equals(msg)) return;
 
             console[0] = console[1];
             console[1] = console[2];

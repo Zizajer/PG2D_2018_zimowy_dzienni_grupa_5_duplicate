@@ -24,7 +24,7 @@ namespace Dungeon_Crawler
         {
             Name = "Small Potion";
             healthGained = 25;
-            Description = "Drink this potion to heal for "+ healthGained+" health";
+            Description = "Drink this potion to heal yourself for maximum " + healthGained+ " health. Strongly increases your desire to urinate.";
             Category = "Potion";
 
             TextureName = "potion1";
