@@ -9,6 +9,7 @@ namespace Dungeon_Crawler
     class Warrior : Player
     {
         public int leapResourceCost = 30;
+        public int leapDistance = 2;
         public Warrior(ContentManager content, int cellSize, int playerCurrentMapLevel, string name) : base(content, cellSize, playerCurrentMapLevel, name)
         {
         }
@@ -137,7 +138,7 @@ namespace Dungeon_Crawler
         }
         public override void Abillity1(Level level)
         {
-            if (Mouse.GetState().RightButton == ButtonState.Pressed && pastButton.RightButton == ButtonState.Released)
+            if (Keyboard.GetState().IsKeyDown(Keys.D1) && pastKey.IsKeyUp(Keys.D1))
             {
                 if (CurrentResource >= leapResourceCost)
                 {
@@ -150,60 +151,75 @@ namespace Dungeon_Crawler
 
                     if (currentDirection != Directions.None)
                     {
-                        Global.Gui.WriteToConsole("Can't teleport while moving");
+                        Global.Gui.WriteToConsole("Can't leap while moving");
                         return;
                     }
                     if (mx < 0 || mx >= level.map.Width || my < 0 || my >= level.map.Height)
                         return;
-                    if (level.grid.GetCellCost(new Position(mx, my)) == 1.0f)
+
+                    if (Global.CombatManager.DistanceBetween2Points(CellX, CellY, mx, my) <= leapDistance)
                     {
-                        //play blue particle
-                        Global.CombatManager.SetAnimation("Teleportation", "MagicAnim", CellX, CellY);
-                        level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
-                        level.grid.SetCellCost(new Position(mx, my), 5.0f);
-                        mousePos.X = mx * level.cellSize + level.cellSize / 2 - getWidth() / 2;
-                        mousePos.Y = my * level.cellSize + level.cellSize / 2 - getHeight() / 2;
-                        Position = mousePos;
-                        //change player facing when ,,leaving tp"
-                        if (mx > CellX)
+                        if (level.grid.GetCellCost(new Position(mx, my)) == 1.0f)
                         {
-                            _animationManager.Play(_animations["WalkRight"]);
-                            currentFaceDirection = FaceDirections.Right;
-                        }
-                        else if (mx < CellX)
-                        {
-                            _animationManager.Play(_animations["WalkLeft"]);
-                            currentFaceDirection = FaceDirections.Left;
+                            Leap(level, mx, my);
                         }
                         else
                         {
-                            if (my > CellY)
-                            {
-                                _animationManager.Play(_animations["WalkDown"]);
-                                currentFaceDirection = FaceDirections.Down;
-                            }
-                            else
-                            {
-                                _animationManager.Play(_animations["WalkUp"]);
-                                currentFaceDirection = FaceDirections.Up;
-                            }
+                            Global.Gui.WriteToConsole("Can't leap there");
                         }
-                        //play red particle
-                        Global.CombatManager.SetAnimation("Teleportation2", "MagicAnim2", mx, my);
-                        CurrentResource -= leapResourceCost;
-                        Global.Camera.CenterOn(Center);
                     }
                     else
                     {
-                        Global.Gui.WriteToConsole("Can't teleport there");
+                        Global.Gui.WriteToConsole("Can't leap that far");
                     }
+                        
                 }
                 else
                 {
-                    Global.Gui.WriteToConsole("Not enough mana");
+                    Global.Gui.WriteToConsole("Not enough rage");
                 }
             }
-            pastButton = Mouse.GetState();
+            pastKey = Keyboard.GetState();
+        }
+
+        private void Leap(Level level, int mx, int my)
+        {
+            Vector2 mousePos;
+            //play blue particle
+            Global.CombatManager.SetAnimation("Leap", "MagicAnim", CellX, CellY);
+            level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
+            level.grid.SetCellCost(new Position(mx, my), 5.0f);
+            mousePos.X = mx * level.cellSize + level.cellSize / 2 - getWidth() / 2;
+            mousePos.Y = my * level.cellSize + level.cellSize / 2 - getHeight() / 2;
+            Position = mousePos;
+            //change player facing when ,,leaving tp"
+            if (mx > CellX)
+            {
+                _animationManager.Play(_animations["WalkRight"]);
+                currentFaceDirection = FaceDirections.Right;
+            }
+            else if (mx < CellX)
+            {
+                _animationManager.Play(_animations["WalkLeft"]);
+                currentFaceDirection = FaceDirections.Left;
+            }
+            else
+            {
+                if (my > CellY)
+                {
+                    _animationManager.Play(_animations["WalkDown"]);
+                    currentFaceDirection = FaceDirections.Down;
+                }
+                else
+                {
+                    _animationManager.Play(_animations["WalkUp"]);
+                    currentFaceDirection = FaceDirections.Up;
+                }
+            }
+            //play red particle
+            Global.CombatManager.SetAnimation("Leap2", "MagicAnim2", mx, my);
+            CurrentResource -= leapResourceCost;
+            Global.Camera.CenterOn(Center);
         }
     }
 }
