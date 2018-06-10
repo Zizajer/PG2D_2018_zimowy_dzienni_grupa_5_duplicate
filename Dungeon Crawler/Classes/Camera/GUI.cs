@@ -10,7 +10,7 @@ namespace Dungeon_Crawler
 
         GraphicsDeviceManager graphics;
         private SpriteFont font;
-        private string[] console = { "", "", "", "", "" };
+        private string[] console = { "", "", "", "", "", "" };
         private double gameTime;
         private double lastMsgGametime = 0;
         private double afterHowLongClearHighestMsg = 2; //sec
@@ -88,7 +88,7 @@ namespace Dungeon_Crawler
                 //Draw name
                 spriteBatch.DrawString(font, lm.player.Name, new Vector2((int)lm.player.Position.X, (int)lm.player.Position.Y - 39), Color.Black, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
                 
-                string s = " \nLevel " + (lm.player.CurrentMapLevel + 1);
+                string s = " \nDungeon Level" + (lm.player.CurrentMapLevel + 1);
                 spriteBatch.DrawString(font, s, new Vector2(tempX, tempY3), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
 
                 DrawInventory(spriteBatch, tempX, tempY3, scale);
@@ -97,8 +97,9 @@ namespace Dungeon_Crawler
             {
                 spriteBatch.DrawString(font, "Game Over", new Vector2(gameOverX, gameOverY), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
             }
+            
             tempY += (int)(0.84 * Global.Camera.ViewportWorldBoundry().Height);
-            string tempString = console[0] + "\n" + console[1] + "\n" + console[2] + "\n" + console[3] +"\n" + console[4];
+            string tempString = console[0] + "\n" + console[1] + "\n" + console[2] + "\n" + console[3] +"\n" + console[4] + "\n" + console[5];
             spriteBatch.DrawString(font, tempString, new Vector2(tempX, tempY), Color.White, 0.0f, Vector2.One, 0.7f * (1 / scale), SpriteEffects.None, Layers.Text);
         }
 
@@ -242,13 +243,14 @@ namespace Dungeon_Crawler
         }
         public void WriteToConsole(string msg)
         {
-            if (console[4].Equals(msg)) return;
+            if (console[5].Equals(msg)) return;
 
             console[0] = console[1];
             console[1] = console[2];
             console[2] = console[3];
             console[3] = console[4];
-            console[4] = msg;
+            console[4] = console[5];
+            console[5] = msg;
 
             lastMsgGametime = gameTime;
         }
@@ -258,7 +260,8 @@ namespace Dungeon_Crawler
             console[1] = console[2];
             console[2] = console[3];
             console[3] = console[4];
-            console[4] = "";
+            console[4] = console[5];
+            console[5] = "";
 
             lastMsgGametime = gameTime;
         }

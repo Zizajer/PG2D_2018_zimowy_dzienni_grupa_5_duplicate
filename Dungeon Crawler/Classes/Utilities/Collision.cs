@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using RoyT.AStar;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Dungeon_Crawler
 {
@@ -161,11 +162,14 @@ namespace Dungeon_Crawler
             return false;
         }
 
-        public static bool checkCollision(Rectangle character1Rectangle, Character character,Sprite sprite,GraphicsDevice graphicsDevice)
+        public static bool checkCollision(Rectangle character1Rectangle, Character character, Sprite sprite, GraphicsDevice graphicsDevice)
         {
             if (character == null || sprite == null) return false;
-            Color[] characterTextureData = character.getCurrentTextureData(graphicsDevice);
+            Level level = Global.levelmanager.levels[Global.levelmanager.player.CurrentMapLevel];
+            if (Vector2.Distance(new Vector2(character1Rectangle.Center.X, character1Rectangle.Center.Y), sprite.Center) > 2.5 * level.cellSize)
+                return false;
 
+            Color[] characterTextureData = character.getCurrentTextureData(graphicsDevice);
             Rectangle characterRectangle = character1Rectangle;
 
             Rectangle spriteRectangle = sprite.getRectangle();
@@ -189,6 +193,10 @@ namespace Dungeon_Crawler
         {
             if (sprite1 == null || sprite2 == null) return false;
 
+            Level level=Global.levelmanager.levels[Global.levelmanager.player.CurrentMapLevel];
+            if (Vector2.Distance(sprite1.Center, sprite2.Center) > 1.5 * level.cellSize)
+                return false;
+            
             Rectangle sprite1Rectangle = sprite1.getRectangle();
 
             Rectangle sprite2Rectangle = sprite2.getRectangle();

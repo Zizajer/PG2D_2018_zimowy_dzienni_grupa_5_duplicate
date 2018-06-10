@@ -8,21 +8,21 @@ using System.Threading.Tasks;
 
 namespace Dungeon_Crawler
 {
-    public class SmallPotion : UsableItem
+    public class SmallHealthPotion : UsableItem
     {
         float healthGained;
 
-        public SmallPotion(ContentManager content, Vector2 position) : base(content, position)
+        public SmallHealthPotion(ContentManager content, Vector2 position) : base(content, position)
         {
             Initialize(content);
         }
-        public SmallPotion(ContentManager content) : base(content)
+        public SmallHealthPotion(ContentManager content) : base(content)
         {
             Initialize(content);
         }
         private void Initialize(ContentManager content)
         {
-            Name = "Small Potion";
+            Name = "Small HP Potion";
             healthGained = 25;
             Description = "Drink this potion to heal yourself for maximum " + healthGained+ " health. Strongly increases your desire to urinate.";
             Category = "Potion";

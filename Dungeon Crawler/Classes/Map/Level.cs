@@ -101,24 +101,7 @@ namespace Dungeon_Crawler
                         if (character.NextCell != null)
                         grid.SetCellCost(new Position(character.NextCell.X, character.NextCell.Y), 1.0f);
                         character.DropAllItems(this);
-                        enemies.RemoveAt(i);
-
-                        
-
-                        /*
-                        if (Global.random.Next(10) > 0) //90% of chance
-                        {
-                            int numberOfItems = Global.random.Next(2, 5);
-                            int positionOffset = 0;
-                            for (int j = 0; j < numberOfItems; j++)
-                            {
-                                int itemId = Global.random.Next(allItemsNames.Count);
-                                ItemSprite tempItem = new ItemSprite(new Vector2(character.Center.X + positionOffset, character.Center.Y + positionOffset), allItems[itemId], allItemsNames[itemId]);
-                                items.Add(tempItem);
-                                positionOffset += cellSize / 2;
-                            }
-                        }
-                        */
+                        enemies.RemoveAt(i);     
                     }
                 } 
             }
@@ -148,21 +131,6 @@ namespace Dungeon_Crawler
                     }
                 }
             }
-
-            /*
-            Item[] itemArray = items.ToArray();
-            for (int i = 0; i < items.Count; i++)
-            {
-                if ((Math.Abs(player.Position.X - player.Position.X) < player.getWidth() + itemArray[i].Texture.Width) && (Math.Abs(player.Position.Y - player.Position.Y) < player.getHeight() + itemArray[i].Texture.Height))
-                {
-                    if (Collision.checkCollision(player.getRectangle(), player, itemArray[i], graphicsDevice))
-                    {
-                        player.Inventory.Add(itemArray[i]);
-                        items.Remove(itemArray[i]);
-                    }
-                }
-            }
-            */
 
             for (int i = Projectiles.Count - 1; i >= 0; i--)
             {

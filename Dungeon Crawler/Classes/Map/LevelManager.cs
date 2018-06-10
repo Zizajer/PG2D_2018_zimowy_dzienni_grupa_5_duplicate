@@ -22,7 +22,7 @@ namespace Dungeon_Crawler
         public int newMapRoomWidth = 7;
         public int newMapRoomHeight = 2;
         public int enemiesCount = 1;
-        public int itemsCount = 2;
+        public int itemsCount;
         public int rocksCount = 0;
         public float enemySpeedFactor = 1.0f;
         public Texture2D floor;
@@ -99,9 +99,11 @@ namespace Dungeon_Crawler
             allItemsNames = new List<String>
             {
                 "Wand",
-                "SmallPotion"
+                "HealthIncreasingPotion",
+                "InvisibilityPotion",
+                "SmallHealthPotion"
             };
-
+            itemsCount = allItemsNames.Count;
             cellSize = floor.Width;
 
             try
@@ -167,7 +169,7 @@ namespace Dungeon_Crawler
             enemySpeedFactor = enemySpeedFactor + 0.5f;
             if (player != null && player.CurrentMapLevel > 5)
             {
-                itemsCount = Global.random.Next(1);
+                itemsCount = Global.random.Next(allItemsNames.Count);
             }
         }
 
