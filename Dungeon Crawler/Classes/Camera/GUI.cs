@@ -88,7 +88,7 @@ namespace Dungeon_Crawler
                 //Draw name
                 spriteBatch.DrawString(font, lm.player.Name, new Vector2((int)lm.player.Position.X, (int)lm.player.Position.Y - 39), Color.Black, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
                 
-                string s = " \nDungeon Level" + (lm.player.CurrentMapLevel + 1);
+                string s = " \nDungeon Level " + (lm.player.CurrentMapLevel + 1);
                 spriteBatch.DrawString(font, s, new Vector2(tempX, tempY3), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
 
                 DrawInventory(spriteBatch, tempX, tempY3, scale);
