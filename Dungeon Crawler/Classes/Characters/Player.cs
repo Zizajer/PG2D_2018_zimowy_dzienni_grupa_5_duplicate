@@ -45,6 +45,7 @@ namespace Dungeon_Crawler
         public ICharacterTargetedAttack BaseAttack;
         public IPositionTargetedAttack ProjectileAttack;
         public IPositionTargetedAttack ProjectileAttack2;
+        public IPositionTargetedAttack ProjectileAttack3;
         public IUnTargetedAttack UnTargetedAttack;
         public IUnTargetedAttack UnTargetedAttack2;
 

@@ -7,7 +7,6 @@ namespace Dungeon_Crawler
     class Ranger : Player
     {
         int invisibilityResourceCost = 10;
-        int trapResourceCost = 20;
 
         public Ranger(ContentManager content, int cellSize, int playerCurrentMapLevel, string name) : base(content, cellSize, playerCurrentMapLevel, name)
         {
@@ -30,6 +29,7 @@ namespace Dungeon_Crawler
         {
             ProjectileAttack = new ShootArrow();
             ProjectileAttack2 = new PiercingArrow();
+            ProjectileAttack3 = new TrapSkill();
         }
 
         internal void addResource(int v)
@@ -110,9 +110,10 @@ namespace Dungeon_Crawler
         {
             if (Keyboard.GetState().IsKeyDown(Keys.D2) && pastKey2.IsKeyUp(Keys.D2))
             {
-                if (CurrentResource >= trapResourceCost)
+                if (CurrentResource >= ProjectileAttack3.ManaCost)
                 {
-                    CurrentResource -= trapResourceCost;
+                    ProjectileAttack3.Use(this, Position);
+                    CurrentResource -= ProjectileAttack3.ManaCost;
                 }
                 else
                 {
