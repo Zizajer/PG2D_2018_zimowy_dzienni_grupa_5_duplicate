@@ -256,6 +256,7 @@ namespace Dungeon_Crawler
                     Global.Gui.WriteToConsole("Not yet...");
                 }
             }
+            pastKey11 = Keyboard.GetState();
         }
 
         public bool ChangeDirection(Level level)
