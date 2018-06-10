@@ -7,6 +7,7 @@ namespace Dungeon_Crawler
     class Ranger : Player
     {
         int invisibilityResourceCost = 10;
+        int trapResourceCost = 20;
 
         public Ranger(ContentManager content, int cellSize, int playerCurrentMapLevel, string name) : base(content, cellSize, playerCurrentMapLevel, name)
         {
@@ -109,7 +110,14 @@ namespace Dungeon_Crawler
         {
             if (Keyboard.GetState().IsKeyDown(Keys.D2) && pastKey2.IsKeyUp(Keys.D2))
             {
-                
+                if (CurrentResource >= trapResourceCost)
+                {
+                    CurrentResource -= trapResourceCost;
+                }
+                else
+                {
+                    Global.Gui.WriteToConsole("Not enough focus");
+                }
             }
             pastKey2 = Keyboard.GetState();
         }
