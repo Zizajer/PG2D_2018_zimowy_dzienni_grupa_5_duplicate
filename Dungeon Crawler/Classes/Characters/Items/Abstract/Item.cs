@@ -36,11 +36,11 @@ namespace Dungeon_Crawler
         public void ApplyEffect(Character owner)
         {
             owner.Health *= HealthMultiplier;
-            owner.Defense *= (int)DefenseMultiplier;
-            owner.SpDefense *= (int)SpDefenseMultiplier;
-            owner.Attack *= (int)AttackMultiplier;
-            owner.SpAttack *= (int)SpAttackMultiplier;
-            owner.Speed *= (int)SpeedMultiplier;
+            owner.Defense = (int)(owner.Defense * DefenseMultiplier);
+            owner.SpDefense = (int)(owner.SpDefense * SpDefenseMultiplier);
+            owner.Attack = (int)(owner.Attack * AttackMultiplier);
+            owner.SpAttack = (int)(owner.SpAttack * SpAttackMultiplier);
+            owner.Speed *= SpeedMultiplier;
             if (owner is Player)
             {
                 ((Player)owner).ResourceRegenerationFactor *= ManaRegenerationFactorMultiplier;
@@ -54,11 +54,11 @@ namespace Dungeon_Crawler
         public void RevertEffect(Character owner)
         {
             owner.Health /= HealthMultiplier;
-            owner.Defense /= (int)DefenseMultiplier;
-            owner.SpDefense /= (int)SpDefenseMultiplier;
-            owner.Attack /= (int)AttackMultiplier;
-            owner.SpAttack /= (int)SpAttackMultiplier;
-            owner.Speed /= (int)SpeedMultiplier;
+            owner.Defense = (int)(owner.Defense / DefenseMultiplier);
+            owner.SpDefense = (int)(owner.SpDefense / SpDefenseMultiplier);
+            owner.Attack = (int)(owner.Attack / AttackMultiplier);
+            owner.SpAttack = (int)(owner.SpAttack / SpAttackMultiplier);
+            owner.Speed /= SpeedMultiplier;
             if (owner is Player)
             {
                 ((Player)owner).ResourceRegenerationFactor /= ManaRegenerationFactorMultiplier;
