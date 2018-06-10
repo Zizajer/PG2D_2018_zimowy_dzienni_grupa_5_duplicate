@@ -2,7 +2,7 @@
 
 namespace Dungeon_Crawler
 {
-    public class Annihilation : IUnTargetedAttack
+    public class UltimateExplosion : IUnTargetedAttack
     {
         public string Name { get; set; }
         public int Power { get; set; }
@@ -17,19 +17,19 @@ namespace Dungeon_Crawler
         private readonly int Distance;
         private readonly string AnimationName;
 
-        public Annihilation()
+        public UltimateExplosion()
         {
-            Name = "Annihilation";
-            Power = 100;
+            Name = "Ultimate Explosion";
+            Power = 500;
             Accuracy = 100;
             CriticalHitProbability = 50;
             FreezeProbability = 0;
-            BurnProbability = 0;
+            BurnProbability = 60;
             IsSpecial = true;
-            ManaCost = 70;
+            ManaCost = 100;
 
-            Distance = 2;
-            AnimationName = "baseAttackAnim";
+            Distance = 4;
+            AnimationName = "UltimateExplosionAttackAnim";
         }
 
         public bool Use(Character attacker)

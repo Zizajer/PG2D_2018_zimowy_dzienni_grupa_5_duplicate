@@ -46,8 +46,10 @@ namespace Dungeon_Crawler
         public IPositionTargetedAttack ProjectileAttack;
         public IPositionTargetedAttack ProjectileAttack2;
         public IPositionTargetedAttack ProjectileAttack3;
+        public IPositionTargetedAttack ProjectileAttack4;
         public IUnTargetedAttack UnTargetedAttack;
         public IUnTargetedAttack UnTargetedAttack2;
+        public IUnTargetedAttack UnTargetedAttack3;
 
         public bool isRangerInvisible = false;
         public float invisDecay = 0.3f;
@@ -88,6 +90,7 @@ namespace Dungeon_Crawler
         public abstract void SecondaryAttack(Level level);
         public abstract void Abillity1(Level level);
         public abstract void Abillity2(Level level);
+        public abstract void Abillity3(Level level);
         public abstract void ManageResource();
 
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
@@ -221,6 +224,7 @@ namespace Dungeon_Crawler
                 SecondaryAttack(level);
                 Abillity1(level);
                 Abillity2(level);
+                Abillity3(level);
 
                 ExamineSelectedItem();
                 DropItem(level, SelectedItem);

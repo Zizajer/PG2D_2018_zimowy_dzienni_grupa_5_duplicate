@@ -560,6 +560,18 @@
 /processorParam:Quality=Best
 /build:sounds/portalactivated.mp3
 
+#begin spells/AnnihilationAttackAnim.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:spells/AnnihilationAttackAnim.png
+
 #begin spells/Arrow.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -715,4 +727,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:spells/ThrowingWeapon.png
+
+#begin spells/UltimateExplosionAttackAnim.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:spells/UltimateExplosionAttackAnim.png
 

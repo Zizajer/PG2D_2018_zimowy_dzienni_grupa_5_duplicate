@@ -33,7 +33,7 @@ namespace Dungeon_Crawler
         {
             BaseAttack = new Pound();
             ProjectileAttack = new ThrowWeapon();
-            //UnTargetedAttack = new Annihilation();
+            UnTargetedAttack = new Annihilation();
         }
 
         internal void addHealth(int v)
@@ -223,8 +223,8 @@ namespace Dungeon_Crawler
                     currentFaceDirection = FaceDirections.Up;
                 }
             }
-            Global.CombatManager.SetAnimationInArea("Leap2", "baseAttackAnim", mx, my, 2);
-            List<Character> listOfEnemiesAround = Global.CombatManager.GetEnemiesInArea(mx, my, 2);
+            Global.CombatManager.SetAnimationInArea("Leap2", "AnnihilationAttackAnim", mx, my, 1);
+            List<Character> listOfEnemiesAround = Global.CombatManager.GetEnemiesInArea(mx, my, 1);
             if (listOfEnemiesAround.Count > 0)
             {
                 foreach (Character defender in listOfEnemiesAround)
@@ -256,6 +256,22 @@ namespace Dungeon_Crawler
                 }               
             }
             pastKey2 = Keyboard.GetState();
+        }
+        public override void Abillity3(Level level)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.D3) && pastKey3.IsKeyUp(Keys.D3))
+            {
+                if (CurrentResource >= UnTargetedAttack.ManaCost)
+                {
+                    if (UnTargetedAttack.Use(this))
+                        CurrentResource -= UnTargetedAttack.ManaCost;
+                }
+                else
+                {
+                    Global.Gui.WriteToConsole("Not enough rage");
+                }
+            }
+            pastKey3 = Keyboard.GetState();
         }
     }
 }

@@ -30,6 +30,7 @@ namespace Dungeon_Crawler
             ProjectileAttack = new ShootArrow();
             ProjectileAttack2 = new PiercingArrow();
             ProjectileAttack3 = new TrapSkill();
+            ProjectileAttack4 = new MultiShot2();
         }
 
         internal void addResource(int v)
@@ -121,6 +122,25 @@ namespace Dungeon_Crawler
                 }
             }
             pastKey2 = Keyboard.GetState();
+        }
+        public override void Abillity3(Level level)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.D3) && pastKey3.IsKeyUp(Keys.D3))
+            {
+                if (CurrentResource >= ProjectileAttack4.ManaCost)
+                {
+                    MouseState mouse = Mouse.GetState();
+                    Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
+                    Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
+                    ProjectileAttack4.Use(this, mousePos);
+                    CurrentResource -= ProjectileAttack4.ManaCost;
+                }
+                else
+                {
+                    Global.Gui.WriteToConsole("Not enough focus");
+                }
+            }
+            pastKey3 = Keyboard.GetState();
         }
     }
 }
