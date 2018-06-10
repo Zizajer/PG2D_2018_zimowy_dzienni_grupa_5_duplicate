@@ -101,7 +101,8 @@ namespace Dungeon_Crawler
                 "Wand",
                 "HealthIncreasingPotion",
                 "InvisibilityPotion",
-                "SmallHealthPotion"
+                "SmallHealthPotion",
+                "Trainers"
             };
             itemsCount = allItemsNames.Count;
             cellSize = floor.Width;
