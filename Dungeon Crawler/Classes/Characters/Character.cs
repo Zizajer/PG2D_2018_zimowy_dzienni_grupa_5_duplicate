@@ -340,7 +340,7 @@ namespace Dungeon_Crawler
             DroppedItem.RevertEffect(this);
 
             Vector2 ScatteringOffset = new Vector2(Global.random.Next(-8, 8), Global.random.Next(-8, 8));
-            DroppedItem.Position = Position;
+            DroppedItem.Position = Position + ScatteringOffset;
             level.items.Add(DroppedItem);
 
             Inventory.RemoveAt(i);
