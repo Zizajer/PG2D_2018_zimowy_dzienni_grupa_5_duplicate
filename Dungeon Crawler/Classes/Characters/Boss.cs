@@ -21,6 +21,8 @@ namespace Dungeon_Crawler
 
         //Attacks
         public IPositionTargetedAttack ProjectileAttack;
+        public IUnTargetedAttack TargetedAttack;
+        public IUnTargetedAttack TargetedAttack2;
 
         public Boss(Dictionary<string, Animation> _animations, int cellSize, int level, float timeBetweenActions, Map map, List<Cell> cells)
         {
@@ -44,10 +46,7 @@ namespace Dungeon_Crawler
             SetAttack();
         }
 
-        public virtual void SetAttack()
-        {
-            ProjectileAttack = new BigFireballCanonade();
-        }
+        public abstract void SetAttack();
 
         public override void calculateStatistics()
         {

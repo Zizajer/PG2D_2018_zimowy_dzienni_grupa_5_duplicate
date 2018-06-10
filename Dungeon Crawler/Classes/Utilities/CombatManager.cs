@@ -20,6 +20,7 @@ namespace Dungeon_Crawler
 
         public void Attack(Character attacker, IAttack attack, Character defender)
         {
+            if (attacker.Name.Equals(defender.Name)) return;
             string tempString;
             bool IsCritical = false;
 
@@ -127,6 +128,10 @@ namespace Dungeon_Crawler
                         return boss;
                     }
                 }
+                if (x == boss.CellX && y == boss.CellY)
+                {
+                    return boss;
+                }
             }
             else
             {
@@ -147,6 +152,18 @@ namespace Dungeon_Crawler
             return EnemyAt(x, y) != null;
         }
 
+        public Character PlayerAt(int x, int y)
+        {
+            Character tempPlayer = currentLevel.player;
+            if (x == tempPlayer.CellX && y == tempPlayer.CellY)
+                return tempPlayer;
+            else
+                return null;
+        }
+        public bool IsPlayerAt(int x, int y)
+        {
+            return PlayerAt(x, y) != null;
+        }
 
         public List<Character> GetEnemiesInAreaInFrontOfAttacker(Character attaker, int cellX, int cellY, int distance)
         {
@@ -164,7 +181,10 @@ namespace Dungeon_Crawler
                     if (IsEnemyAt(cell.X, cell.Y))
                     {
                         listOfEnemiesAround.Add(EnemyAt(cell.X, cell.Y));
-                        return listOfEnemiesAround;
+                    }
+                    if (IsPlayerAt(cell.X, cell.Y))
+                    {
+                        listOfEnemiesAround.Add(PlayerAt(cell.X, cell.Y));
                     }
                 }
             }
@@ -178,6 +198,13 @@ namespace Dungeon_Crawler
                         {
                             listOfEnemiesAround.Add(EnemyAt(cell.X, cell.Y));
                         }
+                    }
+                }
+                foreach (RogueSharp.Cell cell in cells)
+                {
+                    if (IsPlayerAt(cell.X, cell.Y))
+                    {
+                        listOfEnemiesAround.Add(PlayerAt(cell.X, cell.Y));
                     }
                 }
             }
@@ -286,10 +313,15 @@ namespace Dungeon_Crawler
             {
                 if (currentLevel.enemies.Count == 0) return listOfEnemiesAround;
                 Boss boss = (Boss)currentLevel.enemies.ElementAt(0);
-                if (Global.CombatManager.DistanceBetween2Points(cellX, cellY, boss.CellX, boss.CellY) <= distance + 1)
+                int dist = Global.CombatManager.DistanceBetween2Points(cellX, cellY, boss.CellX, boss.CellY);
+                if (dist <= distance + 1 && dist > 0)
                 {
                     listOfEnemiesAround.Add(boss);
-                    return listOfEnemiesAround;
+                }
+                Character enemy2 = currentLevel.player;
+                if (Global.CombatManager.DistanceBetween2Points(cellX, cellY, enemy2.CellX, enemy2.CellY) <= distance)
+                {
+                    listOfEnemiesAround.Add(enemy2);
                 }
             }
             else
@@ -315,6 +347,26 @@ namespace Dungeon_Crawler
                         if (enemy.CellX == cellX - i && enemy.CellY == cellY)
                             listOfEnemiesAround.Add(enemy);
                     }
+                }
+                Character enemy2 = currentLevel.player;
+                for (int i = 0; i <= distance; i++)
+                {
+                    if (enemy2.CellX == cellX - i && enemy2.CellY == cellY + i)
+                        listOfEnemiesAround.Add(enemy2);
+                    if (enemy2.CellX == cellX && enemy2.CellY == cellY + i)
+                        listOfEnemiesAround.Add(enemy2);
+                    if (enemy2.CellX == cellX + i && enemy2.CellY == cellY + i)
+                        listOfEnemiesAround.Add(enemy2);
+                    if (enemy2.CellX == cellX + i && enemy2.CellY == cellY)
+                        listOfEnemiesAround.Add(enemy2);
+                    if (enemy2.CellX == cellX + i && enemy2.CellY == cellY - i)
+                        listOfEnemiesAround.Add(enemy2);
+                    if (enemy2.CellX == cellX && enemy2.CellY == cellY - i)
+                        listOfEnemiesAround.Add(enemy2);
+                    if (enemy2.CellX == cellX - i && enemy2.CellY == cellY - i)
+                        listOfEnemiesAround.Add(enemy2);
+                    if (enemy2.CellX == cellX - i && enemy2.CellY == cellY)
+                        listOfEnemiesAround.Add(enemy2);
                 }
             }
             return listOfEnemiesAround;

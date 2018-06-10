@@ -35,6 +35,7 @@ namespace Dungeon_Crawler
         public Dictionary<string, Animation> _animationsZombie;
         public Dictionary<string, Animation> _animationsDemonOak;
         public Dictionary<string, Animation> _animationsDragon;
+        public Dictionary<string, Animation> _animationsBlackKnight;
 
         public List<String> allItemsNames;
 
@@ -45,6 +46,7 @@ namespace Dungeon_Crawler
         List<String> BlobNamesList;
         List<String> DemonOakNamesList;
         List<String> DragonNamesList;
+        List<String> BlackKnightNamesList;
         List<String> SkeletonNamesList;
         List<String> ZombieNamesList;
 
@@ -87,7 +89,13 @@ namespace Dungeon_Crawler
                 {
                     {"BossAlive",new Animation(Content.Load<Texture2D>("enemy/Dragon/BossAlive"),3 )}
                 };
-
+            _animationsBlackKnight = new Dictionary<string, Animation>()
+                {
+                    {"WalkUp",new Animation(Content.Load<Texture2D>("enemy/BlackKnight/Walkingup"),3 )},
+                    {"WalkDown",new Animation(Content.Load<Texture2D>("enemy/BlackKnight/WalkingDown"),3 )},
+                    {"WalkLeft",new Animation(Content.Load<Texture2D>("enemy/BlackKnight/WalkingLeft"),3 )},
+                    {"WalkRight",new Animation(Content.Load<Texture2D>("enemy/BlackKnight/WalkingRight"),3 )}
+                };
             allItemsNames = new List<String>
             {
                 "Wand",
@@ -103,6 +111,7 @@ namespace Dungeon_Crawler
                 DragonNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Dragon.txt"));
                 SkeletonNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Skeleton.txt"));
                 ZombieNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Zombie.txt"));
+                BlackKnightNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\BlackKnight.txt"));
             }
             catch (Exception e)
             {
@@ -205,16 +214,6 @@ namespace Dungeon_Crawler
             List<Character> enemies =new List<Character>(1);
             List<Item> items = CreateItemsList(Content, map, cellSize, 0, occupiedCells, allItemsNames, grid);
 
-            List<Cell> bossOccupyingCells = map.GetCellsInArea(6, 6, 1).ToList();
-
-            Cell randomCell = map.GetCell(5, 5);
-            foreach (Cell cell in bossOccupyingCells)
-            {
-                grid.SetCellCost(new Position(cell.X, cell.Y), 5.0f);
-            }
-
-            occupiedCells.Union(bossOccupyingCells);
-
             List<Item> BossInventory = new List<Item>();
             if (Global.random.Next(10) > 0) //Boss has 90% of chance to be equipped with 2-4 items
             {
@@ -222,9 +221,19 @@ namespace Dungeon_Crawler
                 BossInventory = CreateItemsList(Content, numberOfItems, allItemsNames);
             }
         
-            int whichBossToSpawn = Global.random.Next(2);
+            int whichBossToSpawn = Global.random.Next(3);
             if (whichBossToSpawn == 0)
             {
+                List<Cell> bossOccupyingCells = map.GetCellsInArea(6, 6, 1).ToList();
+
+                Cell randomCell = map.GetCell(5, 5);
+                foreach (Cell cell in bossOccupyingCells)
+                {
+                    grid.SetCellCost(new Position(cell.X, cell.Y), 5.0f);
+                }
+
+                occupiedCells.Union(bossOccupyingCells);
+
                 float timeBetweenActions = 1f; //we should move that to each boss class but w/e
                 Character tempBoss =
                     new Dragon(_animationsDragon, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
@@ -235,8 +244,18 @@ namespace Dungeon_Crawler
                 enemies.Add(tempBoss);
                 tempBoss.TakeItems(BossInventory);
             }
-            else
+            else if (whichBossToSpawn == 1)
             {
+                List<Cell> bossOccupyingCells = map.GetCellsInArea(6, 6, 1).ToList();
+
+                Cell randomCell = map.GetCell(5, 5);
+                foreach (Cell cell in bossOccupyingCells)
+                {
+                    grid.SetCellCost(new Position(cell.X, cell.Y), 5.0f);
+                }
+
+                occupiedCells.Union(bossOccupyingCells);
+
                 float timeBetweenActions = 1.2f; //we should move that to each boss class but w/e
                 Character tempBoss =
                     new DemonOak(_animationsDemonOak, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
@@ -246,6 +265,23 @@ namespace Dungeon_Crawler
                     };
                 enemies.Add(tempBoss);
                 tempBoss.TakeItems(BossInventory);
+            }
+            else
+            {
+                Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid);
+                List<Cell> bossOccupyingCells = new List<Cell>();
+
+                float timeBetweenActions = 1.0f; //we should move that to each boss class but w/e
+                Character tempBoss =
+                    new BlackKnight(_animationsBlackKnight, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
+                    {
+                        Name = BlackKnightNamesList[Global.random.Next(BlackKnightNamesList.Count)],
+                        Position = new Vector2((randomCell.X * cellSize + cellSize / 4), (randomCell.Y * cellSize) + cellSize / 4)
+                    };
+                enemies.Add(tempBoss);
+                tempBoss.TakeItems(BossInventory);
+
+                grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
             }
 
             Global.Camera.setParams(map.Width, map.Height, cellSize);

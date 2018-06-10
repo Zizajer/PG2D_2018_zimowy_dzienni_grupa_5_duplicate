@@ -41,6 +41,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Classes\Attacks\BlackKnight\DeathBeam.cs" />
     <Compile Include="Classes\Attacks\Dragon\DragonAttack.cs" />
     <Compile Include="Classes\Attacks\Mage\UltimateExplosion.cs" />
     <Compile Include="Classes\Attacks\Ranger\MultiShot2.cs" />
@@ -56,7 +57,7 @@
     <Compile Include="Classes\Characters\AttackAnimation.cs" />
     <Compile Include="Classes\Attacks\Warrior\Annihilation.cs" />
     <Compile Include="Classes\Attacks\DemonOak\BigFireballCanonade.cs" />
-    <Compile Include="Classes\Attacks\Exori.cs" />
+    <Compile Include="Classes\Attacks\BlackKnight\Exori.cs" />
     <Compile Include="Classes\Attacks\Ranger\TrapSkill.cs" />
     <Compile Include="Classes\Attacks\Ranger\ShootArrow.cs" />
     <Compile Include="Classes\Attacks\Iceball.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Classes\Attacks\Warrior\Pound.cs" />
     <Compile Include="Classes\Attacks\Interface\IPositionTargetedAttack.cs" />
     <Compile Include="Classes\Characters\Boss.cs" />
+    <Compile Include="Classes\Characters\Bosses\BlackKnight.cs" />
     <Compile Include="Classes\Characters\Bosses\Dragon.cs" />
     <Compile Include="Classes\Characters\Bosses\DemonOak.cs" />
     <Compile Include="Classes\Characters\Character.cs" />

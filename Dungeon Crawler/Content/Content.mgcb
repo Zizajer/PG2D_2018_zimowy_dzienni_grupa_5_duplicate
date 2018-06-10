@@ -13,6 +13,54 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin enemy/BlackKnight/WalkingDown.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:enemy/BlackKnight/WalkingDown.png
+
+#begin enemy/BlackKnight/WalkingLeft.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:enemy/BlackKnight/WalkingLeft.png
+
+#begin enemy/BlackKnight/WalkingRight.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:enemy/BlackKnight/WalkingRight.png
+
+#begin enemy/BlackKnight/WalkingUp.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:enemy/BlackKnight/WalkingUp.png
+
 #begin enemy/Blob/EnemyDead.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -728,7 +776,7 @@
 /processorParam:TextureFormat=Color
 /build:spells/ThrowingWeapon.png
 
-#begin spells/Wtf.png
+#begin spells/UltimateExplosionAttackAnim.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -740,7 +788,7 @@
 /processorParam:TextureFormat=Color
 /build:spells/UltimateExplosionAttackAnim.png
 
-#begin spells/UltimateExplosionAttackAnim.png
+#begin spells/Wtf.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -751,6 +799,4 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:spells/Wtf.png
-
-
 
