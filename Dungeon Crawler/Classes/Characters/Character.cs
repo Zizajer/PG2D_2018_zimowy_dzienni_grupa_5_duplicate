@@ -73,18 +73,6 @@ namespace Dungeon_Crawler
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
-            if (isBurnShaderOn)
-            {
-                Global.Effects.BurnEffect.CurrentTechnique.Passes[0].Apply();
-            }
-            if (isFreezeShaderOn)
-            {
-                Global.Effects.FreezeEffect.CurrentTechnique.Passes[0].Apply();
-            }
-            if (isHitShaderOn)
-            {
-                Global.Effects.HitEffect.CurrentTechnique.Passes[0].Apply();
-            }
             if (isInvisShaderOn)
             {
                 Global.Effects.InvisEffect.CurrentTechnique.Passes[0].Apply();
@@ -96,6 +84,18 @@ namespace Dungeon_Crawler
             if (isBlackShaderOn)
             {
                 Global.Effects.BlackEffect.CurrentTechnique.Passes[0].Apply();
+            }
+            if (isBurnShaderOn)
+            {
+                Global.Effects.BurnEffect.CurrentTechnique.Passes[0].Apply();
+            }
+            if (isFreezeShaderOn)
+            {
+                Global.Effects.FreezeEffect.CurrentTechnique.Passes[0].Apply();
+            }
+            if (isHitShaderOn)
+            {
+                Global.Effects.HitEffect.CurrentTechnique.Passes[0].Apply();
             }
             _animationManager.Draw(spriteBatch);
             spriteBatch.End();
