@@ -12,10 +12,12 @@ namespace Dungeon_Crawler
         public Effect FreezeEffect;
         public Effect InvisEffect;
         public Effect BerserkEffect;
+        public Effect BlackEffect;
         public Effect bloomCombineEffect;
         public Effects(ContentManager Content)
         {
             BerserkEffect = Content.Load<Effect>("shaders/Berserk");
+            BlackEffect = Content.Load<Effect>("shaders/Black");
             InvisEffect = Content.Load<Effect>("shaders/Invis");
             HitEffect = Content.Load<Effect>("shaders/HitEffect");
             BurnEffect = Content.Load<Effect>("shaders/BurnEffect");

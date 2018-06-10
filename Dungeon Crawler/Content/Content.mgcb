@@ -542,6 +542,12 @@
 /processorParam:DebugMode=Auto
 /build:shaders/Berserk.fx
 
+#begin shaders/Black.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/Black.fx
+
 #begin shaders/BloomCombine.fx
 /importer:EffectImporter
 /processor:EffectProcessor

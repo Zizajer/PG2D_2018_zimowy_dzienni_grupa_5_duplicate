@@ -20,6 +20,7 @@ namespace Dungeon_Crawler
             CurrentCell = map.GetCell(CellX, CellY);
             currentActionState = ActionState.Standing;
             currentHealthState = HealthState.Normal;
+            isBlackShaderOn = true;
         }
 
         public override void calculateStatistics()
