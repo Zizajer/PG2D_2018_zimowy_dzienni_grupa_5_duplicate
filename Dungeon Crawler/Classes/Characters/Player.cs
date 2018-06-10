@@ -239,9 +239,9 @@ namespace Dungeon_Crawler
 
         public void CoreAbility(Level level)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.P) && pastKey5.IsKeyUp(Keys.P))
+            if (Keyboard.GetState().IsKeyDown(Keys.P) && pastKey11.IsKeyUp(Keys.P))
             {
-                if (DrankPotions == 10)
+                if (DrankPotions >= 10)
                 {
                     Global.CombatManager.SetAnimation("??", "Wtf", CellX, CellY);
                     Global.Gui.WriteToConsole(Name + " used his pee pee... and he accidentally peed himself!");
