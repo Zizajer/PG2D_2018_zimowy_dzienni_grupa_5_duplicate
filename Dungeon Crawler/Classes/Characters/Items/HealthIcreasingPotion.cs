@@ -24,7 +24,7 @@ namespace Dungeon_Crawler
         {
             Name = "Perma HP Potion";
             healthGained = 10;
-            Description = "Drink this potion to permamently icrease your maximum health by " + healthGained + ".";
+            Description = "Drink this potion to permamently increase your maximum health by " + healthGained + ".";
             Category = "Potion";
 
             TextureName = "potion2";

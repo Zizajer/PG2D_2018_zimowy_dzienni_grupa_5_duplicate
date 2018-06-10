@@ -21,7 +21,7 @@ namespace Dungeon_Crawler
         private void Initialize(ContentManager content)
         {
             Name = "Invisibility Potion";
-            Description = "Drink this potion to heal gain invisibility from every monster for short time. Warning: Invisibility works only as long as you have your resource available";
+            Description = "Drink this potion to gain invisibility from every monster for short time. Warning: Invisibility works only as long as you have your resource available";
             Category = "Potion";
 
             TextureName = "invisPotion";
