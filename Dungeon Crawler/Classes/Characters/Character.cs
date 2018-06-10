@@ -43,8 +43,12 @@ namespace Dungeon_Crawler
         public bool isBerserkerShaderOn = false;
         public bool isBlackShaderOn = false;
 
+        public bool shaderHealthStatePulse = true;
+        public float shaderHealthStateTimer = 0;
+        public float shaderHealthStatePulseValue = 1f;
+
         public float healthStateTimer = 0;
-        public float howLongShouldHealthStateLast = Global.random.Next(5, 15);
+        public float howLongShouldHealthStateLast = Global.random.Next(5, 10);
 
         public int CellX { get; set; }
         public int CellY { get; set; }
@@ -87,11 +91,13 @@ namespace Dungeon_Crawler
             }
             if (isBurnShaderOn)
             {
-                Global.Effects.BurnEffect.CurrentTechnique.Passes[0].Apply();
+                if(shaderHealthStatePulse == true)
+                    Global.Effects.BurnEffect.CurrentTechnique.Passes[0].Apply();
             }
             if (isFreezeShaderOn)
             {
-                Global.Effects.FreezeEffect.CurrentTechnique.Passes[0].Apply();
+                if (shaderHealthStatePulse == true)
+                    Global.Effects.FreezeEffect.CurrentTechnique.Passes[0].Apply();
             }
             if (isHitShaderOn)
             {
@@ -116,6 +122,18 @@ namespace Dungeon_Crawler
 
         public void HandleHealthState(GameTime gameTime)
         {
+            if (currentHealthState != HealthState.Normal)
+            {
+                shaderHealthStateTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if(shaderHealthStatePulseValue>0.1f)
+                    shaderHealthStatePulseValue -= (float)gameTime.ElapsedGameTime.TotalSeconds/7;
+                if (shaderHealthStateTimer > shaderHealthStatePulseValue)
+                {
+                    shaderHealthStatePulse = !shaderHealthStatePulse;
+                    shaderHealthStateTimer = 0;
+                }
+            }
+
             if (currentHealthState == HealthState.Freeze)
             {
                 healthStateTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -125,6 +143,9 @@ namespace Dungeon_Crawler
                     currentHealthState = HealthState.Normal;
                     isFreezeShaderOn = false;
                     Global.Gui.WriteToConsole(Name + " is no longer frozen!");
+
+                    shaderHealthStatePulseValue = 1f;
+                    shaderHealthStatePulse = true;
                 }
             }
 
@@ -138,6 +159,9 @@ namespace Dungeon_Crawler
                     currentHealthState = HealthState.Normal;
                     isBurnShaderOn = false;
                     Global.Gui.WriteToConsole(Name + " is no longer burned!");
+
+                    shaderHealthStatePulseValue = 1f;
+                    shaderHealthStatePulse = true;
                 }
             }
         }
