@@ -46,6 +46,7 @@ namespace Dungeon_Crawler
         public IPositionTargetedAttack ProjectileAttack;
         public IPositionTargetedAttack ProjectileAttack2;
         public IUnTargetedAttack UnTargetedAttack;
+        public IUnTargetedAttack UnTargetedAttack2;
 
         public bool isRangerInvisible = false;
         public float invisDecay = 0.3f;

@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Classes\Attacks\Dragon\DragonAttack.cs" />
+    <Compile Include="Classes\Attacks\Mage\FrostNova.cs" />
     <Compile Include="Classes\Attacks\Mage\EnergyBeam.cs" />
     <Compile Include="Classes\Attacks\Ranger\PiercingArrow.cs" />
     <Compile Include="Classes\Attacks\Warrior\Leap.cs" />
