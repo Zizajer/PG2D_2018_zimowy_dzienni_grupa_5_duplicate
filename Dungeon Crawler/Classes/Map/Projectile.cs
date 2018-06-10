@@ -27,7 +27,14 @@ namespace Dungeon_Crawler
             IsCharacterHit = false;
             VanishDelay = vanishDelay;
         }
-        public void Draw(SpriteBatch spriteBatch)
+
+        public Projectile(Vector2 position, Texture2D texture) : base(position, texture)
+        {
+            Position = position;
+            Texture = texture;
+        }
+
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Texture, Position, null, Color.White, Rotation, Origin, Size, SpriteEffects.None, Layers.Projectiles);
         }

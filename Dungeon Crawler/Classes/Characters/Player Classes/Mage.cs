@@ -28,6 +28,8 @@ namespace Dungeon_Crawler
         {
             ProjectileAttack = new Fireball();
             UnTargetedAttack = new EnergyBeam();
+            UnTargetedAttack2 = new FrostNova();
+            UnTargetedAttack3 = new UltimateExplosion();
         }
         public override void BasicAttack(Level level)
         {
@@ -144,9 +146,34 @@ namespace Dungeon_Crawler
         {
             if (Keyboard.GetState().IsKeyDown(Keys.D2) && pastKey2.IsKeyUp(Keys.D2))
             {
-
+                if (CurrentResource >= UnTargetedAttack2.ManaCost)
+                {
+                    if (UnTargetedAttack2.Use(this))
+                        CurrentResource -= UnTargetedAttack2.ManaCost;
+                }
+                else
+                {
+                    Global.Gui.WriteToConsole("Not enough mana");
+                }
             }
             pastKey2 = Keyboard.GetState();
+        }
+
+        public override void Abillity3(Level level)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.D3) && pastKey3.IsKeyUp(Keys.D3))
+            {
+                if (CurrentResource >= UnTargetedAttack3.ManaCost)
+                {
+                    if (UnTargetedAttack3.Use(this))
+                        CurrentResource -= UnTargetedAttack3.ManaCost;
+                }
+                else
+                {
+                    Global.Gui.WriteToConsole("Not enough mana");
+                }
+            }
+            pastKey3 = Keyboard.GetState();
         }
     }
 }

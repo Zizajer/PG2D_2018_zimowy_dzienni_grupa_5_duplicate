@@ -4,7 +4,7 @@ using System;
 
 namespace Dungeon_Crawler
 {
-    public class BigFireball : IPositionTargetedAttack
+    public class TrapSkill : IPositionTargetedAttack
     {
         public string Name { get; set; }
         public int Power { get; set; }
@@ -17,24 +17,19 @@ namespace Dungeon_Crawler
         public int ManaCost { get; set; }
 
         private Texture2D ProjectileTexture;
-        private int Range;
-        private readonly float VanishDelay;
 
         private Character Attacker;
 
-        public BigFireball()
+        public TrapSkill()
         {
-            Name = "Big Fireball";
-            Power = 150;
-            Accuracy = 80;
-            CriticalHitProbability = 15;
-            FreezeProbability = 0;
-            BurnProbability = 15;
+            Name = "Frost Trap";
+            Power = 10;
+            Accuracy = 100;
+            CriticalHitProbability = 0;
+            FreezeProbability = 80;
+            BurnProbability = 0;
             IsSpecial = true;
-            ManaCost = 30;
-
-            Range = 3;
-            VanishDelay = 0;
+            ManaCost = 20;
         }
 
         public bool Use(Character attacker, Vector2 position)
@@ -43,20 +38,11 @@ namespace Dungeon_Crawler
             {
                 //TODO: Move ContentManager to global because these workarounds are simply dumb
                 //Also, move initializaition of this variable to constructor (for some reason it throws NullPointerException there)
-                ProjectileTexture = Global.CombatManager.levelManager.Content.Load<Texture2D>("spells/BigFireball");
+                ProjectileTexture = Global.CombatManager.levelManager.Content.Load<Texture2D>("spells/FrostTrap");
                 Attacker = attacker;
 
-                float distanceX = position.X - attacker.Center.X;
-                float distanceY = position.Y - attacker.Center.Y;
-
-                float rotation = (float)Math.Atan2(distanceY, distanceX);
-                Vector2 tempVelocity = new Vector2((float)Math.Cos(rotation) * 5f, ((float)Math.Sin(rotation)) * 5f) + attacker.Velocity / 3;
-                Vector2 tempPosition = attacker.Center + tempVelocity * 10;
-
-                Projectile newProjectile = new Projectile(this, Attacker, tempVelocity, tempPosition, ProjectileTexture, rotation, Range, VanishDelay);
-                Global.CombatManager.PutProjectile(newProjectile);
-                Global.SoundManager.playPew();
-
+                Trap newTrap = new Trap(this, Attacker, Attacker.Center, ProjectileTexture);
+                Global.CombatManager.PutProjectile(newTrap);
                 return true; //Attack hit
             }
             else

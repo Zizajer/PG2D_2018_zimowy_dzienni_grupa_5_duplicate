@@ -2,7 +2,7 @@
 
 namespace Dungeon_Crawler
 {
-    public class Annihilation : IUnTargetedAttack
+    public class FrostNova : IUnTargetedAttack
     {
         public string Name { get; set; }
         public int Power { get; set; }
@@ -17,19 +17,19 @@ namespace Dungeon_Crawler
         private readonly int Distance;
         private readonly string AnimationName;
 
-        public Annihilation()
+        public FrostNova()
         {
-            Name = "Annihilation";
-            Power = 100;
+            Name = "Frost Nova";
+            Power = 10;
             Accuracy = 100;
-            CriticalHitProbability = 50;
-            FreezeProbability = 0;
+            CriticalHitProbability = 0;
+            FreezeProbability = 80;
             BurnProbability = 0;
             IsSpecial = true;
-            ManaCost = 70;
+            ManaCost = 20;
 
             Distance = 2;
-            AnimationName = "baseAttackAnim";
+            AnimationName = "FrostAttackAnim";
         }
 
         public bool Use(Character attacker)

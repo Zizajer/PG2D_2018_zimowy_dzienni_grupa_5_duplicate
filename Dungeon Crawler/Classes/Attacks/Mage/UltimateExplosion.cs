@@ -2,34 +2,34 @@
 
 namespace Dungeon_Crawler
 {
-    public class Leap : IUnTargetedAttack
+    public class UltimateExplosion : IUnTargetedAttack
     {
         public string Name { get; set; }
         public int Power { get; set; }
         public int Accuracy { get; set; }
         public int CriticalHitProbability { get; set; }
+        public int FreezeProbability { get; set; }
+        public int BurnProbability { get; set; }
 
         public bool IsSpecial { get; set; }
         public int ManaCost { get; set; }
-        public int FreezeProbability { get; set; }
-        public int BurnProbability { get; set; }
 
         private readonly int Distance;
         private readonly string AnimationName;
 
-        public Leap()
+        public UltimateExplosion()
         {
-            Name = "Leap";
-            Power = 20;
+            Name = "Ultimate Explosion";
+            Power = 500;
             Accuracy = 100;
-            CriticalHitProbability = 0;
+            CriticalHitProbability = 50;
             FreezeProbability = 0;
-            BurnProbability = 0;
+            BurnProbability = 60;
             IsSpecial = true;
-            ManaCost = 0;
+            ManaCost = 100;
 
-            Distance = 1;
-            AnimationName = "AnnihilationAttackAnim"; 
+            Distance = 4;
+            AnimationName = "UltimateExplosionAttackAnim";
         }
 
         public bool Use(Character attacker)

@@ -42,6 +42,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Classes\Attacks\Dragon\DragonAttack.cs" />
+    <Compile Include="Classes\Attacks\Mage\UltimateExplosion.cs" />
+    <Compile Include="Classes\Attacks\Ranger\MultiShot2.cs" />
+    <Compile Include="Classes\Attacks\Ranger\MultiShot.cs" />
+    <Compile Include="Classes\Attacks\Mage\FrostNova.cs" />
     <Compile Include="Classes\Attacks\Mage\EnergyBeam.cs" />
     <Compile Include="Classes\Attacks\Ranger\PiercingArrow.cs" />
     <Compile Include="Classes\Attacks\Warrior\Leap.cs" />
@@ -50,10 +54,10 @@
     <Compile Include="Classes\Characters\AnimationManager.cs" />
     <Compile Include="Classes\Camera\CameraManager.cs" />
     <Compile Include="Classes\Characters\AttackAnimation.cs" />
-    <Compile Include="Classes\Attacks\Annihilation.cs" />
+    <Compile Include="Classes\Attacks\Warrior\Annihilation.cs" />
     <Compile Include="Classes\Attacks\DemonOak\BigFireballCanonade.cs" />
     <Compile Include="Classes\Attacks\Exori.cs" />
-    <Compile Include="Classes\Attacks\BigFireball.cs" />
+    <Compile Include="Classes\Attacks\Ranger\TrapSkill.cs" />
     <Compile Include="Classes\Attacks\Ranger\ShootArrow.cs" />
     <Compile Include="Classes\Attacks\Iceball.cs" />
     <Compile Include="Classes\Attacks\Interface\IAttack.cs" />
@@ -78,6 +82,7 @@
     <Compile Include="Classes\Characters\Player Classes\Mage.cs" />
     <Compile Include="Classes\Characters\Player Classes\Warrior.cs" />
     <Compile Include="Classes\Map\PiercingProjectille.cs" />
+    <Compile Include="Classes\Map\Trap.cs" />
     <Compile Include="Classes\Map\Projectile.cs" />
     <Compile Include="Classes\Map\Sprite.cs" />
     <Compile Include="Classes\Map\Portal.cs" />

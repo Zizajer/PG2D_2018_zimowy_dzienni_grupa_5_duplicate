@@ -1,0 +1,21 @@
+G³ówne:
+wsad- poruszanie siê
+LPM- podstawowy atak 
+PPM- mocniejszy atak
+1- skill zale¿ny od klasy
+2- skill zale¿ny od klasy
+3- skill zale¿ny od klasy
+lewy control + wasd- obracanie siê w miejscu
+
+Przedmioty:
+tab- wybieranie przedmiotu
+q- ogl¹danie przedmiotu
+e- u¿ycie przedmiotu
+r- podmiana na item z ziemi
+f- podnoszenie przedmiotu
+z- wrzucanie przedmiotu
+
+Kamera:
+strza³ki- poruszanie kamer¹
+.- oddal kamerê
+,- przybli¿ kamerê
