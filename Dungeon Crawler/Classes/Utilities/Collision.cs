@@ -180,6 +180,11 @@ namespace Dungeon_Crawler
             return false;
         }
 
+        public static bool checkCollision(Rectangle rectangle1, Rectangle rectangle2)
+        {
+            return rectangle1.Intersects(rectangle2);
+        }
+
         public static bool checkCollision(Sprite sprite1, Sprite sprite2, GraphicsDevice graphicsDevice)
         {
             if (sprite1 == null || sprite2 == null) return false;

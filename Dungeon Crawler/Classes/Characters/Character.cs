@@ -314,7 +314,7 @@ namespace Dungeon_Crawler
             for (int i = LevelItemArray.Length - 1; i >= 0; i--)
             {
                 Item item = LevelItemArray[i];
-                if (Collision.checkCollision(getRectangle(), this, item, graphicsDevice))
+                if (Collision.checkCollision(getRectangle(), item.getRectangle()))
                 {
                     TakeItem(item);
                     level.items.RemoveAt(i);
@@ -339,6 +339,7 @@ namespace Dungeon_Crawler
             Item DroppedItem = Inventory[i];
             DroppedItem.RevertEffect(this);
 
+            Vector2 ScatteringOffset = new Vector2(Global.random.Next(-8, 8), Global.random.Next(-8, 8));
             DroppedItem.Position = Position;
             level.items.Add(DroppedItem);
 
