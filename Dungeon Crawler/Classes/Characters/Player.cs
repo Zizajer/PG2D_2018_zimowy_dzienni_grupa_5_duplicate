@@ -31,8 +31,10 @@ namespace Dungeon_Crawler
         public KeyboardState pastKey8; //Tab SCROLLING INVENTORY
         public KeyboardState pastKey9; //E USING ITEMS
         public KeyboardState pastKey10; //Q EXAMINE SELECTED ITEM
+        public KeyboardState pastKey11; //P FIRE EXTUINGISHER
         public short SelectedItem = -1; // -1 == No item in inventory yet
         public int inventoryPickUpLimit = 5;
+        public int DrankPotions = 0; //Magic var
 
         public MouseState pastButton; //LMB
         public MouseState pastButton2; //RMB
@@ -219,6 +221,7 @@ namespace Dungeon_Crawler
                 SecondaryAttack(level);
                 Abillity1(level);
                 Abillity2(level);
+                CoreAbility(level);
 
                 ExamineSelectedItem();
                 DropItem(level, SelectedItem);
@@ -231,6 +234,27 @@ namespace Dungeon_Crawler
                 _animationManager.Update(gameTime);
                 Position += Velocity;
                 Velocity = Vector2.Zero;
+            }
+        }
+
+        public void CoreAbility(Level level)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.P) && pastKey5.IsKeyUp(Keys.P))
+            {
+                if (DrankPotions == 10)
+                {
+                    Global.CombatManager.SetAnimation("??", "Wtf", CellX, CellY);
+                    Global.Gui.WriteToConsole(Name + " used his pee pee... and he accidentally peed himself!");
+                    if (currentHealthState == HealthState.Burn)
+                    {
+                        healthStateTimer = 9999;
+                    }
+                    DrankPotions = 0;
+                }
+                else
+                {
+                    Global.Gui.WriteToConsole("Not yet...");
+                }
             }
         }
 
@@ -418,6 +442,12 @@ namespace Dungeon_Crawler
                             SelectedItem--;
                         }
                         ((UsableItem)Item).Use(this);
+
+                        if (Item.Category.Equals("Potion"))
+                        {
+                            DrankPotions++;
+                        }
+
                         Inventory.RemoveAt(i);
                     }
                     else
