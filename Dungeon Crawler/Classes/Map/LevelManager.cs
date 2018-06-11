@@ -102,6 +102,7 @@ namespace Dungeon_Crawler
                 "HealthIncreasingPotion",
                 "InvisibilityPotion",
                 "SmallHealthPotion",
+                "Gloves",
                 "Trainers"
             };
             itemsCount = allItemsNames.Count;
