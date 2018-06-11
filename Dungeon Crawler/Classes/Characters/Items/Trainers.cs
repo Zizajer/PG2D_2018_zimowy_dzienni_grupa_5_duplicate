@@ -27,7 +27,7 @@ namespace Dungeon_Crawler
             TextureName = "shoes";
             LoadTexture(content);
 
-            SpeedMultiplier = 1.3f;
+            SpeedMultiplier = 1.1f;
         }
     }
 }

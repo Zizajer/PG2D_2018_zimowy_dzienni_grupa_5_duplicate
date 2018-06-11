@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -6,14 +7,16 @@ namespace Dungeon_Crawler
 {
     class GUI
     {
-        LevelManager lm;
+        public LevelManager lm;
 
-        GraphicsDeviceManager graphics;
+        public GraphicsDeviceManager graphics;
         private SpriteFont font;
         private string[] console = { "", "", "", "", "", "" };
         private double gameTime;
         private double lastMsgGametime = 0;
         private double afterHowLongClearHighestMsg = 2; //sec
+
+        public bool drawingStats = false;
 
         private int HealthBarOverCharacterBackgroundWidth = 50;
         private int HealthBarOverCharacterHeight = 10;
@@ -28,12 +31,12 @@ namespace Dungeon_Crawler
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            int tempX = Global.Camera.ViewportWorldBoundry().X;
-            int tempY = Global.Camera.ViewportWorldBoundry().Y;
-            int tempX2 = Global.Camera.ViewportWorldBoundry().X + (int)(Global.Camera.ViewportWorldBoundry().Width * 0.28);
-            int tempY2 = Global.Camera.ViewportWorldBoundry().Y + (int)(Global.Camera.ViewportWorldBoundry().Height * 0.07);
-            int tempY3 = Global.Camera.ViewportWorldBoundry().Y + (int)(Global.Camera.ViewportWorldBoundry().Height * 0.14);
-            int tempY4 = Global.Camera.ViewportWorldBoundry().Y + (int)(Global.Camera.ViewportWorldBoundry().Height * 0.25);
+            int tempX = Global.Camera.ViewportWorldBoundry().X+1;
+            int tempY = Global.Camera.ViewportWorldBoundry().Y+1;
+            int tempX2 = tempX + (int)(Global.Camera.ViewportWorldBoundry().Width * 0.28);
+            int tempY2 = tempY + (int)(Global.Camera.ViewportWorldBoundry().Height * 0.07);
+            int tempY3 = tempY + (int)(Global.Camera.ViewportWorldBoundry().Height * 0.14);
+            int tempY4 = tempY + (int)(Global.Camera.ViewportWorldBoundry().Height * 0.25);
             int PlayerBarsWidth = (int)(Global.Camera.ViewportWorldBoundry().Width * 0.35);
             int PlayerBarsHeight = (int)(Global.Camera.ViewportWorldBoundry().Height * 0.05);
 
@@ -87,9 +90,8 @@ namespace Dungeon_Crawler
 
                 //Draw name
                 spriteBatch.DrawString(font, lm.player.Name, new Vector2((int)lm.player.Position.X, (int)lm.player.Position.Y - 39), Color.Black, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
-                
-                string s = " \nDungeon Level " + (lm.player.CurrentMapLevel + 1);
-                spriteBatch.DrawString(font, s, new Vector2(tempX, tempY3), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
+
+                DrawDungeonLevel(spriteBatch, tempX, tempY3, scale);
 
                 DrawInventory(spriteBatch, tempX, tempY3, scale);
             }
@@ -97,9 +99,28 @@ namespace Dungeon_Crawler
             {
                 spriteBatch.DrawString(font, "Game Over", new Vector2(gameOverX, gameOverY), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
             }
-            
+            DrawConsole(font, tempX, tempY, scale, spriteBatch);
+            if(drawingStats) DrawStats(font,tempX,tempY,scale,spriteBatch);
+        }
+
+        private void DrawDungeonLevel(SpriteBatch spriteBatch, int tempX, int tempY3, float scale)
+        {
+            string s = " \nDungeon Level " + (lm.player.CurrentMapLevel + 1);
+            spriteBatch.DrawString(font, s, new Vector2(tempX, tempY3), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
+        }
+
+        private void DrawConsole(SpriteFont font, int tempX, int tempY, float scale, SpriteBatch spriteBatch)
+        {
             tempY += (int)(0.84 * Global.Camera.ViewportWorldBoundry().Height);
-            string tempString = console[0] + "\n" + console[1] + "\n" + console[2] + "\n" + console[3] +"\n" + console[4] + "\n" + console[5];
+            string tempString = console[0] + "\n" + console[1] + "\n" + console[2] + "\n" + console[3] + "\n" + console[4] + "\n" + console[5];
+            spriteBatch.DrawString(font, tempString, new Vector2(tempX, tempY), Color.White, 0.0f, Vector2.One, 0.7f * (1 / scale), SpriteEffects.None, Layers.Text);
+        }
+
+        private void DrawStats(SpriteFont font, int tempX, int tempY, float scale, SpriteBatch spriteBatch)
+        {
+            Player p = lm.player;
+            string tempString = "Stats:\n"+ "Attack: " + p.Attack + "\n" + "Magic Attack: " + p.SpAttack + "\n" + "Defense: " + p.Defense + "\n" + "Magic Defense: " + p.SpDefense + "\n" + "Speed: " + p.Speed + "\n" + "Attack Speed: " + p.timeBetweenActions + "\n";
+            tempX += (int)(Global.Camera.ViewportWorldBoundry().Width) - (int)Math.Ceiling(font.MeasureString(tempString).Length()* 0.7f * (1 / scale));
             spriteBatch.DrawString(font, tempString, new Vector2(tempX, tempY), Color.White, 0.0f, Vector2.One, 0.7f * (1 / scale), SpriteEffects.None, Layers.Text);
         }
 
@@ -204,7 +225,6 @@ namespace Dungeon_Crawler
                 ResourceBarCurrentResourceTexture.SetData<Color>(new Color[] { Color.Blue });
             }
                 
-
             spriteBatch.Draw(HealthBarBackgroundTexture, new Rectangle(hpX, hpY, width, height), Color.White * 0.5f);
             spriteBatch.Draw(HealthBarCurrentHealthTexture, new Rectangle(hpX, hpY, HealthBarCurrentHealthWidth, height), Color.White * 0.7f);
 
@@ -225,11 +245,6 @@ namespace Dungeon_Crawler
             HealthBarCurrentHealthTexture.Dispose();
             ResourceBarBackgroundTexture.Dispose();
             ResourceBarCurrentResourceTexture.Dispose();
-        }
-
-        internal void addLevelMananger(LevelManager levelManager)
-        {
-            lm = levelManager;
         }
 
         public void Update(GameTime gameTime)

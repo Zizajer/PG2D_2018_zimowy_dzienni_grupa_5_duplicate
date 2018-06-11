@@ -32,6 +32,7 @@ namespace Dungeon_Crawler
         public KeyboardState pastKey9; //E USING ITEMS
         public KeyboardState pastKey10; //Q EXAMINE SELECTED ITEM
         public KeyboardState pastKey11; //P FIRE EXTUINGISHER
+        public KeyboardState pastKey12; //` Tilde (this shit above tab) stats toggle
         public short SelectedItem = -1; // -1 == No item in inventory yet
         public int inventoryPickUpLimit = 5;
         public int DrankPotions = 0; //Magic var
@@ -124,13 +125,13 @@ namespace Dungeon_Crawler
                 }
 
             }
-            
+
             actionTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (isBerserkerRageOn)
             {
                 berserkerTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                if(berserkerTimer > howLongShouldBerserkerWork)
+                if (berserkerTimer > howLongShouldBerserkerWork)
                 {
                     timeBetweenActions = normalTimeBetweenActions;
                     isBerserkerRageOn = false;
@@ -207,7 +208,7 @@ namespace Dungeon_Crawler
                             Global.Gui.WriteToConsole("Cant go there");
                         }
                     }
-                    
+
                 }
                 else //Moving
                 {
@@ -229,6 +230,7 @@ namespace Dungeon_Crawler
                 Abillity3(level);
                 CoreAbility(level);
 
+                ToggleStats();
                 ExamineSelectedItem();
                 DropItem(level, SelectedItem);
                 TakeItem(level, graphicsDevice);
@@ -241,6 +243,15 @@ namespace Dungeon_Crawler
                 Position += Velocity;
                 Velocity = Vector2.Zero;
             }
+        }
+
+        private void ToggleStats()
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.OemTilde) && pastKey12.IsKeyUp(Keys.OemTilde)) { 
+                Global.Gui.drawingStats = !Global.Gui.drawingStats;
+            }
+
+            pastKey12 = Keyboard.GetState();
         }
 
         public void CoreAbility(Level level)

@@ -45,10 +45,10 @@ namespace Dungeon_Crawler
             Global.Gui = new GUI(graphics, Content);
 
             //Global.playerClass = Global.classes[2];
-            Global.playerClass =Global.classes[Global.random.Next(Global.classes.Length)];
+            Global.playerClass = Global.classes[Global.random.Next(Global.classes.Length)];
             levelManager = new LevelManager(Content);
             Global.levelmanager = levelManager;
-
+            Global.Gui.lm = levelManager;
             Global.Effects = new Effects(Content);
 
             effect1 = Content.Load<Effect>("shaders/lighteffect");
@@ -57,7 +57,6 @@ namespace Dungeon_Crawler
             lightsTarget = new RenderTarget2D(GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight);
             mainTarget = new RenderTarget2D(GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight);
 
-            Global.Gui.addLevelMananger(levelManager);
             Global.CombatManager = new CombatManager(levelManager);
             Global.SoundManager = new SoundManager(Content);
         }
