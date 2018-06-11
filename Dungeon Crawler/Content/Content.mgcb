@@ -806,6 +806,18 @@
 /processorParam:TextureFormat=Color
 /build:spells/PiercingArrow.png
 
+#begin spells/Shuriken.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:spells/Shuriken.png
+
 #begin spells/ThrowingWeapon.png
 /importer:TextureImporter
 /processor:TextureProcessor

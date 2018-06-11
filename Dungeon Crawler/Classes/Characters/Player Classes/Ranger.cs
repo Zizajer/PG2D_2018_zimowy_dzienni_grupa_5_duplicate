@@ -28,7 +28,7 @@ namespace Dungeon_Crawler
         public override void setAttacks()
         {
             ProjectileAttack = new ShootArrow();
-            ProjectileAttack2 = new PiercingArrow();
+            ProjectileAttack2 = new ThrowShuriken();
             ProjectileAttack3 = new TrapSkill();
             ProjectileAttack4 = new MultiShot2();
         }

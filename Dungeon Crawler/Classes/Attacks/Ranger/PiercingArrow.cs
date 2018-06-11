@@ -4,7 +4,7 @@ using System;
 
 namespace Dungeon_Crawler
 {
-    public class PiercingArrow : IPositionTargetedAttack
+    public class ThrowShuriken : IPositionTargetedAttack
     {
         public string Name { get; set; }
         public int Power { get; set; }
@@ -22,9 +22,9 @@ namespace Dungeon_Crawler
 
         private Character Attacker;
 
-        public PiercingArrow()
+        public ThrowShuriken()
         {
-            Name = "Piercing Arrow";
+            Name = "Throw Shuriken";
             Power = 300;
             Accuracy = 80;
             CriticalHitProbability = 50;
@@ -43,7 +43,7 @@ namespace Dungeon_Crawler
             {
                 //TODO: Move ContentManager to global because these workarounds are simply dumb
                 //Also, move initializaition of this variable to constructor (for some reason it throws NullPointerException there)
-                ProjectileTexture = Global.CombatManager.levelManager.Content.Load<Texture2D>("spells/PiercingArrow");
+                ProjectileTexture = Global.CombatManager.levelManager.Content.Load<Texture2D>("spells/Shuriken");
                 Attacker = attacker;
 
                 float distanceX = position.X - attacker.Center.X;

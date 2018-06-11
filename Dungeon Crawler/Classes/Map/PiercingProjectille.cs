@@ -7,6 +7,7 @@ namespace Dungeon_Crawler
 {
     public class PiercingProjectile : Projectile
     {
+        int Clockwise = Global.random.Next(2);
         List<Character> wasHitByThisProjectille;
         public PiercingProjectile(IPositionTargetedAttack attack, Character attacker, Vector2 velocity, Vector2 position, Texture2D texture, float rotation, int range, float vanishDelay) : base(attack, attacker, velocity, position, texture, rotation, range, vanishDelay)
         {
@@ -17,6 +18,10 @@ namespace Dungeon_Crawler
         {
             //Moving by specified velocity
             Position += Velocity;
+            if(Clockwise == 1)
+                Rotation -= 0.2f;
+            else
+                Rotation += 0.2f;
 
             //Detect collision with character and notify parent attack about who took a hit. 
             //Ignore collision with projectile creator. (Character shoudn't hit himself)
