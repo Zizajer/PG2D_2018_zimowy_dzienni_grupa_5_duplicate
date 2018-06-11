@@ -48,7 +48,7 @@
     <Compile Include="Classes\Attacks\Ranger\MultiShot.cs" />
     <Compile Include="Classes\Attacks\Mage\FrostNova.cs" />
     <Compile Include="Classes\Attacks\Mage\EnergyBeam.cs" />
-    <Compile Include="Classes\Attacks\Ranger\PiercingArrow.cs" />
+    <Compile Include="Classes\Attacks\Ranger\ThrowShuriken.cs" />
     <Compile Include="Classes\Attacks\Warrior\Leap.cs" />
     <Compile Include="Classes\Attacks\Warrior\ThrowWeapon.cs" />
     <Compile Include="Classes\Characters\Animation.cs" />
@@ -58,14 +58,14 @@
     <Compile Include="Classes\Attacks\Warrior\Annihilation.cs" />
     <Compile Include="Classes\Attacks\DemonOak\BigFireballCanonade.cs" />
     <Compile Include="Classes\Attacks\BlackKnight\Exori.cs" />
-    <Compile Include="Classes\Attacks\Ranger\TrapSkill.cs" />
+    <Compile Include="Classes\Attacks\Ranger\FrostTrap.cs" />
     <Compile Include="Classes\Attacks\Ranger\ShootArrow.cs" />
-    <Compile Include="Classes\Attacks\Iceball.cs" />
+    <Compile Include="Classes\Attacks\Item Skills\Iceball.cs" />
     <Compile Include="Classes\Attacks\Interface\IAttack.cs" />
     <Compile Include="Classes\Attacks\Interface\ICharacterTargetedAttack.cs" />
     <Compile Include="Classes\Attacks\Interface\IUnTargetedAttack.cs" />
     <Compile Include="Classes\Attacks\Mage\Fireball.cs" />
-    <Compile Include="Classes\Attacks\PenetratingFireball.cs" />
+    <Compile Include="Classes\Attacks\Item Skills\PenetratingFireball.cs" />
     <Compile Include="Classes\Attacks\Warrior\Pound.cs" />
     <Compile Include="Classes\Attacks\Interface\IPositionTargetedAttack.cs" />
     <Compile Include="Classes\Characters\Boss.cs" />
@@ -86,6 +86,7 @@
     <Compile Include="Classes\Characters\Player Classes\Ranger.cs" />
     <Compile Include="Classes\Characters\Player Classes\Mage.cs" />
     <Compile Include="Classes\Characters\Player Classes\Warrior.cs" />
+    <Compile Include="Classes\Map\RotatingPiercingProjectille.cs" />
     <Compile Include="Classes\Map\PiercingProjectille.cs" />
     <Compile Include="Classes\Map\Trap.cs" />
     <Compile Include="Classes\Map\Projectile.cs" />

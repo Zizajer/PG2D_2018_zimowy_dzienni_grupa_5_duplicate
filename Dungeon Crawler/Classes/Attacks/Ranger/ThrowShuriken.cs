@@ -4,7 +4,7 @@ using System;
 
 namespace Dungeon_Crawler
 {
-    public class TrapSkill : IPositionTargetedAttack
+    public class ThrowShuriken : IPositionTargetedAttack
     {
         public string Name { get; set; }
         public int Power { get; set; }
@@ -17,19 +17,24 @@ namespace Dungeon_Crawler
         public int ManaCost { get; set; }
 
         private Texture2D ProjectileTexture;
+        private int Range;
+        private readonly float VanishDelay;
 
         private Character Attacker;
 
-        public TrapSkill()
+        public ThrowShuriken()
         {
-            Name = "Frost Trap";
-            Power = 10;
-            Accuracy = 100;
-            CriticalHitProbability = 0;
-            FreezeProbability = 80;
+            Name = "Throw Shuriken";
+            Power = 300;
+            Accuracy = 80;
+            CriticalHitProbability = 50;
+            FreezeProbability = 0;
             BurnProbability = 0;
             IsSpecial = true;
-            ManaCost = 20;
+            ManaCost = 60;
+
+            Range = 5;
+            VanishDelay = 0; //useless since PiercingProjectille doesnt care
         }
 
         public bool Use(Character attacker, Vector2 position)
@@ -38,11 +43,20 @@ namespace Dungeon_Crawler
             {
                 //TODO: Move ContentManager to global because these workarounds are simply dumb
                 //Also, move initializaition of this variable to constructor (for some reason it throws NullPointerException there)
-                ProjectileTexture = Global.CombatManager.levelManager.Content.Load<Texture2D>("spells/FrostTrap");
+                ProjectileTexture = Global.CombatManager.levelManager.Content.Load<Texture2D>("spells/Shuriken");
                 Attacker = attacker;
 
-                Trap newTrap = new Trap(this, Attacker, Attacker.Center, ProjectileTexture);
-                Global.CombatManager.PutProjectile(newTrap);
+                float distanceX = position.X - attacker.Center.X;
+                float distanceY = position.Y - attacker.Center.Y;
+
+                float rotation = (float)Math.Atan2(distanceY, distanceX);
+                Vector2 tempVelocity = new Vector2((float)Math.Cos(rotation) * 4f, ((float)Math.Sin(rotation)) * 4f);
+                Vector2 tempPosition = attacker.Center + tempVelocity * 10;
+
+                Projectile newProjectile = new RotatingPiercingProjectille(this, Attacker, tempVelocity, tempPosition, ProjectileTexture, rotation, Range, VanishDelay);
+                Global.CombatManager.PutProjectile(newProjectile);
+                Global.SoundManager.playPew();
+
                 return true; //Attack hit
             }
             else

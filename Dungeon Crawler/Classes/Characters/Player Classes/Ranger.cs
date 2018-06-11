@@ -29,7 +29,7 @@ namespace Dungeon_Crawler
         {
             ProjectileAttack = new ShootArrow();
             ProjectileAttack2 = new ThrowShuriken();
-            ProjectileAttack3 = new TrapSkill();
+            ProjectileAttack3 = new FrostTrap();
             ProjectileAttack4 = new MultiShot2();
         }
 
