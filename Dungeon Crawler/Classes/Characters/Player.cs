@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using RoyT.AStar;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Dungeon_Crawler
@@ -66,7 +67,9 @@ namespace Dungeon_Crawler
         public Player(ContentManager content, int cellSize, int playerCurrentMapLevel, string name)
         {
             Level = 1;
-            calculateStatistics();
+            calculateBaseStatistics();
+            Experience = 0;
+
             currentActionState = ActionState.Standing;
             currentHealthState = HealthState.Normal;
 
@@ -87,8 +90,8 @@ namespace Dungeon_Crawler
 
             setAttacks();
         }
-
         public abstract void setAttacks();
+        public abstract void calculateStatistics();
         public abstract void BasicAttack(Level level);
         public abstract void SecondaryAttack(Level level);
         public abstract void Abillity1(Level level);
@@ -103,6 +106,17 @@ namespace Dungeon_Crawler
             if (CellX > 0 && CellX < level.map.Width && CellY > 0 && CellY < level.map.Height)
             {
                 CurrentCell = level.map.GetCell(CellX, CellY);
+            }
+            if (CurrentHealth > 0)
+            {
+                if (calculateExpForNextLevel(Level + 1) < Experience)
+                {
+                    calculateStatistics();
+                    CurrentResource = Resource;
+                    CurrentHealth = Health;
+                    Global.Gui.nextLevel(Level);
+                    Level++;
+                }
             }
 
             if (!isRangerInvisible) {
@@ -243,6 +257,11 @@ namespace Dungeon_Crawler
                 Position += Velocity;
                 Velocity = Vector2.Zero;
             }
+        }
+
+        private int calculateExpForNextLevel(int x)
+        {
+            return (int)Math.Ceiling(50 * Math.Pow(x, 3) / 3 - 100 * Math.Pow(x, 2) + 850 * x / 3 - 200);
         }
 
         private void ToggleStats()

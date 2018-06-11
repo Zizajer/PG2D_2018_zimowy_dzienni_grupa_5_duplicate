@@ -27,7 +27,7 @@ namespace Dungeon_Crawler
         public Boss(Dictionary<string, Animation> _animations, int cellSize, int level, float timeBetweenActions, Map map, List<Cell> cells)
         {
             Level = level;
-            calculateStatistics();
+            calculateBaseStatistics();
             currentActionState = ActionState.Attacking;
             currentHealthState = HealthState.Normal;
             this._animations = _animations;
@@ -48,7 +48,7 @@ namespace Dungeon_Crawler
 
         public abstract void SetAttack();
 
-        public override void calculateStatistics()
+        public override void calculateBaseStatistics()
         {
             Health = CurrentHealth = 210 + Level * 10;
             Defense = 210 + Level * 3;

@@ -16,12 +16,16 @@ namespace Dungeon_Crawler
         private double lastMsgGametime = 0;
         private double afterHowLongClearHighestMsg = 2; //sec
 
-        public bool drawingStats = false;
+        public bool drawingStats = true;
 
         private int HealthBarOverCharacterBackgroundWidth = 50;
         private int HealthBarOverCharacterHeight = 10;
 
         private Texture2D BossSkull;
+
+        public bool drawingNewLevelMsg = false;
+        public float newLevelTimer=0;
+        public float newLevelTimerHowLongToShow = 3f;
 
         public GUI(GraphicsDeviceManager graphics, ContentManager content)
         {
@@ -29,7 +33,7 @@ namespace Dungeon_Crawler
             font = content.Load<SpriteFont>("fonts/Default");
             BossSkull = content.Load<Texture2D>("icons/Skull");
         }
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch,GameTime gameTime)
         {
             int tempX = Global.Camera.ViewportWorldBoundry().X+1;
             int tempY = Global.Camera.ViewportWorldBoundry().Y+1;
@@ -94,13 +98,36 @@ namespace Dungeon_Crawler
                 DrawDungeonLevel(spriteBatch, tempX, tempY3, scale);
 
                 DrawInventory(spriteBatch, tempX, tempY3, scale);
+                if (drawingNewLevelMsg)
+                {
+                    newLevelTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (newLevelTimer < newLevelTimerHowLongToShow)
+                    {
+                        string s = "You advanced from level " + (lm.player.Level-1) + " to " + lm.player.Level;
+                        DrawMsgInTheMiddleOfScreen(s, spriteBatch, gameOverX, gameOverY, scale);
+                    }else
+                    {
+                        drawingNewLevelMsg = false;
+                    }
+                }
             }
             else
             {
-                spriteBatch.DrawString(font, "Game Over", new Vector2(gameOverX, gameOverY), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
+                DrawMsgInTheMiddleOfScreen("Game Over",spriteBatch, gameOverX, gameOverY, scale);
             }
             DrawConsole(font, tempX, tempY, scale, spriteBatch);
             if(drawingStats) DrawStats(font,tempX,tempY,scale,spriteBatch);
+        }
+
+        private void DrawMsgInTheMiddleOfScreen(String s, SpriteBatch spriteBatch, int X, int Y, float scale)
+        {
+            spriteBatch.DrawString(font, s, new Vector2(X, Y), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
+        }
+
+        public void nextLevel(int level)
+        {
+            drawingNewLevelMsg = true;
+            newLevelTimer = 0;
         }
 
         private void DrawDungeonLevel(SpriteBatch spriteBatch, int tempX, int tempY3, float scale)
@@ -119,8 +146,9 @@ namespace Dungeon_Crawler
         private void DrawStats(SpriteFont font, int tempX, int tempY, float scale, SpriteBatch spriteBatch)
         {
             Player p = lm.player;
-            string tempString = "Stats:\n"+ "Attack: " + p.Attack + "\n" + "Magic Attack: " + p.SpAttack + "\n" + "Defense: " + p.Defense + "\n" + "Magic Defense: " + p.SpDefense + "\n" + "Speed: " + p.Speed + "\n" + "Attack Speed: " + p.timeBetweenActions + "\n";
+            string tempString = "Stats:\n" + "Level: " + p.Level+ "\n"+"Exp: "+p.Experience + "\n" + "Attack: " + p.Attack + "\n" + "Magic Attack: " + p.SpAttack + "\n" + "Defense: " + p.Defense + "\n" + "Magic Defense: " + p.SpDefense + "\n" + "Speed: " + Math.Round(p.Speed,1) + "\n" + "Attack Speed: " + p.timeBetweenActions + "\n";
             tempX += (int)(Global.Camera.ViewportWorldBoundry().Width) - (int)Math.Ceiling(font.MeasureString(tempString).Length()* 0.7f * (1 / scale));
+            tempY += (int)(Global.Camera.ViewportWorldBoundry().Height)-130;
             spriteBatch.DrawString(font, tempString, new Vector2(tempX, tempY), Color.White, 0.0f, Vector2.One, 0.7f * (1 / scale), SpriteEffects.None, Layers.Text);
         }
 

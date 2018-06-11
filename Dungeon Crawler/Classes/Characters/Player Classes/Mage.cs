@@ -12,17 +12,25 @@ namespace Dungeon_Crawler
         public Mage(ContentManager content, int cellSize, int playerCurrentMapLevel, string name) : base(content, cellSize, playerCurrentMapLevel, name)
         {
         }
-        public override void calculateStatistics()
+        public override void calculateBaseStatistics()
         {
-            Health = CurrentHealth = 70 + Level * 10;
-            Defense = 15 + Level * 3;
-            SpDefense = 70 + Level * 5;
-            Attack = (int)Math.Floor(70 + Level * 2.5);
-            SpAttack = 70 + Level * 3;
-
-            Speed = 4f;
+            Health = CurrentHealth = 70;
+            Defense = 15;
+            SpDefense = 70;
+            Attack = 70;
+            SpAttack = 70;
+            Speed = 3f;
             CurrentResource = Resource = 100;
             ResourceRegenerationFactor = 0.15f; //0.15 is fine
+        }
+        public override void calculateStatistics()
+        {
+            Health += Level * 10;
+            Defense += Level * 3;
+            SpDefense += Level * 5;
+            Attack += (int)(Level * 2.5);
+            SpAttack += Level * 3;
+            Speed += (float)(Level / (Speed * 10));
         }
         public override void setAttacks()
         {
@@ -35,17 +43,25 @@ namespace Dungeon_Crawler
         {
             if (Mouse.GetState().LeftButton == ButtonState.Pressed && pastButton.LeftButton == ButtonState.Released)
             {
-                if (CurrentResource >= ProjectileAttack.ManaCost)
+                if (actionTimer > timeBetweenActions)
                 {
-                    MouseState mouse = Mouse.GetState();
-                    Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
-                    Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
-                    ProjectileAttack.Use(this, mousePos);
-                    CurrentResource -= ProjectileAttack.ManaCost;
+                    if (CurrentResource >= ProjectileAttack.ManaCost)
+                    {
+                        MouseState mouse = Mouse.GetState();
+                        Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
+                        Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
+                        ProjectileAttack.Use(this, mousePos);
+                        CurrentResource -= ProjectileAttack.ManaCost;
+                        actionTimer = 0;
+                    }
+                    else
+                    {
+                        Global.Gui.WriteToConsole("Not enough mana");
+                    }
                 }
                 else
                 {
-                    Global.Gui.WriteToConsole("Not enough mana");
+                    Global.Gui.WriteToConsole("Cant attack yet");
                 }
             }
             pastButton = Mouse.GetState();

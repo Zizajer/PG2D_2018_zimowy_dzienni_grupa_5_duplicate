@@ -15,19 +15,26 @@ namespace Dungeon_Crawler
         public Warrior(ContentManager content, int cellSize, int playerCurrentMapLevel, string name) : base(content, cellSize, playerCurrentMapLevel, name)
         {
         }
-
-        public override void calculateStatistics()
+        public override void calculateBaseStatistics()
         {
-            Health = CurrentHealth = 70 + Level * 10;
-            Defense = 15 + Level * 3;
-            SpDefense = 70 + Level * 5;
-            Attack = (int)Math.Floor(70 + Level * 2.5);
-            SpAttack = 70 + Level * 3;
-
-            Speed = 4f;
+            Health = CurrentHealth = 70;
+            Defense = 15;
+            SpDefense = 70;
+            Attack = 70;
+            SpAttack = 70;
+            Speed = 2f;
             Resource = 100;
             CurrentResource = 0;
-            ResourceRegenerationFactor = -0.1f; //rage should decay slowly
+            ResourceRegenerationFactor = -0.04f; //rage should decay slowly
+        }
+        public override void calculateStatistics()
+        {
+            Health += Level * 10;
+            Defense += Level * 3;
+            SpDefense += Level * 5;
+            Attack += (int)(Level * 2.5);
+            SpAttack += Level * 3;
+            Speed += (float)(Level / (Speed * 10));
         }
         public override void setAttacks()
         {

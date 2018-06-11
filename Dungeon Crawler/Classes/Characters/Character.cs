@@ -19,7 +19,8 @@ namespace Dungeon_Crawler
 
         public string Name { get; set; }
 
-        public int Level { get; set; }
+        public int Level;
+        public int Experience;
 
         public float Health { get; set; }
         public float CurrentHealth { get; set; }
@@ -106,6 +107,8 @@ namespace Dungeon_Crawler
             _animationManager.Draw(spriteBatch);
             spriteBatch.End();
         }
+
+        public abstract void calculateBaseStatistics();
 
         public void HandleHitState(GameTime gameTime)
         {
@@ -259,8 +262,6 @@ namespace Dungeon_Crawler
 
             }
         }
-
-        public abstract void calculateStatistics();
 
         public void Move(Directions currentDirection, Level level, GraphicsDevice graphicsDevice)
         {

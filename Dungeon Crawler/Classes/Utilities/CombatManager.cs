@@ -56,6 +56,7 @@ namespace Dungeon_Crawler
             else
             {
                 tempString = attacker.Name + " killed " + defender.Name + " with " + attack.Name;
+                attacker.Experience = attacker.Experience + defender.Experience;
             }
             if (IsCritical)
             {

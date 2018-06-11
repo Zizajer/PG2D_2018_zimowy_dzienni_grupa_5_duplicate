@@ -12,18 +12,26 @@ namespace Dungeon_Crawler
         {
         }
 
-        public override void calculateStatistics()
+        public override void calculateBaseStatistics()
         {
-            Health = CurrentHealth = 70 + Level * 10;
-            Defense = 15 + Level * 3;
-            SpDefense = 70 + Level * 5;
-            Attack = (int)Math.Floor(70 + Level * 2.5);
-            SpAttack = 70 + Level * 3;
-
-            Speed = 4f;
+            Health = CurrentHealth = 70;
+            Defense = 15;
+            SpDefense = 70;
+            Attack = 70;
+            SpAttack = 70;
+            Speed = 3f;
             Resource = 100;
             CurrentResource = 50;
             ResourceRegenerationFactor = 0; //ranger doesnt regenerate focus
+        }
+        public override void calculateStatistics()
+        {
+            Health += Level * 10;
+            Defense += Level * 3;
+            SpDefense += Level * 5;
+            Attack += (int)(Level * 2.5);
+            SpAttack += Level * 3;
+            Speed += (float)(Level / (Speed * 10));
         }
         public override void setAttacks()
         {
@@ -48,16 +56,24 @@ namespace Dungeon_Crawler
         {
             if (Mouse.GetState().LeftButton == ButtonState.Pressed && pastButton.LeftButton == ButtonState.Released)
             {
-                if (CurrentResource >= ProjectileAttack.ManaCost)
+                if (actionTimer > timeBetweenActions)
                 {
-                    MouseState mouse = Mouse.GetState();
-                    Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
-                    Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
-                    ProjectileAttack.Use(this, mousePos);
+                    if (CurrentResource >= ProjectileAttack.ManaCost)
+                    {
+                        MouseState mouse = Mouse.GetState();
+                        Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
+                        Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
+                        ProjectileAttack.Use(this, mousePos);
+                        actionTimer = 0;
+                    }
+                    else
+                    {
+                        Global.Gui.WriteToConsole("Not enough focus");
+                    }
                 }
                 else
                 {
-                    Global.Gui.WriteToConsole("Not enough focus");
+                    Global.Gui.WriteToConsole("Cant attack yet");
                 }
             }
             pastButton = Mouse.GetState();

@@ -23,7 +23,7 @@ namespace Dungeon_Crawler
             isBlackShaderOn = true;
         }
 
-        public override void calculateStatistics()
+        public override void calculateBaseStatistics()
         {
             Health = CurrentHealth = 110 + Level * 10;
             Defense = 210 + Level * 3;
@@ -31,6 +31,7 @@ namespace Dungeon_Crawler
             Attack = (int)Math.Floor(210 + Level * 2.5);
             SpAttack = 210 + Level * 3;
             Speed = 1f;
+            Experience = 250 + Level * 5;
         }
         public override void SetAttack()
         {

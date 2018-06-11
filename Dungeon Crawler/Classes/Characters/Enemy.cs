@@ -12,15 +12,15 @@ namespace Dungeon_Crawler
     {
         float timeBetweenActions;
         float timer;
-        Position[] path;
+        public Position[] path;
 
         //Attacks
-        ICharacterTargetedAttack BaseAttack;
+        public ICharacterTargetedAttack BaseAttack;
 
         public Enemy(Dictionary<string, Animation> _animations, int cellSize, int level, float speed, float timeBetweenActions, Map map, String name)
         {
             Level = level;
-            calculateStatistics();
+            calculateBaseStatistics();
 
             this._animations = _animations;
             this.timeBetweenActions = timeBetweenActions;
@@ -33,22 +33,10 @@ namespace Dungeon_Crawler
             currentActionState = ActionState.Standing;
             currentHealthState = HealthState.Normal;
             Name = name;
-
+            setAttacks();
             Inventory = new List<Item>();
-
-            //Set attacks
-            BaseAttack = new Pound();
         }
-
-        public override void calculateStatistics()
-        {
-            Health = CurrentHealth = 10 + Level * 10;
-            Defense = 30 + Level * 3;
-            SpDefense = 50 + Level * 5;
-            Attack = (int)Math.Floor(35 + Level * 2.5f);
-            SpAttack = 50 + Level * 3;
-            //Speed = todo..
-        }
+        public abstract void setAttacks();
 
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
