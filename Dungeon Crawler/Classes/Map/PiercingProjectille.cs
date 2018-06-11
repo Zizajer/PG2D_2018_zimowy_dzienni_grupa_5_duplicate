@@ -7,7 +7,7 @@ namespace Dungeon_Crawler
 {
     public class PiercingProjectile : Projectile
     {
-        List<Character> wasHitByThisProjectille;
+        public List<Character> wasHitByThisProjectille;
         public PiercingProjectile(IPositionTargetedAttack attack, Character attacker, Vector2 velocity, Vector2 position, Texture2D texture, float rotation, int range, float vanishDelay) : base(attack, attacker, velocity, position, texture, rotation, range, vanishDelay)
         {
             wasHitByThisProjectille = new List<Character>();

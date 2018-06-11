@@ -104,7 +104,7 @@ namespace Dungeon_Crawler
             return dirList;
         }
 
-        internal static void deleteCollidingRock(Projectile Projectile, Level level, GraphicsDevice graphicsDevice)
+        internal static void deleteCollidingRock(PiercingProjectile Projectile, Level level, GraphicsDevice graphicsDevice)
         {
             Rock tempRock;
             for(int i = 0; i < level.rocks.Count; i++)

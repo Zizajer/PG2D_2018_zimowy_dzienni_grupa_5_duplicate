@@ -5,13 +5,12 @@ using System.Collections.Generic;
 
 namespace Dungeon_Crawler
 {
-    public class RotatingPiercingProjectille : Projectile
+    public class RotatingPiercingProjectille : PiercingProjectile
     {
         int Clockwise = Global.random.Next(2);
-        List<Character> wasHitByThisProjectille;
+
         public RotatingPiercingProjectille(IPositionTargetedAttack attack, Character attacker, Vector2 velocity, Vector2 position, Texture2D texture, float rotation, int range, float vanishDelay) : base(attack, attacker, velocity, position, texture, rotation, range, vanishDelay)
         {
-            wasHitByThisProjectille = new List<Character>();
         }
 
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
