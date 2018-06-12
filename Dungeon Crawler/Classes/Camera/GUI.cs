@@ -49,40 +49,6 @@ namespace Dungeon_Crawler
             float scale = Global.Camera.Zoom;
             if (lm.player.CurrentHealth > 0)
             {
-
-                if (lm.levels[lm.player.CurrentMapLevel].isBossLevel)
-                {
-                    //**boss stats**//
-                    if (lm.levels[lm.player.CurrentMapLevel].enemies.Count > 0)
-                    {
-
-                        //Draw healthbar
-                        DrawHealthBarOverCharacter(spriteBatch, lm.levels[lm.player.CurrentMapLevel].enemies[0]);
-
-                        //Draw level
-                        spriteBatch.Draw(BossSkull, new Vector2(lm.levels[lm.player.CurrentMapLevel].enemies[0].Position.X + HealthBarOverCharacterBackgroundWidth + 2, lm.levels[lm.player.CurrentMapLevel].enemies[0].Position.Y - 27), null, Color.White, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
-
-                        //Draw name
-                        spriteBatch.DrawString(font, lm.levels[lm.player.CurrentMapLevel].enemies[0].Name, new Vector2((int)lm.levels[lm.player.CurrentMapLevel].enemies[0].Position.X, (int)lm.levels[lm.player.CurrentMapLevel].enemies[0].Position.Y - 39), Color.Black, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
-                    }
-
-                }
-                else
-                {
-                    //**enemy stats**//
-                    foreach (Character enemy in lm.levels[lm.player.CurrentMapLevel].enemies)
-                    {
-                        //Draw healthbar
-                        DrawHealthBarOverCharacter(spriteBatch, enemy);
-
-                        //Draw level
-                        spriteBatch.DrawString(font, enemy.Level.ToString(), new Vector2(enemy.Position.X + HealthBarOverCharacterBackgroundWidth + 2, enemy.Position.Y - 27), Color.Black, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
-
-                        //Draw name
-                        spriteBatch.DrawString(font, enemy.Name, new Vector2((int)enemy.Position.X, (int)enemy.Position.Y - 39), Color.Black, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
-                    }
-                }
-
                 //**player stats**//
                 DrawPlayerStatBars(spriteBatch, lm.player, tempX, tempY, tempX, tempY2, 0, 0, PlayerBarsWidth, PlayerBarsHeight, scale);
 
@@ -119,6 +85,43 @@ namespace Dungeon_Crawler
             if(drawingStats) DrawStats(font,tempX,tempY,scale,spriteBatch);
         }
 
+        public void DrawEnemyPlates(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            float scale = Global.Camera.Zoom;
+            if (lm.player.CurrentHealth > 0)
+            {
+                if (lm.levels[lm.player.CurrentMapLevel].isBossLevel)
+                {
+                    //**boss stats**//
+                    if (lm.levels[lm.player.CurrentMapLevel].enemies.Count > 0)
+                    {
+                        //Draw healthbar
+                        DrawHealthBarOverCharacter(spriteBatch, lm.levels[lm.player.CurrentMapLevel].enemies[0]);
+
+                        //Draw level
+                        spriteBatch.Draw(BossSkull, new Vector2(lm.levels[lm.player.CurrentMapLevel].enemies[0].Position.X + HealthBarOverCharacterBackgroundWidth + 2, lm.levels[lm.player.CurrentMapLevel].enemies[0].Position.Y - 27), null, Color.White, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
+
+                        //Draw name
+                        spriteBatch.DrawString(font, lm.levels[lm.player.CurrentMapLevel].enemies[0].Name, new Vector2((int)lm.levels[lm.player.CurrentMapLevel].enemies[0].Position.X, (int)lm.levels[lm.player.CurrentMapLevel].enemies[0].Position.Y - 39), Color.Black, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
+                    }
+                }
+                else
+                {
+                    //**enemy stats**//
+                    foreach (Character enemy in lm.levels[lm.player.CurrentMapLevel].enemies)
+                    {
+                        //Draw healthbar
+                        DrawHealthBarOverCharacter(spriteBatch, enemy);
+
+                        //Draw level
+                        spriteBatch.DrawString(font, enemy.Level.ToString(), new Vector2(enemy.Position.X + HealthBarOverCharacterBackgroundWidth + 2, enemy.Position.Y - 27), Color.Black, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
+
+                        //Draw name
+                        spriteBatch.DrawString(font, enemy.Name, new Vector2((int)enemy.Position.X, (int)enemy.Position.Y - 39), Color.Black, 0.0f, Vector2.One, 0.5f / scale, SpriteEffects.None, Layers.Text);
+                    }
+                }
+            }
+        }
         private void DrawMsgInTheMiddleOfScreen(String s, SpriteBatch spriteBatch, int X, int Y, float scale)
         {
             spriteBatch.DrawString(font, s, new Vector2(X, Y), Color.White, 0.0f, Vector2.One, 1 / scale, SpriteEffects.None, Layers.Text);
@@ -204,14 +207,12 @@ namespace Dungeon_Crawler
             {
                 HealthBarCurrentHealthTexture.SetData<Color>(new Color[] { Color.Red });
             }
-
-
-
-            spriteBatch.Draw(HealthBarBackgroundTexture, new Rectangle((int)character.Position.X, (int)character.Position.Y - 25, HealthBarOverCharacterBackgroundWidth, HealthBarOverCharacterHeight), Color.White);
+            Rectangle temp = new Rectangle((int)character.Position.X, (int)character.Position.Y - 25, HealthBarOverCharacterBackgroundWidth, HealthBarOverCharacterHeight);
+            spriteBatch.Draw(HealthBarBackgroundTexture, temp, null, Color.White, 0f, new Vector2(HealthBarBackgroundTexture.Width / 2, HealthBarBackgroundTexture.Height / 2), SpriteEffects.None, Layers.Text);
             spriteBatch.Draw(HealthBarCurrentHealthTexture, new Rectangle((int)character.Position.X, (int)character.Position.Y - 25, HealthBarCurrentHealthWidth, HealthBarOverCharacterHeight), Color.White);
 
-            HealthBarBackgroundTexture.Dispose();
-            HealthBarCurrentHealthTexture.Dispose();
+            //HealthBarBackgroundTexture.Dispose();
+            //HealthBarCurrentHealthTexture.Dispose();
         }
 
         private void DrawPlayerStatBars(SpriteBatch spriteBatch, Player player, int hpX, int hpY, int resourceX, int resourceY, int xpX, int xpY, int width, int height, float scale)

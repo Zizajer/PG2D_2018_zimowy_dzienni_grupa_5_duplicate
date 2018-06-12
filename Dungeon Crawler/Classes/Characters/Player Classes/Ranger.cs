@@ -54,7 +54,7 @@ namespace Dungeon_Crawler
 
         public override void BasicAttack(Level level)
         {
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed && pastButton.LeftButton == ButtonState.Released)
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed)// && pastButton.LeftButton == ButtonState.Released)
             {
                 if (actionTimer > timeBetweenActions)
                 {
@@ -76,7 +76,7 @@ namespace Dungeon_Crawler
                     Global.Gui.WriteToConsole("Cant attack yet");
                 }
             }
-            pastButton = Mouse.GetState();
+            //pastButton = Mouse.GetState();
         }
 
         public override void SecondaryAttack(Level level)
