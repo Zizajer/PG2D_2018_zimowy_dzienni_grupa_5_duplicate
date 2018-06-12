@@ -26,12 +26,12 @@ namespace Dungeon_Crawler
         }
         public override void calculateStatistics()
         {
-            Health += Level * 10;
-            Defense += Level * 3;
-            SpDefense += Level * 5;
-            Attack += (int)(Level * 2.5);
-            SpAttack += Level * 3;
-            Speed += (float)(Level / (Speed * 10));
+            Health += 10;
+            Defense += 5;
+            SpDefense += 3;
+            Attack += 5;
+            SpAttack += 3;
+            Speed += 0.05f;
         }
         public override void setAttacks()
         {

@@ -25,16 +25,16 @@ namespace Dungeon_Crawler
             Speed = 2f;
             Resource = 100;
             CurrentResource = 0;
-            ResourceRegenerationFactor = -0.04f; //rage should decay slowly
+            ResourceRegenerationFactor = -0.08f; //rage should decay slowly
         }
         public override void calculateStatistics()
         {
-            Health += Level * 10;
-            Defense += Level * 3;
-            SpDefense += Level * 5;
-            Attack += (int)(Level * 2.5);
-            SpAttack += Level * 3;
-            Speed += (float)(Level / (Speed * 10));
+            Health += 15;
+            Defense += 6;
+            SpDefense += 5;
+            Attack += 5;
+            SpAttack += 3;
+            Speed += 0.07f;
         }
         public override void setAttacks()
         {

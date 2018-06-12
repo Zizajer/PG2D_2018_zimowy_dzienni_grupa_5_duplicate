@@ -28,8 +28,8 @@ namespace Dungeon_Crawler
             IsSpecial = true;
             ManaCost = 60;
 
-            Distance = 4;
-            AnimationName = "baseAttackAnim";
+            Distance = 5;
+            AnimationName = "MagicAnim2";
         }
 
         public bool Use(Character attacker)

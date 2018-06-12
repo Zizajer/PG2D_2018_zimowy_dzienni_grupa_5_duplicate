@@ -26,7 +26,7 @@ namespace Dungeon_Crawler
         {
             Name = "Throw Shuriken";
             Power = 300;
-            Accuracy = 80;
+            Accuracy = 100;
             CriticalHitProbability = 50;
             FreezeProbability = 0;
             BurnProbability = 0;
