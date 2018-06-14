@@ -87,6 +87,7 @@
     <Compile Include="Classes\Characters\Player Classes\Ranger.cs" />
     <Compile Include="Classes\Characters\Player Classes\Mage.cs" />
     <Compile Include="Classes\Characters\Player Classes\Warrior.cs" />
+    <Compile Include="Classes\Controls\Button.cs" />
     <Compile Include="Classes\Map\RotatingPiercingProjectille.cs" />
     <Compile Include="Classes\Map\PiercingProjectille.cs" />
     <Compile Include="Classes\Map\Trap.cs" />
