@@ -16,11 +16,13 @@ namespace Dungeon_Crawler
         private Texture2D ranger;
         private Texture2D button;
         private SpriteFont buttonFont;
+        private Game1 game;
 
         private List<Button> _gameComponents;
 
-        public DrawManager(ContentManager Content)
+        public DrawManager(ContentManager Content, Game1 game)
         {
+            this.game = game;
             mag = Content.Load<Texture2D>("Arts/magini2");
             warrior = Content.Load<Texture2D>("Arts/wojownik2");
             ranger = Content.Load<Texture2D>("Arts/rangerka2");
@@ -95,7 +97,7 @@ namespace Dungeon_Crawler
 
         void quitButton_Click(object sender, EventArgs e)
         {
-
+            game.Exit();
         }
 
 

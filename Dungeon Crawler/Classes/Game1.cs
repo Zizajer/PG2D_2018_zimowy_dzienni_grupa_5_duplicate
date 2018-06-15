@@ -47,7 +47,6 @@ namespace Dungeon_Crawler
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             Global.Gui = new GUI(graphics, Content);
-            
             levelManager = new LevelManager(Content);
             Global.levelmanager = levelManager;
             Global.Gui.lm = levelManager;
@@ -61,7 +60,7 @@ namespace Dungeon_Crawler
 
             Global.CombatManager = new CombatManager(levelManager);
             Global.SoundManager = new SoundManager(Content);
-            Global.DrawManager = new DrawManager(Content);
+            Global.DrawManager = new DrawManager(Content, this);
 
         }
 
@@ -141,11 +140,6 @@ namespace Dungeon_Crawler
             }
 
             base.Draw(gameTime);
-        }
-
-        public void Quit()
-        {
-            this.Exit();
         }
     }
 }
