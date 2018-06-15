@@ -1,5 +1,4 @@
-﻿using Dungeon_Crawler.Classes.Controls;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -19,14 +18,6 @@ namespace Dungeon_Crawler
         RenderTarget2D lightsTarget;
         RenderTarget2D mainTarget;
 
-        private Texture2D mag;
-        private Texture2D warrior;
-        private Texture2D hunter;
-        private Texture2D button;
-        private SpriteFont buttonFont;
-        private String choosenHero;
-
-        private List<Button> _gameComponents;
 
         public Game1()
         {
@@ -47,6 +38,7 @@ namespace Dungeon_Crawler
             Global.Camera.setViewports(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height);
             Global.Camera.setZoom(1.5f);
             Global.GameState = true;
+            Global.IsGameStarted = false;
             base.Initialize();
         }
 
@@ -55,14 +47,11 @@ namespace Dungeon_Crawler
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             Global.Gui = new GUI(graphics, Content);
-
-            //Global.playerClass = Global.classes[2];
-            Global.playerClass = Global.classes[Global.random.Next(Global.classes.Length)];
+            
             levelManager = new LevelManager(Content);
             Global.levelmanager = levelManager;
             Global.Gui.lm = levelManager;
             Global.Effects = new Effects(Content);
-            Global.IsGameStarted = false;
 
             effect1 = Content.Load<Effect>("shaders/lighteffect");
             lightMask = Content.Load<Texture2D>("shaders/lightmask");
@@ -72,76 +61,8 @@ namespace Dungeon_Crawler
 
             Global.CombatManager = new CombatManager(levelManager);
             Global.SoundManager = new SoundManager(Content);
+            Global.DrawManager = new DrawManager(Content);
 
-            mag = Content.Load<Texture2D>("Arts/magini2");
-            warrior = Content.Load<Texture2D>("Arts/wojownik2");
-            hunter = Content.Load<Texture2D>("Arts/rangerka2");
-            button = Content.Load<Texture2D>("Controls/button");
-            buttonFont = Content.Load<SpriteFont>("fonts/Default");
-
-            var magButton = new Button(button, buttonFont)
-            {
-                Position = new Vector2(50, 350),
-                Text = "Mag",
-            };
-
-            magButton.Click += magButton_Click;
-
-            var warriorButton = new Button(button, buttonFont)
-            {
-                Position = new Vector2(575, 300),
-                Text = "Warrior",
-            };
-
-            warriorButton.Click += warriorButton_Click;
-
-            var hunterButton = new Button(button, buttonFont)
-            {
-                Position = new Vector2(1100, 350),
-                Text = "Hunter",
-            };
-
-            hunterButton.Click += hunterButton_Click;
-
-            var quitButton = new Button(button, buttonFont)
-            {
-                Position = new Vector2(575, 625),
-                Text = "Quit",
-            };
-
-            quitButton.Click += quitButton_Click;
-
-
-            _gameComponents = new List<Button>()
-            {
-                magButton,
-                warriorButton,
-                hunterButton,
-                quitButton,
-            };
-        }
-
-        void hunterButton_Click(object sender, EventArgs e)
-        {
-            Global.playerClass = "Ranger";
-            Global.IsGameStarted = true;
-        }
-
-        void warriorButton_Click(object sender, EventArgs e)
-        {
-            Global.playerClass = "Warrior";
-            Global.IsGameStarted = true;
-        }
-
-        void magButton_Click(object sender, EventArgs e)
-        {
-            Global.playerClass = "Mage";
-            Global.IsGameStarted = true;
-        }
-
-        void quitButton_Click(object sender, System.EventArgs e)
-        {
-            Exit();
         }
 
         protected override void UnloadContent()
@@ -174,8 +95,7 @@ namespace Dungeon_Crawler
             }
             else
             {
-                foreach (Button button in _gameComponents)
-                    button.Update(gameTime);
+                Global.DrawManager.UpdateMainMenu(gameTime);
             }
             
             base.Update(gameTime);
@@ -217,27 +137,15 @@ namespace Dungeon_Crawler
                 spriteBatch.End();
             }
             else {
-                GraphicsDevice.Clear(Color.CornflowerBlue);
-
-                spriteBatch.Begin();
-
-                spriteBatch.DrawString(buttonFont, "Choose Character", new Vector2(550, 10), Color.Black);
-
-                spriteBatch.Draw(mag, new Rectangle(50, 50, mag.Width, mag.Height), Color.White);
-
-                spriteBatch.Draw(warrior, new Rectangle(575, 50, warrior.Width, warrior.Height), Color.White);
-
-                spriteBatch.Draw(hunter, new Rectangle(1100, 50, hunter.Width, hunter.Height), Color.White);
-
-                foreach (Button button in _gameComponents)
-                {
-                    button.Draw(gameTime, spriteBatch);
-                }
-
-                spriteBatch.End();
+                Global.DrawManager.DrawMainMenu(spriteBatch, GraphicsDevice, gameTime);
             }
 
             base.Draw(gameTime);
+        }
+
+        public void Quit()
+        {
+            this.Exit();
         }
     }
 }

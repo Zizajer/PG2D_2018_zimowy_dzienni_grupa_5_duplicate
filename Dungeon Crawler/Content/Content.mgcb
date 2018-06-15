@@ -914,3 +914,10 @@
 /processorParam:TextureFormat=Color
 /build:Arts/wojownik2.png
 
+#begin fonts/ButtonFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:fonts/ButtonFont.spritefont
+
