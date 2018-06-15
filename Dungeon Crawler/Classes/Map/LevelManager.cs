@@ -102,6 +102,12 @@ namespace Dungeon_Crawler
                 "HealthIncreasingPotion",
                 "InvisibilityPotion",
                 "SmallHealthPotion",
+                "SmallResourcePotion",
+                "Shield",
+                "Shield2",
+                "Pendant",
+                "Wand2",
+                "Axe1",
                 "Gloves",
                 "Trainers"
             };

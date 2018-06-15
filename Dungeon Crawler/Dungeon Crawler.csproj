@@ -76,10 +76,16 @@
     <Compile Include="Classes\Characters\Items\Abstract\Item.cs" />
     <Compile Include="Classes\Characters\Items\Abstract\UsableItem.cs" />
     <Compile Include="Classes\Characters\Items\InvisibilityPotion.cs" />
+    <Compile Include="Classes\Characters\Items\Shield2.cs" />
+    <Compile Include="Classes\Characters\Items\SmallResourcePotion.cs" />
     <Compile Include="Classes\Characters\Items\SmallHealthPotion.cs" />
     <Compile Include="Classes\Characters\Items\HealthIcreasingPotion.cs" />
     <Compile Include="Classes\Characters\Items\Trainers.cs" />
     <Compile Include="Classes\Characters\Items\Gloves.cs" />
+    <Compile Include="Classes\Characters\Items\Axe1.cs" />
+    <Compile Include="Classes\Characters\Items\Pendant.cs" />
+    <Compile Include="Classes\Characters\Items\Shield.cs" />
+    <Compile Include="Classes\Characters\Items\Wand2.cs" />
     <Compile Include="Classes\Characters\Items\Wand.cs" />
     <Compile Include="Classes\Characters\Enemies\Blob.cs" />
     <Compile Include="Classes\Characters\Enemies\Skeleton.cs" />

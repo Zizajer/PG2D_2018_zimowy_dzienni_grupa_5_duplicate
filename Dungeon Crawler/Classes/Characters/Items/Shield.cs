@@ -8,26 +8,27 @@ using System.Threading.Tasks;
 
 namespace Dungeon_Crawler
 {
-    public class Wand : Item
+    public class Shield : Item
     {
-        public Wand(ContentManager content, Vector2 position) : base(content, position)
+        public Shield(ContentManager content, Vector2 position) : base(content, position)
         {
             Initialize(content);
         }
-        public Wand(ContentManager content) : base(content)
+        public Shield(ContentManager content) : base(content)
         {
             Initialize(content);
         }
         private void Initialize(ContentManager content)
         {
-            Name = "Wand";
-            Description = "Magic wand that increases your magic damage. How? Magic";
-            Category = "Wand";
+            Name = "Shield";
+            Description = "Shield that increases your defense but decreases your attack";
+            Category = "Shield";
 
-            TextureName = "wand1";
+            TextureName = "shield1";
             LoadTexture(content);
 
-            SpAttackMultiplier = 1.1f;
+            AttackMultiplier = 0.9f;
+            DefenseMultiplier = 1.2f;
         }
     }
 }
