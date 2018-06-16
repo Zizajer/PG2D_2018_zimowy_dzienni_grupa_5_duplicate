@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dungeon_Crawler.Classes.Controls
+namespace Dungeon_Crawler
 {
     public class Button
     {

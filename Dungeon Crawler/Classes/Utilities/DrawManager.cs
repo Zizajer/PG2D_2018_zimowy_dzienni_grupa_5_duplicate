@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Dungeon_Crawler.Classes.Controls;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -23,9 +22,9 @@ namespace Dungeon_Crawler
         public DrawManager(ContentManager Content, Game1 game)
         {
             this.game = game;
-            mag = Content.Load<Texture2D>("Arts/magini2");
-            warrior = Content.Load<Texture2D>("Arts/wojownik2");
-            ranger = Content.Load<Texture2D>("Arts/rangerka2");
+            mag = Content.Load<Texture2D>("Arts/mage");
+            warrior = Content.Load<Texture2D>("Arts/warrior");
+            ranger = Content.Load<Texture2D>("Arts/ranger");
             button = Content.Load<Texture2D>("Controls/button");
             buttonFont = Content.Load<SpriteFont>("fonts/ButtonFont");
 
