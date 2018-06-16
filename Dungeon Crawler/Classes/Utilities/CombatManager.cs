@@ -15,6 +15,10 @@ namespace Dungeon_Crawler
         public CombatManager(LevelManager levelManager)
         {
             this.levelManager = levelManager;
+        }
+
+
+        public void setPLayer() {
             _player = levelManager.player;
         }
 
