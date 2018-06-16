@@ -20,15 +20,15 @@ namespace Dungeon_Crawler
         public Annihilation()
         {
             Name = "Annihilation";
-            Power = 100;
+            Power = 400;
             Accuracy = 100;
             CriticalHitProbability = 50;
             FreezeProbability = 0;
             BurnProbability = 0;
-            IsSpecial = true;
+            IsSpecial = false;
             ManaCost = 60;
 
-            Distance = 2;
+            Distance = 1;
             AnimationName = "baseAttackAnim";
         }
 

@@ -59,7 +59,7 @@ namespace Dungeon_Crawler
                 attacker.Experience = attacker.Experience + defender.Experience;
                 if(defender is Player)
                 {
-                        Global.GameState = false;
+                    Global.GameState = false;
                 }
             }
             if (IsCritical)
@@ -80,7 +80,7 @@ namespace Dungeon_Crawler
                 Warrior war = (Warrior)attacker;
                 if (war.isBerserkerRageOn)
                 {
-                    int heal = (int)Math.Ceiling(Damage * 0.1f);
+                    int heal = (int)Math.Ceiling(war.Health * 0.01);
                     war.addHealth(heal);
                     Global.Gui.WriteToConsole("Berserker Rage healed "+war.Name + " for " + heal);
                 }

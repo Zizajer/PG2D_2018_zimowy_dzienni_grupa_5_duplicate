@@ -25,10 +25,10 @@ namespace Dungeon_Crawler
             CriticalHitProbability = 0;
             FreezeProbability = 0;
             BurnProbability = 0;
-            IsSpecial = true;
+            IsSpecial = false;
             ManaCost = 0;
 
-            Distance = 1;
+            Distance = 2;
             AnimationName = "AnnihilationAttackAnim"; 
         }
 

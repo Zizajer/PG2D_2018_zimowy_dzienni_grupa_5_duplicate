@@ -17,12 +17,12 @@ namespace Dungeon_Crawler
         }
         public override void calculateBaseStatistics()
         {
-            Health = CurrentHealth = 70;
+            Health = CurrentHealth = 100;
             Defense = 15;
-            SpDefense = 70;
+            SpDefense = 50;
             Attack = 70;
-            SpAttack = 70;
-            Speed = 2f;
+            SpAttack = 50;
+            Speed = 2.5f;
             Resource = 100;
             CurrentResource = 0;
             ResourceRegenerationFactor = -0.08f; //rage should decay slowly
@@ -137,17 +137,14 @@ namespace Dungeon_Crawler
         {
             if (Mouse.GetState().RightButton == ButtonState.Pressed && pastButton2.RightButton == ButtonState.Released)
             {
-                if (CurrentResource >= ProjectileAttack.ManaCost)
+                if (CurrentResource >= UnTargetedAttack.ManaCost)
                 {
-                    MouseState mouse = Mouse.GetState();
-                    Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
-                    Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
-                    ProjectileAttack.Use(this, mousePos);
-                    CurrentResource -= ProjectileAttack.ManaCost;
+                    if (UnTargetedAttack.Use(this))
+                        CurrentResource -= UnTargetedAttack.ManaCost;
                 }
                 else
                 {
-                    Global.Gui.WriteToConsole("Not enough mana");
+                    Global.Gui.WriteToConsole("Not enough rage");
                 }
             }
             pastButton2 = Mouse.GetState();
@@ -268,14 +265,17 @@ namespace Dungeon_Crawler
         {
             if (Keyboard.GetState().IsKeyDown(Keys.D3) && pastKey3.IsKeyUp(Keys.D3))
             {
-                if (CurrentResource >= UnTargetedAttack.ManaCost)
+                if (CurrentResource >= ProjectileAttack.ManaCost)
                 {
-                    if (UnTargetedAttack.Use(this))
-                        CurrentResource -= UnTargetedAttack.ManaCost;
+                    MouseState mouse = Mouse.GetState();
+                    Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
+                    Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
+                    ProjectileAttack.Use(this, mousePos);
+                    CurrentResource -= ProjectileAttack.ManaCost;
                 }
                 else
                 {
-                    Global.Gui.WriteToConsole("Not enough rage");
+                    Global.Gui.WriteToConsole("Not enough mana");
                 }
             }
             pastKey3 = Keyboard.GetState();

@@ -16,9 +16,9 @@ namespace Dungeon_Crawler
         {
             Health = CurrentHealth = 70;
             Defense = 15;
-            SpDefense = 70;
+            SpDefense = 50;
             Attack = 70;
-            SpAttack = 70;
+            SpAttack = 50;
             Speed = 3f;
             Resource = 100;
             CurrentResource = 50;

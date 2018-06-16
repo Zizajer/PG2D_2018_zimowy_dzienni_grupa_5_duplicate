@@ -12,7 +12,7 @@ namespace Dungeon_Crawler
         }
         public override void setAttacks()
         {
-            BaseAttack = new Pound();
+            BaseAttack = new EnemyPound();
         }
         public override void calculateBaseStatistics()
         {

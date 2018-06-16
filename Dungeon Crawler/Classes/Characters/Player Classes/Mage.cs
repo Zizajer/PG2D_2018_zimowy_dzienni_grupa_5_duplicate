@@ -17,7 +17,7 @@ namespace Dungeon_Crawler
             Health = CurrentHealth = 70;
             Defense = 15;
             SpDefense = 70;
-            Attack = 70;
+            Attack = 50;
             SpAttack = 70;
             Speed = 3f;
             CurrentResource = Resource = 100;
@@ -31,7 +31,7 @@ namespace Dungeon_Crawler
             Attack += 3;
             SpAttack += 3;
             Speed += 0.05f;
-            Resource += 5;
+            Resource += 15;
             ResourceRegenerationFactor += 0.01f;
         }
         public override void setAttacks()

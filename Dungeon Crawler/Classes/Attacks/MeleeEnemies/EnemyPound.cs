@@ -1,6 +1,6 @@
 ﻿namespace Dungeon_Crawler
 {
-    public class Pound : ICharacterTargetedAttack
+    public class EnemyPound : ICharacterTargetedAttack
     {
         public string Name { get; set; }
         public int Power { get; set; }
@@ -14,12 +14,12 @@
 
         private readonly string AnimationName;
 
-        public Pound()
+        public EnemyPound()
         {
             Name = "Pound";
-            Power = 25;
-            Accuracy = 100;
-            CriticalHitProbability = 15;
+            Power = 45;
+            Accuracy = 80;
+            CriticalHitProbability = 5;
             FreezeProbability = 0;
             BurnProbability = 0;
             IsSpecial = false;
@@ -34,11 +34,6 @@
             {
                 Global.CombatManager.SetAnimation(Name, AnimationName, defender.CellX, defender.CellY);
                 Global.CombatManager.Attack(attacker, this, defender);
-                if(attacker is Warrior)
-                {
-                    Warrior war = (Warrior)attacker;
-                    war.addResource(Global.random.Next(11)+5); //<5,15>
-                }
                 return true; //Attack hit
             }
             else

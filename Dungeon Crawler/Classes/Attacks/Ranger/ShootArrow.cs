@@ -30,7 +30,7 @@ namespace Dungeon_Crawler
             CriticalHitProbability = 10;
             FreezeProbability = 0;
             BurnProbability = 0;
-            IsSpecial = true;
+            IsSpecial = false;
             ManaCost = 0;
 
             Range = 5;

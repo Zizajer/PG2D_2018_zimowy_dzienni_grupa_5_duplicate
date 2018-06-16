@@ -31,7 +31,7 @@ namespace Dungeon_Crawler
             FreezeProbability = 0;
             BurnProbability = 0;
             IsSpecial = false;
-            ManaCost = 10;
+            ManaCost = 45;
 
             Range = 4;
             VanishDelay = 0; //useless since PiercingProjectille doesnt care
@@ -48,7 +48,7 @@ namespace Dungeon_Crawler
             float distanceY = position.Y - attacker.Center.Y;
 
             float rotation = (float)Math.Atan2(distanceY, distanceX);
-            Vector2 tempVelocity = new Vector2((float)Math.Cos(rotation) * 5f, ((float)Math.Sin(rotation)) * 5f) + attacker.Velocity / 3;
+            Vector2 tempVelocity = new Vector2((float)Math.Cos(rotation) * 4f, ((float)Math.Sin(rotation)) * 4f) + attacker.Velocity / 3;
             Vector2 tempPosition = attacker.Center + tempVelocity * 10;
 
             Projectile newProjectile = new RotatingPiercingProjectille(this, Attacker, tempVelocity, tempPosition, ProjectileTexture, rotation, Range, VanishDelay);

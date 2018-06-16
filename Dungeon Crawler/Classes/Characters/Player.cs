@@ -61,8 +61,8 @@ namespace Dungeon_Crawler
         public bool isBerserkerRageOn = false;
         public float berserkerTimer;
         public float howLongShouldBerserkerWork = 10f;
-        public float normalTimeBetweenActions = 0.4f;
-        public float berserkerTimeBetweenActions = 0.2f;
+        public float normalTimeBetweenActions;
+        public float berserkerTimeBetweenActions = 0.3f;
 
         public Player(ContentManager content, int cellSize, int playerCurrentMapLevel, string name)
         {
@@ -85,7 +85,7 @@ namespace Dungeon_Crawler
             CurrentMapLevel = playerCurrentMapLevel;
             _animationManager = new AnimationManager(_animations.First().Value);
             Name = name;
-
+            normalTimeBetweenActions = timeBetweenActions;
             Inventory = new List<Item>();
 
             setAttacks();

@@ -20,7 +20,7 @@ namespace Dungeon_Crawler
         }
         private void Initialize(ContentManager content)
         {
-            Name = "Wand";
+            Name = "Magic Wand";
             Description = "Magic wand that increases your magic damage. How? Magic";
             Category = "Wand";
 
