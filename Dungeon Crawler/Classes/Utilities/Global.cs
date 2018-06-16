@@ -8,7 +8,9 @@ namespace Dungeon_Crawler
         public static readonly CameraManager Camera = new CameraManager();
         public static GUI Gui;
         public static bool GameState; //1- game on 0- game over
+        public static bool IsGameStarted; 
         public static CombatManager CombatManager;
+        public static DrawManager DrawManager;
         public static Effects Effects;
         public static SoundManager SoundManager;
         public static String[] classes= { "Warrior", "Ranger", "Mage" };

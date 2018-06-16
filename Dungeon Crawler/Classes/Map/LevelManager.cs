@@ -149,9 +149,14 @@ namespace Dungeon_Crawler
             }
 
             CreateNormalLevel();
+            
+        }
+
+        public void setPlayer(String ClassName)
+        {
             Cell randomCell = GetRandomEmptyCell(levels[0].map, levels[0].occupiedCells, levels[0].grid);
 
-            if (Global.playerClass.Equals("Warrior"))
+            if (ClassName.Equals("Warrior"))
             {
                 player =
                 new Warrior(Content, cellSize, 0, Global.playerName + " the " + Global.playerClass)
@@ -160,7 +165,7 @@ namespace Dungeon_Crawler
                 };
 
             }
-            else if(Global.playerClass.Equals("Ranger"))
+            else if (ClassName.Equals("Ranger"))
             {
                 player =
                 new Ranger(Content, cellSize, 0, Global.playerName + " the " + Global.playerClass)
@@ -168,7 +173,7 @@ namespace Dungeon_Crawler
                     Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
                 };
             }
-            else
+            else if(ClassName.Equals("Mage"))
             {
                 player =
                 new Mage(Content, cellSize, 0, Global.playerName + " the " + Global.playerClass)
@@ -177,10 +182,10 @@ namespace Dungeon_Crawler
                 };
             }
 
-            
-            levels[0].grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
             levels[0].addPlayer(player);
+            levels[0].grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
             Global.Camera.CenterOn(randomCell);
+
         }
 
         public void incrementMapParameters(int increaseValue)

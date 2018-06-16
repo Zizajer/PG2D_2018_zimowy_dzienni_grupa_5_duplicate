@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
 
 namespace Dungeon_Crawler
 {
@@ -16,11 +18,12 @@ namespace Dungeon_Crawler
         RenderTarget2D lightsTarget;
         RenderTarget2D mainTarget;
 
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = 1280;  
-            graphics.PreferredBackBufferHeight = 768;  
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 768;
             graphics.ApplyChanges();
             /*
             graphics.IsFullScreen = true;
@@ -35,6 +38,7 @@ namespace Dungeon_Crawler
             Global.Camera.setViewports(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height);
             Global.Camera.setZoom(1.5f);
             Global.GameState = true;
+            Global.IsGameStarted = false;
             base.Initialize();
         }
 
@@ -43,9 +47,6 @@ namespace Dungeon_Crawler
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             Global.Gui = new GUI(graphics, Content);
-
-            //Global.playerClass = Global.classes[2];
-            Global.playerClass = Global.classes[Global.random.Next(Global.classes.Length)];
             levelManager = new LevelManager(Content);
             Global.levelmanager = levelManager;
             Global.Gui.lm = levelManager;
@@ -59,6 +60,8 @@ namespace Dungeon_Crawler
 
             Global.CombatManager = new CombatManager(levelManager);
             Global.SoundManager = new SoundManager(Content);
+            Global.DrawManager = new DrawManager(Content, this);
+
         }
 
         protected override void UnloadContent()
@@ -70,22 +73,28 @@ namespace Dungeon_Crawler
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (Global.GameState==true)
-            {
-                Global.Camera.Move();
+            if (Global.IsGameStarted) { 
+                if (Global.GameState == true)
+                {
+                    Global.Camera.Move();
 
-                levelManager.Update(gameTime, GraphicsDevice);
+                    levelManager.Update(gameTime, GraphicsDevice);
 
-                Global.Gui.Update(gameTime);
-                Global.CombatManager.Update();
+                    Global.Gui.Update(gameTime);
+                    Global.CombatManager.Update();
+                }
+                else
+                {
+                    if (wasGameOverSoundPlayed == false)
+                    {
+                        Global.SoundManager.playGameOver();
+                        wasGameOverSoundPlayed = true;
+                    }
+                }
             }
             else
             {
-                if (wasGameOverSoundPlayed == false)
-                {
-                    Global.SoundManager.playGameOver();
-                    wasGameOverSoundPlayed = true;
-                }
+                Global.DrawManager.UpdateMainMenu(gameTime);
             }
             
             base.Update(gameTime);
@@ -93,36 +102,43 @@ namespace Dungeon_Crawler
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.SetRenderTarget(lightsTarget);
-            GraphicsDevice.Clear(Color.Black);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Global.Camera.TranslationMatrix);
-            //draw light mask where there should be torches etc...
+            if (Global.IsGameStarted)
+            {
+                GraphicsDevice.SetRenderTarget(lightsTarget);
+                GraphicsDevice.Clear(Color.Black);
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Global.Camera.TranslationMatrix);
+                //draw light mask where there should be torches etc...
 
-            Vector2 playerPos = levelManager.player.Center;
-            playerPos.X -= lightMask.Width / 2;
-            playerPos.Y -= lightMask.Height / 2;
-            spriteBatch.Draw(lightMask, playerPos, Color.White);
+                Vector2 playerPos = levelManager.player.Center;
+                playerPos.X -= lightMask.Width / 2;
+                playerPos.Y -= lightMask.Height / 2;
+                spriteBatch.Draw(lightMask, playerPos, Color.White);
 
-            spriteBatch.End();
+                spriteBatch.End();
 
-            GraphicsDevice.SetRenderTarget(mainTarget);
-            GraphicsDevice.Clear(Color.Transparent);
+                GraphicsDevice.SetRenderTarget(mainTarget);
+                GraphicsDevice.Clear(Color.Transparent);
 
-            levelManager.Draw(gameTime, spriteBatch);
+                levelManager.Draw(gameTime, spriteBatch);
 
-            GraphicsDevice.SetRenderTarget(null);
-            GraphicsDevice.Clear(Color.Black);
+                GraphicsDevice.SetRenderTarget(null);
+                GraphicsDevice.Clear(Color.Black);
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
 
-            effect1.Parameters["lightMask"].SetValue(lightsTarget);
-            effect1.CurrentTechnique.Passes[0].Apply();
-            spriteBatch.Draw(mainTarget, Vector2.Zero, Color.White);
-            spriteBatch.End();
+                effect1.Parameters["lightMask"].SetValue(lightsTarget);
+                effect1.CurrentTechnique.Passes[0].Apply();
+                spriteBatch.Draw(mainTarget, Vector2.Zero, Color.White);
+                spriteBatch.End();
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
-            Global.Gui.Draw(spriteBatch, gameTime);
-            spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
+                Global.Gui.Draw(spriteBatch, gameTime);
+                spriteBatch.End();
+            }
+            else {
+                Global.DrawManager.DrawMainMenu(spriteBatch, GraphicsDevice, gameTime);
+            }
+
             base.Draw(gameTime);
         }
     }
