@@ -91,7 +91,6 @@ namespace Dungeon_Crawler
             {
                 //play blue particle
                 Global.CombatManager.SetAnimation("Teleportation", "MagicAnim", CellX, CellY);
-                Debug.WriteLine(Position.X + " " + Position.Y);
                 level.grid.SetCellCost(new Position(CurrentCell.X, CurrentCell.Y), 1.0f);
                 level.grid.SetCellCost(new Position(mx, my), 5.0f);
 

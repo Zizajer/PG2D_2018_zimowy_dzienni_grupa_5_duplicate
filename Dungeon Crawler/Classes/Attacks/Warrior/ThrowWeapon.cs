@@ -31,9 +31,9 @@ namespace Dungeon_Crawler
             FreezeProbability = 0;
             BurnProbability = 0;
             IsSpecial = false;
-            ManaCost = 45;
+            ManaCost = 15;
 
-            Range = 4;
+            Range = 3;
             VanishDelay = 0; //useless since PiercingProjectille doesnt care
         }
 

@@ -28,7 +28,7 @@ namespace Dungeon_Crawler
             IsSpecial = false;
             ManaCost = 0;
 
-            Distance = 2;
+            Distance = 3;
             AnimationName = "AnnihilationAttackAnim"; 
         }
 
