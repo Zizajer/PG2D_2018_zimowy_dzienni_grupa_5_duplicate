@@ -27,7 +27,7 @@ namespace Dungeon_Crawler
             TextureName = "gloves";
             LoadTexture(content);
 
-            //Id like them to increase attack speed by some value
+            TimeBetweenActionsMultiplier = 0.95f;
         }
     }
 }

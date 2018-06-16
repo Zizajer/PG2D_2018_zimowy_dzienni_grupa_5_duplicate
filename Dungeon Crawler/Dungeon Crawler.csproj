@@ -42,8 +42,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Classes\Attacks\BlackKnight\DeathBeam.cs" />
+    <Compile Include="Classes\Attacks\Brainy\AoeAttack.cs" />
     <Compile Include="Classes\Attacks\Dragon\DragonAttack.cs" />
     <Compile Include="Classes\Attacks\Mage\UltimateExplosion.cs" />
+    <Compile Include="Classes\Attacks\MeleeEnemies\EnemyPound.cs" />
+    <Compile Include="Classes\Attacks\RangeEnemies\WebAttack.cs" />
     <Compile Include="Classes\Attacks\Ranger\MultiShot2.cs" />
     <Compile Include="Classes\Attacks\Ranger\MultiShot.cs" />
     <Compile Include="Classes\Attacks\Mage\FrostNova.cs" />
@@ -69,6 +72,7 @@
     <Compile Include="Classes\Attacks\Warrior\Pound.cs" />
     <Compile Include="Classes\Attacks\Interface\IPositionTargetedAttack.cs" />
     <Compile Include="Classes\Characters\Boss.cs" />
+    <Compile Include="Classes\Characters\Bosses\Brainy.cs" />
     <Compile Include="Classes\Characters\Bosses\BlackKnight.cs" />
     <Compile Include="Classes\Characters\Bosses\Dragon.cs" />
     <Compile Include="Classes\Characters\Bosses\DemonOak.cs" />
@@ -87,12 +91,13 @@
     <Compile Include="Classes\Characters\Items\Shield.cs" />
     <Compile Include="Classes\Characters\Items\Wand2.cs" />
     <Compile Include="Classes\Characters\Items\Wand.cs" />
-    <Compile Include="Classes\Characters\Enemies\Blob.cs" />
-    <Compile Include="Classes\Characters\Enemies\Skeleton.cs" />
-    <Compile Include="Classes\Characters\Enemies\Zombie.cs" />
+    <Compile Include="Classes\Characters\MeleeEnemies\Blob.cs" />
+    <Compile Include="Classes\Characters\MeleeEnemies\Skeleton.cs" />
+    <Compile Include="Classes\Characters\MeleeEnemies\Zombie.cs" />
     <Compile Include="Classes\Characters\Player Classes\Ranger.cs" />
     <Compile Include="Classes\Characters\Player Classes\Mage.cs" />
     <Compile Include="Classes\Characters\Player Classes\Warrior.cs" />
+    <Compile Include="Classes\Characters\RangedEnemies\Spider.cs" />
     <Compile Include="Classes\Map\RotatingPiercingProjectille.cs" />
     <Compile Include="Classes\Map\PiercingProjectille.cs" />
     <Compile Include="Classes\Map\Trap.cs" />

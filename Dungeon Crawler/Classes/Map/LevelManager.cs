@@ -36,6 +36,8 @@ namespace Dungeon_Crawler
         public Dictionary<string, Animation> _animationsDemonOak;
         public Dictionary<string, Animation> _animationsDragon;
         public Dictionary<string, Animation> _animationsBlackKnight;
+        public Dictionary<string, Animation> _animationsBrainy;
+        public Dictionary<string, Animation> _animationsSpider;
 
         public List<String> allItemsNames;
 
@@ -49,6 +51,8 @@ namespace Dungeon_Crawler
         List<String> BlackKnightNamesList;
         List<String> SkeletonNamesList;
         List<String> ZombieNamesList;
+        List<String> BrainyNamesList;
+        List<String> SpiderNamesList;
 
         public LevelManager(ContentManager Content)
         {
@@ -96,6 +100,20 @@ namespace Dungeon_Crawler
                     {"WalkLeft",new Animation(Content.Load<Texture2D>("enemy/BlackKnight/WalkingLeft"),3 )},
                     {"WalkRight",new Animation(Content.Load<Texture2D>("enemy/BlackKnight/WalkingRight"),3 )}
                 };
+            _animationsBrainy = new Dictionary<string, Animation>()
+                {
+                    {"WalkUp",new Animation(Content.Load<Texture2D>("enemy/Brainy/Walkingup"),3 )},
+                    {"WalkDown",new Animation(Content.Load<Texture2D>("enemy/Brainy/WalkingDown"),3 )},
+                    {"WalkLeft",new Animation(Content.Load<Texture2D>("enemy/Brainy/WalkingLeft"),3 )},
+                    {"WalkRight",new Animation(Content.Load<Texture2D>("enemy/Brainy/WalkingRight"),3 )}
+                };
+            _animationsSpider = new Dictionary<string, Animation>()
+                {
+                    {"WalkUp",new Animation(Content.Load<Texture2D>("enemy/Spider/Walkingup"),6 )},
+                    {"WalkDown",new Animation(Content.Load<Texture2D>("enemy/Spider/WalkingDown"),6 )},
+                    {"WalkLeft",new Animation(Content.Load<Texture2D>("enemy/Spider/WalkingLeft"),6 )},
+                    {"WalkRight",new Animation(Content.Load<Texture2D>("enemy/Spider/WalkingRight"),6 )}
+                };
             allItemsNames = new List<String>
             {
                 "Wand",
@@ -122,6 +140,8 @@ namespace Dungeon_Crawler
                 SkeletonNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Skeleton.txt"));
                 ZombieNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Zombie.txt"));
                 BlackKnightNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\BlackKnight.txt"));
+                BrainyNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Brainy.txt"));
+                SpiderNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Spider.txt"));
             }
             catch (Exception e)
             {
@@ -230,8 +250,8 @@ namespace Dungeon_Crawler
                 int numberOfItems = Global.random.Next(2, 5);
                 BossInventory = CreateItemsList(Content, numberOfItems, allItemsNames);
             }
-        
-            int whichBossToSpawn = Global.random.Next(3);
+
+            int whichBossToSpawn = Global.random.Next(4);
             if (whichBossToSpawn == 0)
             {
                 List<Cell> bossOccupyingCells = map.GetCellsInArea(6, 6, 1).ToList();
@@ -275,6 +295,23 @@ namespace Dungeon_Crawler
                     };
                 enemies.Add(tempBoss);
                 tempBoss.TakeItems(BossInventory);
+            }
+            else if (whichBossToSpawn == 2)
+            {
+                Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid);
+                List<Cell> bossOccupyingCells = new List<Cell>();
+
+                float timeBetweenActions = 1.0f; //we should move that to each boss class but w/e
+                Character tempBoss =
+                    new Brainy(_animationsBrainy, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
+                    {
+                        Name = BrainyNamesList[Global.random.Next(BrainyNamesList.Count)],
+                        Position = new Vector2((randomCell.X * cellSize + cellSize / 4), (randomCell.Y * cellSize) + cellSize / 4)
+                    };
+                enemies.Add(tempBoss);
+                tempBoss.TakeItems(BossInventory);
+
+                grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
             }
             else
             {
@@ -365,7 +402,7 @@ namespace Dungeon_Crawler
             {
                 Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid);
                 occupiedCells.Add(randomCell);
-                float speed = (Global.random.Next(2) + 1) / 0.9f + (float)Math.Log(enemySpeedFactor);
+                float speed =  1 / 0.9f + (float)Math.Log(enemySpeedFactor);
                 float timeBetweenActions = 1f;
 
                 int level;
@@ -385,8 +422,8 @@ namespace Dungeon_Crawler
                 }
 
                 string enemyName;
-                int whichEnemyToSpawn = Global.random.Next(3);
-                if(whichEnemyToSpawn==0)
+                int whichEnemyToSpawn = Global.random.Next(4);
+                if (whichEnemyToSpawn==0)
                 {
                     enemyName = "Blob";
 
@@ -408,6 +445,20 @@ namespace Dungeon_Crawler
                     new Skeleton(_animationsSkeleton, cellSize, level, speed, timeBetweenActions, map, enemyName)
                     {
                         Name = SkeletonNamesList[Global.random.Next(SkeletonNamesList.Count)],
+                        Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
+                    };
+                    tempEnemy.TakeItems(EnemyInventory);
+                    enemies.Add(tempEnemy);
+                    grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
+                }
+                else if (whichEnemyToSpawn == 2)
+                {
+                    enemyName = "Spider";
+
+                    Character tempEnemy =
+                    new Spider(_animationsSpider, cellSize, level, speed, timeBetweenActions, map, enemyName)
+                    {
+                        Name = SpiderNamesList[Global.random.Next(SpiderNamesList.Count)],
                         Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
                     };
                     tempEnemy.TakeItems(EnemyInventory);

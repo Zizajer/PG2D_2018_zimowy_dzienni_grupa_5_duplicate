@@ -28,7 +28,7 @@ namespace Dungeon_Crawler
             IsSpecial = true;
             ManaCost = 60;
 
-            Distance = 4;
+            Distance = 5;
             AnimationName = "EnergyAttackAnim";
         }
 

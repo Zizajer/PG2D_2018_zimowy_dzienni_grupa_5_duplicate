@@ -23,6 +23,7 @@ namespace Dungeon_Crawler
         public float AttackMultiplier { get; set; } = 1f;
         public float SpAttackMultiplier { get; set; } = 1f;
         public float SpeedMultiplier { get; set; } = 1f;
+        public float TimeBetweenActionsMultiplier { get; set; } = 1f;
 
         public float ResourceRegenerationFactorMultiplier { get; set; } = 1f;
         public float ExpMultiplier { get; set; } = 1f;
@@ -35,7 +36,7 @@ namespace Dungeon_Crawler
 
         public void ApplyEffect(Character owner)
         {
-            owner.Health = (int)Math.Ceiling(owner.Health * HealthMultiplier);
+            owner.Health = owner.Health * HealthMultiplier;
             owner.Defense = (int)Math.Ceiling(owner.Defense * DefenseMultiplier);
             owner.SpDefense = (int)Math.Ceiling(owner.SpDefense * SpDefenseMultiplier);
             owner.Attack = (int)Math.Ceiling(owner.Attack * AttackMultiplier);
@@ -44,7 +45,8 @@ namespace Dungeon_Crawler
             if (owner is Player)
             {
                 Player p = (Player) owner;
-                p.ResourceRegenerationFactor = (int)Math.Ceiling(p.ResourceRegenerationFactor * ResourceRegenerationFactorMultiplier);
+                p.ResourceRegenerationFactor = p.ResourceRegenerationFactor * ResourceRegenerationFactorMultiplier;
+                p.timeBetweenActions = p.timeBetweenActions * TimeBetweenActionsMultiplier;
                 //TODO: Add this property to Character class
                 //((Player)Owner).ExpMultiplier = ExpMultiplier;
             }
@@ -54,7 +56,7 @@ namespace Dungeon_Crawler
         }
         public void RevertEffect(Character owner)
         {
-            owner.Health = (int)Math.Floor(owner.Health / HealthMultiplier);
+            owner.Health = owner.Health / HealthMultiplier;
             owner.Defense = (int)Math.Floor(owner.Defense / DefenseMultiplier);
             owner.SpDefense = (int)Math.Floor(owner.SpDefense / SpDefenseMultiplier);
             owner.Attack = (int)Math.Floor(owner.Attack / AttackMultiplier);
@@ -63,7 +65,8 @@ namespace Dungeon_Crawler
             if (owner is Player)
             {
                 Player p = (Player)owner;
-                p.ResourceRegenerationFactor = (int)Math.Floor(p.ResourceRegenerationFactor / ResourceRegenerationFactorMultiplier);
+                p.ResourceRegenerationFactor = p.ResourceRegenerationFactor / ResourceRegenerationFactorMultiplier;
+                p.timeBetweenActions = p.timeBetweenActions / TimeBetweenActionsMultiplier;
                 //TODO: Add this property to Character class
                 //((Player)Owner).ExpMultiplier = 1f;
             }
