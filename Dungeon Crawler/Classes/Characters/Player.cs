@@ -469,12 +469,12 @@ namespace Dungeon_Crawler
                     {
                         DrankPotions++;
                     }
+                    if (!(Inventory[i] is UsableItem))
+                    {
+                        Global.Gui.WriteToConsole("You can't use this item.");
+                    }
                     base.UseItem(i);
-                }
-                else
-                {
-                    Global.Gui.WriteToConsole("You can't use this item.");
-                }     
+                } 
             }
             pastKey9 = Keyboard.GetState();
         }
