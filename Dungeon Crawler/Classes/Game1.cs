@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Dungeon_Crawler
 {
@@ -110,9 +111,13 @@ namespace Dungeon_Crawler
                 //draw light mask where there should be torches etc...
 
                 Vector2 playerPos = levelManager.player.Center;
-                playerPos.X -= lightMask.Width / 2;
-                playerPos.Y -= lightMask.Height / 2;
-                spriteBatch.Draw(lightMask, playerPos, Color.White);
+                float scale = 1 / ((levelManager.player.CurrentMapLevel + 1) * 0.05f + 0.5f);
+                if(scale<0.5f) scale=0.5f;
+                Debug.WriteLine(scale);
+                playerPos.X -= lightMask.Width * scale / 2;
+                playerPos.Y -= lightMask.Height * scale / 2;
+                //spriteBatch.Draw(lightMask, playerPos, Color.White);
+                spriteBatch.Draw(lightMask, playerPos, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 1f);
 
                 spriteBatch.End();
 
