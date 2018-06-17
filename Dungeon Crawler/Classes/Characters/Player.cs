@@ -458,43 +458,42 @@ namespace Dungeon_Crawler
             pastKey8 = Keyboard.GetState();
         }
 
-        public void UseItem(int i)
+        public override void UseItem(int i)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.E) && pastKey9.IsKeyUp(Keys.E))
             {
                 if (SelectedItem != -1)
                 {
-                    Item Item = Inventory[i];
-                    if (Item is UsableItem)
+                    if (Inventory[i].Category.Equals("Potion"))
                     {
-                        if (SelectedItem == 0)
-                        {
-                            if (Inventory.Count == 1)
-                            {
-                                SelectedItem = -1;
-                            }
-                        }
-                        else
-                        {
-                            SelectedItem--;
-                        }
-                        ((UsableItem)Item).Use(this);
-
-                        if (Item.Category.Equals("Potion"))
-                        {
-                            DrankPotions++;
-                        }
-
-                        Inventory.RemoveAt(i);
+                        DrankPotions++;
                     }
-                    else
-                    {
-                        Global.Gui.WriteToConsole("You can't use this item.");
-                    }
+                    base.UseItem(i);
                 }
+                else
+                {
+                    Global.Gui.WriteToConsole("You can't use this item.");
+                }     
             }
             pastKey9 = Keyboard.GetState();
         }
+
+        public override void DeleteItem(int i)
+        {
+            if (SelectedItem == 0)
+            {
+                if (Inventory.Count == 1)
+                {
+                    SelectedItem = -1;
+                }
+            }
+            else
+            {
+                SelectedItem--;
+            }
+            base.DeleteItem(i);
+        }
+
         public void ExamineSelectedItem()
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Q) && pastKey10.IsKeyUp(Keys.Q))

@@ -335,6 +335,28 @@ namespace Dungeon_Crawler
             }
         }
 
+        public virtual void UseItem(int i)
+        {
+            if (Inventory[i] is UsableItem UsableItem)
+            {
+                if (UsableItem.RemainingUsages > 0)
+                {
+                    UsableItem.Use(this);
+                    UsableItem.RemainingUsages--;
+                }
+                if (UsableItem.RemainingUsages == 0)
+                {
+                    DeleteItem(i);
+                }
+            }
+        }
+
+        public virtual void DeleteItem(int i)
+        {
+            Inventory[i].RevertEffect(this);
+            Inventory.RemoveAt(i);
+        }
+
         public virtual void DropItem(Level level, int i)
         {
             Item DroppedItem = Inventory[i];
