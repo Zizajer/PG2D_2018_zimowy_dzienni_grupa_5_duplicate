@@ -127,7 +127,8 @@ namespace Dungeon_Crawler
                 "Wand2",
                 "Axe1",
                 "Gloves",
-                "Trainers"
+                "Trainers",
+                "DokerCharm"
             };
             itemsCount = allItemsNames.Count;
             cellSize = floor.Width;
