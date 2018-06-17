@@ -204,6 +204,7 @@ namespace Dungeon_Crawler
             {
                 Projectile.Draw(spriteBatch);
             }
+
             Global.Gui.DrawEnemyPlates(spriteBatch, gameTime);
 
             spriteBatch.End();

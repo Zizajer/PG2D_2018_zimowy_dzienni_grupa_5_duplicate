@@ -113,7 +113,6 @@ namespace Dungeon_Crawler
                 Vector2 playerPos = levelManager.player.Center;
                 float scale = 1 / ((levelManager.player.CurrentMapLevel + 1) * 0.05f + 0.5f);
                 if(scale<0.5f) scale=0.5f;
-                Debug.WriteLine(scale);
                 playerPos.X -= lightMask.Width * scale / 2;
                 playerPos.Y -= lightMask.Height * scale / 2;
                 //spriteBatch.Draw(lightMask, playerPos, Color.White);
