@@ -211,8 +211,8 @@ namespace Dungeon_Crawler
             spriteBatch.Draw(HealthBarBackgroundTexture, temp, null, Color.White, 0f, new Vector2(HealthBarBackgroundTexture.Width / 2, HealthBarBackgroundTexture.Height / 2), SpriteEffects.None, Layers.Text);
             spriteBatch.Draw(HealthBarCurrentHealthTexture, new Rectangle((int)character.Position.X, (int)character.Position.Y - 25, HealthBarCurrentHealthWidth, HealthBarOverCharacterHeight), Color.White);
 
-            //HealthBarBackgroundTexture.Dispose();
-            //HealthBarCurrentHealthTexture.Dispose();
+            HealthBarBackgroundTexture.Dispose();
+            HealthBarCurrentHealthTexture.Dispose();
         }
 
         private void DrawPlayerStatBars(SpriteBatch spriteBatch, Player player, int hpX, int hpY, int resourceX, int resourceY, int xpX, int xpY, int width, int height, float scale)

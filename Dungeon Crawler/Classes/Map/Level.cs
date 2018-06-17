@@ -159,7 +159,7 @@ namespace Dungeon_Crawler
         }
         public void Draw(GameTime gameTime,SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
 
             foreach (Cell cell in map.GetAllCells())
             {
