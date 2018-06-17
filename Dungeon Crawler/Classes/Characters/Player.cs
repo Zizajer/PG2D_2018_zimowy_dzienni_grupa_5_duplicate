@@ -245,6 +245,7 @@ namespace Dungeon_Crawler
                 CoreAbility(level);
 
                 ToggleStats();
+                UpdateItems(gameTime);
                 ExamineSelectedItem();
                 DropItem(level, SelectedItem);
                 TakeItem(level, graphicsDevice);

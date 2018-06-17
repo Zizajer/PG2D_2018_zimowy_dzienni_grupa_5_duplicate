@@ -383,5 +383,16 @@ namespace Dungeon_Crawler
             Inventory.Clear();
         }
 
+        public virtual void UpdateItems(GameTime gameTime)
+        {
+            foreach (Item Item in Inventory)
+            {
+                if (Item is UpdatableItem UpdatableItem)
+                {
+                    UpdatableItem.Update(gameTime, this);
+                }
+            }
+        }
+
     }
 }

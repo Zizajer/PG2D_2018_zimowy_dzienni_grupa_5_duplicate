@@ -78,6 +78,7 @@
     <Compile Include="Classes\Characters\Bosses\DemonOak.cs" />
     <Compile Include="Classes\Characters\Character.cs" />
     <Compile Include="Classes\Characters\Items\Abstract\Item.cs" />
+    <Compile Include="Classes\Characters\Items\Abstract\UpdatableItem.cs" />
     <Compile Include="Classes\Characters\Items\Abstract\UsableItem.cs" />
     <Compile Include="Classes\Characters\Items\InvisibilityPotion.cs" />
     <Compile Include="Classes\Characters\Items\Shield2.cs" />
