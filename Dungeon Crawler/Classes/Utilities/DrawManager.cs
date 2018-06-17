@@ -31,7 +31,7 @@ namespace Dungeon_Crawler
             var magButton = new Button(button, buttonFont)
             {
                 Position = new Vector2(50, 350),
-                Text = "Mag",
+                Text = "Mage",
             };
 
             magButton.Click += magButton_Click;
