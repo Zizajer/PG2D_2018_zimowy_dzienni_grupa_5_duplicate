@@ -21,7 +21,7 @@ namespace Dungeon_Crawler
         private void Initialize(ContentManager content)
         {
             Name = "Doker charm";
-            Description = "Keeps owner's vital forces at steady level. It is said that its owner will live for at least 2036 years.";
+            Description = "Keeps your vital forces at steady level. Legend says that its owner will live for at least 2036 years.";
             Category = "Doker charm";
 
             TextureName = "dokerCharm";
@@ -31,7 +31,7 @@ namespace Dungeon_Crawler
         {
             if (character.CurrentHealthPercent < 30)
             {
-                character.CurrentHealth += 0.01f;
+                character.CurrentHealthPercent += 0.03f;
             }
         }
     }
