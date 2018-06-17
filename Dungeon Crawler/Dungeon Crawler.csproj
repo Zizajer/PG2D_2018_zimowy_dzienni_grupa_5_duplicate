@@ -83,7 +83,7 @@
     <Compile Include="Classes\Characters\Items\Shield2.cs" />
     <Compile Include="Classes\Characters\Items\SmallResourcePotion.cs" />
     <Compile Include="Classes\Characters\Items\SmallHealthPotion.cs" />
-    <Compile Include="Classes\Characters\Items\HealthIcreasingPotion.cs" />
+    <Compile Include="Classes\Characters\Items\HealthIncreasingPotion.cs" />
     <Compile Include="Classes\Characters\Items\Trainers.cs" />
     <Compile Include="Classes\Characters\Items\Gloves.cs" />
     <Compile Include="Classes\Characters\Items\Axe1.cs" />

@@ -37,7 +37,7 @@ namespace Dungeon_Crawler
             owner.CurrentHealth += healthGained;
             owner.Health += healthGained;
                 
-            Global.Gui.WriteToConsole("The potion icreased your health by "+ healthGained);
+            Global.Gui.WriteToConsole("The potion increased your health by "+ healthGained);
         }
     }
 }
