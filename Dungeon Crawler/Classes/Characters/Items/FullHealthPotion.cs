@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Dungeon_Crawler
 {
-    public class FullHPPotion : Item, IUsableUpdatableItem
+    public class FullHealthPotion : Item, IUsableUpdatableItem
     {
         public bool IsCurrentlyInUse { get; private set; }
         public bool HasRecentUsageFinished { get; private set; }
@@ -16,11 +16,11 @@ namespace Dungeon_Crawler
 
         private float GivenHealth;
 
-        public FullHPPotion(ContentManager content, Vector2 position) : base(content, position)
+        public FullHealthPotion(ContentManager content, Vector2 position) : base(content, position)
         {
             Initialize(content);
         }
-        public FullHPPotion(ContentManager content) : base(content)
+        public FullHealthPotion(ContentManager content) : base(content)
         {
             Initialize(content);
         }
@@ -31,7 +31,7 @@ namespace Dungeon_Crawler
             Category = "Potion";
             RemainingUsages = 1;
 
-            TextureName = "potion1";
+            TextureName = "potion4";
             LoadTexture(content);
 
 
