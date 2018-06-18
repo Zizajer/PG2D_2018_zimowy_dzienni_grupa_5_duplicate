@@ -336,9 +336,21 @@ namespace Dungeon_Crawler
             }
         }
 
-        public virtual void UseItem(int i)
+        public virtual bool UseItem(int i)
         {
-            if (Inventory[i] is IUsableItem UsableItem)
+            if (Inventory[i] is IUsableUpdatableItem UsableUpdatableItem)
+            {
+                if (!UsableUpdatableItem.IsCurrentlyInUse)
+                {
+                    UsableUpdatableItem.Use(this);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (Inventory[i] is IUsableItem UsableItem)
             {
                 if (UsableItem.RemainingUsages > 0)
                 {
@@ -349,6 +361,11 @@ namespace Dungeon_Crawler
                 {
                     DeleteItem(i);
                 }
+                return true;
+            }
+            else
+            {
+                return false; //Item is unusable
             }
         }
 
@@ -356,6 +373,12 @@ namespace Dungeon_Crawler
         {
             Inventory[i].RevertEffect(this);
             Inventory.RemoveAt(i);
+        }
+
+        public virtual void DeleteItem(Item item)
+        {
+            item.RevertEffect(this);
+            Inventory.Remove(item);
         }
 
         public virtual void DropItem(Level level, int i)
@@ -386,8 +409,25 @@ namespace Dungeon_Crawler
 
         public virtual void UpdateItems(GameTime gameTime)
         {
-            foreach (Item Item in Inventory)
+            for (int i = Inventory.Count - 1; i >= 0; i--)
             {
+                Item Item = Inventory[i];
+                if (Item is IUsableUpdatableItem UsableUpdatableItem)
+                {
+                    if (UsableUpdatableItem.IsCurrentlyInUse)
+                    {
+                        UsableUpdatableItem.Update(gameTime, this);
+                    }
+                    if (UsableUpdatableItem.HasRecentUsageFinished)
+                    {
+                        UsableUpdatableItem.RemainingUsages--;
+                        if (UsableUpdatableItem.RemainingUsages == 0)
+                        {
+                            DeleteItem((Item)UsableUpdatableItem);
+                        }
+                    }
+                    continue;
+                }
                 if (Item is IUpdatableItem UpdatableItem)
                 {
                     UpdatableItem.Update(gameTime, this);

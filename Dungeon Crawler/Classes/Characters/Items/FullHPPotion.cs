@@ -11,8 +11,10 @@ namespace Dungeon_Crawler
     public class FullHPPotion : Item, IUsableUpdatableItem
     {
         public bool IsCurrentlyInUse { get; private set; }
+        public bool HasRecentUsageFinished { get; private set; }
         public int RemainingUsages { get; set; }
-        float healthGained;
+
+        private float GivenHealth;
 
         public FullHPPotion(ContentManager content, Vector2 position) : base(content, position)
         {
@@ -37,13 +39,22 @@ namespace Dungeon_Crawler
         public void Use(Character owner)
         {
             IsCurrentlyInUse = true;
+            HasRecentUsageFinished = false;
         }
 
         public void Update(GameTime gameTime, Character character)
         {
-            if (character.CurrentHealthPercent < 100)
+            if (GivenHealth < character.Health && character.CurrentHealth < character.Health)
             {
+                float CurrentHealthBefore = character.CurrentHealth;
                 character.CurrentHealthPercent += 0.06f;
+                float CurrentHealthAfter = character.CurrentHealth;
+                GivenHealth += CurrentHealthAfter - CurrentHealthBefore;
+            }
+            else
+            {
+                IsCurrentlyInUse = false;
+                HasRecentUsageFinished = true;
             }
         }
     }

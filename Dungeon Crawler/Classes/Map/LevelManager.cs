@@ -116,6 +116,7 @@ namespace Dungeon_Crawler
                 };
             allItemsNames = new List<String>
             {
+                /*
                 "Wand",
                 "HealthIncreasingPotion",
                 "InvisibilityPotion",
@@ -128,7 +129,9 @@ namespace Dungeon_Crawler
                 "Axe1",
                 "Gloves",
                 "Trainers",
-                "DokerCharm"
+                */
+                "DokerCharm",
+                "FullHPPotion"
             };
             itemsCount = allItemsNames.Count;
             cellSize = floor.Width;

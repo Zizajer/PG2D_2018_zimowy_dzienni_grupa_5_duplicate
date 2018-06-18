@@ -9,5 +9,6 @@ namespace Dungeon_Crawler
     public interface IUsableUpdatableItem : IUsableItem, IUpdatableItem
     {
         bool IsCurrentlyInUse { get; }
+        bool HasRecentUsageFinished { get; }
     }
 }

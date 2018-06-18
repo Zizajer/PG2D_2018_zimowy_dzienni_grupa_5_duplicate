@@ -459,8 +459,9 @@ namespace Dungeon_Crawler
             pastKey8 = Keyboard.GetState();
         }
 
-        public override void UseItem(int i)
+        public override bool UseItem(int i)
         {
+            bool IsItemUsed = false;
             if (Keyboard.GetState().IsKeyDown(Keys.E) && pastKey9.IsKeyUp(Keys.E))
             {
                 if (SelectedItem != -1)
@@ -469,14 +470,26 @@ namespace Dungeon_Crawler
                     {
                         DrankPotions++;
                     }
-                    if (!(Inventory[i] is IUsableItem))
+                    IsItemUsed = base.UseItem(i);
+                    if (!IsItemUsed)
                     {
-                        Global.Gui.WriteToConsole("You can't use this item.");
+                        if (!(Inventory[i] is IUsableItem))
+                        {
+                            Global.Gui.WriteToConsole("You can't use this item.");
+                        }
+                        else
+                        {
+                            Global.Gui.WriteToConsole("You can't use this item right now.");
+                        }
                     }
-                    base.UseItem(i);
-                } 
+                }
+                else
+                {
+                    return false;
+                }
             }
             pastKey9 = Keyboard.GetState();
+            return IsItemUsed;
         }
 
         public override void DeleteItem(int i)
@@ -493,6 +506,22 @@ namespace Dungeon_Crawler
                 SelectedItem--;
             }
             base.DeleteItem(i);
+        }
+
+        public override void DeleteItem(Item item)
+        {
+            if (SelectedItem == 0)
+            {
+                if (Inventory.Count == 1)
+                {
+                    SelectedItem = -1;
+                }
+            }
+            else
+            {
+                SelectedItem--;
+            }
+            base.DeleteItem(item);
         }
 
         public void ExamineSelectedItem()
