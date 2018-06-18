@@ -469,7 +469,7 @@ namespace Dungeon_Crawler
                     {
                         DrankPotions++;
                     }
-                    if (!(Inventory[i] is UsableItem))
+                    if (!(Inventory[i] is IUsableItem))
                     {
                         Global.Gui.WriteToConsole("You can't use this item.");
                     }

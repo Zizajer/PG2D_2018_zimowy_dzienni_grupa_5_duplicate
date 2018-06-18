@@ -338,7 +338,7 @@ namespace Dungeon_Crawler
 
         public virtual void UseItem(int i)
         {
-            if (Inventory[i] is UsableItem UsableItem)
+            if (Inventory[i] is IUsableItem UsableItem)
             {
                 if (UsableItem.RemainingUsages > 0)
                 {
@@ -388,7 +388,7 @@ namespace Dungeon_Crawler
         {
             foreach (Item Item in Inventory)
             {
-                if (Item is UpdatableItem UpdatableItem)
+                if (Item is IUpdatableItem UpdatableItem)
                 {
                     UpdatableItem.Update(gameTime, this);
                 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Dungeon_Crawler
 {
-    public class DokerCharm : UpdatableItem
+    public class DokerCharm : Item, IUpdatableItem
     {
         public DokerCharm(ContentManager content, Vector2 position) : base(content, position)
         {
@@ -27,7 +27,7 @@ namespace Dungeon_Crawler
             TextureName = "dokerCharm";
             LoadTexture(content);
         }
-        public override void Update(GameTime gameTime, Character character)
+        public void Update(GameTime gameTime, Character character)
         {
             if (character.CurrentHealthPercent < 30)
             {

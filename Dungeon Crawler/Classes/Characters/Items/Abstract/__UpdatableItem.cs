@@ -6,8 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dungeon_Crawler
+namespace Dungeon_Crawler.Unused
 {
+    [Obsolete]
     public abstract class UpdatableItem : Item
     {
         public UpdatableItem(ContentManager content, Vector2 position) : base(content, position) { }

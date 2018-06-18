@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace Dungeon_Crawler
 {
-    public class SmallHealthPotion : UsableItem
+    public class SmallHealthPotion : Item, IUsableItem
     {
+        public int RemainingUsages { get; set; }
         float healthGained;
 
         public SmallHealthPotion(ContentManager content, Vector2 position) : base(content, position)
@@ -32,7 +33,7 @@ namespace Dungeon_Crawler
 
             
         }
-        public override void Use(Character owner)
+        public void Use(Character owner)
         {
             if (owner.CurrentHealth == owner.Health)
             {

@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 
 namespace Dungeon_Crawler
 {
-    public class InvisibilityPotion : UsableItem
+    public class InvisibilityPotion : Item, IUsableItem
     {
+        public int RemainingUsages { get; set; }
+
         public InvisibilityPotion(ContentManager content, Vector2 position) : base(content, position)
         {
             Initialize(content);
@@ -27,7 +29,7 @@ namespace Dungeon_Crawler
             TextureName = "invisPotion";
             LoadTexture(content);
         }
-        public override void Use(Character owner)
+        public void Use(Character owner)
         {
             Player p = (Player)owner;
             p.isRangerInvisible = true;

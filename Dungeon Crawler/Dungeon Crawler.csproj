@@ -78,9 +78,14 @@
     <Compile Include="Classes\Characters\Bosses\DemonOak.cs" />
     <Compile Include="Classes\Characters\Character.cs" />
     <Compile Include="Classes\Characters\Items\Abstract\Item.cs" />
-    <Compile Include="Classes\Characters\Items\Abstract\UpdatableItem.cs" />
-    <Compile Include="Classes\Characters\Items\Abstract\UsableItem.cs" />
+    <Compile Include="Classes\Characters\Items\Abstract\__UpdatableItem.cs" />
+    <Compile Include="Classes\Characters\Items\Abstract\__UsableItem.cs" />
     <Compile Include="Classes\Characters\Items\DokerCharm.cs" />
+    <Compile Include="Classes\Characters\Items\FullHPPotion.cs" />
+    <Compile Include="Classes\Characters\Items\Interface\IItem.cs" />
+    <Compile Include="Classes\Characters\Items\Interface\IUpdatableItem.cs" />
+    <Compile Include="Classes\Characters\Items\Interface\IUsableItem.cs" />
+    <Compile Include="Classes\Characters\Items\Interface\IUsableUpdatableItem.cs" />
     <Compile Include="Classes\Characters\Items\InvisibilityPotion.cs" />
     <Compile Include="Classes\Characters\Items\Shield2.cs" />
     <Compile Include="Classes\Characters\Items\SmallResourcePotion.cs" />

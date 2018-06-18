@@ -6,8 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dungeon_Crawler
+namespace Dungeon_Crawler.Unused
 {
+    [Obsolete]
     public abstract class UsableItem : Item
     {
         public int RemainingUsages { get; set; } = 1;

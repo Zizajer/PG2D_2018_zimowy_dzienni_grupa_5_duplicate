@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Dungeon_Crawler
 {
-    public abstract class Item : Sprite
+    public abstract class Item : Sprite, IItem
     {
         public string Name { get; set; }
         public string Description { get; set; }

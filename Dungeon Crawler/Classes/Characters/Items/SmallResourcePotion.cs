@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace Dungeon_Crawler
 {
-    public class SmallResourcePotion : UsableItem
+    public class SmallResourcePotion : Item, IUsableItem
     {
+        public int RemainingUsages { get; set; }
         float resource;
 
         public SmallResourcePotion(ContentManager content, Vector2 position) : base(content, position)
@@ -32,7 +33,7 @@ namespace Dungeon_Crawler
 
             
         }
-        public override void Use(Character owner)
+        public void Use(Character owner)
         {
             Player player = (Player)owner;
             if (player.CurrentResource == player.Resource)
