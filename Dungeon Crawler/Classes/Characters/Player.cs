@@ -34,7 +34,6 @@ namespace Dungeon_Crawler
         public KeyboardState pastKey10; //Q EXAMINE SELECTED ITEM
         public KeyboardState pastKey11; //P FIRE EXTUINGISHER
         public KeyboardState pastKey12; //` Tilde (this shit above tab) stats toggle
-        public KeyboardState pastKey13; //O
 
         public short SelectedItem = -1; // -1 == No item in inventory yet
         public int inventoryPickUpLimit = 5;
@@ -278,12 +277,12 @@ namespace Dungeon_Crawler
 
         private void ToggleStatsAllocationMenu()
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.O) && pastKey13.IsKeyUp(Keys.O))
+            if (Keyboard.GetState().IsKeyDown(Keys.O) && Global.pastKey13.IsKeyUp(Keys.O))
             {
                 Global.IsInStatsMenu = !Global.IsInStatsMenu;
             }
 
-            pastKey13 = Keyboard.GetState();
+            Global.pastKey13 = Keyboard.GetState();
         }
 
         public void CoreAbility(Level level)

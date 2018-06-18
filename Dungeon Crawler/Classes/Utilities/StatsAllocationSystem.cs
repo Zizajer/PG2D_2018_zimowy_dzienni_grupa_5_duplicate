@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Dungeon_Crawler
 {
@@ -10,7 +11,7 @@ namespace Dungeon_Crawler
     {
         private Texture2D button;
         private Texture2D bigButton;
-        private SpriteFont buttonFont;
+        private SpriteFont font;
         private LevelManager lm;
 
         private List<Label> labelList;
@@ -42,7 +43,7 @@ namespace Dungeon_Crawler
             this.lm = lm;
             button = Content.Load<Texture2D>("Controls/smallButton");
             bigButton = Content.Load<Texture2D>("Controls/button");
-            buttonFont = Content.Load<SpriteFont>("fonts/Chiller");
+            font = Content.Load<SpriteFont>("fonts/Chiller");
             addLabels();
             addButtons();
         }
@@ -60,7 +61,7 @@ namespace Dungeon_Crawler
             defenseLabel.Text = "Defense: " + lm.player.Defense;
             spdefenseLabel.Text = "SpDefense: " + lm.player.SpDefense;
 
-            //ToggleStatsAllocationMenu();
+            ToggleStatsAllocationMenu();
             if (pointsToAllocate > 0) { 
                 foreach (Button button in buttonList)
                     button.Update(gameTime);
@@ -74,7 +75,7 @@ namespace Dungeon_Crawler
 
             spriteBatch.Begin();
 
-            spriteBatch.DrawString(buttonFont, "Stats allocation menu", new Vector2(550, 10), Color.Black);
+            spriteBatch.DrawString(font, "Stats allocation menu", new Vector2(480, 10), Color.Black);
 
             foreach (Label label in labelList)
             {
@@ -93,27 +94,27 @@ namespace Dungeon_Crawler
             spriteBatch.End();
 
         }
-        /*
+        
         private void ToggleStatsAllocationMenu()
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.O) && pastKey.IsKeyUp(Keys.O))
+            if (Keyboard.GetState().IsKeyDown(Keys.O) &&  Global.pastKey13.IsKeyUp(Keys.O))
             {
                 Global.IsInStatsMenu = !Global.IsInStatsMenu;
             }
 
-            pastKey = Keyboard.GetState();
+             Global.pastKey13 = Keyboard.GetState();
         }
-        */
+        
         private void addLabels()
         {
-            pointsLabel = new Label(buttonFont, "", new Vector2(600, 100));
-            pointsToAllocateLabel = new Label(buttonFont, "", new Vector2(600, 150));
+            pointsLabel = new Label(font, "", new Vector2(500, 100));
+            pointsToAllocateLabel = new Label(font, "", new Vector2(500, 150));
 
-            healthLabel = new Label(buttonFont, "", new Vector2(450, 250));
-            attackLabel = new Label(buttonFont, "", new Vector2(450, 300));
-            spattackLabel = new Label(buttonFont, "", new Vector2(450, 350));
-            defenseLabel = new Label(buttonFont, "", new Vector2(450, 400));
-            spdefenseLabel = new Label(buttonFont, "", new Vector2(450, 450));
+            healthLabel = new Label(font, "", new Vector2(450, 250));
+            attackLabel = new Label(font, "", new Vector2(450, 300));
+            spattackLabel = new Label(font, "", new Vector2(450, 350));
+            defenseLabel = new Label(font, "", new Vector2(450, 400));
+            spdefenseLabel = new Label(font, "", new Vector2(450, 450));
 
             labelList = new List<Label>()
             {
@@ -129,42 +130,42 @@ namespace Dungeon_Crawler
 
         private void addButtons()
         {
-            addHealthButton = new Button(button, buttonFont)
+            addHealthButton = new Button(button, font)
             {
                 Position = new Vector2(700, 240),
                 Text = "+",
             };
             addHealthButton.Click += addHealth_Click;
 
-            addAttackButton = new Button(button, buttonFont)
+            addAttackButton = new Button(button, font)
             {
                 Position = new Vector2(700, 290),
                 Text = "+",
             };
             addAttackButton.Click += addAttack_Click;
 
-            addSpAttackButton = new Button(button, buttonFont)
+            addSpAttackButton = new Button(button, font)
             {
                 Position = new Vector2(700, 340),
                 Text = "+",
             };
             addSpAttackButton.Click += addSpAttack_Click;
 
-            addDefenseButton = new Button(button, buttonFont)
+            addDefenseButton = new Button(button, font)
             {
                 Position = new Vector2(700, 390),
                 Text = "+",
             };
             addDefenseButton.Click += addDefense_Click;
 
-            addSpDefenseButton = new Button(button, buttonFont)
+            addSpDefenseButton = new Button(button, font)
             {
                 Position = new Vector2(700, 440),
                 Text = "+",
             };
             addSpDefenseButton.Click += addSpDefense_Click;
 
-            quitButton = new Button(bigButton, buttonFont)
+            quitButton = new Button(bigButton, font)
             {
                 Position = new Vector2(575, 625),
                 Text = "Quit",
