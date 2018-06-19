@@ -37,7 +37,7 @@ namespace Dungeon_Crawler
 
             var magButton = new Button(button, buttonFont)
             {
-                Position = new Vector2(50, 350),
+                Position = new Vector2(300, 350),
                 Text = "Mag",
             };
 
@@ -45,7 +45,7 @@ namespace Dungeon_Crawler
 
             var warriorButton = new Button(button, buttonFont)
             {
-                Position = new Vector2(575, 300),
+                Position = new Vector2(575, 350),
                 Text = "Warrior",
             };
 
@@ -53,7 +53,7 @@ namespace Dungeon_Crawler
 
             var rangerButton = new Button(button, buttonFont)
             {
-                Position = new Vector2(1100, 350),
+                Position = new Vector2(850, 350),
                 Text = "Ranger",
             };
 
@@ -296,11 +296,13 @@ namespace Dungeon_Crawler
 
             spriteBatch.DrawString(buttonFont, "Choose Character", new Vector2(550, 10), Color.Black);
 
-            spriteBatch.Draw(mag, new Rectangle(50, 50, mag.Width, mag.Height), Color.White);
+            int width = 200, height = 300;
 
-            spriteBatch.Draw(warrior, new Rectangle(575, 50, warrior.Width, warrior.Height), Color.White);
+            spriteBatch.Draw(mag, new Rectangle(275, 50, width, height), Color.White);
 
-            spriteBatch.Draw(ranger, new Rectangle(1100, 50, ranger.Width, ranger.Height), Color.White);
+            spriteBatch.Draw(warrior, new Rectangle(550, 50, width, height), Color.White);
+
+            spriteBatch.Draw(ranger, new Rectangle(825, 50, width, height), Color.White);
 
             foreach (Button button in heroChooseButtons)
             {
