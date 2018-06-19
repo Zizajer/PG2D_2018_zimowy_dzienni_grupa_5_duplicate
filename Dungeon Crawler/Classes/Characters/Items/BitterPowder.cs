@@ -11,7 +11,7 @@ namespace Dungeon_Crawler
     public class BitterPowder : Item, IUsableUpdatableItem
     {
         public bool IsCurrentlyInUse { get; private set; }
-        public bool HasRecentUsageFinished { get; set; }
+        public bool HasRecentUsageJustFinished { get; set; }
         public int RemainingUsages { get; set; }
 
         private float Timer;
@@ -50,7 +50,7 @@ namespace Dungeon_Crawler
             TotalEffectTime = 10;
 
             IsCurrentlyInUse = true;
-            HasRecentUsageFinished = false;
+            HasRecentUsageJustFinished = false;
         }
 
         public void Update(GameTime gameTime, Character owner)
@@ -77,7 +77,7 @@ namespace Dungeon_Crawler
                 }
 
                 IsCurrentlyInUse = false;
-                HasRecentUsageFinished = true;
+                HasRecentUsageJustFinished = true;
             }
         }
     }

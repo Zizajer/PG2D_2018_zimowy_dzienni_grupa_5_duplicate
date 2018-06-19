@@ -11,7 +11,7 @@ namespace Dungeon_Crawler
     public class FullHealthPotion : Item, IUsableUpdatableItem
     {
         public bool IsCurrentlyInUse { get; private set; }
-        public bool HasRecentUsageFinished { get; set; }
+        public bool HasRecentUsageJustFinished { get; set; }
         public int RemainingUsages { get; set; }
 
         private float GivenHealth;
@@ -39,7 +39,7 @@ namespace Dungeon_Crawler
         public void Use(Character owner)
         {
             IsCurrentlyInUse = true;
-            HasRecentUsageFinished = false;
+            HasRecentUsageJustFinished = false;
         }
 
         public void Update(GameTime gameTime, Character character)
@@ -54,7 +54,7 @@ namespace Dungeon_Crawler
             else
             {
                 IsCurrentlyInUse = false;
-                HasRecentUsageFinished = true;
+                HasRecentUsageJustFinished = true;
             }
         }
     }
