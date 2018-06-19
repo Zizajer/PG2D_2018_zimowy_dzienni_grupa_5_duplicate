@@ -63,7 +63,7 @@ namespace Dungeon_Crawler
                 attacker.Experience = attacker.Experience + defender.Experience;
                 if(defender is Player)
                 {
-                    Global.GameState = false;
+                    Global.GameStates[0] = false;
                 }
             }
             if (IsCritical)

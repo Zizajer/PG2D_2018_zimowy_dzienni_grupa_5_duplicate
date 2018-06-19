@@ -278,6 +278,8 @@ namespace Dungeon_Crawler
 
         public void Update(GameTime gameTime)
         {
+            if (lm.player.CurrentHealth < 0)
+                Global.GameStates[0] = false;
             this.gameTime += gameTime.ElapsedGameTime.TotalSeconds;
 
             if (lastMsgGametime + afterHowLongClearHighestMsg < this.gameTime)

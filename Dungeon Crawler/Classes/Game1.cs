@@ -38,8 +38,9 @@ namespace Dungeon_Crawler
             IsMouseVisible = true;
             Global.Camera.setViewports(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height);
             Global.Camera.setZoom(1.5f);
-            Global.GameState = true;
-            Global.IsGameStarted = false;
+            Global.GameStates = new bool[5];
+            Array.Clear(Global.GameStates, 0, Global.GameStates.Length);
+            Global.GameStates[0] = true;
             base.Initialize();
         }
 
@@ -74,8 +75,9 @@ namespace Dungeon_Crawler
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (Global.IsGameStarted) { 
-                if (Global.GameState == true)
+            if (Global.GameStates[1])
+            {
+                if (Global.GameStates[0] == true)
                 {
                     Global.Camera.Move();
 
@@ -95,15 +97,22 @@ namespace Dungeon_Crawler
             }
             else
             {
-                Global.DrawManager.UpdateMainMenu(gameTime);
+                if (Global.GameStates[2] == true)
+                    Global.DrawManager.UpdateChooseHeroMenu(gameTime);
+                else if (Global.GameStates[3] == true)
+                    Global.DrawManager.UpdateHelpMenu(gameTime);
+                else if (Global.GameStates[4] == true)
+                    Global.DrawManager.UpdateAboutMenu(gameTime);
+                else
+                    Global.DrawManager.UpdateMainMenu(gameTime);
             }
-            
+
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            if (Global.IsGameStarted)
+            if (Global.GameStates[1])
             {
                 GraphicsDevice.SetRenderTarget(lightsTarget);
                 GraphicsDevice.Clear(Color.Black);
@@ -139,8 +148,17 @@ namespace Dungeon_Crawler
                 Global.Gui.Draw(spriteBatch, gameTime);
                 spriteBatch.End();
             }
-            else {
-                Global.DrawManager.DrawMainMenu(spriteBatch, GraphicsDevice, gameTime);
+            else
+            {
+                if (Global.GameStates[2] == true)
+                    Global.DrawManager.DrawChooseHeroMenu(spriteBatch, GraphicsDevice, gameTime);
+                else if (Global.GameStates[3] == true)
+                    Global.DrawManager.DrawHelpMenu(spriteBatch, GraphicsDevice, gameTime);
+                else if (Global.GameStates[4] == true)
+                    Global.DrawManager.DrawAboutMenu(spriteBatch, GraphicsDevice, gameTime);
+                else
+                    Global.DrawManager.DrawMainMenu(spriteBatch, GraphicsDevice, gameTime);
+
             }
 
             base.Draw(gameTime);
