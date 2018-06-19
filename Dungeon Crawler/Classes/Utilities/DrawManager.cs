@@ -22,6 +22,7 @@ namespace Dungeon_Crawler
         private List<Button> heroChooseButtons;
         private List<Button> MainMenuButtons;
         private List<Button> HelpMenuButtons;
+        private List<Button> AboutMenuButtons;
 
         public DrawManager(ContentManager Content, Game1 game)
         {
@@ -114,22 +115,41 @@ namespace Dungeon_Crawler
                     quitGameButton,
                 };
 
-            var goBackButton = new Button(button, buttonFont)
+            var goBackFromHelpButton = new Button(button, buttonFont)
             {
                 Position = new Vector2(575, 725),
                 Text = "Go back",
             };
 
-            goBackButton.Click += GoBackButton_Click;
+            goBackFromHelpButton.Click += goBackFromHelpButton_Click;
 
             HelpMenuButtons = new List<Button>()
                 {
-                    goBackButton,
+                    goBackFromHelpButton,
                 };
+
+            var goBackFromAboutButton = new Button(button, buttonFont)
+            {
+                Position = new Vector2(575, 725),
+                Text = "Go back",
+            };
+
+            goBackFromAboutButton.Click += GoBackFromAboutButton_Click;
+
+            AboutMenuButtons = new List<Button>()
+                {
+                    goBackFromAboutButton,
+                };
+
 
         }
 
-        private void GoBackButton_Click(object sender, EventArgs e)
+        private void GoBackFromAboutButton_Click(object sender, EventArgs e)
+        {
+            Global.GameStates[4] = false;
+        }
+
+        private void goBackFromHelpButton_Click(object sender, EventArgs e)
         {
             Global.GameStates[3] = false;
         }
@@ -141,7 +161,7 @@ namespace Dungeon_Crawler
 
         private void AboutGameButton_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Global.GameStates[4] = true;
         }
 
         private void HelpButton_Click(object sender, EventArgs e)
@@ -199,6 +219,12 @@ namespace Dungeon_Crawler
                 button.Update(gameTime);
         }
 
+        public void UpdateAboutMenu(GameTime gameTime)
+        {
+            foreach (Button button in AboutMenuButtons)
+                button.Update(gameTime);
+        }
+
         public void UpdateChooseHeroMenu(GameTime gameTime)
         {
             foreach (Button button in heroChooseButtons)
@@ -233,6 +259,27 @@ namespace Dungeon_Crawler
             spriteBatch.Draw(controls, new Rectangle(0, 0, controls.Width, controls.Height), Color.White);
 
             foreach (Button button in HelpMenuButtons)
+            {
+                button.Draw(gameTime, spriteBatch);
+            }
+
+            spriteBatch.End();
+
+        }
+
+        public void DrawAboutMenu(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, GameTime gameTime)
+        {
+            graphicsDevice.Clear(Color.White);
+
+            spriteBatch.Begin();
+
+            spriteBatch.DrawString(buttonFont, "Cezary Witkowski - Developer", new Vector2(575, 405), Color.Black);
+
+            spriteBatch.DrawString(buttonFont, "Marcin Kapelan - Developer", new Vector2(575, 365), Color.Black);
+
+            spriteBatch.DrawString(buttonFont, "Piotr Sadza - Grafik/Dzwiekowiec", new Vector2(575, 325), Color.Black);
+
+            foreach (Button button in AboutMenuButtons)
             {
                 button.Draw(gameTime, spriteBatch);
             }

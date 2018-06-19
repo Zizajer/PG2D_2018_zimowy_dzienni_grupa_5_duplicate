@@ -74,7 +74,8 @@ namespace Dungeon_Crawler
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (Global.GameStates[1]) { 
+            if (Global.GameStates[1])
+            {
                 if (Global.GameStates[0] == true)
                 {
                     Global.Camera.Move();
@@ -97,12 +98,14 @@ namespace Dungeon_Crawler
             {
                 if (Global.GameStates[2] == true)
                     Global.DrawManager.UpdateChooseHeroMenu(gameTime);
-                if (Global.GameStates[3] == true)
+                else if (Global.GameStates[3] == true)
                     Global.DrawManager.UpdateHelpMenu(gameTime);
+                else if (Global.GameStates[4] == true)
+                    Global.DrawManager.UpdateAboutMenu(gameTime);
                 else
                     Global.DrawManager.UpdateMainMenu(gameTime);
             }
-            
+
             base.Update(gameTime);
         }
 
@@ -141,15 +144,18 @@ namespace Dungeon_Crawler
                 Global.Gui.Draw(spriteBatch, gameTime);
                 spriteBatch.End();
             }
-            else {
-                if(Global.GameStates[2] == true)
+            else
+            {
+                if (Global.GameStates[2] == true)
                     Global.DrawManager.DrawChooseHeroMenu(spriteBatch, GraphicsDevice, gameTime);
-                if (Global.GameStates[3] == true)
+                else if (Global.GameStates[3] == true)
                     Global.DrawManager.DrawHelpMenu(spriteBatch, GraphicsDevice, gameTime);
+                else if (Global.GameStates[4] == true)
+                    Global.DrawManager.DrawAboutMenu(spriteBatch, GraphicsDevice, gameTime);
                 else
                     Global.DrawManager.DrawMainMenu(spriteBatch, GraphicsDevice, gameTime);
 
-            }   
+            }
 
             base.Draw(gameTime);
         }
