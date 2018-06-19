@@ -29,7 +29,7 @@ namespace Dungeon_Crawler
         {           
             time += gameTime.ElapsedGameTime.TotalSeconds;
 
-            Rotation += (float)( radius/100);
+            Rotation += (float)( radius/ 100);
 
             Position = new Vector2((float)(Math.Cos(time * randomFactor) * radius + centerOfRotation.X), (float)(Math.Sin(time * randomFactor) * radius + centerOfRotation.Y));
 

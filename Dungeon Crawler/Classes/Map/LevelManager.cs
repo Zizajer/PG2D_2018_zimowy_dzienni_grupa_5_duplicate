@@ -339,7 +339,7 @@ namespace Dungeon_Crawler
 
                 occupiedCells.Union(bossOccupyingCells);
 
-                float timeBetweenActions = 1.2f; //we should move that to each boss class but w/e
+                float timeBetweenActions = 0.9f; //we should move that to each boss class but w/e
                 Character tempBoss =
                     new Lich(_animationsLich, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
                     {
