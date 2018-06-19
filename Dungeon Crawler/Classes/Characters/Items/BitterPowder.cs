@@ -44,7 +44,7 @@ namespace Dungeon_Crawler
             AttackMultiplier = 2.5f;
             SpAttackMultiplier = 2.5f;
             SpeedMultiplier = 2.5f;
-            TimeBetweenActionsMultiplier = 1.5f;
+            TimeBetweenActionsMultiplier = 0.5f;
 
             ApplyEffect(owner);
             TotalEffectTime = 10;
