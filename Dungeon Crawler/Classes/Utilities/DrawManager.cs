@@ -14,10 +14,12 @@ namespace Dungeon_Crawler
         private Texture2D warrior;
         private Texture2D ranger;
         private Texture2D button;
+        private Texture2D gameLogo;
         private SpriteFont buttonFont;
         private Game1 game;
 
-        private List<Button> _gameComponents;
+        private List<Button> heroChooseButtons;
+        private List<Button> MainMenuButtons;
 
         public DrawManager(ContentManager Content, Game1 game)
         {
@@ -26,6 +28,7 @@ namespace Dungeon_Crawler
             warrior = Content.Load<Texture2D>("Arts/warrior");
             ranger = Content.Load<Texture2D>("Arts/ranger");
             button = Content.Load<Texture2D>("Controls/button");
+            gameLogo = Content.Load<Texture2D>("Arts/DungeonCrawlerLogo");
             buttonFont = Content.Load<SpriteFont>("fonts/ButtonFont");
 
             var magButton = new Button(button, buttonFont)
@@ -55,18 +58,78 @@ namespace Dungeon_Crawler
             var quitButton = new Button(button, buttonFont)
             {
                 Position = new Vector2(575, 625),
-                Text = "Quit",
+                Text = "Go Back",
             };
 
             quitButton.Click += quitButton_Click;
 
-            _gameComponents = new List<Button>()
+            heroChooseButtons = new List<Button>()
                 {
                     magButton,
                     warriorButton,
                     rangerButton,
                     quitButton,
                 };
+
+            var startGameButton = new Button(button, buttonFont)
+            {
+                Position = new Vector2(575, 500),
+                Text = "Start Game",
+            };
+
+            startGameButton.Click += StartGameButton_Click;
+
+            var helpButton = new Button(button, buttonFont)
+            {
+                Position = new Vector2(575, 575),
+                Text = "How to Play",
+            };
+
+            helpButton.Click += HelpButton_Click;
+
+            var aboutGameButton = new Button(button, buttonFont)
+            {
+                Position = new Vector2(575, 650),
+                Text = "About",
+            };
+
+            aboutGameButton.Click += AboutGameButton_Click;
+
+            var quitGameButton = new Button(button, buttonFont)
+            {
+                Position = new Vector2(575, 725),
+                Text = "Exit",
+            };
+
+            quitGameButton.Click += QuitGameButton_Click;
+
+            MainMenuButtons = new List<Button>()
+                {
+                    startGameButton,
+                    helpButton,
+                    aboutGameButton,
+                    quitGameButton,
+                };
+        }
+
+        private void QuitGameButton_Click(object sender, EventArgs e)
+        {
+            game.Exit();
+        }
+
+        private void AboutGameButton_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void HelpButton_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void StartGameButton_Click(object sender, EventArgs e)
+        {
+            Global.GameStates[2] = true;
         }
 
         void rangerButton_Click(object sender, EventArgs e)
@@ -96,20 +159,45 @@ namespace Dungeon_Crawler
 
         void quitButton_Click(object sender, EventArgs e)
         {
-            game.Exit();
+            Global.GameStates[2] = false;
         }
 
 
 
         public void UpdateMainMenu(GameTime gameTime)
         {
-            foreach (Button button in _gameComponents)
+            foreach (Button button in MainMenuButtons)
                 button.Update(gameTime);
         }
 
-        public void DrawMainMenu(SpriteBatch spriteBatch, GraphicsDevice GraphicsDevice, GameTime gameTime)
+        public void UpdateChooseHeroMenu(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            foreach (Button button in heroChooseButtons)
+                button.Update(gameTime);
+        }
+
+        public void DrawMainMenu(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, GameTime gameTime)
+        {
+            graphicsDevice.Clear(Color.White);
+
+            spriteBatch.Begin();
+
+            spriteBatch.Draw(gameLogo, new Rectangle(400, 0, gameLogo.Width/2, gameLogo.Height/2), Color.White);
+
+           // spriteBatch.DrawString(buttonFont, "Dungeon Crawler", new Vector2(575, 405), Color.Black);
+
+            foreach (Button button in MainMenuButtons)
+            {
+                button.Draw(gameTime, spriteBatch);
+            }
+
+            spriteBatch.End();
+
+        }
+
+        public void DrawChooseHeroMenu(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, GameTime gameTime)
+        {
+            graphicsDevice.Clear(Color.White);
 
             spriteBatch.Begin();
 
@@ -121,7 +209,7 @@ namespace Dungeon_Crawler
 
             spriteBatch.Draw(ranger, new Rectangle(1100, 50, ranger.Width, ranger.Height), Color.White);
 
-            foreach (Button button in _gameComponents)
+            foreach (Button button in heroChooseButtons)
             {
                 button.Draw(gameTime, spriteBatch);
             }

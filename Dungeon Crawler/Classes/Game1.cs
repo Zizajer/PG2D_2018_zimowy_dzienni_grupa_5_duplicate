@@ -37,7 +37,7 @@ namespace Dungeon_Crawler
             IsMouseVisible = true;
             Global.Camera.setViewports(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height);
             Global.Camera.setZoom(1.5f);
-            Global.GameStates = new bool[2];
+            Global.GameStates = new bool[5];
             Array.Clear(Global.GameStates, 0, Global.GameStates.Length);
             Global.GameStates[0] = true;
             base.Initialize();
@@ -95,7 +95,10 @@ namespace Dungeon_Crawler
             }
             else
             {
-                Global.DrawManager.UpdateMainMenu(gameTime);
+                if (Global.GameStates[2] == true)
+                    Global.DrawManager.UpdateChooseHeroMenu(gameTime);
+                else
+                    Global.DrawManager.UpdateMainMenu(gameTime);
             }
             
             base.Update(gameTime);
@@ -137,8 +140,12 @@ namespace Dungeon_Crawler
                 spriteBatch.End();
             }
             else {
-                Global.DrawManager.DrawMainMenu(spriteBatch, GraphicsDevice, gameTime);
-            }
+                if(Global.GameStates[2] == true)
+                    Global.DrawManager.DrawChooseHeroMenu(spriteBatch, GraphicsDevice, gameTime);
+                else
+                    Global.DrawManager.DrawMainMenu(spriteBatch, GraphicsDevice, gameTime);
+
+            }   
 
             base.Draw(gameTime);
         }
