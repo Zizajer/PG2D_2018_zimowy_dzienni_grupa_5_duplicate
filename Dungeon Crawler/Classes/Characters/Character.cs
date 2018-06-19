@@ -418,9 +418,10 @@ namespace Dungeon_Crawler
                     {
                         UsableUpdatableItem.Update(gameTime, this);
                     }
-                    if (UsableUpdatableItem.HasRecentUsageFinished)
+                    else if (UsableUpdatableItem.HasRecentUsageFinished)
                     {
                         UsableUpdatableItem.RemainingUsages--;
+                        UsableUpdatableItem.HasRecentUsageFinished = false;
                         if (UsableUpdatableItem.RemainingUsages == 0)
                         {
                             DeleteItem((Item)UsableUpdatableItem);

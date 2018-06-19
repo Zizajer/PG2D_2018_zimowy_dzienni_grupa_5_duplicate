@@ -11,7 +11,7 @@ namespace Dungeon_Crawler
     public class FullHealthPotion : Item, IUsableUpdatableItem
     {
         public bool IsCurrentlyInUse { get; private set; }
-        public bool HasRecentUsageFinished { get; private set; }
+        public bool HasRecentUsageFinished { get; set; }
         public int RemainingUsages { get; set; }
 
         private float GivenHealth;

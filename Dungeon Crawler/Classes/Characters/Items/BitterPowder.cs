@@ -11,7 +11,7 @@ namespace Dungeon_Crawler
     public class BitterPowder : Item, IUsableUpdatableItem
     {
         public bool IsCurrentlyInUse { get; private set; }
-        public bool HasRecentUsageFinished { get; private set; }
+        public bool HasRecentUsageFinished { get; set; }
         public int RemainingUsages { get; set; }
 
         private float Timer;
@@ -61,6 +61,7 @@ namespace Dungeon_Crawler
             }
             else
             {
+                Timer = 0;
                 RevertEffect(owner);
 
                 DefenseMultiplier = 1f;
@@ -70,9 +71,9 @@ namespace Dungeon_Crawler
                 SpeedMultiplier = 1f;
                 TimeBetweenActionsMultiplier = 1f;
 
-                if (Global.random.Next(0, 1) == 0)
+                if (Global.random.Next(0, 2) == 0)
                 {
-                    owner.CurrentHealthPercent -= 50;
+                    owner.CurrentHealthPercent -= 35;
                 }
 
                 IsCurrentlyInUse = false;
