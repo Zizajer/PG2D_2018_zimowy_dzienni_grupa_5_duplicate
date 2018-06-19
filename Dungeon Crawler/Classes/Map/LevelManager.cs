@@ -116,7 +116,6 @@ namespace Dungeon_Crawler
                 };
             allItemsNames = new List<String>
             {
-                /*
                 "Wand",
                 "HealthIncreasingPotion",
                 "InvisibilityPotion",
@@ -129,7 +128,6 @@ namespace Dungeon_Crawler
                 "Axe1",
                 "Gloves",
                 "Trainers",
-                */
                 "DokerCharm",
                 "FullHealthPotion",
                 "BitterPowder"

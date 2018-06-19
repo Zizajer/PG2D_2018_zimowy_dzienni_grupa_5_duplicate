@@ -149,9 +149,9 @@ namespace Dungeon_Crawler
         private void DrawStats(SpriteFont font, int tempX, int tempY, float scale, SpriteBatch spriteBatch)
         {
             Player p = lm.player;
-            string tempString = "Stats:\n" + "Level: " + p.Level+ "\n"+"Exp: "+p.Experience + "\n" + "Attack: " + p.Attack + "\n" + "Magic Attack: " + p.SpAttack + "\n" + "Defense: " + p.Defense + "\n" + "Magic Defense: " + p.SpDefense + "\n" + "Speed: " + Math.Round(p.Speed,1) + "\n" + "Attack Speed: " + Math.Round(p.timeBetweenActions,1) + "\n";
+            string tempString = "Stats:\n" + "Level: " + p.Level+ "\n"+"Exp: "+p.Experience + "\n" + "Attack: " + p.Attack + "\n" + "Magic Attack: " + p.SpAttack + "\n" + "Defense: " + p.Defense + "\n" + "Magic Defense: " + p.SpDefense + "\n" + "Speed: " + Math.Round(p.Speed,2) + "\n" + "Attack Speed: " + Math.Round(p.timeBetweenActions,2) + "\n";
             tempX += (int)(Global.Camera.ViewportWorldBoundry().Width) - (int)Math.Ceiling(font.MeasureString(tempString).Length()* 0.7f * (1 / scale));
-            tempY += (int)(Global.Camera.ViewportWorldBoundry().Height)-130;
+            tempY += (int)(Global.Camera.ViewportWorldBoundry().Height-350 * 0.7f * (1 / scale));
             spriteBatch.DrawString(font, tempString, new Vector2(tempX, tempY), Color.White, 0.0f, Vector2.One, 0.7f * (1 / scale), SpriteEffects.None, Layers.Text);
         }
 

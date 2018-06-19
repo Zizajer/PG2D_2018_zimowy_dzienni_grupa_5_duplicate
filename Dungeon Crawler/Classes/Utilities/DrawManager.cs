@@ -9,7 +9,6 @@ namespace Dungeon_Crawler
 {
     public class DrawManager
     {
-
         private Texture2D mag;
         private Texture2D warrior;
         private Texture2D ranger;

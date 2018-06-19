@@ -106,6 +106,7 @@
     <Compile Include="Classes\Characters\Player Classes\Mage.cs" />
     <Compile Include="Classes\Characters\Player Classes\Warrior.cs" />
     <Compile Include="Classes\Characters\RangedEnemies\Spider.cs" />
+    <Compile Include="Classes\Controls\Label.cs" />
     <Compile Include="Classes\Controls\Button.cs" />
     <Compile Include="Classes\Map\RotatingPiercingProjectille.cs" />
     <Compile Include="Classes\Map\PiercingProjectille.cs" />
@@ -113,6 +114,7 @@
     <Compile Include="Classes\Map\Projectile.cs" />
     <Compile Include="Classes\Map\Sprite.cs" />
     <Compile Include="Classes\Map\Portal.cs" />
+    <Compile Include="Classes\Utilities\StatsAllocationSystem.cs" />
     <Compile Include="Classes\Utilities\DrawManager.cs" />
     <Compile Include="Classes\Utilities\SoundManager.cs" />
     <Compile Include="Classes\Utilities\Collision.cs" />

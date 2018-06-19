@@ -61,6 +61,18 @@
 /processorParam:TextureFormat=Color
 /build:Controls/button.png
 
+#begin Controls/smallButton.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Controls/smallButton.png
+
 #begin enemy/BlackKnight/WalkingDown.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -415,6 +427,13 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:fonts/ButtonFont.spritefont
+
+#begin fonts/Chiller.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:fonts/Chiller.spritefont
 
 #begin fonts/Default.spritefont
 /importer:FontDescriptionImporter
@@ -1221,10 +1240,4 @@
 /processorParam:TextureFormat=Color
 /build:Arts/Controls.png
 
-#begin fonts/Chiller.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:fonts/Chiller.spritefont
 
