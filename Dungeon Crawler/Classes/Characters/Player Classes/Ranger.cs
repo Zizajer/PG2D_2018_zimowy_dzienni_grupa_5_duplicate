@@ -7,7 +7,9 @@ namespace Dungeon_Crawler
     class Ranger : Player
     {
         int invisibilityResourceCost = 10;
-
+        private int Ability1LevelReq = 3;
+        private int Ability2LevelReq = 5;
+        private int Ability3LevelReq = 7;
         public Ranger(ContentManager content, int cellSize, int playerCurrentMapLevel, string name) : base(content, cellSize, playerCurrentMapLevel, name)
         {
         }
@@ -102,6 +104,12 @@ namespace Dungeon_Crawler
         {
             if (Keyboard.GetState().IsKeyDown(Keys.D1) && pastKey.IsKeyUp(Keys.D1))
             {
+                if (Global.hardMode && Level < Ability1LevelReq)
+                {
+                    pastKey = Keyboard.GetState();
+                    Global.Gui.WriteToConsole("You need level " + Ability1LevelReq + " to use that ability");
+                    return;
+                }
                 if (isRangerInvisible)
                 {
                     isRangerInvisible = false;
@@ -127,6 +135,12 @@ namespace Dungeon_Crawler
         {
             if (Keyboard.GetState().IsKeyDown(Keys.D2) && pastKey2.IsKeyUp(Keys.D2))
             {
+                if (Global.hardMode && Level < Ability2LevelReq)
+                {
+                    pastKey2 = Keyboard.GetState();
+                    Global.Gui.WriteToConsole("You need level " + Ability2LevelReq + " to use that ability");
+                    return;
+                }
                 if (CurrentResource >= ProjectileAttack3.ManaCost)
                 {
                     ProjectileAttack3.Use(this, Position);
@@ -143,6 +157,12 @@ namespace Dungeon_Crawler
         {
             if (Keyboard.GetState().IsKeyDown(Keys.D3) && pastKey3.IsKeyUp(Keys.D3))
             {
+                if (Global.hardMode && Level < Ability3LevelReq)
+                {
+                    pastKey3 = Keyboard.GetState();
+                    Global.Gui.WriteToConsole("You need level " + Ability3LevelReq + " to use that ability");
+                    return;
+                }
                 if (CurrentResource >= ProjectileAttack4.ManaCost)
                 {
                     MouseState mouse = Mouse.GetState();

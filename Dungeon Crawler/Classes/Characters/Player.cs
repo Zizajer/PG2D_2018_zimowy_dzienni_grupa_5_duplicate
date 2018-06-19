@@ -242,6 +242,7 @@ namespace Dungeon_Crawler
                 Abillity1(level);
                 Abillity2(level);
                 Abillity3(level);
+
                 CoreAbility(level);
 
                 ToggleStats();
