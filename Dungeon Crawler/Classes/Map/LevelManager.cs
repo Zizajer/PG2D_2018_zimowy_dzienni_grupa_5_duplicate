@@ -247,8 +247,8 @@ namespace Dungeon_Crawler
 
         public void CreateBossLevel()
         {
-            Map map = CreateMap(15, 11, 50, 10, 10);
-            var grid = new Grid(15, 11, 1.0f);
+            Map map = CreateBossMap(13, 13);
+            var grid = new Grid(13, 13, 1.0f);
 
             List<Cell> occupiedCells = new List<Cell>();
             
@@ -524,6 +524,14 @@ namespace Dungeon_Crawler
         {
             IMapCreationStrategy<Map> mapCreationStrategy =
                 new RandomRoomsMapCreationStrategy<Map>(mapWidth, mapHeight, roomCount, roomWidth, roomHeight);
+            Map map = Map.Create(mapCreationStrategy);
+            return map;
+        }
+
+        private Map CreateBossMap(int mapWidth, int mapHeight)
+        {
+            IMapCreationStrategy<Map> mapCreationStrategy =
+                new BorderOnlyMapCreationStrategy<Map>(mapWidth, mapHeight);
             Map map = Map.Create(mapCreationStrategy);
             return map;
         }
