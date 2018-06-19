@@ -37,8 +37,9 @@ namespace Dungeon_Crawler
             IsMouseVisible = true;
             Global.Camera.setViewports(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height);
             Global.Camera.setZoom(1.5f);
-            Global.GameState = true;
-            Global.IsGameStarted = false;
+            Global.GameStates = new bool[2];
+            Array.Clear(Global.GameStates, 0, Global.GameStates.Length);
+            Global.GameStates[0] = true;
             base.Initialize();
         }
 
@@ -73,8 +74,8 @@ namespace Dungeon_Crawler
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (Global.IsGameStarted) { 
-                if (Global.GameState == true)
+            if (Global.GameStates[1]) { 
+                if (Global.GameStates[0] == true)
                 {
                     Global.Camera.Move();
 
@@ -102,7 +103,7 @@ namespace Dungeon_Crawler
 
         protected override void Draw(GameTime gameTime)
         {
-            if (Global.IsGameStarted)
+            if (Global.GameStates[1])
             {
                 GraphicsDevice.SetRenderTarget(lightsTarget);
                 GraphicsDevice.Clear(Color.Black);

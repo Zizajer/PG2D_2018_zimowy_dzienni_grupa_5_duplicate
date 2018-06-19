@@ -75,7 +75,7 @@ namespace Dungeon_Crawler
             Global.playerClass = ("Ranger");
             Global.levelmanager.setPlayer("Ranger");
             Global.CombatManager.setPLayer();
-            Global.IsGameStarted = true;
+            Global.GameStates[1] = true;
         }
 
         void warriorButton_Click(object sender, EventArgs e)
@@ -83,7 +83,7 @@ namespace Dungeon_Crawler
             Global.playerClass = ("Warrior");
             Global.levelmanager.setPlayer("Warrior");
             Global.CombatManager.setPLayer();
-            Global.IsGameStarted = true;
+            Global.GameStates[1] = true;
         }
 
         void magButton_Click(object sender, EventArgs e)
@@ -91,7 +91,7 @@ namespace Dungeon_Crawler
             Global.playerClass = ("Mage");
             Global.levelmanager.setPlayer("Mage");
             Global.CombatManager.setPLayer();
-            Global.IsGameStarted = true;
+            Global.GameStates[1] = true;
         }
 
         void quitButton_Click(object sender, EventArgs e)
