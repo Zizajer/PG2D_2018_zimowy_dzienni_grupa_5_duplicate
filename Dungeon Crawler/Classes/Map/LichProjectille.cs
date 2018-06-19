@@ -11,26 +11,27 @@ namespace Dungeon_Crawler
         public List<Character> wasHitByThisProjectille;
         public Vector2 centerOfRotation;
         float liveTimer;
-        float lifeValue = 5f;
-        float radius = Global.random.Next(320) + 128;
+        float lifeValue = 8f;
+        double time=10f;
+        float randomFactor;
+        float radius = Global.random.Next(250) + 128;
         public LichProjectile(IPositionTargetedAttack attack, Character attacker, Vector2 velocity, Vector2 position, Texture2D texture, float rotation, int range, float vanishDelay,Vector2 center) : base(attack, attacker, velocity, position, texture, rotation, range, vanishDelay)
         {
             centerOfRotation = center + new Vector2(320, 320);
             wasHitByThisProjectille = new List<Character>();
-
-            float Rotation = (float)Math.Atan2(centerOfRotation.X, centerOfRotation.Y) + MathHelper.PiOver2;
+            do
+            {
+                randomFactor = (float)Global.random.NextDouble()+0.7f;
+            } while (randomFactor > 1.3f);
         }
 
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {           
-            double time= gameTime.TotalGameTime.TotalSeconds;
+            time += gameTime.ElapsedGameTime.TotalSeconds;
 
-            float speed = 1f; // in radians per second, this is 1/4 of a circle per second atm
+            Rotation += (float)( radius/100);
 
-            Rotation += (float)(MathHelper.Pi / radius);
-
-            Vector2 vec2temp = new Vector2((float)(Math.Cos(time * speed) * radius + centerOfRotation.X), (float)(Math.Sin(time * speed) * radius + centerOfRotation.Y));
-            Position = vec2temp;
+            Position = new Vector2((float)(Math.Cos(time * randomFactor) * radius + centerOfRotation.X), (float)(Math.Sin(time * randomFactor) * radius + centerOfRotation.Y));
 
             liveTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -56,14 +57,22 @@ namespace Dungeon_Crawler
 
             if(liveTimer>lifeValue)
                 isMarkedToDelete = true;
-            /*
+            
             //Destroy when hit a wall
             x = (int)Math.Floor(Position.X / level.cellSize);
             y = (int)Math.Floor(Position.Y / level.cellSize);
-            if (!level.map.GetCell(x, y).IsWalkable)
-                isMarkedToDelete = true;   
+            if (x > 0 && x < level.map.Width && y > 0 && y < level.map.Height)
+            {
+                if (!level.map.GetCell(x, y).IsWalkable)
+                    isMarkedToDelete = true;
+            }
+            else
+            {
+                isMarkedToDelete = true;
+            }
+                
             
-             */
+            
         }
     }
 }

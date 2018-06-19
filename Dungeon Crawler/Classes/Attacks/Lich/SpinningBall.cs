@@ -26,11 +26,11 @@ namespace Dungeon_Crawler
         public SpinningBall(Vector2 center)
         {
             Name = "Spinning Ball";
-            Power = 150;
+            Power = 15;
             Accuracy = 80;
-            CriticalHitProbability = 15;
+            CriticalHitProbability = 5;
             FreezeProbability = 0;
-            BurnProbability = 20;
+            BurnProbability = 0;
             IsSpecial = true;
             ManaCost = 90;
 
@@ -49,10 +49,7 @@ namespace Dungeon_Crawler
                 ProjectileTexture = Global.CombatManager.levelManager.Content.Load<Texture2D>("spells/Lichball");
                 Attacker = attacker;
 
-                float distanceX = position.X - attacker.Center.X;
-                float distanceY = position.Y - attacker.Center.Y;
-
-                float rotation = (float)Math.Atan2(distanceY, distanceX);
+                float rotation = MathHelper.PiOver2;
                 Vector2 tempPosition = attacker.Center;
 
                 Vector2 tempVelocity;
