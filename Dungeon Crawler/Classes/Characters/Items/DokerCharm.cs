@@ -29,7 +29,7 @@ namespace Dungeon_Crawler
         }
         public void Update(GameTime gameTime, Character character)
         {
-            if (character.CurrentHealthPercent < 30)
+            if (character.CurrentHealthPercent < 35)
             {
                 character.CurrentHealthPercent += 0.03f;
             }

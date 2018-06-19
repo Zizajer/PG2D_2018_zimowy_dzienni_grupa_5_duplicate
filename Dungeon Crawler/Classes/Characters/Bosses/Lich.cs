@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using RogueSharp;
 using System;
+using Microsoft.Xna.Framework;
 
 namespace Dungeon_Crawler
 {
-    public class DemonOak : Boss
+    public class Lich : Boss
     {
-        public DemonOak(Dictionary<string, Animation> _animations, int cellSize, int level, float timeBetweenActions, Map map, List<Cell> cells) : base(_animations, cellSize, level, timeBetweenActions, map, cells)
+        public Lich(Dictionary<string, Animation> _animations, int cellSize, int level, float timeBetweenActions, Map map, List<Cell> cells) : base(_animations, cellSize, level, timeBetweenActions, map, cells)
         {
         }
 
@@ -35,7 +36,7 @@ namespace Dungeon_Crawler
         }
         public override void SetAttack()
         {
-            ProjectileAttack = new BigFireballCanonade();
+            ProjectileAttack = new SpinningBall(Center);
         }
     }
 }

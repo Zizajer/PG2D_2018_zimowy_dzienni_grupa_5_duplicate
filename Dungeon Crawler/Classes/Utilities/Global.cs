@@ -9,6 +9,7 @@ namespace Dungeon_Crawler
         public static readonly CameraManager Camera = new CameraManager();
         public static GUI Gui;
         public static bool[] GameStates; //[0] - isActiveGameLoop [1] - isGameStarted [2] - isHeroChooseMenu [3] - isHelpMenu [4] - isAboutMenu [5] - statsmenu
+        public static bool hardMode; //false easy | true hard
         public static CombatManager CombatManager;
         public static DrawManager DrawManager;
         public static StatsAllocationSystem StatsAllocationSystem;

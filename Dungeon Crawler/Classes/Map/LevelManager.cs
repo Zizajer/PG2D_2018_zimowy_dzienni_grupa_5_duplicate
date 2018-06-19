@@ -38,6 +38,8 @@ namespace Dungeon_Crawler
         public Dictionary<string, Animation> _animationsBlackKnight;
         public Dictionary<string, Animation> _animationsBrainy;
         public Dictionary<string, Animation> _animationsSpider;
+        public Dictionary<string, Animation> _animationsLich;
+        
 
         public List<String> allItemsNames;
 
@@ -53,6 +55,7 @@ namespace Dungeon_Crawler
         List<String> ZombieNamesList;
         List<String> BrainyNamesList;
         List<String> SpiderNamesList;
+        List<String> LichNamesList;
 
         public LevelManager(ContentManager Content)
         {
@@ -88,6 +91,10 @@ namespace Dungeon_Crawler
             _animationsDemonOak = new Dictionary<string, Animation>()
                 {
                     {"BossAlive",new Animation(Content.Load<Texture2D>("enemy/DemonOak/BossAlive"),3 )}
+                };
+            _animationsLich = new Dictionary<string, Animation>()
+                {
+                    {"BossAlive",new Animation(Content.Load<Texture2D>("enemy/Lich/BossAlive"),3 )}
                 };
             _animationsDragon = new Dictionary<string, Animation>()
                 {
@@ -145,6 +152,7 @@ namespace Dungeon_Crawler
                 BlackKnightNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\BlackKnight.txt"));
                 BrainyNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Brainy.txt"));
                 SpiderNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Spider.txt"));
+                LichNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Lich.txt"));
             }
             catch (Exception e)
             {
@@ -242,8 +250,8 @@ namespace Dungeon_Crawler
 
         public void CreateBossLevel()
         {
-            Map map = CreateMap(15, 11, 50, 10, 10);
-            var grid = new Grid(15, 11, 1.0f);
+            Map map = CreateBossMap(13, 13);
+            var grid = new Grid(13, 13, 1.0f);
 
             List<Cell> occupiedCells = new List<Cell>();
             
@@ -259,7 +267,8 @@ namespace Dungeon_Crawler
                 BossInventory = CreateItemsList(Content, numberOfItems, allItemsNames);
             }
 
-            int whichBossToSpawn = Global.random.Next(4);
+            // whichBossToSpawn = 3;
+            int whichBossToSpawn = Global.random.Next(5);
             if (whichBossToSpawn == 0)
             {
                 List<Cell> bossOccupyingCells = map.GetCellsInArea(6, 6, 1).ToList();
@@ -320,6 +329,28 @@ namespace Dungeon_Crawler
                 tempBoss.TakeItems(BossInventory);
 
                 grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
+            }
+            else if(whichBossToSpawn == 3)
+            {
+                List<Cell> bossOccupyingCells = map.GetCellsInArea(6, 6, 1).ToList();
+
+                Cell randomCell = map.GetCell(5, 5);
+                foreach (Cell cell in bossOccupyingCells)
+                {
+                    grid.SetCellCost(new Position(cell.X, cell.Y), 5.0f);
+                }
+
+                occupiedCells.Union(bossOccupyingCells);
+
+                float timeBetweenActions = 0.9f; //we should move that to each boss class but w/e
+                Character tempBoss =
+                    new Lich(_animationsLich, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
+                    {
+                        Name = LichNamesList[Global.random.Next(LichNamesList.Count)],
+                        Position = new Vector2((randomCell.X * cellSize), (randomCell.Y * cellSize))
+                    };
+                enemies.Add(tempBoss);
+                tempBoss.TakeItems(BossInventory);
             }
             else
             {
@@ -496,6 +527,14 @@ namespace Dungeon_Crawler
         {
             IMapCreationStrategy<Map> mapCreationStrategy =
                 new RandomRoomsMapCreationStrategy<Map>(mapWidth, mapHeight, roomCount, roomWidth, roomHeight);
+            Map map = Map.Create(mapCreationStrategy);
+            return map;
+        }
+
+        private Map CreateBossMap(int mapWidth, int mapHeight)
+        {
+            IMapCreationStrategy<Map> mapCreationStrategy =
+                new BorderOnlyMapCreationStrategy<Map>(mapWidth, mapHeight);
             Map map = Map.Create(mapCreationStrategy);
             return map;
         }

@@ -30,7 +30,7 @@ namespace Dungeon_Crawler
             Name = "Bitter Powder";
             Description = "Makes you superhero for a while. Ask your doctor or pharmacist for advice before taking this substance.";
             Category = "UsableAllStatsBooster";
-            RemainingUsages = 2;
+            RemainingUsages = 1;
 
             TextureName = "whitePowder";
             LoadTexture(content);
@@ -39,15 +39,15 @@ namespace Dungeon_Crawler
         }
         public void Use(Character owner)
         {
-            DefenseMultiplier = 2.5f;
-            SpDefenseMultiplier = 2.5f;
-            AttackMultiplier = 2.5f;
-            SpAttackMultiplier = 2.5f;
-            SpeedMultiplier = 2.5f;
-            TimeBetweenActionsMultiplier = 0.5f;
+            DefenseMultiplier = 1.3f;
+            SpDefenseMultiplier = 1.3f;
+            AttackMultiplier = 1.3f;
+            SpAttackMultiplier = 1.3f;
+            SpeedMultiplier = 1.3f;
+            TimeBetweenActionsMultiplier = 0.9f;
 
             ApplyEffect(owner);
-            TotalEffectTime = 10;
+            TotalEffectTime = 5;
 
             IsCurrentlyInUse = true;
             HasRecentUsageJustFinished = false;
@@ -73,7 +73,7 @@ namespace Dungeon_Crawler
 
                 if (Global.random.Next(0, 2) == 0)
                 {
-                    owner.CurrentHealthPercent -= 35;
+                    owner.CurrentHealthPercent -= 15;
                 }
 
                 IsCurrentlyInUse = false;

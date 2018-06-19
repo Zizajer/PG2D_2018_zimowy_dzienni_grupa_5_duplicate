@@ -73,6 +73,18 @@
 /processorParam:TextureFormat=Color
 /build:Controls/smallButton.png
 
+#begin Controls/checkbox.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Controls/checkbox.png
+
 #begin enemy/BlackKnight/WalkingDown.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -264,6 +276,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:enemy/Dragon/BossAlive.png
+
+#begin enemy/Lich/BossAlive.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:enemy/Lich/BossAlive.png
 
 #begin enemy/Skeleton/WalkingDown.png
 /importer:TextureImporter
@@ -1120,6 +1144,18 @@
 /processorParam:TextureFormat=Color
 /build:spells/Iceball.png
 
+#begin spells/Lichball.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:spells/Lichball.png
+
 #begin spells/MagicAnim.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1239,5 +1275,3 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Arts/Controls.png
-
-

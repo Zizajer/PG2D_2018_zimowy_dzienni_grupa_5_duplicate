@@ -44,6 +44,7 @@
     <Compile Include="Classes\Attacks\BlackKnight\DeathBeam.cs" />
     <Compile Include="Classes\Attacks\Brainy\AoeAttack.cs" />
     <Compile Include="Classes\Attacks\Dragon\DragonAttack.cs" />
+    <Compile Include="Classes\Attacks\Lich\SpinningBall.cs" />
     <Compile Include="Classes\Attacks\Mage\UltimateExplosion.cs" />
     <Compile Include="Classes\Attacks\MeleeEnemies\EnemyPound.cs" />
     <Compile Include="Classes\Attacks\RangeEnemies\WebAttack.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Classes\Characters\Boss.cs" />
     <Compile Include="Classes\Characters\Bosses\Brainy.cs" />
     <Compile Include="Classes\Characters\Bosses\BlackKnight.cs" />
+    <Compile Include="Classes\Characters\Bosses\Lich.cs" />
     <Compile Include="Classes\Characters\Bosses\Dragon.cs" />
     <Compile Include="Classes\Characters\Bosses\DemonOak.cs" />
     <Compile Include="Classes\Characters\Character.cs" />
@@ -107,7 +109,9 @@
     <Compile Include="Classes\Characters\Player Classes\Warrior.cs" />
     <Compile Include="Classes\Characters\RangedEnemies\Spider.cs" />
     <Compile Include="Classes\Controls\Label.cs" />
+    <Compile Include="Classes\Controls\Checkbox.cs" />
     <Compile Include="Classes\Controls\Button.cs" />
+    <Compile Include="Classes\Map\LichProjectille.cs" />
     <Compile Include="Classes\Map\RotatingPiercingProjectille.cs" />
     <Compile Include="Classes\Map\PiercingProjectille.cs" />
     <Compile Include="Classes\Map\Trap.cs" />

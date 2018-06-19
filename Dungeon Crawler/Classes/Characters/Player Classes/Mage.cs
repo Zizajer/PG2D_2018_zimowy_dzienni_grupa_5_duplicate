@@ -8,6 +8,9 @@ namespace Dungeon_Crawler
 {
     class Mage : Player
     {
+        private int Ability1LevelReq = 3;
+        private int Ability2LevelReq = 5;
+        private int Ability3LevelReq = 7;
         int teleportResourceCost = 60;
         public Mage(ContentManager content, int cellSize, int playerCurrentMapLevel, string name) : base(content, cellSize, playerCurrentMapLevel, name)
         {
@@ -94,6 +97,12 @@ namespace Dungeon_Crawler
         {
             if (Keyboard.GetState().IsKeyDown(Keys.D1) && pastKey.IsKeyUp(Keys.D1))
             {
+                if (Global.hardMode && Level < Ability1LevelReq)
+                {
+                    pastKey = Keyboard.GetState();
+                    Global.Gui.WriteToConsole("You need level " + Ability1LevelReq + " to use that ability");
+                    return;
+                }
                 if (CurrentResource >= teleportResourceCost)
                 {
                     MouseState mouse = Mouse.GetState();
@@ -164,6 +173,12 @@ namespace Dungeon_Crawler
         {
             if (Keyboard.GetState().IsKeyDown(Keys.D2) && pastKey2.IsKeyUp(Keys.D2))
             {
+                if (Global.hardMode && Level < Ability2LevelReq)
+                {
+                    pastKey2 = Keyboard.GetState();
+                    Global.Gui.WriteToConsole("You need level " + Ability2LevelReq + " to use that ability");
+                    return;
+                }
                 if (CurrentResource >= UnTargetedAttack2.ManaCost)
                 {
                     if (UnTargetedAttack2.Use(this))
@@ -181,6 +196,12 @@ namespace Dungeon_Crawler
         {
             if (Keyboard.GetState().IsKeyDown(Keys.D3) && pastKey3.IsKeyUp(Keys.D3))
             {
+                if (Global.hardMode && Level < Ability3LevelReq)
+                {
+                    pastKey3 = Keyboard.GetState();
+                    Global.Gui.WriteToConsole("You need level " + Ability3LevelReq + " to use that ability");
+                    return;
+                }
                 if (CurrentResource >= UnTargetedAttack3.ManaCost)
                 {
                     if (UnTargetedAttack3.Use(this))
