@@ -258,6 +258,7 @@ namespace Dungeon_Crawler
                 Position += Velocity;
                 Velocity = Vector2.Zero;
             }
+            UpdateItems(gameTime);
         }
 
         private int calculateExpForNextLevel(int x)
