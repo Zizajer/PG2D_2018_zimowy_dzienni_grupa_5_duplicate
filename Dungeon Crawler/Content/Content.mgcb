@@ -945,3 +945,10 @@
 /processorParam:TextureFormat=Color
 /build:Arts/Controls.png
 
+#begin fonts/Chiller.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:fonts/Chiller.spritefont
+

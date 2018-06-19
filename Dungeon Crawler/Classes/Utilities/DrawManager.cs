@@ -33,7 +33,7 @@ namespace Dungeon_Crawler
             button = Content.Load<Texture2D>("Controls/button");
             gameLogo = Content.Load<Texture2D>("Arts/DungeonCrawlerLogo");
             controls = Content.Load<Texture2D>("Arts/Controls");
-            buttonFont = Content.Load<SpriteFont>("fonts/ButtonFont");
+            buttonFont = Content.Load<SpriteFont>("fonts/Chiller");
 
             var magButton = new Button(button, buttonFont)
             {
