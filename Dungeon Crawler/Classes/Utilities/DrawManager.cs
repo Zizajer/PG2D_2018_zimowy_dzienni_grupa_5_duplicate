@@ -15,11 +15,13 @@ namespace Dungeon_Crawler
         private Texture2D ranger;
         private Texture2D button;
         private Texture2D gameLogo;
+        private Texture2D controls;
         private SpriteFont buttonFont;
         private Game1 game;
 
         private List<Button> heroChooseButtons;
         private List<Button> MainMenuButtons;
+        private List<Button> HelpMenuButtons;
 
         public DrawManager(ContentManager Content, Game1 game)
         {
@@ -29,6 +31,7 @@ namespace Dungeon_Crawler
             ranger = Content.Load<Texture2D>("Arts/ranger");
             button = Content.Load<Texture2D>("Controls/button");
             gameLogo = Content.Load<Texture2D>("Arts/DungeonCrawlerLogo");
+            controls = Content.Load<Texture2D>("Arts/Controls");
             buttonFont = Content.Load<SpriteFont>("fonts/ButtonFont");
 
             var magButton = new Button(button, buttonFont)
@@ -57,7 +60,7 @@ namespace Dungeon_Crawler
 
             var quitButton = new Button(button, buttonFont)
             {
-                Position = new Vector2(575, 625),
+                Position = new Vector2(575, 725),
                 Text = "Go Back",
             };
 
@@ -110,6 +113,25 @@ namespace Dungeon_Crawler
                     aboutGameButton,
                     quitGameButton,
                 };
+
+            var goBackButton = new Button(button, buttonFont)
+            {
+                Position = new Vector2(575, 725),
+                Text = "Go back",
+            };
+
+            goBackButton.Click += GoBackButton_Click;
+
+            HelpMenuButtons = new List<Button>()
+                {
+                    goBackButton,
+                };
+
+        }
+
+        private void GoBackButton_Click(object sender, EventArgs e)
+        {
+            Global.GameStates[3] = false;
         }
 
         private void QuitGameButton_Click(object sender, EventArgs e)
@@ -124,7 +146,7 @@ namespace Dungeon_Crawler
 
         private void HelpButton_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Global.GameStates[3] = true;
         }
 
         private void StartGameButton_Click(object sender, EventArgs e)
@@ -170,6 +192,13 @@ namespace Dungeon_Crawler
                 button.Update(gameTime);
         }
 
+
+        public void UpdateHelpMenu(GameTime gameTime)
+        {
+            foreach (Button button in HelpMenuButtons)
+                button.Update(gameTime);
+        }
+
         public void UpdateChooseHeroMenu(GameTime gameTime)
         {
             foreach (Button button in heroChooseButtons)
@@ -187,6 +216,23 @@ namespace Dungeon_Crawler
            // spriteBatch.DrawString(buttonFont, "Dungeon Crawler", new Vector2(575, 405), Color.Black);
 
             foreach (Button button in MainMenuButtons)
+            {
+                button.Draw(gameTime, spriteBatch);
+            }
+
+            spriteBatch.End();
+
+        }
+
+        public void DrawHelpMenu(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, GameTime gameTime)
+        {
+            graphicsDevice.Clear(Color.White);
+
+            spriteBatch.Begin();
+
+            spriteBatch.Draw(controls, new Rectangle(0, 0, controls.Width, controls.Height), Color.White);
+
+            foreach (Button button in HelpMenuButtons)
             {
                 button.Draw(gameTime, spriteBatch);
             }

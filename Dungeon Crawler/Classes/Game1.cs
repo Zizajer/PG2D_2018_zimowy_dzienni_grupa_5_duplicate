@@ -97,6 +97,8 @@ namespace Dungeon_Crawler
             {
                 if (Global.GameStates[2] == true)
                     Global.DrawManager.UpdateChooseHeroMenu(gameTime);
+                if (Global.GameStates[3] == true)
+                    Global.DrawManager.UpdateHelpMenu(gameTime);
                 else
                     Global.DrawManager.UpdateMainMenu(gameTime);
             }
@@ -142,6 +144,8 @@ namespace Dungeon_Crawler
             else {
                 if(Global.GameStates[2] == true)
                     Global.DrawManager.DrawChooseHeroMenu(spriteBatch, GraphicsDevice, gameTime);
+                if (Global.GameStates[3] == true)
+                    Global.DrawManager.DrawHelpMenu(spriteBatch, GraphicsDevice, gameTime);
                 else
                     Global.DrawManager.DrawMainMenu(spriteBatch, GraphicsDevice, gameTime);
 
