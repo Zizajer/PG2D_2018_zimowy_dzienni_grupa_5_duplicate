@@ -15,13 +15,26 @@ namespace Dungeon_Crawler
         }
         public override void calculateBaseStatistics()
         {
-            Health = CurrentHealth = 10 + Level * 10;
-            Defense = 30 + Level * 3;
-            SpDefense = 50 + Level * 5;
-            Attack = (int)Math.Floor(35 + Level * 2.5f);
-            SpAttack = 50 + Level * 3;
-            Experience = 50 + Level * 5;
-            Speed = 2f;
+            if (Global.hardMode == false)
+            {
+                Health = CurrentHealth = 10 + Level * 10;
+                Defense = 30 + Level * 3;
+                SpDefense = 50 + Level * 5;
+                Attack = (int)Math.Floor(35 + Level * 2.5f);
+                SpAttack = 50 + Level * 3;
+                Experience = 50 + Level * 5;
+                Speed = 2f;
+            }
+            else
+            {
+                Health = CurrentHealth = 30 + Level * 10;
+                Defense = 50 + Level * 3;
+                SpDefense = 70 + Level * 5;
+                Attack = (int)Math.Floor(35 + Level * 2.5f);
+                SpAttack = 50 + Level * 3;
+                Experience = 50 + Level * 5;
+                Speed = 2f;
+            }
         }
     }
 }

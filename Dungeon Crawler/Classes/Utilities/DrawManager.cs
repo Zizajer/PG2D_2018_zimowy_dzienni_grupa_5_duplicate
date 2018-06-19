@@ -9,11 +9,12 @@ namespace Dungeon_Crawler
 {
     public class DrawManager
     {
-
+        private Checkbox checkbox;
         private Texture2D mag;
         private Texture2D warrior;
         private Texture2D ranger;
         private Texture2D button;
+        private Texture2D checkboxT;
         private SpriteFont buttonFont;
         private Game1 game;
 
@@ -25,8 +26,15 @@ namespace Dungeon_Crawler
             mag = Content.Load<Texture2D>("Arts/mage");
             warrior = Content.Load<Texture2D>("Arts/warrior");
             ranger = Content.Load<Texture2D>("Arts/ranger");
+            checkboxT = Content.Load<Texture2D>("Controls/checkbox");
             button = Content.Load<Texture2D>("Controls/button");
             buttonFont = Content.Load<SpriteFont>("fonts/ButtonFont");
+
+            checkbox = new Checkbox(checkboxT, buttonFont)
+            {
+                Position = new Vector2(675, 575)
+            };
+            checkbox.Click += checkbox_Click;
 
             var magButton = new Button(button, buttonFont)
             {
@@ -75,8 +83,7 @@ namespace Dungeon_Crawler
             Global.playerClass = ("Ranger");
             Global.levelmanager.setPlayer("Ranger");
             Global.CombatManager.setPLayer();
-            Global.IsGameStarted = true;
-        }
+            Global.IsGameStarted = true;        }
 
         void warriorButton_Click(object sender, EventArgs e)
         {
@@ -94,17 +101,21 @@ namespace Dungeon_Crawler
             Global.IsGameStarted = true;
         }
 
+        void checkbox_Click(object sender, EventArgs e)
+        {
+            Global.hardMode = !Global.hardMode;
+        }
+
         void quitButton_Click(object sender, EventArgs e)
         {
             game.Exit();
         }
 
-
-
         public void UpdateMainMenu(GameTime gameTime)
         {
             foreach (Button button in _gameComponents)
                 button.Update(gameTime);
+            checkbox.Update(gameTime);
         }
 
         public void DrawMainMenu(SpriteBatch spriteBatch, GraphicsDevice GraphicsDevice, GameTime gameTime)
@@ -120,12 +131,23 @@ namespace Dungeon_Crawler
             spriteBatch.Draw(warrior, new Rectangle(575, 50, warrior.Width, warrior.Height), Color.White);
 
             spriteBatch.Draw(ranger, new Rectangle(1100, 50, ranger.Width, ranger.Height), Color.White);
-
+            string s;
+            if (Global.hardMode)
+            {
+                s = "Difficulty: Hard";
+            }
+            else
+            {
+                s = "Difficulty: Easy";
+            }
+            spriteBatch.DrawString(buttonFont, s, new Vector2(535, 587), Color.Black);
+ 
             foreach (Button button in _gameComponents)
             {
                 button.Draw(gameTime, spriteBatch);
             }
 
+            checkbox.Draw(gameTime, spriteBatch);
             spriteBatch.End();
 
         }

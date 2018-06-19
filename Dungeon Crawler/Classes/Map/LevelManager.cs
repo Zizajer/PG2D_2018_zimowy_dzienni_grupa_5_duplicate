@@ -264,8 +264,8 @@ namespace Dungeon_Crawler
                 BossInventory = CreateItemsList(Content, numberOfItems, allItemsNames);
             }
 
-            int whichBossToSpawn = 3;
-            //int whichBossToSpawn = Global.random.Next(5);
+            // whichBossToSpawn = 3;
+            int whichBossToSpawn = Global.random.Next(5);
             if (whichBossToSpawn == 0)
             {
                 List<Cell> bossOccupyingCells = map.GetCellsInArea(6, 6, 1).ToList();

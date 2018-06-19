@@ -48,16 +48,6 @@ namespace Dungeon_Crawler
 
         public abstract void SetAttack();
 
-        public override void calculateBaseStatistics()
-        {
-            Health = CurrentHealth = 210 + Level * 10;
-            Defense = 210 + Level * 3;
-            SpDefense = 210 + Level * 5;
-            Attack = (int)Math.Floor(210 + Level * 2.5);
-            SpAttack = 210 + Level * 3;
-            Speed = 0f;
-        }
-
         public override void Update(GameTime gameTime, Level level, GraphicsDevice graphicsDevice)
         {
             CellX = (int)Math.Floor(Center.X / level.cellSize);
