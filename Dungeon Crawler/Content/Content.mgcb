@@ -651,6 +651,18 @@
 /processorParam:TextureFormat=Color
 /build:items/wand2.png
 
+#begin items/whitePowder.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:items/whitePowder.png
+
 #begin items/xbow1.png
 /importer:TextureImporter
 /processor:TextureProcessor

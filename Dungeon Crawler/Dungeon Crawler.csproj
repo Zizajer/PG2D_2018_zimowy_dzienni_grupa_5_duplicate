@@ -81,6 +81,7 @@
     <Compile Include="Classes\Characters\Items\Abstract\__UpdatableItem.cs" />
     <Compile Include="Classes\Characters\Items\Abstract\__UsableItem.cs" />
     <Compile Include="Classes\Characters\Items\DokerCharm.cs" />
+    <Compile Include="Classes\Characters\Items\BitterPowder.cs" />
     <Compile Include="Classes\Characters\Items\FullHealthPotion.cs" />
     <Compile Include="Classes\Characters\Items\Interface\IItem.cs" />
     <Compile Include="Classes\Characters\Items\Interface\IUpdatableItem.cs" />
