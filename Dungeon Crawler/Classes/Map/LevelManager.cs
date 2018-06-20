@@ -207,7 +207,7 @@ namespace Dungeon_Crawler
 
         public void incrementOtherParameters(int increaseValue)
         {
-            enemiesCount = enemiesCount + 5;
+            enemiesCount = enemiesCount + 3;
             if (Global.random.Next(4) % 2 == 0) 
             rocksCount = rocksCount + increaseValue;
             enemySpeedFactor = enemySpeedFactor + 0.5f;

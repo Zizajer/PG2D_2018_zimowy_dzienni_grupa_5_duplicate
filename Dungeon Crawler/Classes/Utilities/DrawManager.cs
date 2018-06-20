@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,6 +20,8 @@ namespace Dungeon_Crawler
         private Texture2D controls;
         private Texture2D checkboxT;
         private SpriteFont buttonFont;
+
+        private Inputbox inputbox;
         private Game1 game;
 
         private List<Button> heroChooseButtons;
@@ -36,6 +40,11 @@ namespace Dungeon_Crawler
             gameLogo = Content.Load<Texture2D>("Arts/DungeonCrawlerLogo");
             controls = Content.Load<Texture2D>("Arts/Controls");
             buttonFont = Content.Load<SpriteFont>("fonts/Chiller");
+
+            inputbox = new Inputbox(button, buttonFont)
+            {
+                Position = new Vector2(675, 475)
+            };
 
             checkbox = new Checkbox(checkboxT, buttonFont)
             {
@@ -184,7 +193,9 @@ namespace Dungeon_Crawler
 
         void rangerButton_Click(object sender, EventArgs e)
         {
-
+            if (String.IsNullOrEmpty(Global.playerName))
+                Global.playerName = "Player";
+            Global.playerName = ToTitleCase(Global.playerName);
             Global.playerClass = ("Ranger");
             Global.levelmanager.setPlayer("Ranger");
             Global.CombatManager.setPLayer();
@@ -194,6 +205,9 @@ namespace Dungeon_Crawler
 
         void warriorButton_Click(object sender, EventArgs e)
         {
+            if (String.IsNullOrEmpty(Global.playerName))
+                Global.playerName = "Player";
+            Global.playerName = ToTitleCase(Global.playerName);
             Global.playerClass = ("Warrior");
             Global.levelmanager.setPlayer("Warrior");
             Global.CombatManager.setPLayer();
@@ -202,6 +216,9 @@ namespace Dungeon_Crawler
 
         void magButton_Click(object sender, EventArgs e)
         {
+            if (String.IsNullOrEmpty(Global.playerName))
+                Global.playerName = "Player";
+            Global.playerName = ToTitleCase(Global.playerName);
             Global.playerClass = ("Mage");
             Global.levelmanager.setPlayer("Mage");
             Global.CombatManager.setPLayer();
@@ -241,6 +258,7 @@ namespace Dungeon_Crawler
             foreach (Button button in heroChooseButtons)
                 button.Update(gameTime);
             checkbox.Update(gameTime);
+            inputbox.Update(gameTime);
         }
 
         public void DrawMainMenu(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, GameTime gameTime)
@@ -250,8 +268,6 @@ namespace Dungeon_Crawler
             spriteBatch.Begin();
 
             spriteBatch.Draw(gameLogo, new Rectangle(400, 0, gameLogo.Width/2, gameLogo.Height/2), Color.White);
-
-           // spriteBatch.DrawString(buttonFont, "Dungeon Crawler", new Vector2(575, 405), Color.Black);
 
             foreach (Button button in MainMenuButtons)
             {
@@ -289,7 +305,7 @@ namespace Dungeon_Crawler
 
             spriteBatch.DrawString(buttonFont, "Marcin Kapelan - Developer", new Vector2(315, 365), Color.Black);
 
-            spriteBatch.DrawString(buttonFont, "Piotr Sadza - Grafik/Dzwiekowiec", new Vector2(315, 405), Color.Black);
+            spriteBatch.DrawString(buttonFont, "Piotr Sadza - Graphic design/Sound design", new Vector2(315, 405), Color.Black);
 
             foreach (Button button in AboutMenuButtons)
             {
@@ -325,7 +341,10 @@ namespace Dungeon_Crawler
                 s = "Difficulty: Easy";
             }
             spriteBatch.DrawString(buttonFont, s, new Vector2(535, 587), Color.Black);
- 
+
+            spriteBatch.DrawString(buttonFont, "Enter your name", new Vector2(535, 487), Color.Black);
+            inputbox.Draw(gameTime,spriteBatch);
+
             foreach (Button button in heroChooseButtons)
             {
                 button.Draw(gameTime, spriteBatch);
@@ -334,6 +353,10 @@ namespace Dungeon_Crawler
             checkbox.Draw(gameTime, spriteBatch);
             spriteBatch.End();
 
+        }
+        public string ToTitleCase(string str)
+        {
+            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(str.ToLower());
         }
     }
 }
