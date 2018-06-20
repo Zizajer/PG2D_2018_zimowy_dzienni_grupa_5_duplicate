@@ -163,12 +163,12 @@ namespace Dungeon_Crawler
 
         private void GoBackFromAboutButton_Click(object sender, EventArgs e)
         {
-            Global.GameStates[4] = false;
+            Global.GameStates = 0;
         }
 
         private void goBackFromHelpButton_Click(object sender, EventArgs e)
         {
-            Global.GameStates[3] = false;
+            Global.GameStates = 0;
         }
 
         private void QuitGameButton_Click(object sender, EventArgs e)
@@ -178,17 +178,17 @@ namespace Dungeon_Crawler
 
         private void AboutGameButton_Click(object sender, EventArgs e)
         {
-            Global.GameStates[4] = true;
+            Global.GameStates = 3;
         }
 
         private void HelpButton_Click(object sender, EventArgs e)
         {
-            Global.GameStates[3] = true;
+            Global.GameStates = 2;
         }
 
         private void StartGameButton_Click(object sender, EventArgs e)
         {
-            Global.GameStates[2] = true;
+            Global.GameStates = 1;
         }
 
         void rangerButton_Click(object sender, EventArgs e)
@@ -199,7 +199,7 @@ namespace Dungeon_Crawler
             Global.playerClass = ("Ranger");
             Global.levelmanager.setPlayer("Ranger");
             Global.CombatManager.setPLayer();
-            Global.GameStates[1] = true;
+            Global.GameStates = 4;
         }
 
 
@@ -211,7 +211,7 @@ namespace Dungeon_Crawler
             Global.playerClass = ("Warrior");
             Global.levelmanager.setPlayer("Warrior");
             Global.CombatManager.setPLayer();
-            Global.GameStates[1] = true;
+            Global.GameStates = 4;
         }
 
         void magButton_Click(object sender, EventArgs e)
@@ -222,7 +222,7 @@ namespace Dungeon_Crawler
             Global.playerClass = ("Mage");
             Global.levelmanager.setPlayer("Mage");
             Global.CombatManager.setPLayer();
-            Global.GameStates[1] = true;
+            Global.GameStates = 4;
         }
 
         void checkbox_Click(object sender, EventArgs e)
@@ -232,7 +232,7 @@ namespace Dungeon_Crawler
 
         void quitButton_Click(object sender, EventArgs e)
         {
-            Global.GameStates[2] = false;
+            Global.GameStates = 0;
         }
 
         public void UpdateMainMenu(GameTime gameTime)

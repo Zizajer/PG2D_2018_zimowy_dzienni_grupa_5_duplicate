@@ -19,7 +19,6 @@ namespace Dungeon_Crawler
         RenderTarget2D lightsTarget;
         RenderTarget2D mainTarget;
 
-
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -38,9 +37,7 @@ namespace Dungeon_Crawler
             IsMouseVisible = true;
             Global.Camera.setViewports(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height);
             Global.Camera.setZoom(1.5f);
-            Global.GameStates = new bool[6];
-            Array.Clear(Global.GameStates, 0, Global.GameStates.Length);
-            Global.GameStates[0] = true;
+            Global.GameStates = 0;
             base.Initialize();
         }
 
@@ -75,105 +72,138 @@ namespace Dungeon_Crawler
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (Global.GameStates[1])
+            if (Global.GameStates == 0)
             {
-                if (Global.GameStates[0] == true)
-                {
-                    if (!Global.GameStates[5])
-                    {
-                        Global.Camera.Move();
-
-                        levelManager.Update(gameTime, GraphicsDevice);
-
-                        Global.Gui.Update(gameTime);
-                        Global.CombatManager.Update();
-                    }
-                    else
-                    {
-                        Global.StatsAllocationSystem.Update(gameTime);
-                    } 
-                }
-                else
-                {
-                    if (wasGameOverSoundPlayed == false)
-                    {
-                        Global.SoundManager.playGameOver();
-                        wasGameOverSoundPlayed = true;
-                    }
-                }
+                Global.DrawManager.UpdateMainMenu(gameTime);
+            }
+            else if (Global.GameStates == 1)
+            {
+                Global.DrawManager.UpdateChooseHeroMenu(gameTime);
+            }
+            else if (Global.GameStates == 2)
+            {
+                Global.DrawManager.UpdateHelpMenu(gameTime);
+            }
+            else if (Global.GameStates == 3)
+            {
+                Global.DrawManager.UpdateAboutMenu(gameTime);
+            }
+            else if (Global.GameStates == 4)
+            {
+                Global.Camera.Move();
+                levelManager.Update(gameTime, GraphicsDevice);
+                Global.Gui.Update(gameTime);
+                Global.CombatManager.Update();
+            }
+            else if (Global.GameStates == 5)
+            {
+                Global.StatsAllocationSystem.Update(gameTime);
             }
             else
             {
-                if (Global.GameStates[2] == true)
-                    Global.DrawManager.UpdateChooseHeroMenu(gameTime);
-                else if (Global.GameStates[3] == true)
-                    Global.DrawManager.UpdateHelpMenu(gameTime);
-                else if (Global.GameStates[4] == true)
-                    Global.DrawManager.UpdateAboutMenu(gameTime);
-                else
-                    Global.DrawManager.UpdateMainMenu(gameTime);
+                if (wasGameOverSoundPlayed == false)
+                {
+                    Global.SoundManager.playGameOver();
+                    wasGameOverSoundPlayed = true;
+                }
             }
-
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            if (Global.GameStates[1])
+            if (Global.GameStates == 0)
             {
-                if (!Global.GameStates[5])
-                {
-                    GraphicsDevice.SetRenderTarget(lightsTarget);
-                    GraphicsDevice.Clear(Color.Black);
-                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Global.Camera.TranslationMatrix);
-                    //draw light mask where there should be torches etc...
-
-                    Vector2 playerPos = levelManager.player.Center;
-                    float scale = 1 / ((levelManager.player.CurrentMapLevel + 1) * 0.05f + 0.5f);
-                    if(scale<0.5f) scale=0.5f;
-                    playerPos.X -= lightMask.Width * scale / 2;
-                    playerPos.Y -= lightMask.Height * scale / 2;
-                    //spriteBatch.Draw(lightMask, playerPos, Color.White);
-                    spriteBatch.Draw(lightMask, playerPos, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 1f);
-
-                    spriteBatch.End();
-
-                    GraphicsDevice.SetRenderTarget(mainTarget);
-                    GraphicsDevice.Clear(Color.Transparent);
-
-                    levelManager.Draw(gameTime, spriteBatch);
-
-                    GraphicsDevice.SetRenderTarget(null);
-                    GraphicsDevice.Clear(Color.Black);
-
-                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-
-                    effect1.Parameters["lightMask"].SetValue(lightsTarget);
-                    effect1.CurrentTechnique.Passes[0].Apply();
-                    spriteBatch.Draw(mainTarget, Vector2.Zero, Color.White);
-                    spriteBatch.End();
-
-                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
-                    Global.Gui.Draw(spriteBatch, gameTime);
-                    spriteBatch.End();
-                }
-                else
-                {
-                    Global.StatsAllocationSystem.Draw(spriteBatch, GraphicsDevice, gameTime);
-                }
+                Global.DrawManager.DrawMainMenu(spriteBatch, GraphicsDevice, gameTime);
             }
-            else
+            else if (Global.GameStates == 1)
             {
-                if (Global.GameStates[2] == true)
-                    Global.DrawManager.DrawChooseHeroMenu(spriteBatch, GraphicsDevice, gameTime);
-                else if (Global.GameStates[3] == true)
-                    Global.DrawManager.DrawHelpMenu(spriteBatch, GraphicsDevice, gameTime);
-                else if (Global.GameStates[4] == true)
-                    Global.DrawManager.DrawAboutMenu(spriteBatch, GraphicsDevice, gameTime);
-                else
-                    Global.DrawManager.DrawMainMenu(spriteBatch, GraphicsDevice, gameTime);
+                Global.DrawManager.DrawChooseHeroMenu(spriteBatch, GraphicsDevice, gameTime);
             }
+            else if (Global.GameStates == 2)
+            {
+                Global.DrawManager.DrawHelpMenu(spriteBatch, GraphicsDevice, gameTime);
+            }
+            else if (Global.GameStates == 3)
+            {
+                Global.DrawManager.DrawAboutMenu(spriteBatch, GraphicsDevice, gameTime);
+            }
+            else if (Global.GameStates == 4)
+            {
+                GraphicsDevice.SetRenderTarget(lightsTarget);
+                GraphicsDevice.Clear(Color.Black);
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Global.Camera.TranslationMatrix);
+                //draw light mask where there should be torches etc...
 
+                Vector2 playerPos = levelManager.player.Center;
+                float scale = 1 / ((levelManager.player.CurrentMapLevel + 1) * 0.05f + 0.5f);
+                if (scale < 0.5f) scale = 0.5f;
+                playerPos.X -= lightMask.Width * scale / 2;
+                playerPos.Y -= lightMask.Height * scale / 2;
+                //spriteBatch.Draw(lightMask, playerPos, Color.White);
+                spriteBatch.Draw(lightMask, playerPos, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 1f);
+
+                spriteBatch.End();
+
+                GraphicsDevice.SetRenderTarget(mainTarget);
+                GraphicsDevice.Clear(Color.Transparent);
+
+                levelManager.Draw(gameTime, spriteBatch);
+
+                GraphicsDevice.SetRenderTarget(null);
+                GraphicsDevice.Clear(Color.Black);
+
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+
+                effect1.Parameters["lightMask"].SetValue(lightsTarget);
+                effect1.CurrentTechnique.Passes[0].Apply();
+                spriteBatch.Draw(mainTarget, Vector2.Zero, Color.White);
+                spriteBatch.End();
+
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
+                Global.Gui.Draw(spriteBatch, gameTime);
+                spriteBatch.End();
+            }
+            else if (Global.GameStates == 5)
+            {
+                Global.StatsAllocationSystem.Draw(spriteBatch, GraphicsDevice, gameTime);
+            }
+            else // we draw 4 but we dont update
+            {
+                GraphicsDevice.SetRenderTarget(lightsTarget);
+                GraphicsDevice.Clear(Color.Black);
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Global.Camera.TranslationMatrix);
+                //draw light mask where there should be torches etc...
+
+                Vector2 playerPos = levelManager.player.Center;
+                float scale = 1 / ((levelManager.player.CurrentMapLevel + 1) * 0.05f + 0.5f);
+                if (scale < 0.5f) scale = 0.5f;
+                playerPos.X -= lightMask.Width * scale / 2;
+                playerPos.Y -= lightMask.Height * scale / 2;
+                //spriteBatch.Draw(lightMask, playerPos, Color.White);
+                spriteBatch.Draw(lightMask, playerPos, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 1f);
+
+                spriteBatch.End();
+
+                GraphicsDevice.SetRenderTarget(mainTarget);
+                GraphicsDevice.Clear(Color.Transparent);
+
+                levelManager.Draw(gameTime, spriteBatch);
+
+                GraphicsDevice.SetRenderTarget(null);
+                GraphicsDevice.Clear(Color.Black);
+
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+
+                effect1.Parameters["lightMask"].SetValue(lightsTarget);
+                effect1.CurrentTechnique.Passes[0].Apply();
+                spriteBatch.Draw(mainTarget, Vector2.Zero, Color.White);
+                spriteBatch.End();
+
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Global.Camera.TranslationMatrix);
+                Global.Gui.Draw(spriteBatch, gameTime);
+                spriteBatch.End();
+            }
             base.Draw(gameTime);
         }
     }

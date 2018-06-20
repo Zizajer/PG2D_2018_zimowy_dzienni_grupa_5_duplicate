@@ -99,7 +99,10 @@ namespace Dungeon_Crawler
         {
             if (Keyboard.GetState().IsKeyDown(Keys.O) &&  Global.pastKey13.IsKeyUp(Keys.O))
             {
-                Global.GameStates[5] = !Global.GameStates[5];
+                if(Global.GameStates == 5)
+                {
+                    Global.GameStates = 4;
+                }
             }
 
              Global.pastKey13 = Keyboard.GetState();
@@ -208,7 +211,10 @@ namespace Dungeon_Crawler
         }
         void quitButton_Click(object sender, EventArgs e)
         {
-            Global.GameStates[5] = !Global.GameStates[5];
+            if(Global.GameStates == 5)
+            {
+                Global.GameStates = 4;
+            }
         }
     }
 }
