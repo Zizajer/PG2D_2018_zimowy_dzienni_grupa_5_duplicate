@@ -25,7 +25,7 @@ namespace Dungeon_Crawler
         {
             Name = "Small Resource Potion";
             resource = 20;
-            Description = "Drink this potion to gain mmaximum of" + resource + " resource. Strongly increases your desire to urinate.";
+            Description = "Drink this potion to gain mmaximum of " + resource + " resource. Strongly increases your desire to urinate.";
             Category = "Potion";
             RemainingUsages = 1;
 
@@ -48,6 +48,7 @@ namespace Dungeon_Crawler
                 {
                     resourceGained = player.Resource - player.CurrentResource;
                     player.CurrentResource += resourceGained;
+                    Global.Gui.WriteToConsole("The potion added " + Math.Ceiling(resourceGained) + " resource");
                 }
                 else
                 {
