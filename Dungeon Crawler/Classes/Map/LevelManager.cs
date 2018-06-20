@@ -40,8 +40,8 @@ namespace Dungeon_Crawler
         public Dictionary<string, Animation> _animationsBrainy;
         public Dictionary<string, Animation> _animationsSpider;
         public Dictionary<string, Animation> _animationsLich;
-        
 
+        int whichBossToSpawn = -1;
         public List<String> allItemsNames;
 
         public Texture2D rock;
@@ -210,11 +210,11 @@ namespace Dungeon_Crawler
         {
             enemiesCount = enemiesCount + 3;
             if (Global.random.Next(4) % 2 == 0) 
-            rocksCount = rocksCount + increaseValue;
+                rocksCount = rocksCount + increaseValue;
             enemySpeedFactor = enemySpeedFactor + 0.2f;
             if (player != null && player.CurrentMapLevel > 5)
             {
-                itemsCount = Global.random.Next(allItemsNames.Count);
+                itemsCount = Global.random.Next(3);
             }
         }
 
@@ -262,14 +262,14 @@ namespace Dungeon_Crawler
             List<Item> items = CreateItemsList(Content, map, cellSize, 0, occupiedCells, allItemsNames, grid);
 
             List<Item> BossInventory = new List<Item>();
-            if (Global.random.Next(10) > 0) //Boss has 90% of chance to be equipped with 2-4 items
+            if (Global.random.Next(10) > 1) //Boss has 90% of chance to be equipped with 2-3 items
             {
-                int numberOfItems = Global.random.Next(2, 5);
+                int numberOfItems = Global.random.Next(2, 4);
                 BossInventory = CreateItemsList(Content, numberOfItems, allItemsNames);
             }
 
-            // whichBossToSpawn = 3;
-            int whichBossToSpawn = Global.random.Next(5);
+            whichBossToSpawn++;
+            if (whichBossToSpawn > 4) whichBossToSpawn = 0;
             if (whichBossToSpawn == 0)
             {
                 List<Cell> bossOccupyingCells = map.GetCellsInArea(6, 6, 1).ToList();
@@ -456,7 +456,7 @@ namespace Dungeon_Crawler
                 }
 
                 List<Item> EnemyInventory = new List<Item>();
-                if (Global.random.Next(20) > -1)  // Enemy has 5% of chance to be equipped with one item (for testing I changed it to 100%)
+                if (Global.random.Next(20) > 18)  // Enemy has 10% of chance to be equipped with one item (for testing I changed it to 100%)
                 {
                     EnemyInventory = CreateItemsList(Content, 1, allItemsNames);
                 }

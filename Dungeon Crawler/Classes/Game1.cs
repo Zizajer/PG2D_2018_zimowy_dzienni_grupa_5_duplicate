@@ -89,6 +89,7 @@ namespace Dungeon_Crawler
             }
             else if (Global.CurrentGameState == Global.Gamestates.isGameActive)
             {
+                Global.StatsAllocationSystem.PointsUpdate(gameTime);
                 Global.Camera.Move();
                 levelManager.Update(gameTime, GraphicsDevice);
                 Global.Gui.Update(gameTime);

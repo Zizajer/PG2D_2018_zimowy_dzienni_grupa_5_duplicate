@@ -36,7 +36,7 @@ namespace Dungeon_Crawler
 
         private int points = 0;
         private int pointsAllocated = 0;
-        private int pointsToAllocate;
+        public int pointsToAllocate;
 
         public StatsAllocationSystem(ContentManager Content, LevelManager lm)
         {
@@ -47,7 +47,11 @@ namespace Dungeon_Crawler
             addLabels();
             addButtons();
         }
-
+        public void PointsUpdate(GameTime gameTime)
+        {
+            points = lm.player.Level - 1;
+            pointsToAllocate = points - pointsAllocated;
+        }
         public void Update(GameTime gameTime)
         {
             points = lm.player.Level - 1;

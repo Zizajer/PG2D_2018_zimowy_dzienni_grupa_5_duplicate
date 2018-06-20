@@ -76,6 +76,8 @@ namespace Dungeon_Crawler
                         drawingNewLevelMsg = false;
                     }
                 }
+                if (Global.StatsAllocationSystem.pointsToAllocate > 4)
+                    spriteBatch.DrawString(font, "You have " + Global.StatsAllocationSystem.pointsToAllocate + " unallocated points. Press o to allocate", new Vector2((int)tempX + Global.Camera.ViewportWorldBoundry().Width * 0.65f, (int)tempY+ Global.Camera.ViewportWorldBoundry().Height * 0.94f), Color.White, 0.0f, Vector2.One, 0.7f / scale, SpriteEffects.None, Layers.Text);
             }
             else
             {
