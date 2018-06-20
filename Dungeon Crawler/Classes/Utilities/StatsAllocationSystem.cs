@@ -50,7 +50,7 @@ namespace Dungeon_Crawler
 
         public void Update(GameTime gameTime)
         {
-            points = lm.player.Level;
+            points = lm.player.Level - 1;
             pointsToAllocate = points - pointsAllocated;
             pointsLabel.Text = "Points: " + points;
             pointsToAllocateLabel.Text = "Points to allocate: " + pointsToAllocate;
