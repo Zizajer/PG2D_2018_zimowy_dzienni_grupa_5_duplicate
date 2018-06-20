@@ -41,15 +41,14 @@ namespace Dungeon_Crawler
             }
             else
             {
-                float healed=0;
+                float healed= healthGained;
                 if (owner.CurrentHealth + healthGained > owner.Health)
                 {
                     healed = owner.Health - owner.CurrentHealth;
-                    owner.CurrentHealth = owner.Health;
+                    owner.CurrentHealth += healed;
                 }
                 else
                 {
-                    healed = healthGained;
                     owner.CurrentHealth += healthGained;
                 }
                 Global.Gui.WriteToConsole("The potion healed you for " + Math.Ceiling(healed));

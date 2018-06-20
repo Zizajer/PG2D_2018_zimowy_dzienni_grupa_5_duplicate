@@ -14,7 +14,7 @@ namespace Dungeon_Crawler
         public new ActionState currentActionState;
         public float teleportTimer;
         public float explosionTimer;
-        public float teleportCooldown = 5f;
+        public float teleportCooldown = 6f;
         public float explosionCooldown= 1.8f;
 
         public Brainy(Dictionary<string, Animation> _animations, int cellSize, int level, float timeBetweenActions, Map map, List<Cell> cells) : base(_animations, cellSize, level, timeBetweenActions, map, cells)

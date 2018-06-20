@@ -42,15 +42,14 @@ namespace Dungeon_Crawler
             }
             else
             {
-                float resourceGained = 0;
+                float resourceGained = resource;
                 if (player.CurrentResource + resource > player.Resource)
                 {
                     resourceGained = player.Resource - player.CurrentResource;
-                    player.CurrentResource = player.Resource;
+                    player.CurrentResource += resourceGained;
                 }
                 else
                 {
-                    resourceGained = resource;
                     player.CurrentResource += resourceGained;
                 }
                 Global.Gui.WriteToConsole("The potion added " + Math.Ceiling(resourceGained) + " resource");
