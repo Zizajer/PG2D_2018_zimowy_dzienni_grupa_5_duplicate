@@ -33,7 +33,7 @@ namespace Dungeon_Crawler
                 Attack = (int)Math.Floor(210 + Level * 2.5);
                 SpAttack = 210 + Level * 3;
                 Speed = 1f;
-                Experience = 250 + Level * 5;
+                Experience = 230 + Level * 5;
             }
             else
             {
@@ -43,7 +43,7 @@ namespace Dungeon_Crawler
                 Attack = (int)Math.Floor(210 + Level * 2.5);
                 SpAttack = 210 + Level * 3;
                 Speed = 1f;
-                Experience = 250 + Level * 5;
+                Experience = 220 + Level * 5;
             }
         }
         public override void SetAttack()

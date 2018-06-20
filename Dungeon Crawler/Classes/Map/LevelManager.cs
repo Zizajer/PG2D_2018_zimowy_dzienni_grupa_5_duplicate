@@ -214,7 +214,7 @@ namespace Dungeon_Crawler
             enemySpeedFactor = enemySpeedFactor + 0.2f;
             if (player != null && player.CurrentMapLevel > 5)
             {
-                itemsCount = Global.random.Next(3);
+                itemsCount = 3;
             }
         }
 
@@ -255,10 +255,10 @@ namespace Dungeon_Crawler
             var grid = new Grid(13, 13, 1.0f);
 
             List<Cell> occupiedCells = new List<Cell>();
-            
+
             Portal portal = new Portal(portalTexture);
 
-            List<Character> enemies =new List<Character>(1);
+            List<Character> enemies = new List<Character>(1);
             List<Item> items = CreateItemsList(Content, map, cellSize, 0, occupiedCells, allItemsNames, grid);
 
             List<Item> BossInventory = new List<Item>();
@@ -294,36 +294,14 @@ namespace Dungeon_Crawler
             }
             else if (whichBossToSpawn == 1)
             {
-                List<Cell> bossOccupyingCells = map.GetCellsInArea(6, 6, 1).ToList();
-
-                Cell randomCell = map.GetCell(5, 5);
-                foreach (Cell cell in bossOccupyingCells)
-                {
-                    grid.SetCellCost(new Position(cell.X, cell.Y), 5.0f);
-                }
-
-                occupiedCells.Union(bossOccupyingCells);
-
-                float timeBetweenActions = 1.7f; //we should move that to each boss class but w/e
-                Character tempBoss =
-                    new DemonOak(_animationsDemonOak, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
-                    {
-                        Name = DemonOakNamesList[Global.random.Next(DemonOakNamesList.Count)],
-                        Position = new Vector2((randomCell.X * cellSize), (randomCell.Y * cellSize))
-                    };
-                enemies.Add(tempBoss);
-                tempBoss.TakeItems(BossInventory);
-            }
-            else if (whichBossToSpawn == 2)
-            {
                 Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid);
                 List<Cell> bossOccupyingCells = new List<Cell>();
 
                 float timeBetweenActions = 1.0f; //we should move that to each boss class but w/e
                 Character tempBoss =
-                    new Brainy(_animationsBrainy, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
+                    new BlackKnight(_animationsBlackKnight, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
                     {
-                        Name = BrainyNamesList[Global.random.Next(BrainyNamesList.Count)],
+                        Name = BlackKnightNamesList[Global.random.Next(BlackKnightNamesList.Count)],
                         Position = new Vector2((randomCell.X * cellSize + cellSize / 4), (randomCell.Y * cellSize) + cellSize / 4)
                     };
                 enemies.Add(tempBoss);
@@ -331,7 +309,7 @@ namespace Dungeon_Crawler
 
                 grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
             }
-            else if(whichBossToSpawn == 3)
+            else if (whichBossToSpawn == 2)
             {
                 List<Cell> bossOccupyingCells = map.GetCellsInArea(6, 6, 1).ToList();
 
@@ -353,22 +331,44 @@ namespace Dungeon_Crawler
                 enemies.Add(tempBoss);
                 tempBoss.TakeItems(BossInventory);
             }
-            else
+            else if (whichBossToSpawn == 3)
             {
                 Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid);
                 List<Cell> bossOccupyingCells = new List<Cell>();
 
                 float timeBetweenActions = 1.0f; //we should move that to each boss class but w/e
                 Character tempBoss =
-                    new BlackKnight(_animationsBlackKnight, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
+                    new Brainy(_animationsBrainy, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
                     {
-                        Name = BlackKnightNamesList[Global.random.Next(BlackKnightNamesList.Count)],
+                        Name = BrainyNamesList[Global.random.Next(BrainyNamesList.Count)],
                         Position = new Vector2((randomCell.X * cellSize + cellSize / 4), (randomCell.Y * cellSize) + cellSize / 4)
                     };
                 enemies.Add(tempBoss);
                 tempBoss.TakeItems(BossInventory);
 
                 grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
+            }
+            else
+            {
+                List<Cell> bossOccupyingCells = map.GetCellsInArea(6, 6, 1).ToList();
+
+                Cell randomCell = map.GetCell(5, 5);
+                foreach (Cell cell in bossOccupyingCells)
+                {
+                    grid.SetCellCost(new Position(cell.X, cell.Y), 5.0f);
+                }
+
+                occupiedCells.Union(bossOccupyingCells);
+
+                float timeBetweenActions = 1.7f; //we should move that to each boss class but w/e
+                Character tempBoss =
+                    new DemonOak(_animationsDemonOak, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
+                    {
+                        Name = DemonOakNamesList[Global.random.Next(DemonOakNamesList.Count)],
+                        Position = new Vector2((randomCell.X * cellSize), (randomCell.Y * cellSize))
+                    };
+                enemies.Add(tempBoss);
+                tempBoss.TakeItems(BossInventory);
             }
 
             Global.Camera.setParams(map.Width, map.Height, cellSize);
@@ -547,12 +547,9 @@ namespace Dungeon_Crawler
 
         public void Update(GameTime gameTime, GraphicsDevice graphicsDevice)
         {
-            Debug.WriteLine(player.CurrentMapLevel);
             levels[player.CurrentMapLevel].Update(gameTime, graphicsDevice);
             if (levels[player.CurrentMapLevel].finished == true)
             {
-                Debug.WriteLine(player.CurrentMapLevel);
-
                 if (player.CurrentMapLevel % 3 == 1)
                 {
                     CreateBossLevel();

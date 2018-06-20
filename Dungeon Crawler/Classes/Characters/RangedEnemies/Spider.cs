@@ -25,7 +25,7 @@ namespace Dungeon_Crawler
                 SpDefense = 50 + Level * 5;
                 Attack = (int)Math.Floor(35 + Level * 2.5f);
                 SpAttack = 50 + Level * 3;
-                Experience = 50 + Level * 5;
+                Experience = 40 + Level * 5;
                 Speed = 2f;
 
                 timeBetweenActions = 2f;
@@ -37,7 +37,7 @@ namespace Dungeon_Crawler
                 SpDefense = 70 + Level * 5;
                 Attack = (int)Math.Floor(35 + Level * 2.5f);
                 SpAttack = 50 + Level * 3;
-                Experience = 50 + Level * 5;
+                Experience = 40 + Level * 5;
                 Speed = 2f;
 
                 timeBetweenActions = 2f;
