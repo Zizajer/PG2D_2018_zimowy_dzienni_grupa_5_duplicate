@@ -28,7 +28,7 @@ namespace Dungeon_Crawler
             IsSpecial = true;
             ManaCost = 60;
 
-            Distance = 5;
+            Distance = 3;
             AnimationName = "MagicAnim2";
         }
 

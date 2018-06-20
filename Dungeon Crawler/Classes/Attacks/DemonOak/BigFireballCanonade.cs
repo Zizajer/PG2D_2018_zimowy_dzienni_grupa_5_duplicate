@@ -26,7 +26,7 @@ namespace Dungeon_Crawler
         {
             Name = "Big Fireball Canonade";
             Power = 150;
-            Accuracy = 80;
+            Accuracy = 100;
             CriticalHitProbability = 15;
             FreezeProbability = 0;
             BurnProbability = 20;
@@ -58,7 +58,7 @@ namespace Dungeon_Crawler
                 Vector2 tempVelocity;
                 Projectile newProjectile;
 
-                float additionalSpeed = 1.7f;
+                float additionalSpeed = 1.4f;
 
                 tempVelocity = new Vector2((float)Math.Cos(rotation) * additionalSpeed, ((float)Math.Sin(rotation)) * additionalSpeed);
                 newProjectile = new Projectile(this, attacker, tempVelocity, tempPosition, ProjectileTexture, rotation, Range, VanishDelay);

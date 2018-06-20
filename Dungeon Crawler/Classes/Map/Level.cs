@@ -120,14 +120,6 @@ namespace Dungeon_Crawler
                         }
                         enemy.DropAllItems(this);
                         enemies.RemoveAt(i);
-                        /*
-                        if (Global.random.Next(20) == 19) //5% of chance
-                        {
-                            int itemId = Global.random.Next(allItemsNames.Count);
-                            ItemSprite tempItem = new ItemSprite(new Vector2(enemy.Center.X, enemy.Center.Y), allItems[itemId], allItemsNames[itemId]);
-                            items.Add(tempItem);
-                        }
-                        */
                     }
                 }
             }

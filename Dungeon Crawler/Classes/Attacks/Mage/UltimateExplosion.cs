@@ -20,9 +20,9 @@ namespace Dungeon_Crawler
         public UltimateExplosion()
         {
             Name = "Ultimate Explosion";
-            Power = 500;
+            Power = 850;
             Accuracy = 100;
-            CriticalHitProbability = 50;
+            CriticalHitProbability = 70;
             FreezeProbability = 0;
             BurnProbability = 60;
             IsSpecial = true;

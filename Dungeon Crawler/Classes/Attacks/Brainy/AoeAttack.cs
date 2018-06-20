@@ -20,8 +20,8 @@ namespace Dungeon_Crawler
         public AoeAttack()
         {
             Name = "Explosion";
-            Power = 40;
-            Accuracy = 100;
+            Power = 35;
+            Accuracy = 70;
             CriticalHitProbability = 10;
             FreezeProbability = 0;
             BurnProbability = 0;

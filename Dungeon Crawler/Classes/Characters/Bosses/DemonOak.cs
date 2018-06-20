@@ -14,7 +14,7 @@ namespace Dungeon_Crawler
         {
             if (Global.hardMode == false)
             {
-                Health = CurrentHealth = 110 + Level * 10;
+                Health = CurrentHealth = 90 + Level * 10;
                 Defense = 210 + Level * 3;
                 SpDefense = 210 + Level * 5;
                 Attack = (int)Math.Floor(210 + Level * 2.5);
@@ -24,7 +24,7 @@ namespace Dungeon_Crawler
             }
             else
             {
-                Health = CurrentHealth = 150 + Level * 10;
+                Health = CurrentHealth = 130 + Level * 10;
                 Defense = 250 + Level * 3;
                 SpDefense = 250 + Level * 5;
                 Attack = (int)Math.Floor(210 + Level * 2.5);

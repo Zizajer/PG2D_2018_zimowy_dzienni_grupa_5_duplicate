@@ -26,7 +26,7 @@ namespace Dungeon_Crawler
         public SpinningBall(Vector2 center)
         {
             Name = "Spinning Ball";
-            Power = 105;
+            Power = 75;
             Accuracy = 100;
             CriticalHitProbability = 5;
             FreezeProbability = 0;

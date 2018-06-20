@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using RoyT.AStar;
 using System.IO;
 using System.Linq;
+using System.Diagnostics;
 
 namespace Dungeon_Crawler
 {
@@ -139,7 +140,7 @@ namespace Dungeon_Crawler
                 "FullHealthPotion",
                 "BitterPowder"
             };
-            itemsCount = allItemsNames.Count;
+            itemsCount = 2;
             cellSize = floor.Width;
 
             try
@@ -210,7 +211,7 @@ namespace Dungeon_Crawler
             enemiesCount = enemiesCount + 3;
             if (Global.random.Next(4) % 2 == 0) 
             rocksCount = rocksCount + increaseValue;
-            enemySpeedFactor = enemySpeedFactor + 0.5f;
+            enemySpeedFactor = enemySpeedFactor + 0.2f;
             if (player != null && player.CurrentMapLevel > 5)
             {
                 itemsCount = Global.random.Next(allItemsNames.Count);
@@ -244,7 +245,7 @@ namespace Dungeon_Crawler
 
             levels.Add(level);
 
-            incrementMapParameters(2);
+            incrementMapParameters(1);
             incrementOtherParameters(1);
         }
 
@@ -303,7 +304,7 @@ namespace Dungeon_Crawler
 
                 occupiedCells.Union(bossOccupyingCells);
 
-                float timeBetweenActions = 1.2f; //we should move that to each boss class but w/e
+                float timeBetweenActions = 1.7f; //we should move that to each boss class but w/e
                 Character tempBoss =
                     new DemonOak(_animationsDemonOak, cellSize, player.CurrentMapLevel, timeBetweenActions, map, bossOccupyingCells)
                     {
@@ -546,16 +547,19 @@ namespace Dungeon_Crawler
 
         public void Update(GameTime gameTime, GraphicsDevice graphicsDevice)
         {
+            Debug.WriteLine(player.CurrentMapLevel);
             levels[player.CurrentMapLevel].Update(gameTime, graphicsDevice);
             if (levels[player.CurrentMapLevel].finished == true)
             {
-                if (player.CurrentMapLevel % 2 == 1)
+                Debug.WriteLine(player.CurrentMapLevel);
+
+                if (player.CurrentMapLevel % 3 == 1)
                 {
-                    CreateNormalLevel();
+                    CreateBossLevel();
                 }
                 else
                 {
-                    CreateBossLevel();
+                    CreateNormalLevel();
                 }
                 
                 player.CurrentMapLevel++;
