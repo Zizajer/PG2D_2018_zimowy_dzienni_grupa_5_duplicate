@@ -27,6 +27,7 @@ namespace Dungeon_Crawler
             healthGained = 25;
             Description = "Drink this potion to heal yourself for maximum " + healthGained+ " health. Strongly increases your desire to urinate.";
             Category = "Potion";
+            RemainingUsages = 1;
 
             TextureName = "potion1";
             LoadTexture(content);

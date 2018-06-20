@@ -27,6 +27,7 @@ namespace Dungeon_Crawler
             resource = 20;
             Description = "Drink this potion to gain mmaximum of" + resource + " resource. Strongly increases your desire to urinate.";
             Category = "Potion";
+            RemainingUsages = 1;
 
             TextureName = "potion3";
             LoadTexture(content);
