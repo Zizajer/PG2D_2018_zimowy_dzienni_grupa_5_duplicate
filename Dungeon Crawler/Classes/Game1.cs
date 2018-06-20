@@ -37,14 +37,13 @@ namespace Dungeon_Crawler
             IsMouseVisible = true;
             Global.Camera.setViewports(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height);
             Global.Camera.setZoom(1.5f);
-            Global.GameStates = 0;
+            Global.CurrentGameState = 0;
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
             Global.Gui = new GUI(graphics, Content);
             levelManager = new LevelManager(Content);
             Global.levelmanager = levelManager;
@@ -72,30 +71,30 @@ namespace Dungeon_Crawler
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (Global.GameStates == 0)
+            if (Global.CurrentGameState == Global.Gamestates.isMainMenu)
             {
                 Global.DrawManager.UpdateMainMenu(gameTime);
             }
-            else if (Global.GameStates == 1)
+            else if (Global.CurrentGameState == Global.Gamestates.isHeroChooseMenu)
             {
                 Global.DrawManager.UpdateChooseHeroMenu(gameTime);
             }
-            else if (Global.GameStates == 2)
+            else if (Global.CurrentGameState == Global.Gamestates.isHelpMenu)
             {
                 Global.DrawManager.UpdateHelpMenu(gameTime);
             }
-            else if (Global.GameStates == 3)
+            else if (Global.CurrentGameState == Global.Gamestates.isAboutMenu)
             {
                 Global.DrawManager.UpdateAboutMenu(gameTime);
             }
-            else if (Global.GameStates == 4)
+            else if (Global.CurrentGameState == Global.Gamestates.isGameActive)
             {
                 Global.Camera.Move();
                 levelManager.Update(gameTime, GraphicsDevice);
                 Global.Gui.Update(gameTime);
                 Global.CombatManager.Update();
             }
-            else if (Global.GameStates == 5)
+            else if (Global.CurrentGameState == Global.Gamestates.isStatsMenu)
             {
                 Global.StatsAllocationSystem.Update(gameTime);
             }
@@ -112,23 +111,23 @@ namespace Dungeon_Crawler
 
         protected override void Draw(GameTime gameTime)
         {
-            if (Global.GameStates == 0)
+            if (Global.CurrentGameState == Global.Gamestates.isMainMenu)
             {
                 Global.DrawManager.DrawMainMenu(spriteBatch, GraphicsDevice, gameTime);
             }
-            else if (Global.GameStates == 1)
+            else if (Global.CurrentGameState == Global.Gamestates.isHeroChooseMenu)
             {
                 Global.DrawManager.DrawChooseHeroMenu(spriteBatch, GraphicsDevice, gameTime);
             }
-            else if (Global.GameStates == 2)
+            else if (Global.CurrentGameState == Global.Gamestates.isHelpMenu)
             {
                 Global.DrawManager.DrawHelpMenu(spriteBatch, GraphicsDevice, gameTime);
             }
-            else if (Global.GameStates == 3)
+            else if (Global.CurrentGameState == Global.Gamestates.isAboutMenu)
             {
                 Global.DrawManager.DrawAboutMenu(spriteBatch, GraphicsDevice, gameTime);
             }
-            else if (Global.GameStates == 4)
+            else if (Global.CurrentGameState == Global.Gamestates.isGameActive)
             {
                 GraphicsDevice.SetRenderTarget(lightsTarget);
                 GraphicsDevice.Clear(Color.Black);
@@ -164,11 +163,11 @@ namespace Dungeon_Crawler
                 Global.Gui.Draw(spriteBatch, gameTime);
                 spriteBatch.End();
             }
-            else if (Global.GameStates == 5)
+            else if (Global.CurrentGameState == Global.Gamestates.isStatsMenu)
             {
                 Global.StatsAllocationSystem.Draw(spriteBatch, GraphicsDevice, gameTime);
             }
-            else // we draw 4 but we dont update
+            else // we draw isGameActive but we dont update
             {
                 GraphicsDevice.SetRenderTarget(lightsTarget);
                 GraphicsDevice.Clear(Color.Black);

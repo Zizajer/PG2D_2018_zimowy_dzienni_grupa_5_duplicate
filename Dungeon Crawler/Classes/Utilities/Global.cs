@@ -8,7 +8,8 @@ namespace Dungeon_Crawler
         public static readonly Random random = new Random();
         public static readonly CameraManager Camera = new CameraManager();
         public static GUI Gui;
-        public static int GameStates;
+        public enum Gamestates { isMainMenu, isHeroChooseMenu, isHelpMenu, isAboutMenu, isGameActive, isStatsMenu, isGameOver };
+        public static Gamestates CurrentGameState;
         //0- main menu 1- choosing hero 2- keyboard 3- about 4-game 5- stats 6- gameover
         public static bool hardMode; //false easy | true hard
         public static CombatManager CombatManager;

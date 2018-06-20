@@ -281,9 +281,9 @@ namespace Dungeon_Crawler
         {
             if (Keyboard.GetState().IsKeyDown(Keys.O) && Global.pastKey13.IsKeyUp(Keys.O))
             {
-                if (Global.GameStates == 4)
+                if (Global.CurrentGameState == Global.Gamestates.isGameActive)
                 {
-                    Global.GameStates = 5;
+                    Global.CurrentGameState = Global.Gamestates.isStatsMenu;
                 }
             }
 
