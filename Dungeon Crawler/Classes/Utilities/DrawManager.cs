@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace Dungeon_Crawler
 {
@@ -20,6 +18,7 @@ namespace Dungeon_Crawler
         private Texture2D controls;
         private Texture2D checkboxT;
         private SpriteFont buttonFont;
+        private SpriteFont smallButtonFont;
 
         private Inputbox inputbox;
         private Game1 game;
@@ -29,6 +28,9 @@ namespace Dungeon_Crawler
         private List<Button> HelpMenuButtons;
         private List<Button> AboutMenuButtons;
         private List<Button> ClassSpecificButtons;
+
+        private int screenWidth = 1280;
+        private int screenHeight = 768;
 
         public DrawManager(ContentManager Content, Game1 game, LevelManager lm)
         {
@@ -42,6 +44,7 @@ namespace Dungeon_Crawler
             gameLogo = Content.Load<Texture2D>("Arts/DungeonCrawlerLogo");
             controls = Content.Load<Texture2D>("Arts/Controls");
             buttonFont = Content.Load<SpriteFont>("fonts/Chiller");
+            smallButtonFont = Content.Load<SpriteFont>("fonts/smallChiller");
 
             CreateButtons();
 
@@ -169,8 +172,7 @@ namespace Dungeon_Crawler
             graphicsDevice.Clear(Color.White);
 
             spriteBatch.Begin();
-
-            spriteBatch.Draw(gameLogo, new Rectangle(400, 0, gameLogo.Width/2, gameLogo.Height/2), Color.White);
+            spriteBatch.Draw(gameLogo, new Rectangle(screenWidth/2 - gameLogo.Width / 4, 0, gameLogo.Width/2, gameLogo.Height/2), Color.White);
 
             foreach (Button button in MainMenuButtons)
             {
@@ -204,11 +206,15 @@ namespace Dungeon_Crawler
 
             spriteBatch.Begin();
 
-            spriteBatch.DrawString(buttonFont, "Cezary Witkowski - Project Leader/Developer/Merge Master", new Vector2(315, 325), Color.Black);
-
-            spriteBatch.DrawString(buttonFont, "Marcin Kapelan - Developer", new Vector2(315, 365), Color.Black);
-
-            spriteBatch.DrawString(buttonFont, "Piotr Sadza - Graphic design/Sound design", new Vector2(315, 405), Color.Black);
+            string s;
+            s = "Game Authors:";
+            spriteBatch.DrawString(buttonFont, s, new Vector2(screenWidth / 2 - buttonFont.MeasureString(s).Length() / 2, 200), Color.Black);
+            s = "Cezary Witkowski - Project Leader/Developer/Merge Master";
+            spriteBatch.DrawString(buttonFont, s, new Vector2(screenWidth / 2 - buttonFont.MeasureString(s).Length() / 2, 275), Color.Black);
+            s = "Marcin Kapelan - Developer";
+            spriteBatch.DrawString(buttonFont, s, new Vector2(screenWidth / 2 - buttonFont.MeasureString(s).Length() / 2, 359), Color.Black);
+            s = "Piotr Sadza - Graphic design/Sound design";
+            spriteBatch.DrawString(buttonFont, s, new Vector2(screenWidth / 2 - buttonFont.MeasureString(s).Length() / 2, 425), Color.Black);
 
             foreach (Button button in AboutMenuButtons)
             {
@@ -224,17 +230,15 @@ namespace Dungeon_Crawler
             graphicsDevice.Clear(Color.White);
 
             spriteBatch.Begin();
+            string s= "Choose Character";
+            spriteBatch.DrawString(buttonFont, s, new Vector2(screenWidth / 2 - buttonFont.MeasureString(s).Length() / 2, 10), Color.Black);
 
-            spriteBatch.DrawString(buttonFont, "Choose Character", new Vector2(550, 10), Color.Black);
+            spriteBatch.Draw(mag, new Rectangle(screenWidth / 3 - mag.Width / 2, 100, mag.Width, mag.Height), Color.White);
 
-            int width = 200, height = 300;
+            spriteBatch.Draw(warrior, new Rectangle(screenWidth / 2 - warrior.Width / 2, 100, warrior.Width, warrior.Height), Color.White);
 
-            spriteBatch.Draw(mag, new Rectangle(275, 50, width, height), Color.White);
-
-            spriteBatch.Draw(warrior, new Rectangle(550, 50, width, height), Color.White);
-
-            spriteBatch.Draw(ranger, new Rectangle(825, 50, width, height), Color.White);
-            string s;
+            spriteBatch.Draw(ranger, new Rectangle(screenWidth * 2 / 3 - ranger.Width / 2, 100, ranger.Width, ranger.Height), Color.White);
+            
             if (Global.hardMode)
             {
                 s = "Difficulty: Hard";
@@ -243,7 +247,8 @@ namespace Dungeon_Crawler
             {
                 s = "Difficulty: Easy";
             }
-            spriteBatch.DrawString(buttonFont, s, new Vector2(535, 587), Color.Black);
+
+            spriteBatch.DrawString(buttonFont, s, new Vector2(screenWidth / 2 - buttonFont.MeasureString(s).Length() / 2 - checkbox.Rectangle.Width, 587), Color.Black);
 
             foreach (Button button in heroChooseButtons)
             {
@@ -260,25 +265,22 @@ namespace Dungeon_Crawler
             graphicsDevice.Clear(Color.White);
 
             spriteBatch.Begin();
-
-            spriteBatch.DrawString(buttonFont, "Enter your hero name", new Vector2(550, 10), Color.Black);
-
-            int width = 200, height = 300;
+            string s = "Enter your hero name";
+            spriteBatch.DrawString(buttonFont, s, new Vector2(screenWidth / 2 - buttonFont.MeasureString(s).Length() / 2, 10), Color.Black);
 
             if(Global.playerClass == "Mage")
             {
-                spriteBatch.Draw(mag, new Rectangle(550, 50, width, height), Color.White);
+                spriteBatch.Draw(mag, new Rectangle(screenWidth / 2 - mag.Width / 2, 100, mag.Width, mag.Height), Color.White);
             }
             else if(Global.playerClass == "Warrior")
             {
-                spriteBatch.Draw(warrior, new Rectangle(550, 50, width, height), Color.White);
+                spriteBatch.Draw(warrior, new Rectangle(screenWidth / 2 - warrior.Width / 2, 100, warrior.Width, warrior.Height), Color.White);
             }
             else
             {
-                spriteBatch.Draw(ranger, new Rectangle(550, 50, width, height), Color.White);
+                spriteBatch.Draw(ranger, new Rectangle(screenWidth / 2 - ranger.Width / 2, 100, ranger.Width, ranger.Height), Color.White);
             }
 
-            spriteBatch.DrawString(buttonFont, "Enter your name", new Vector2(535, 387), Color.Black);
             inputbox.Draw(gameTime, spriteBatch);
 
             foreach (Button button in ClassSpecificButtons)
@@ -318,18 +320,18 @@ namespace Dungeon_Crawler
         {
             inputbox = new Inputbox(button, buttonFont)
             {
-                Position = new Vector2(675, 375)
+                Position = new Vector2(screenWidth / 2 - button.Width / 2, 420)
             };
 
             checkbox = new Checkbox(checkboxT, buttonFont)
             {
-                Position = new Vector2(675, 575)
+                Position = new Vector2(750, 600)
             };
             checkbox.Click += checkbox_Click;
 
             var magButton = new Button(button, buttonFont)
             {
-                Position = new Vector2(300, 350),
+                Position = new Vector2(screenWidth / 3 - button.Width / 2, 420),
                 Text = "Mage"
             };
 
@@ -337,7 +339,7 @@ namespace Dungeon_Crawler
 
             var warriorButton = new Button(button, buttonFont)
             {
-                Position = new Vector2(575, 350),
+                Position = new Vector2(screenWidth / 2 - button.Width / 2, 420),
                 Text = "Warrior",
             };
 
@@ -345,7 +347,7 @@ namespace Dungeon_Crawler
 
             var rangerButton = new Button(button, buttonFont)
             {
-                Position = new Vector2(850, 350),
+                Position = new Vector2(screenWidth * 2 / 3 - button.Width / 2, 420),
                 Text = "Ranger",
             };
 
@@ -353,8 +355,8 @@ namespace Dungeon_Crawler
 
             var quitButton = new Button(button, buttonFont)
             {
-                Position = new Vector2(575, 725),
-                Text = "Go Back",
+                Position = new Vector2(screenWidth / 2 - button.Width / 2, 700),
+                Text = "Go back",
             };
 
             quitButton.Click += quitButton_Click;
@@ -367,34 +369,35 @@ namespace Dungeon_Crawler
                     quitButton,
                 };
 
+            //main menu
             var startGameButton = new Button(button, buttonFont)
             {
-                Position = new Vector2(575, 500),
                 Text = "Start Game",
+                Position = new Vector2(screenWidth / 2 - button.Width / 2, 475)
             };
 
             startGameButton.Click += StartGameButton_Click;
 
             var helpButton = new Button(button, buttonFont)
             {
-                Position = new Vector2(575, 575),
                 Text = "How to Play",
+                Position = new Vector2(screenWidth / 2 - button.Width / 2, 550)
             };
 
             helpButton.Click += HelpButton_Click;
 
             var aboutGameButton = new Button(button, buttonFont)
             {
-                Position = new Vector2(575, 650),
                 Text = "About",
+                Position = new Vector2(screenWidth / 2 - button.Width / 2, 625)
             };
 
             aboutGameButton.Click += AboutGameButton_Click;
 
             var quitGameButton = new Button(button, buttonFont)
             {
-                Position = new Vector2(575, 725),
                 Text = "Exit",
+                Position = new Vector2(screenWidth / 2 - button.Width / 2, 700)
             };
 
             quitGameButton.Click += QuitGameButton_Click;
@@ -407,9 +410,10 @@ namespace Dungeon_Crawler
                     quitGameButton,
                 };
 
+            //main menu
             var goBackFromHelpButton = new Button(button, buttonFont)
             {
-                Position = new Vector2(575, 725),
+                Position = new Vector2(screenWidth / 2 - button.Width / 2, 700),
                 Text = "Go back",
             };
 
@@ -422,7 +426,7 @@ namespace Dungeon_Crawler
 
             var goBackFromAboutButton = new Button(button, buttonFont)
             {
-                Position = new Vector2(575, 725),
+                Position = new Vector2(screenWidth / 2 - button.Width / 2, 700),
                 Text = "Go back",
             };
 
@@ -435,23 +439,23 @@ namespace Dungeon_Crawler
 
             var goBackFromClassSpecificButton= new Button(button, buttonFont)
             {
-                Position = new Vector2(575, 725),
+                Position = new Vector2(screenWidth / 2 - button.Width / 2, 700),
                 Text = "Go back",
             };
             goBackFromClassSpecificButton.Click += goBackFromClassSpecificButton_Click;
 
             var startAdventureButton = new Button(button, buttonFont)
             {
-                Position = new Vector2(575, 450),
-                Text = "Start Game",
+                Position = new Vector2(screenWidth / 2 - button.Width / 2, 587),
+                Text = "Start Adventure!",
             };
 
             startAdventureButton.Click += startAdventureButton_Click;
 
-            var randomNameButton = new Button(button, buttonFont)
+            var randomNameButton = new Button(button, smallButtonFont)
             {
-                Position = new Vector2(835, 375),
-                Text = "Random Name",
+                Position = new Vector2(screenWidth / 2 - button.Width / 2, 470),
+                Text = "Generate Name (you can also type your own)",
             };
 
             randomNameButton.Click += randomNameButton_Click;

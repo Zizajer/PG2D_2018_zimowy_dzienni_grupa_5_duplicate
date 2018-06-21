@@ -174,8 +174,8 @@ namespace Dungeon_Crawler
 
             quitButton = new Button(bigButton, font)
             {
-                Position = new Vector2(575, 625),
-                Text = "Quit",
+                Position = new Vector2(1280 / 2 - bigButton.Width / 2, 700),
+                Text = "Go back",
             };
             quitButton.Click += quitButton_Click;
 

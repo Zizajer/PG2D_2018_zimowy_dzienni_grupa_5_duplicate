@@ -72,9 +72,17 @@ namespace Dungeon_Crawler
                         if(key == Keys.Back){
                             Global.playerName = "";
                         }
+                        else if (key == Keys.Space)
+                        {
+                            if(Global.playerName.Length<10)
+                                Global.playerName += " ";
+                        }
                         else {
-                            Global.playerName += key.ToString();
-                            Global.playerName = DrawManager.ToTitleCase(Global.playerName);
+                            if (Global.playerName.Length < 10)
+                            {
+                                Global.playerName += key.ToString();
+                                Global.playerName = DrawManager.ToTitleCase(Global.playerName);
+                            } 
                         }
                     }
                 }
