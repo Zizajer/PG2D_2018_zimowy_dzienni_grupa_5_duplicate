@@ -66,7 +66,7 @@ namespace Dungeon_Crawler
         {
             levels = new List<Level>();
             this.Content = Content;
-            
+
             floor = Content.Load<Texture2D>("map/Floor");
             wall = Content.Load<Texture2D>("map/Wall");
             rock = Content.Load<Texture2D>("map/rock");
@@ -169,12 +169,12 @@ namespace Dungeon_Crawler
             }
 
             CreateNormalLevel();
-            
+
         }
 
         public void setPlayer(String ClassName)
         {
-            Cell randomCell = GetRandomEmptyCell(levels[0].map, levels[0].occupiedCells, levels[0].grid);
+            Cell randomCell = GetRandomEmptyCell(levels[0].map, levels[0].occupiedCells, levels[0].grid, true);
 
             if (ClassName.Equals("Warrior"))
             {
@@ -193,7 +193,7 @@ namespace Dungeon_Crawler
                     Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
                 };
             }
-            else if(ClassName.Equals("Mage"))
+            else if (ClassName.Equals("Mage"))
             {
                 player =
                 new Mage(Content, cellSize, 0, Global.playerName + " the " + Global.playerClass)
@@ -210,14 +210,14 @@ namespace Dungeon_Crawler
 
         public void incrementMapParameters(int increaseValue)
         {
-            newMapWidth = newMapWidth + increaseValue*2;
+            newMapWidth = newMapWidth + increaseValue * 2;
             newMapHeight = newMapHeight + increaseValue;
         }
 
         public void incrementOtherParameters(int increaseValue)
         {
             enemiesCount = enemiesCount + 3;
-            if (Global.random.Next(4) % 2 == 0) 
+            if (Global.random.Next(4) % 2 == 0)
                 rocksCount = rocksCount + increaseValue;
             enemySpeedFactor = enemySpeedFactor + 0.2f;
             if (player != null && player.CurrentMapLevel > 5)
@@ -238,7 +238,7 @@ namespace Dungeon_Crawler
             List<Character> enemies = CreateEnemiesList(Content, map, cellSize, enemiesCount, occupiedCells, grid);
             List<Item> items = CreateItemsList(Content, map, cellSize, itemsCount, occupiedCells, allItemsNames, grid);
             List<Rock> rocks = CreateRocksList(Content, map, cellSize, rocksCount, occupiedCells, rock, grid);
-            
+
             Global.Camera.setParams(map.Width, map.Height, cellSize);
 
             foreach (Cell cell in map.GetAllCells())
@@ -302,7 +302,7 @@ namespace Dungeon_Crawler
             }
             else if (whichBossToSpawn == 1)
             {
-                Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid);
+                Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid, true);
                 List<Cell> bossOccupyingCells = new List<Cell>();
 
                 float timeBetweenActions = 1.0f; //we should move that to each boss class but w/e
@@ -341,7 +341,7 @@ namespace Dungeon_Crawler
             }
             else if (whichBossToSpawn == 3)
             {
-                Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid);
+                Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid, true);
                 List<Cell> bossOccupyingCells = new List<Cell>();
 
                 float timeBetweenActions = 1.0f; //we should move that to each boss class but w/e
@@ -400,7 +400,7 @@ namespace Dungeon_Crawler
 
             for (int i = 0; i < rocksCount; i++)
             {
-                Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid);
+                Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid, false);
                 occupiedCells.Add(randomCell);
                 map.SetCellProperties(randomCell.X, randomCell.Y, false, true);
                 Rock tempRock =
@@ -414,11 +414,11 @@ namespace Dungeon_Crawler
 
         private List<Item> CreateItemsList(ContentManager Content, Map map, int cellSize, int itemCount, List<Cell> occupiedCells, List<String> allItemsNames, Grid grid)
         {
-            List <Item> items = new List<Item>(itemCount);
+            List<Item> items = new List<Item>(itemCount);
 
             for (int i = 0; i < itemCount; i++)
             {
-                Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid);
+                Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid, true);
                 occupiedCells.Add(randomCell);
                 String randomItem = allItemsNames[Global.random.Next(allItemsNames.Count)];
                 Item tempItem = (Item)Activator.CreateInstance(Type.GetType("Dungeon_Crawler." + randomItem), Content, new Vector2(randomCell.X * cellSize + cellSize / 3, randomCell.Y * cellSize + cellSize / 3));
@@ -442,15 +442,15 @@ namespace Dungeon_Crawler
             return items;
         }
 
-        private List<Character> CreateEnemiesList(ContentManager Content, Map map, int cellSize, int enemyCount, List<Cell> occupiedCells,Grid grid)
+        private List<Character> CreateEnemiesList(ContentManager Content, Map map, int cellSize, int enemyCount, List<Cell> occupiedCells, Grid grid)
         {
             List<Character> enemies = new List<Character>(enemyCount);
 
             for (int i = 0; i < enemyCount; i++)
             {
-                Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid);
+                Cell randomCell = GetRandomEmptyCell(map, occupiedCells, grid, true);
                 occupiedCells.Add(randomCell);
-                float speed =  1 / 0.9f + (float)Math.Log(enemySpeedFactor);
+                float speed = 1 / 0.9f + (float)Math.Log(enemySpeedFactor);
                 float timeBetweenActions = 1f;
 
                 int level;
@@ -471,7 +471,7 @@ namespace Dungeon_Crawler
 
                 string enemyName;
                 int whichEnemyToSpawn = Global.random.Next(4);
-                if (whichEnemyToSpawn==0)
+                if (whichEnemyToSpawn == 0)
                 {
                     enemyName = "Blob";
 
@@ -485,7 +485,7 @@ namespace Dungeon_Crawler
                     enemies.Add(tempEnemy);
                     grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
                 }
-                else if(whichEnemyToSpawn == 1)
+                else if (whichEnemyToSpawn == 1)
                 {
                     enemyName = "Skeleton";
 
@@ -532,7 +532,7 @@ namespace Dungeon_Crawler
             return enemies;
         }
 
-        private Map CreateMap(int mapWidth,int mapHeight,int roomCount, int roomWidth, int roomHeight)
+        private Map CreateMap(int mapWidth, int mapHeight, int roomCount, int roomWidth, int roomHeight)
         {
             IMapCreationStrategy<Map> mapCreationStrategy =
                 new RandomRoomsMapCreationStrategy<Map>(mapWidth, mapHeight, roomCount, roomWidth, roomHeight);
@@ -566,7 +566,7 @@ namespace Dungeon_Crawler
                 {
                     CreateNormalLevel();
                 }
-                
+
                 player.CurrentMapLevel++;
                 player.currentActionState = Player.ActionState.Standing;
                 levels[player.CurrentMapLevel].addPlayer(player);
@@ -577,16 +577,58 @@ namespace Dungeon_Crawler
             }
         }
 
-        private Cell GetRandomEmptyCell(Map map, List<Cell> occupiedCells, Grid grid)
+        private Cell GetRandomEmptyCell(Map map, List<Cell> occupiedCells, Grid grid, bool canBeSurroundedByWallsFromTwoSides)
         {
             int x, y;
             Cell tempCell;
-            do
+            Cell LeftTempCell;
+            Cell UpTempCell;
+            Cell RightTempCell;
+            Cell BottomTempCell;
+            if (canBeSurroundedByWallsFromTwoSides)
             {
-                x = Global.random.Next(map.Width);
-                y = Global.random.Next(map.Height);
-                tempCell = map.GetCell(x, y);
-            } while (!tempCell.IsWalkable || grid.GetCellCost(new Position(x, y)) > 1.0f || occupiedCells.Contains(tempCell));
+                do
+                {
+                    x = Global.random.Next(map.Width);
+                    y = Global.random.Next(map.Height);
+                    tempCell = map.GetCell(x, y);
+                } while (!tempCell.IsWalkable || grid.GetCellCost(new Position(x, y)) > 1.0f || occupiedCells.Contains(tempCell));
+            }
+            else
+            {
+                do
+                {
+                    x = Global.random.Next(1, map.Width);
+                    y = Global.random.Next(1, map.Height);
+                    tempCell = map.GetCell(x, y);
+
+                    if (x + 1 < map.Width)
+                    {
+                        RightTempCell = map.GetCell(x + 1, y);
+                    }
+                    else
+                    {
+                        RightTempCell = tempCell;
+                    }
+
+                    if (y + 1 < map.Height)
+                    {
+                        BottomTempCell = map.GetCell(x, y + 1);
+                    }
+                    else
+                    {
+                        BottomTempCell = tempCell;
+                    }
+                    LeftTempCell = map.GetCell(x - 1, y);
+                    UpTempCell = map.GetCell(x, y - 1);
+
+                } while (!tempCell.IsWalkable
+                 || (!LeftTempCell.IsWalkable && (!RightTempCell.IsWalkable || !UpTempCell.IsWalkable || !BottomTempCell.IsWalkable))
+                 || (!RightTempCell.IsWalkable && (!LeftTempCell.IsWalkable || !UpTempCell.IsWalkable || !BottomTempCell.IsWalkable))
+                 || (!UpTempCell.IsWalkable && (!BottomTempCell.IsWalkable || !LeftTempCell.IsWalkable || !RightTempCell.IsWalkable))
+                 || (!BottomTempCell.IsWalkable && (!UpTempCell.IsWalkable || !LeftTempCell.IsWalkable || !RightTempCell.IsWalkable))
+                 || grid.GetCellCost(new Position(x, y)) > 1.0f || occupiedCells.Contains(tempCell));
+            }
             return tempCell;
         }
     }
