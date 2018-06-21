@@ -38,8 +38,13 @@ namespace Dungeon_Crawler
         private int pointsAllocated = 0;
         public int pointsToAllocate;
 
-        public StatsAllocationSystem(ContentManager Content, LevelManager lm)
+        private int screenWidth;
+        private int screenHeight;
+
+        public StatsAllocationSystem(ContentManager Content, LevelManager lm, int screenWidth, int screenHeight)
         {
+            this.screenWidth = screenWidth;
+            this.screenHeight = screenHeight;
             this.lm = lm;
             button = Content.Load<Texture2D>("Controls/smallButton");
             bigButton = Content.Load<Texture2D>("Controls/button");
@@ -54,16 +59,31 @@ namespace Dungeon_Crawler
         }
         public void Update(GameTime gameTime)
         {
+            float value = 2 / 6f;
             points = lm.player.Level - 1;
             pointsToAllocate = points - pointsAllocated;
+
             pointsLabel.Text = "Points: " + points;
+            pointsLabel.Position.X = screenWidth / 2 - font.MeasureString(pointsLabel.Text).Length() / 2;
+
             pointsToAllocateLabel.Text = "Points to allocate: " + pointsToAllocate;
+            pointsToAllocateLabel.Position.X = screenWidth / 2 - font.MeasureString(pointsToAllocateLabel.Text).Length() / 2;
 
             healthLabel.Text = "Health: "+ lm.player.Health;
+            healthLabel.Position.X = screenWidth * value - font.MeasureString(healthLabel.Text).Length() / 2;
+
             attackLabel.Text = "Attack: " + lm.player.Attack;
+            attackLabel.Position.X = screenWidth * value - font.MeasureString(attackLabel.Text).Length() / 2;
+
             spattackLabel.Text = "SpAttack: " + lm.player.SpAttack;
+            spattackLabel.Position.X = screenWidth * value - font.MeasureString(spattackLabel.Text).Length() / 2;
+
             defenseLabel.Text = "Defense: " + lm.player.Defense;
+            defenseLabel.Position.X = screenWidth * value - font.MeasureString(defenseLabel.Text).Length() / 2;
+
             spdefenseLabel.Text = "SpDefense: " + lm.player.SpDefense;
+            spdefenseLabel.Position.X = screenWidth * value - font.MeasureString(spdefenseLabel.Text).Length() / 2;
+
 
             ToggleStatsAllocationMenu();
             if (pointsToAllocate > 0) { 
@@ -78,8 +98,8 @@ namespace Dungeon_Crawler
             GraphicsDevice.Clear(Color.White);
 
             spriteBatch.Begin();
-
-            spriteBatch.DrawString(font, "Stats allocation menu", new Vector2(480, 10), Color.Black);
+            string s = "Stats allocation menu";
+            spriteBatch.DrawString(font, s, new Vector2(screenWidth / 2 - font.MeasureString(s).Length() / 2, 10), Color.Black);
 
             foreach (Label label in labelList)
             {
@@ -117,11 +137,11 @@ namespace Dungeon_Crawler
             pointsLabel = new Label(font, "", new Vector2(500, 100));
             pointsToAllocateLabel = new Label(font, "", new Vector2(500, 150));
 
-            healthLabel = new Label(font, "", new Vector2(450, 250));
-            attackLabel = new Label(font, "", new Vector2(450, 300));
-            spattackLabel = new Label(font, "", new Vector2(450, 350));
-            defenseLabel = new Label(font, "", new Vector2(450, 400));
-            spdefenseLabel = new Label(font, "", new Vector2(450, 450));
+            healthLabel = new Label(font, "", new Vector2(450, 300));
+            attackLabel = new Label(font, "", new Vector2(450, 375));
+            spattackLabel = new Label(font, "", new Vector2(450, 450));
+            defenseLabel = new Label(font, "", new Vector2(450, 525));
+            spdefenseLabel = new Label(font, "", new Vector2(450, 600));
 
             labelList = new List<Label>()
             {
@@ -137,45 +157,48 @@ namespace Dungeon_Crawler
 
         private void addButtons()
         {
+            float value = 4 / 6f;
+            string s;
             addHealthButton = new Button(button, font)
             {
-                Position = new Vector2(700, 240),
+                Position = new Vector2(screenWidth * value - button.Width / 2, 300),
                 Text = "+",
             };
             addHealthButton.Click += addHealth_Click;
 
             addAttackButton = new Button(button, font)
             {
-                Position = new Vector2(700, 290),
+                Position = new Vector2(screenWidth * value - button.Width / 2, 375),
                 Text = "+",
             };
             addAttackButton.Click += addAttack_Click;
 
             addSpAttackButton = new Button(button, font)
             {
-                Position = new Vector2(700, 340),
+                Position = new Vector2(screenWidth * value - button.Width / 2, 450),
                 Text = "+",
             };
             addSpAttackButton.Click += addSpAttack_Click;
 
             addDefenseButton = new Button(button, font)
             {
-                Position = new Vector2(700, 390),
+                Position = new Vector2(screenWidth * value - button.Width / 2, 525),
                 Text = "+",
             };
             addDefenseButton.Click += addDefense_Click;
 
             addSpDefenseButton = new Button(button, font)
             {
-                Position = new Vector2(700, 440),
+                Position = new Vector2(screenWidth * value - button.Width / 2, 600),
                 Text = "+",
             };
             addSpDefenseButton.Click += addSpDefense_Click;
 
+            s = "Go back";
             quitButton = new Button(bigButton, font)
             {
-                Position = new Vector2(1280 / 2 - bigButton.Width / 2, 700),
-                Text = "Go back",
+                Text = s,
+                Position = new Vector2(screenWidth / 2 - font.MeasureString(s).Length(), 700),
             };
             quitButton.Click += quitButton_Click;
 

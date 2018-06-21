@@ -9,7 +9,7 @@ namespace Dungeon_Crawler
     {
         private SpriteFont _font;
         public Color PenColour { get; set; }
-        public Vector2 Position { get; set; }
+        public Vector2 Position;
         public String Text { get; set; }
 
         public Label(SpriteFont font, String txt, Vector2 pos)
