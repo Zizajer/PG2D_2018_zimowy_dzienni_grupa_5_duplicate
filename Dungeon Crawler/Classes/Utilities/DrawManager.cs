@@ -29,10 +29,10 @@ namespace Dungeon_Crawler
         private List<Button> AboutMenuButtons;
         private List<Button> ClassSpecificButtons;
 
-        private int screenWidth = 1280;
-        private int screenHeight = 768;
+        private int screenWidth;
+        private int screenHeight;
 
-        public DrawManager(ContentManager Content, Game1 game, LevelManager lm)
+        public DrawManager(ContentManager Content, Game1 game, LevelManager lm, int screenWidth, int screenHeight)
         {
             this.lm = lm;
             this.game = game;
@@ -45,6 +45,9 @@ namespace Dungeon_Crawler
             controls = Content.Load<Texture2D>("Arts/Controls");
             buttonFont = Content.Load<SpriteFont>("fonts/Chiller");
             smallButtonFont = Content.Load<SpriteFont>("fonts/smallChiller");
+
+            this.screenWidth = screenWidth;
+            this.screenHeight = screenHeight;
 
             CreateButtons();
 

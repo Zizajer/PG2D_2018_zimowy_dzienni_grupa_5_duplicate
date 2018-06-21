@@ -22,8 +22,8 @@ namespace Dungeon_Crawler
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = 1280;
-            graphics.PreferredBackBufferHeight = 768;
+            graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             graphics.IsFullScreen = true;
             graphics.ApplyChanges();
             Content.RootDirectory = "Content";
@@ -55,7 +55,7 @@ namespace Dungeon_Crawler
 
             Global.CombatManager = new CombatManager(levelManager);
             Global.SoundManager = new SoundManager(Content);
-            Global.DrawManager = new DrawManager(Content, this, levelManager);
+            Global.DrawManager = new DrawManager(Content, this, levelManager, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             Global.StatsAllocationSystem = new StatsAllocationSystem(Content, levelManager);
         }
 
