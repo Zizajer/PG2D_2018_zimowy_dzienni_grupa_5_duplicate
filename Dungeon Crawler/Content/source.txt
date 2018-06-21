@@ -1,3 +1,0 @@
-player :
-https://opengameart.org/content/antifareas-rpg-sprite-set-1-enlarged-w-transparent-background
-floor, walls: https://opengameart.org/content/dungeon-tiles-1
