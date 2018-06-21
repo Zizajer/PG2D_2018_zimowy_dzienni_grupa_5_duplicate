@@ -93,6 +93,35 @@ namespace Dungeon_Crawler
             }
             pastButton2 = Mouse.GetState();
         }
+        public override void PositionTargetedAttackFromItem(Level level)
+        {
+            if (ProjectileAttack4 != null)
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.D4))// && pastButton.LeftButton == ButtonState.Released)
+                {
+                    if (actionTimer > timeBetweenActions)
+                    {
+                        if (CurrentResource >= ProjectileAttack.ManaCost)
+                        {
+                            MouseState mouse = Mouse.GetState();
+                            Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
+                            Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
+                            ProjectileAttack4.Use(this, mousePos);
+                            CurrentResource -= ProjectileAttack.ManaCost;
+                            actionTimer = 0;
+                        }
+                        else
+                        {
+                            Global.Gui.WriteToConsole("Not enough rage");
+                        }
+                    }
+                    else
+                    {
+                        Global.Gui.WriteToConsole("Cant attack yet");
+                    }
+                }
+            }
+        }
         public override void Abillity1(Level level)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.D1) && pastKey.IsKeyUp(Keys.D1))

@@ -85,6 +85,7 @@
     <Compile Include="Classes\Characters\Items\DokerCharm.cs" />
     <Compile Include="Classes\Characters\Items\BitterPowder.cs" />
     <Compile Include="Classes\Characters\Items\FullHealthPotion.cs" />
+    <Compile Include="Classes\Characters\Items\IceCube.cs" />
     <Compile Include="Classes\Characters\Items\Interface\IItem.cs" />
     <Compile Include="Classes\Characters\Items\Interface\IUpdatableItem.cs" />
     <Compile Include="Classes\Characters\Items\Interface\IUsableItem.cs" />
