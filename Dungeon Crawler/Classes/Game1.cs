@@ -24,11 +24,8 @@ namespace Dungeon_Crawler
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 768;
-            graphics.ApplyChanges();
-            /*
             graphics.IsFullScreen = true;
             graphics.ApplyChanges();
-            */
             Content.RootDirectory = "Content";
         }
 

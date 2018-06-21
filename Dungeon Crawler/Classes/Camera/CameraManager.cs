@@ -22,12 +22,12 @@ namespace Dungeon_Crawler
         //custon constructor
         public CameraManager()
         {
-            Zoom = 1.0f;
+            Zoom = 1.5f;
         }
         // Construct a new Camera class with standard zoom (no scaling)
         public CameraManager(int ViewportWidth, int ViewportHeight)
         {
-            Zoom = 1.0f;
+            Zoom = 1.5f;
             this.ViewportWidth = ViewportWidth;
             this.ViewportHeight = ViewportHeight;
         }
@@ -81,13 +81,13 @@ namespace Dungeon_Crawler
         public void AdjustZoom(float amount)
         {
             Zoom += amount;
-            if (Zoom < 0.25f)
+            if (Zoom < 1.50f)
             {
-                Zoom = 0.25f;
+                Zoom = 1.50f;
             }
-            if (Zoom > 1.75f)
+            if (Zoom > 3.00f)
             {
-                Zoom = 1.75f;
+                Zoom = 3.00f;
             }
         }
 

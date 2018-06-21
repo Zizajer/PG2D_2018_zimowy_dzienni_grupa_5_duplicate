@@ -48,9 +48,9 @@ namespace Dungeon_Crawler
         public void Draw(GameTime gametime, SpriteBatch spriteBatch)
         {
             var color = Color.White;
-
+            PenColour = Color.Black;
             if (_isHovering)
-                color = Color.Gray;
+                PenColour = Color.DarkRed;
 
             spriteBatch.Draw(_texture, Rectangle, color);
 
