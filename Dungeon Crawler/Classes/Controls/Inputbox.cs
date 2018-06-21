@@ -74,6 +74,7 @@ namespace Dungeon_Crawler
                         }
                         else {
                             Global.playerName += key.ToString();
+                            Global.playerName = DrawManager.ToTitleCase(Global.playerName);
                         }
                     }
                 }

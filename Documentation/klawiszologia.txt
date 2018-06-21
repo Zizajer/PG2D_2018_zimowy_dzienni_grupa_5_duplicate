@@ -19,3 +19,6 @@ Kamera:
 strza³ki- poruszanie kamer¹
 .- oddal kamerê
 ,- przybli¿ kamerê
+
+Statystyki"
+o- otwieranie okna alokacji statystyk

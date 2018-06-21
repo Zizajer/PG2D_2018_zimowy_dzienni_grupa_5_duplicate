@@ -58,6 +58,10 @@ namespace Dungeon_Crawler
         List<String> SpiderNamesList;
         List<String> LichNamesList;
 
+        public List<String> MageNamesList;
+        public List<String> WarriorNamesList;
+        public List<String> RangerNamesList;
+
         public LevelManager(ContentManager Content)
         {
             levels = new List<Level>();
@@ -154,6 +158,10 @@ namespace Dungeon_Crawler
                 BrainyNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Brainy.txt"));
                 SpiderNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Spider.txt"));
                 LichNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Lich.txt"));
+
+                MageNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Mage.txt"));
+                WarriorNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Warrior.txt"));
+                RangerNamesList = new List<String>(File.ReadAllLines(@"..\..\..\..\files\names\Ranger.txt"));
             }
             catch (Exception e)
             {

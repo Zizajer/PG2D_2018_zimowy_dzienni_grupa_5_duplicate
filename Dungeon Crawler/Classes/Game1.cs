@@ -58,7 +58,7 @@ namespace Dungeon_Crawler
 
             Global.CombatManager = new CombatManager(levelManager);
             Global.SoundManager = new SoundManager(Content);
-            Global.DrawManager = new DrawManager(Content, this);
+            Global.DrawManager = new DrawManager(Content, this, levelManager);
             Global.StatsAllocationSystem = new StatsAllocationSystem(Content, levelManager);
         }
 
@@ -78,6 +78,10 @@ namespace Dungeon_Crawler
             else if (Global.CurrentGameState == Global.Gamestates.isHeroChooseMenu)
             {
                 Global.DrawManager.UpdateChooseHeroMenu(gameTime);
+            }
+            else if (Global.CurrentGameState == Global.Gamestates.isClassSpecificMenu)
+            {
+                Global.DrawManager.UpdateClassSpecificMenu(gameTime);
             }
             else if (Global.CurrentGameState == Global.Gamestates.isHelpMenu)
             {
@@ -119,6 +123,10 @@ namespace Dungeon_Crawler
             else if (Global.CurrentGameState == Global.Gamestates.isHeroChooseMenu)
             {
                 Global.DrawManager.DrawChooseHeroMenu(spriteBatch, GraphicsDevice, gameTime);
+            }
+            else if (Global.CurrentGameState == Global.Gamestates.isClassSpecificMenu)
+            {
+                Global.DrawManager.DrawClassSpecificMenu(spriteBatch, GraphicsDevice, gameTime);
             }
             else if (Global.CurrentGameState == Global.Gamestates.isHelpMenu)
             {

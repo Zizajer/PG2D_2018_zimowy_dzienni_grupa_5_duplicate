@@ -23,14 +23,16 @@ namespace Dungeon_Crawler
 
         private Inputbox inputbox;
         private Game1 game;
-
+        private LevelManager lm;
         private List<Button> heroChooseButtons;
         private List<Button> MainMenuButtons;
         private List<Button> HelpMenuButtons;
         private List<Button> AboutMenuButtons;
+        private List<Button> ClassSpecificButtons;
 
-        public DrawManager(ContentManager Content, Game1 game)
+        public DrawManager(ContentManager Content, Game1 game, LevelManager lm)
         {
+            this.lm = lm;
             this.game = game;
             mag = Content.Load<Texture2D>("Arts/mage");
             warrior = Content.Load<Texture2D>("Arts/warrior");
@@ -41,9 +43,282 @@ namespace Dungeon_Crawler
             controls = Content.Load<Texture2D>("Arts/Controls");
             buttonFont = Content.Load<SpriteFont>("fonts/Chiller");
 
+            CreateButtons();
+
+        }
+
+        private void GoBackFromAboutButton_Click(object sender, EventArgs e)
+        {
+            Global.CurrentGameState = Global.Gamestates.isMainMenu;
+        }
+
+        private void goBackFromHelpButton_Click(object sender, EventArgs e)
+        {
+            Global.CurrentGameState = Global.Gamestates.isMainMenu;
+        }
+
+        private void goBackFromClassSpecificButton_Click(object sender, EventArgs e)
+        {
+            Global.CurrentGameState = Global.Gamestates.isHeroChooseMenu;
+        }
+
+        private void startAdventureButton_Click(object sender, EventArgs e)
+        {
+            if(Global.playerClass=="Mage")
+                Global.levelmanager.setPlayer("Mage");
+            else if (Global.playerClass == "Warrior")
+                Global.levelmanager.setPlayer("Warrior");
+            else
+                Global.levelmanager.setPlayer("Ranger");
+            Global.CombatManager.setPLayer();
+            Global.CurrentGameState = Global.Gamestates.isGameActive;
+        }
+
+        private void randomNameButton_Click(object sender, EventArgs e)
+        {
+            Global.playerName = getRandomName(Global.playerClass);
+        }
+
+        private void QuitGameButton_Click(object sender, EventArgs e)
+        {
+            game.Exit();
+        }
+
+        private void AboutGameButton_Click(object sender, EventArgs e)
+        {
+            Global.CurrentGameState = Global.Gamestates.isAboutMenu;
+        }
+
+        private void HelpButton_Click(object sender, EventArgs e)
+        {
+            Global.CurrentGameState = Global.Gamestates.isHelpMenu;
+        }
+
+        private void StartGameButton_Click(object sender, EventArgs e)
+        {
+            Global.CurrentGameState = Global.Gamestates.isHeroChooseMenu;
+        }
+
+        void rangerButton_Click(object sender, EventArgs e)
+        {
+            Global.playerClass = ("Ranger");
+            Global.playerName = getRandomName(Global.playerClass);
+            Global.CurrentGameState = Global.Gamestates.isClassSpecificMenu;
+        }
+
+        void warriorButton_Click(object sender, EventArgs e)
+        {
+            Global.playerClass = ("Warrior");
+            Global.playerName = getRandomName(Global.playerClass);
+            Global.CurrentGameState = Global.Gamestates.isClassSpecificMenu;
+        }
+
+        void magButton_Click(object sender, EventArgs e)
+        {
+            Global.playerClass = ("Mage");
+            Global.playerName = getRandomName(Global.playerClass);
+            Global.CurrentGameState = Global.Gamestates.isClassSpecificMenu;
+        }
+        
+        void checkbox_Click(object sender, EventArgs e)
+        {
+            Global.hardMode = !Global.hardMode;
+        }
+
+        void quitButton_Click(object sender, EventArgs e)
+        {
+            Global.CurrentGameState = Global.Gamestates.isMainMenu;
+        }
+
+        public void UpdateMainMenu(GameTime gameTime)
+        {
+            foreach (Button button in MainMenuButtons)
+                button.Update(gameTime);   
+        }
+
+        public void UpdateHelpMenu(GameTime gameTime)
+        {
+            foreach (Button button in HelpMenuButtons)
+                button.Update(gameTime);
+        }
+
+        public void UpdateAboutMenu(GameTime gameTime)
+        {
+            foreach (Button button in AboutMenuButtons)
+                button.Update(gameTime);
+        }
+
+        public void UpdateChooseHeroMenu(GameTime gameTime)
+        {
+            foreach (Button button in heroChooseButtons)
+                button.Update(gameTime);
+            checkbox.Update(gameTime);
+        }
+
+        public void UpdateClassSpecificMenu(GameTime gameTime)
+        {
+            foreach (Button button in ClassSpecificButtons)
+            {
+                button.Update(gameTime);
+            }
+            inputbox.Update(gameTime);
+        }
+
+        public void DrawMainMenu(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, GameTime gameTime)
+        {
+            graphicsDevice.Clear(Color.White);
+
+            spriteBatch.Begin();
+
+            spriteBatch.Draw(gameLogo, new Rectangle(400, 0, gameLogo.Width/2, gameLogo.Height/2), Color.White);
+
+            foreach (Button button in MainMenuButtons)
+            {
+                button.Draw(gameTime, spriteBatch);
+            }
+
+            spriteBatch.End();
+
+        }
+
+        public void DrawHelpMenu(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, GameTime gameTime)
+        {
+            graphicsDevice.Clear(Color.White);
+
+            spriteBatch.Begin();
+
+            spriteBatch.Draw(controls, new Rectangle(0, 0, controls.Width, controls.Height), Color.White);
+
+            foreach (Button button in HelpMenuButtons)
+            {
+                button.Draw(gameTime, spriteBatch);
+            }
+
+            spriteBatch.End();
+
+        }
+
+        public void DrawAboutMenu(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, GameTime gameTime)
+        {
+            graphicsDevice.Clear(Color.White);
+
+            spriteBatch.Begin();
+
+            spriteBatch.DrawString(buttonFont, "Cezary Witkowski - Project Leader/Developer/Merge Master", new Vector2(315, 325), Color.Black);
+
+            spriteBatch.DrawString(buttonFont, "Marcin Kapelan - Developer", new Vector2(315, 365), Color.Black);
+
+            spriteBatch.DrawString(buttonFont, "Piotr Sadza - Graphic design/Sound design", new Vector2(315, 405), Color.Black);
+
+            foreach (Button button in AboutMenuButtons)
+            {
+                button.Draw(gameTime, spriteBatch);
+            }
+
+            spriteBatch.End();
+
+        }
+
+        public void DrawChooseHeroMenu(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, GameTime gameTime)
+        {
+            graphicsDevice.Clear(Color.White);
+
+            spriteBatch.Begin();
+
+            spriteBatch.DrawString(buttonFont, "Choose Character", new Vector2(550, 10), Color.Black);
+
+            int width = 200, height = 300;
+
+            spriteBatch.Draw(mag, new Rectangle(275, 50, width, height), Color.White);
+
+            spriteBatch.Draw(warrior, new Rectangle(550, 50, width, height), Color.White);
+
+            spriteBatch.Draw(ranger, new Rectangle(825, 50, width, height), Color.White);
+            string s;
+            if (Global.hardMode)
+            {
+                s = "Difficulty: Hard";
+            }
+            else
+            {
+                s = "Difficulty: Easy";
+            }
+            spriteBatch.DrawString(buttonFont, s, new Vector2(535, 587), Color.Black);
+
+            foreach (Button button in heroChooseButtons)
+            {
+                button.Draw(gameTime, spriteBatch);
+            }
+
+            checkbox.Draw(gameTime, spriteBatch);
+            spriteBatch.End();
+
+        }
+
+        public void DrawClassSpecificMenu(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, GameTime gameTime)
+        {
+            graphicsDevice.Clear(Color.White);
+
+            spriteBatch.Begin();
+
+            spriteBatch.DrawString(buttonFont, "Enter your hero name", new Vector2(550, 10), Color.Black);
+
+            int width = 200, height = 300;
+
+            if(Global.playerClass == "Mage")
+            {
+                spriteBatch.Draw(mag, new Rectangle(550, 50, width, height), Color.White);
+            }
+            else if(Global.playerClass == "Warrior")
+            {
+                spriteBatch.Draw(warrior, new Rectangle(550, 50, width, height), Color.White);
+            }
+            else
+            {
+                spriteBatch.Draw(ranger, new Rectangle(550, 50, width, height), Color.White);
+            }
+
+            spriteBatch.DrawString(buttonFont, "Enter your name", new Vector2(535, 387), Color.Black);
+            inputbox.Draw(gameTime, spriteBatch);
+
+            foreach (Button button in ClassSpecificButtons)
+            {
+                button.Draw(gameTime, spriteBatch);
+            }
+
+            spriteBatch.End();
+
+        }
+        public static string ToTitleCase(string str)
+        {
+            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(str.ToLower());
+        }
+
+        private string getRandomName(string playerClass)
+        {
+            if (playerClass == "Mage")
+            {
+                return ToTitleCase(lm.MageNamesList[Global.random.Next(lm.MageNamesList.Count)]);
+            }
+            else if (playerClass == "Warrior")
+            {
+                return ToTitleCase(lm.WarriorNamesList[Global.random.Next(lm.WarriorNamesList.Count)]);
+            }
+            else if (playerClass == "Ranger")
+            {
+                return ToTitleCase(lm.RangerNamesList[Global.random.Next(lm.RangerNamesList.Count)]);
+            }
+            else
+            {
+                return "Player";
+            }
+        }
+
+        private void CreateButtons()
+        {
             inputbox = new Inputbox(button, buttonFont)
             {
-                Position = new Vector2(675, 475)
+                Position = new Vector2(675, 375)
             };
 
             checkbox = new Checkbox(checkboxT, buttonFont)
@@ -158,205 +433,35 @@ namespace Dungeon_Crawler
                     goBackFromAboutButton,
                 };
 
-
-        }
-
-        private void GoBackFromAboutButton_Click(object sender, EventArgs e)
-        {
-            Global.CurrentGameState = 0;
-        }
-
-        private void goBackFromHelpButton_Click(object sender, EventArgs e)
-        {
-            Global.CurrentGameState = 0;
-        }
-
-        private void QuitGameButton_Click(object sender, EventArgs e)
-        {
-            game.Exit();
-        }
-
-        private void AboutGameButton_Click(object sender, EventArgs e)
-        {
-            Global.CurrentGameState = Global.Gamestates.isAboutMenu;
-        }
-
-        private void HelpButton_Click(object sender, EventArgs e)
-        {
-            Global.CurrentGameState = Global.Gamestates.isHelpMenu;
-        }
-
-        private void StartGameButton_Click(object sender, EventArgs e)
-        {
-            Global.CurrentGameState = Global.Gamestates.isHeroChooseMenu;
-        }
-
-        void rangerButton_Click(object sender, EventArgs e)
-        {
-            if (String.IsNullOrEmpty(Global.playerName))
-                Global.playerName = "Player";
-            Global.playerName = ToTitleCase(Global.playerName);
-            Global.playerClass = ("Ranger");
-            Global.levelmanager.setPlayer("Ranger");
-            Global.CombatManager.setPLayer();
-            Global.CurrentGameState = Global.Gamestates.isGameActive;
-        }
-
-
-        void warriorButton_Click(object sender, EventArgs e)
-        {
-            if (String.IsNullOrEmpty(Global.playerName))
-                Global.playerName = "Player";
-            Global.playerName = ToTitleCase(Global.playerName);
-            Global.playerClass = ("Warrior");
-            Global.levelmanager.setPlayer("Warrior");
-            Global.CombatManager.setPLayer();
-            Global.CurrentGameState = Global.Gamestates.isGameActive;
-        }
-
-        void magButton_Click(object sender, EventArgs e)
-        {
-            if (String.IsNullOrEmpty(Global.playerName))
-                Global.playerName = "Player";
-            Global.playerName = ToTitleCase(Global.playerName);
-            Global.playerClass = ("Mage");
-            Global.levelmanager.setPlayer("Mage");
-            Global.CombatManager.setPLayer();
-            Global.CurrentGameState = Global.Gamestates.isGameActive;
-        }
-
-        void checkbox_Click(object sender, EventArgs e)
-        {
-            Global.hardMode = !Global.hardMode;
-        }
-
-        void quitButton_Click(object sender, EventArgs e)
-        {
-            Global.CurrentGameState = Global.Gamestates.isMainMenu;
-        }
-
-        public void UpdateMainMenu(GameTime gameTime)
-        {
-            foreach (Button button in MainMenuButtons)
-                button.Update(gameTime);   
-        }
-
-        public void UpdateHelpMenu(GameTime gameTime)
-        {
-            foreach (Button button in HelpMenuButtons)
-                button.Update(gameTime);
-        }
-
-        public void UpdateAboutMenu(GameTime gameTime)
-        {
-            foreach (Button button in AboutMenuButtons)
-                button.Update(gameTime);
-        }
-
-        public void UpdateChooseHeroMenu(GameTime gameTime)
-        {
-            foreach (Button button in heroChooseButtons)
-                button.Update(gameTime);
-            checkbox.Update(gameTime);
-            inputbox.Update(gameTime);
-        }
-
-        public void DrawMainMenu(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, GameTime gameTime)
-        {
-            graphicsDevice.Clear(Color.White);
-
-            spriteBatch.Begin();
-
-            spriteBatch.Draw(gameLogo, new Rectangle(400, 0, gameLogo.Width/2, gameLogo.Height/2), Color.White);
-
-            foreach (Button button in MainMenuButtons)
+            var goBackFromClassSpecificButton= new Button(button, buttonFont)
             {
-                button.Draw(gameTime, spriteBatch);
-            }
+                Position = new Vector2(575, 725),
+                Text = "Go back",
+            };
+            goBackFromClassSpecificButton.Click += goBackFromClassSpecificButton_Click;
 
-            spriteBatch.End();
-
-        }
-
-        public void DrawHelpMenu(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, GameTime gameTime)
-        {
-            graphicsDevice.Clear(Color.White);
-
-            spriteBatch.Begin();
-
-            spriteBatch.Draw(controls, new Rectangle(0, 0, controls.Width, controls.Height), Color.White);
-
-            foreach (Button button in HelpMenuButtons)
+            var startAdventureButton = new Button(button, buttonFont)
             {
-                button.Draw(gameTime, spriteBatch);
-            }
+                Position = new Vector2(575, 450),
+                Text = "Start Game",
+            };
 
-            spriteBatch.End();
+            startAdventureButton.Click += startAdventureButton_Click;
 
-        }
-
-        public void DrawAboutMenu(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, GameTime gameTime)
-        {
-            graphicsDevice.Clear(Color.White);
-
-            spriteBatch.Begin();
-
-            spriteBatch.DrawString(buttonFont, "Cezary Witkowski - Project Leader/Developer/Merge Master", new Vector2(315, 325), Color.Black);
-
-            spriteBatch.DrawString(buttonFont, "Marcin Kapelan - Developer", new Vector2(315, 365), Color.Black);
-
-            spriteBatch.DrawString(buttonFont, "Piotr Sadza - Graphic design/Sound design", new Vector2(315, 405), Color.Black);
-
-            foreach (Button button in AboutMenuButtons)
+            var randomNameButton = new Button(button, buttonFont)
             {
-                button.Draw(gameTime, spriteBatch);
-            }
+                Position = new Vector2(835, 375),
+                Text = "Random Name",
+            };
 
-            spriteBatch.End();
+            randomNameButton.Click += randomNameButton_Click;
 
-        }
-
-        public void DrawChooseHeroMenu(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, GameTime gameTime)
-        {
-            graphicsDevice.Clear(Color.White);
-
-            spriteBatch.Begin();
-
-            spriteBatch.DrawString(buttonFont, "Choose Character", new Vector2(550, 10), Color.Black);
-
-            int width = 200, height = 300;
-
-            spriteBatch.Draw(mag, new Rectangle(275, 50, width, height), Color.White);
-
-            spriteBatch.Draw(warrior, new Rectangle(550, 50, width, height), Color.White);
-
-            spriteBatch.Draw(ranger, new Rectangle(825, 50, width, height), Color.White);
-            string s;
-            if (Global.hardMode)
-            {
-                s = "Difficulty: Hard";
-            }
-            else
-            {
-                s = "Difficulty: Easy";
-            }
-            spriteBatch.DrawString(buttonFont, s, new Vector2(535, 587), Color.Black);
-
-            spriteBatch.DrawString(buttonFont, "Enter your name", new Vector2(535, 487), Color.Black);
-            inputbox.Draw(gameTime,spriteBatch);
-
-            foreach (Button button in heroChooseButtons)
-            {
-                button.Draw(gameTime, spriteBatch);
-            }
-
-            checkbox.Draw(gameTime, spriteBatch);
-            spriteBatch.End();
-
-        }
-        public string ToTitleCase(string str)
-        {
-            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(str.ToLower());
+            ClassSpecificButtons = new List<Button>()
+                {
+                    goBackFromClassSpecificButton,
+                    startAdventureButton,
+                    randomNameButton
+                };
         }
     }
 }
