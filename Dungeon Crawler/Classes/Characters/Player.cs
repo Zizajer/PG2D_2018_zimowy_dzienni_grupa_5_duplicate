@@ -51,7 +51,7 @@ namespace Dungeon_Crawler
         public IPositionTargetedAttack ProjectileAttack;
         public IPositionTargetedAttack ProjectileAttack2;
         public IPositionTargetedAttack ProjectileAttack3;
-        public IPositionTargetedAttack ProjectileAttack4;
+        public IPositionTargetedAttack ProjectileAttack4; // For item attacks
         public IUnTargetedAttack UnTargetedAttack;
         public IUnTargetedAttack UnTargetedAttack2;
         public IUnTargetedAttack UnTargetedAttack3;
@@ -95,6 +95,7 @@ namespace Dungeon_Crawler
         public abstract void calculateStatistics();
         public abstract void BasicAttack(Level level);
         public abstract void SecondaryAttack(Level level);
+        public abstract void PositionTargetedAttackFromItem(Level level);
         public abstract void Abillity1(Level level);
         public abstract void Abillity2(Level level);
         public abstract void Abillity3(Level level);
@@ -240,6 +241,7 @@ namespace Dungeon_Crawler
 
                 BasicAttack(level);
                 SecondaryAttack(level);
+                PositionTargetedAttackFromItem(level);
                 Abillity1(level);
                 Abillity2(level);
                 Abillity3(level);
@@ -380,7 +382,15 @@ namespace Dungeon_Crawler
                 {
                     if (base.TakeItem(level, graphicsDevice))
                     {
-                        Global.Gui.WriteToConsole("You picked up " + Inventory.ElementAt(Inventory.Count-1).Name);
+                        Item Item = Inventory.ElementAt(Inventory.Count - 1);
+                        Global.Gui.WriteToConsole("You picked up " + Item.Name);
+
+                        if (Item.Category.Contains("PositionTargetedAttackItem"))
+                        {
+                            String AttackClassName = Item.Category.Split('_')[1];
+                            ProjectileAttack4 = (IPositionTargetedAttack)Activator.CreateInstance(Type.GetType("Dungeon_Crawler." + AttackClassName));
+                        }
+
                         IsItemTaken = true;
                         if (SelectedItem == -1)
                         {
@@ -416,6 +426,12 @@ namespace Dungeon_Crawler
                         SelectedItem--;
                     }
                     Global.Gui.WriteToConsole("You dropped " + Inventory.ElementAt(i).Name);
+
+                    if (Inventory.ElementAt(i).Category.Contains("PositionTargetedAttackItem"))
+                    {
+                        ProjectileAttack4 = null;
+                    }
+
                     base.DropItem(level, i);
                     
                 }

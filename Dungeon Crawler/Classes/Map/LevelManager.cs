@@ -142,7 +142,8 @@ namespace Dungeon_Crawler
                 "Trainers",
                 "DokerCharm",
                 "FullHealthPotion",
-                "BitterPowder"
+                "BitterPowder",
+                "IceCube"
             };
             itemsCount = 2;
             cellSize = floor.Width;
