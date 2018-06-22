@@ -6,6 +6,8 @@ namespace Dungeon_Crawler
 {
     public class SoundManager
     {
+
+        private float volume = 0.15f;
         public SoundEffect gameover { get; set; }
         public SoundEffect portalactivated { get; set; }
         public SoundEffect mageBasicAttack { get; set; }
@@ -79,13 +81,21 @@ namespace Dungeon_Crawler
 
         public void playMenuSong() {
             MediaPlayer.Stop();
+            MediaPlayer.Volume = volume;
             MediaPlayer.Play(menuSong);
         }
 
         public void playInGameSong()
         {
             MediaPlayer.Stop();
+            MediaPlayer.Volume = volume;
             MediaPlayer.Play(inGameSong);
         }
+
+        public void stopPlayingSong() {
+            MediaPlayer.Stop();
+        }
+
+
     }
 }

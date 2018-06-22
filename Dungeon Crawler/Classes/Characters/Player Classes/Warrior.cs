@@ -119,7 +119,6 @@ namespace Dungeon_Crawler
                             }
                             else
                             {
-                                Global.SoundManager.warriorBasicAttack.Play();
                                 Global.Gui.WriteToConsole("You are too far away from this enemy");
                                 return;
                             }

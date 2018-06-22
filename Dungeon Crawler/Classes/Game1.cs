@@ -106,6 +106,7 @@ namespace Dungeon_Crawler
             {
                 if (wasGameOverSoundPlayed == false)
                 {
+                    Global.SoundManager.stopPlayingSong();
                     //Global.SoundManager.playerDead.Play();
                     Global.SoundManager.gameover.Play();
                     wasGameOverSoundPlayed = true;
