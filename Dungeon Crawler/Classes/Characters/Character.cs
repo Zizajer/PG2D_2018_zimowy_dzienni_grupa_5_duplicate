@@ -34,6 +34,7 @@ namespace Dungeon_Crawler
         public float Speed { get; set; }
 
         public List<Item> Inventory { get; set; }
+        public List<IUsableUpdatableItem> ItemsCurrentlyInUse { get; set; }
 
         public bool isHitShaderOn = false;
         public float hitTimer=0;
@@ -303,10 +304,18 @@ namespace Dungeon_Crawler
             }
         }
 
-        public virtual void TakeItem(Item item)
+        public virtual bool TakeItem(Item item)
         {
-            Inventory.Add(item);
-            item.ApplyEffect(this);
+            if (IsItemEligibleToBeTaken(item))
+            {
+                Inventory.Add(item);
+                item.ApplyEffect(this);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public virtual bool TakeItem(Level level, GraphicsDevice graphicsDevice)
@@ -318,10 +327,12 @@ namespace Dungeon_Crawler
                 Item item = LevelItemArray[i];
                 if (Collision.checkCollision(getRectangle(), item.getRectangle()))
                 {
-                    TakeItem(item);
-                    level.items.RemoveAt(i);
-                    IsItemTaken = true;
-                    break;
+                    if (TakeItem(item))
+                    {
+                        level.items.RemoveAt(i);
+                        IsItemTaken = true;
+                        break;
+                    }
                 }
             }         
             return IsItemTaken;
@@ -331,8 +342,7 @@ namespace Dungeon_Crawler
         {
             foreach (Item Item in items)
             {
-                Inventory.Add(Item);
-                Item.ApplyEffect(this);
+                TakeItem(Item);
             }
         }
 
@@ -340,9 +350,10 @@ namespace Dungeon_Crawler
         {
             if (Inventory[i] is IUsableUpdatableItem UsableUpdatableItem)
             {
-                if (!UsableUpdatableItem.IsCurrentlyInUse)
+                if (IsItemEligibleToBeUsed(UsableUpdatableItem))
                 {
                     UsableUpdatableItem.Use(this);
+                    ItemsCurrentlyInUse.Add(UsableUpdatableItem);
                     return true;
                 }
                 else
@@ -407,6 +418,23 @@ namespace Dungeon_Crawler
             Inventory.Clear();
         }
 
+        public virtual bool IsItemEligibleToBeTaken(Item item)
+        {
+            return true;
+        }
+
+        public virtual bool IsItemEligibleToBeUsed(IUsableUpdatableItem item)
+        {
+            foreach (IUsableUpdatableItem Item in ItemsCurrentlyInUse)
+            {
+                if (Item.Category.Equals(item.Category))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public virtual void UpdateItems(GameTime gameTime)
         {
             for (int i = Inventory.Count - 1; i >= 0; i--)
@@ -422,6 +450,7 @@ namespace Dungeon_Crawler
                     {
                         UsableUpdatableItem.RemainingUsages--;
                         UsableUpdatableItem.HasRecentUsageJustFinished = false;
+                        ItemsCurrentlyInUse.Remove(UsableUpdatableItem);
                         if (UsableUpdatableItem.RemainingUsages == 0)
                         {
                             DeleteItem((Item)UsableUpdatableItem);
