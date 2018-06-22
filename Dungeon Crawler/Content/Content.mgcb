@@ -1529,3 +1529,15 @@
 /processorParam:TextureFormat=Color
 /build:map/wall4.png
 
+#begin sounds/piss.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/piss.ogg
+
+#begin sounds/levelUp.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/levelUp.wav
+

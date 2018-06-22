@@ -34,6 +34,8 @@ namespace Dungeon_Crawler
         public SoundEffect playerHurt { get; set; }
         public SoundEffect playerDead { get; set; }
         public SoundEffect teleportLevel { get; set; }
+        public SoundEffect playerPiss { get; set; }
+        public SoundEffect playerLevelUP { get; set; }
         public Song menuSong { get; set; }
         public Song inGameSong { get; set; }
 
@@ -68,6 +70,8 @@ namespace Dungeon_Crawler
             playerHurt = content.Load<SoundEffect>("sounds/hurt");
             playerDead = content.Load<SoundEffect>("sounds/dead");
             teleportLevel = content.Load<SoundEffect>("sounds/levelTeleport");
+            playerPiss = content.Load<SoundEffect>("sounds/piss");
+            playerLevelUP = content.Load<SoundEffect>("sounds/levelUp");
             menuSong = content.Load<Song>("sounds/music/menuSong");
             inGameSong = content.Load<Song>("sounds/music/inGameSong");
             MediaPlayer.IsRepeating = true;
