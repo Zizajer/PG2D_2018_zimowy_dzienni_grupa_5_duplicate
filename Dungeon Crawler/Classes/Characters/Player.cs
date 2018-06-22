@@ -302,6 +302,7 @@ namespace Dungeon_Crawler
             {
                 if (DrankPotions >= 10)
                 {
+                    Global.SoundManager.playerPiss.Play();
                     Global.CombatManager.SetAnimation("??", "Wtf", CellX, CellY);
                     Global.Gui.WriteToConsole(Name + " used his pee pee... and he accidentally peed himself!");
                     if (currentHealthState == HealthState.Burn)
