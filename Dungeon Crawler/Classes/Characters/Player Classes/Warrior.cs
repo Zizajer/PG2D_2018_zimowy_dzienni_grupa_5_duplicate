@@ -89,7 +89,7 @@ namespace Dungeon_Crawler
                             Character enemy = Global.CombatManager.EnemyAt(mx, my);
                             if (Global.CombatManager.DistanceBetween2Points(CellX, CellY, mx, my) <= 1)
                             {
-                                Global.SoundManager.warriorBasicAttackAtHit.Play();
+                                Global.SoundManager.warriorBasicAttackAtHit.Play();//TO-DO Check why sometimes get many times soundEffect
                                 BaseAttack.Use(this, enemy);
                                 actionTimer = 0;
                             }

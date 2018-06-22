@@ -57,6 +57,8 @@ namespace Dungeon_Crawler
             Global.SoundManager = new SoundManager(Content);
             Global.DrawManager = new DrawManager(Content, this, levelManager, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             Global.StatsAllocationSystem = new StatsAllocationSystem(Content, levelManager, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+
+            Global.SoundManager.playMenuSong();
         }
 
         protected override void UnloadContent()

@@ -1445,3 +1445,15 @@
 /processorParam:Quality=Best
 /build:sounds/inventory/examineItem.wav
 
+#begin sounds/music/menuSong.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:sounds/music/menuSong.wav
+
+#begin sounds/music/inGameSong.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:sounds/music/inGameSong.mp3
+
