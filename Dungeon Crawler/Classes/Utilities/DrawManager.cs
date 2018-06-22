@@ -330,7 +330,7 @@ namespace Dungeon_Crawler
 
             checkbox = new Checkbox(checkboxT, buttonFont)
             {
-                Position = new Vector2(750, 600)
+                Position = new Vector2(1075, 600)
             };
             checkbox.Click += checkbox_Click;
 
