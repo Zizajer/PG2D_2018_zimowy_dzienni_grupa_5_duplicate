@@ -39,6 +39,8 @@ namespace Dungeon_Crawler
         public int inventoryPickUpLimit = 5;
         public int DrankPotions = 0; //Magic var
 
+        public readonly float MaxTotalMultiplier = 1.5f;
+
         public MouseState pastButton; //LMB
         public MouseState pastButton2; //RMB
         public ContentManager content;
@@ -88,6 +90,7 @@ namespace Dungeon_Crawler
             Name = name;
             normalTimeBetweenActions = timeBetweenActions;
             Inventory = new List<Item>();
+            ItemsCurrentlyInUse = new List<IUsableUpdatableItem>();
 
             setAttacks();
         }
@@ -398,6 +401,10 @@ namespace Dungeon_Crawler
                             SelectedItem = 0;
                         }
                     }
+                    else
+                    {
+                        Global.Gui.WriteToConsole("You cant pick up more items of that kind");
+                    }
                 }
                 else
                 {
@@ -577,6 +584,55 @@ namespace Dungeon_Crawler
 
             }
             pastKey10 = Keyboard.GetState();
+        }
+
+        public override bool IsItemEligibleToBeTaken(Item item)
+        {
+            //At first, check if item is attack giving item
+            if (item.Category.Contains("AttackItem"))
+            {
+                foreach (Item Item in Inventory)
+                {
+                    if (Item.Category.Contains("AttackItem"))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            //Then, check multipliers
+            float TotalHealthMultiplier = 1f;
+            float TotalDefenseMultiplier = 1f;
+            float TotalSpDefenseMultiplier = 1f;
+            float TotalAttackMultiplier = 1f;
+            float TotalSpAttackMultiplier = 1f;
+            float TotalSpeedMultiplier = 1f;
+            foreach (Item Item in Inventory)
+            {
+                TotalHealthMultiplier *= Item.HealthMultiplier;
+                TotalDefenseMultiplier *= Item.DefenseMultiplier;
+                TotalSpDefenseMultiplier *= Item.SpDefenseMultiplier;
+                TotalAttackMultiplier *= Item.AttackMultiplier;
+                TotalSpAttackMultiplier *= Item.SpAttackMultiplier;
+                TotalSpeedMultiplier *= Item.SpeedMultiplier;
+            }
+
+            TotalHealthMultiplier *= item.HealthMultiplier;
+            TotalDefenseMultiplier *= item.DefenseMultiplier;
+            TotalSpDefenseMultiplier *= item.SpDefenseMultiplier;
+            TotalAttackMultiplier *= item.AttackMultiplier;
+            TotalSpAttackMultiplier *= item.SpAttackMultiplier;
+            TotalSpeedMultiplier *= item.SpeedMultiplier;
+            
+            if (TotalHealthMultiplier > MaxTotalMultiplier || TotalDefenseMultiplier > MaxTotalMultiplier || TotalSpDefenseMultiplier > MaxTotalMultiplier || TotalAttackMultiplier > MaxTotalMultiplier
+                || TotalSpAttackMultiplier > MaxTotalMultiplier || TotalSpeedMultiplier > MaxTotalMultiplier)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }
