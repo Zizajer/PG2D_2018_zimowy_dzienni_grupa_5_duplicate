@@ -43,7 +43,7 @@ namespace Dungeon_Crawler
             SpDefenseMultiplier = 2.5f;
             AttackMultiplier = 2.5f;
             SpAttackMultiplier = 2.5f;
-            SpeedMultiplier = 2.5f;
+            SpeedMultiplier = 1.5f;
             TimeBetweenActionsMultiplier = 0.5f;
 
             ApplyEffect(owner);
@@ -73,7 +73,8 @@ namespace Dungeon_Crawler
 
                 if (Global.random.Next(0, 2) == 0)
                 {
-                    owner.CurrentHealthPercent -= 15;
+                    owner.CurrentHealthPercent -= Global.random.Next(25, 40);
+                    Global.Gui.WriteToConsole(owner.Name + " was badly affected by " + Name + "!");
                 }
 
                 IsCurrentlyInUse = false;
