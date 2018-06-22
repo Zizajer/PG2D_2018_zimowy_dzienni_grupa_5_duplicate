@@ -80,7 +80,7 @@ namespace Dungeon_Crawler
                 if (_currentMouse.LeftButton == ButtonState.Released && _previousMouse.LeftButton == ButtonState.Pressed)
                 {
                     // Click?.invoke(this,new EventArgs());
-
+                    Global.SoundManager.buttonClick.Play();
                     if (Click != null)
                     {
                         Click(this, new EventArgs());

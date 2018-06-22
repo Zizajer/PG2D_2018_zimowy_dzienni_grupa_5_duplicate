@@ -70,6 +70,8 @@ namespace Dungeon_Crawler
 
         private void startAdventureButton_Click(object sender, EventArgs e)
         {
+            Global.SoundManager.launchGameClick.Play();
+            //TO-DO add here second song for loop play
             if(Global.playerClass=="Mage")
                 Global.levelmanager.setPlayer("Mage");
             else if (Global.playerClass == "Warrior")
