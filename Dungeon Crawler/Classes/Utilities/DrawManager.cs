@@ -70,6 +70,8 @@ namespace Dungeon_Crawler
 
         private void startAdventureButton_Click(object sender, EventArgs e)
         {
+            Global.SoundManager.launchGameClick.Play();
+            Global.SoundManager.playInGameSong();
             if(Global.playerClass=="Mage")
                 Global.levelmanager.setPlayer("Mage");
             else if (Global.playerClass == "Warrior")
@@ -328,7 +330,7 @@ namespace Dungeon_Crawler
 
             checkbox = new Checkbox(checkboxT, buttonFont)
             {
-                Position = new Vector2(750, 600)
+                Position = new Vector2(1075, 600)
             };
             checkbox.Click += checkbox_Click;
 

@@ -89,6 +89,7 @@ namespace Dungeon_Crawler
                             Character enemy = Global.CombatManager.EnemyAt(mx, my);
                             if (Global.CombatManager.DistanceBetween2Points(CellX, CellY, mx, my) <= 1)
                             {
+                                Global.SoundManager.warriorBasicAttackAtHit.Play();//TO-DO Check why sometimes get many times soundEffect
                                 BaseAttack.Use(this, enemy);
                                 actionTimer = 0;
                             }
@@ -112,11 +113,13 @@ namespace Dungeon_Crawler
                             Character enemy = Global.CombatManager.EnemyAt(mx, my);
                             if (Global.CombatManager.DistanceBetween2Points(CellX, CellY, mx, my) <= 1)
                             {
+                                Global.SoundManager.warriorBasicAttackAtHit.Play();
                                 BaseAttack.Use(this, enemy);
                                 actionTimer = 0;
                             }
                             else
                             {
+                                Global.SoundManager.warriorBasicAttack.Play();
                                 Global.Gui.WriteToConsole("You are too far away from this enemy");
                                 return;
                             }
@@ -142,6 +145,7 @@ namespace Dungeon_Crawler
             {
                 if (CurrentResource >= UnTargetedAttack.ManaCost)
                 {
+                    Global.SoundManager.warriorSecondaryAttack.Play();
                     if (UnTargetedAttack.Use(this))
                         CurrentResource -= UnTargetedAttack.ManaCost;
                 }
@@ -212,6 +216,7 @@ namespace Dungeon_Crawler
                     {
                         if (level.grid.GetCellCost(new Position(mx, my)) == 1.0f)
                         {
+                            Global.SoundManager.warriorAbillity1.Play();
                             Leap(level, mx, my);
                         }
                         else
@@ -297,6 +302,7 @@ namespace Dungeon_Crawler
                     if (CurrentResource < 0)
                         CurrentResource = 0;
                     Global.Gui.WriteToConsole("You are now in Berserker Rage");
+                    Global.SoundManager.warriorAbillity2.Play();
                 }
                 else
                 {
@@ -322,6 +328,7 @@ namespace Dungeon_Crawler
                     Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
                     ProjectileAttack.Use(this, mousePos);
                     CurrentResource -= ProjectileAttack.ManaCost;
+                    Global.SoundManager.warriorAbillity3.Play();
                 }
                 else
                 {

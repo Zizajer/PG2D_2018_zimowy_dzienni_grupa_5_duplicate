@@ -26,8 +26,9 @@ namespace Dungeon_Crawler
         public int itemsCount;
         public int rocksCount = 0;
         public float enemySpeedFactor = 1.0f;
-        public Texture2D floor;
-        public Texture2D wall;
+
+        public List<Texture2D> floors = new List<Texture2D>();
+        public List<Texture2D> walls = new List<Texture2D>();
 
         public int cellSize;
 
@@ -67,8 +68,16 @@ namespace Dungeon_Crawler
             levels = new List<Level>();
             this.Content = Content;
 
-            floor = Content.Load<Texture2D>("map/Floor");
-            wall = Content.Load<Texture2D>("map/Wall");
+            floors.Add(Content.Load<Texture2D>("map/Floor"));
+            floors.Add(Content.Load<Texture2D>("map/Floor2"));
+            floors.Add(Content.Load<Texture2D>("map/Floor3"));
+            floors.Add(Content.Load<Texture2D>("map/Floor4"));
+
+            walls.Add(Content.Load<Texture2D>("map/Wall"));
+            walls.Add(Content.Load<Texture2D>("map/Wall2"));
+            walls.Add(Content.Load<Texture2D>("map/Wall3"));
+            walls.Add(Content.Load<Texture2D>("map/Wall4"));
+
             rock = Content.Load<Texture2D>("map/rock");
             portalTexture = Content.Load<Texture2D>("map/portal");
 
@@ -146,7 +155,7 @@ namespace Dungeon_Crawler
                 "IceCube"
             };
             itemsCount = 2;
-            cellSize = floor.Width;
+            cellSize = floors[0].Width;
 
             try
             {
@@ -250,7 +259,7 @@ namespace Dungeon_Crawler
                 }
             }
 
-            Level level = new Level(map, grid, cellSize, enemies, items, rocks, floor, wall, portal, occupiedCells);
+            Level level = new Level(map, grid, cellSize, enemies, items, rocks, floors[Global.random.Next(floors.Count)], walls[Global.random.Next(walls.Count)], portal, occupiedCells);
 
             levels.Add(level);
 
@@ -390,7 +399,7 @@ namespace Dungeon_Crawler
                 }
             }
 
-            Level level = new Level(map, grid, cellSize, enemies, items, floor, wall, portal, occupiedCells);
+            Level level = new Level(map, grid, cellSize, enemies, items, floors[Global.random.Next(floors.Count)], walls[Global.random.Next(walls.Count)], portal, occupiedCells);
 
             levels.Add(level);
         }

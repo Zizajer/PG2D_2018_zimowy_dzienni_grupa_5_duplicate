@@ -67,6 +67,7 @@ namespace Dungeon_Crawler
                         Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
                         ProjectileAttack.Use(this, mousePos);
                         actionTimer = 0;
+                        Global.SoundManager.rangerBasicAttack.Play();
                     }
                     else
                     {
@@ -92,6 +93,7 @@ namespace Dungeon_Crawler
                     Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
                     ProjectileAttack2.Use(this, mousePos);
                     CurrentResource -= ProjectileAttack2.ManaCost;
+                    Global.SoundManager.rangerSecondaryAttack.Play();
                 }
                 else
                 {
@@ -149,6 +151,7 @@ namespace Dungeon_Crawler
                 {
                     if (CurrentResource >= invisibilityResourceCost)
                     {
+                        Global.SoundManager.rangerAbillity1.Play();
                         isRangerInvisible = true;
                         Global.Gui.WriteToConsole("You are now invisible");
                     }
@@ -172,6 +175,7 @@ namespace Dungeon_Crawler
                 }
                 if (CurrentResource >= ProjectileAttack3.ManaCost)
                 {
+                    Global.SoundManager.rangerAbillity2.Play();
                     ProjectileAttack3.Use(this, Position);
                     CurrentResource -= ProjectileAttack3.ManaCost;
                 }
@@ -199,6 +203,7 @@ namespace Dungeon_Crawler
                     Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
                     ProjectileAttack4.Use(this, mousePos);
                     CurrentResource -= ProjectileAttack4.ManaCost;
+                    Global.SoundManager.rangerAbillity3.Play();
                 }
                 else
                 {

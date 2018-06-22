@@ -78,10 +78,11 @@ namespace Dungeon_Crawler
                     Cell portalcell = GetRandomEmptyCellNearCoord(new Vector2(player.CellX, player.CellY), 3);
                     occupiedCells.Add(portalcell);
                     portal.Position = new Vector2(portalcell.X * cellSize, portalcell.Y * cellSize);
-                    Global.SoundManager.playPortalActivated();
+                    Global.SoundManager.portalactivated.Play();
                 }
                 if (Collision.checkCollision(player.getRectangle(), player, portal, graphicsDevice))
                 {
+                    Global.SoundManager.teleportLevel.Play();
                     finished = true;
                     return;
                 }

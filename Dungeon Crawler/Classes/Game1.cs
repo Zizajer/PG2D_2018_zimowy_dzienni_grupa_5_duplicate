@@ -57,6 +57,8 @@ namespace Dungeon_Crawler
             Global.SoundManager = new SoundManager(Content);
             Global.DrawManager = new DrawManager(Content, this, levelManager, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             Global.StatsAllocationSystem = new StatsAllocationSystem(Content, levelManager, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+
+            Global.SoundManager.playMenuSong();
         }
 
         protected override void UnloadContent()
@@ -104,7 +106,8 @@ namespace Dungeon_Crawler
             {
                 if (wasGameOverSoundPlayed == false)
                 {
-                    Global.SoundManager.playGameOver();
+                    //Global.SoundManager.playerDead.Play();
+                    Global.SoundManager.gameover.Play();
                     wasGameOverSoundPlayed = true;
                 }
             }
