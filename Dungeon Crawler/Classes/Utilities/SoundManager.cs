@@ -29,6 +29,7 @@ namespace Dungeon_Crawler
         public SoundEffect changeInInventory { get; set; }
         public SoundEffect dropFromInventory { get; set; }
         public SoundEffect takeToInventory { get; set; }
+        public SoundEffect examineItem { get; set; }
         public SoundEffect mixtureDrink { get; set; }
         public SoundEffect playerHurt { get; set; }
         public SoundEffect playerDead { get; set; }
@@ -60,6 +61,7 @@ namespace Dungeon_Crawler
             changeInInventory = content.Load<SoundEffect>("sounds/inventory/changeItem");
             dropFromInventory = content.Load<SoundEffect>("sounds/inventory/dropItem");
             takeToInventory = content.Load<SoundEffect>("sounds/inventory/takeItem");
+            examineItem = content.Load<SoundEffect>("sounds/inventory/examineItem");
             mixtureDrink = content.Load<SoundEffect>("sounds/inventory/bottle");
             playerHurt = content.Load<SoundEffect>("sounds/hurt");
             playerDead = content.Load<SoundEffect>("sounds/dead");

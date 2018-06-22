@@ -382,6 +382,7 @@ namespace Dungeon_Crawler
                 {
                     if (base.TakeItem(level, graphicsDevice))
                     {
+                        Global.SoundManager.takeToInventory.Play();
                         Item Item = Inventory.ElementAt(Inventory.Count - 1);
                         Global.Gui.WriteToConsole("You picked up " + Item.Name);
 
@@ -425,6 +426,7 @@ namespace Dungeon_Crawler
                     {
                         SelectedItem--;
                     }
+                    Global.SoundManager.dropFromInventory.Play();
                     Global.Gui.WriteToConsole("You dropped " + Inventory.ElementAt(i).Name);
 
                     if (Inventory.ElementAt(i).Category.Contains("PositionTargetedAttackItem"))
@@ -451,6 +453,7 @@ namespace Dungeon_Crawler
                 {
                     if (base.TakeItem(level, graphicsDevice))
                     {
+                        Global.SoundManager.takeToInventory.Play();
                         Global.Gui.WriteToConsole("You swapped " + Inventory.ElementAt(i).Name + " for " + Inventory.ElementAt(Inventory.Count - 1).Name);
                         base.DropItem(level, i);
                     }
@@ -473,6 +476,7 @@ namespace Dungeon_Crawler
             {
                 if (Inventory.Count > 0)
                 {
+                    Global.SoundManager.changeInInventory.Play();
                     if (SelectedItem + 1 < Inventory.Count)
                     {
                         SelectedItem++;
@@ -500,6 +504,7 @@ namespace Dungeon_Crawler
                 {
                     if (Inventory[i].Category.Equals("Potion"))
                     {
+                        Global.SoundManager.mixtureDrink.Play();
                         DrankPotions++;
                     }
                     IsItemUsed = base.UseItem(i);
@@ -562,6 +567,7 @@ namespace Dungeon_Crawler
             {
                 if (SelectedItem != -1)
                 {
+                    Global.SoundManager.examineItem.Play();
                     Global.Gui.WriteToConsole(Inventory.ElementAt(SelectedItem).Description);
                 }
                 else
