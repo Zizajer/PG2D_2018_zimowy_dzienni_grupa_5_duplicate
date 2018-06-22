@@ -104,19 +104,19 @@ namespace Dungeon_Crawler
         }
         public override void PositionTargetedAttackFromItem(Level level)
         {
-            if (ProjectileAttack4 != null)
+            if (ItemProjectileAttack != null)
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.D4))// && pastButton.LeftButton == ButtonState.Released)
                 {
                     if (actionTimer > timeBetweenActions)
                     {
-                        if (CurrentResource >= ProjectileAttack.ManaCost)
+                        if (CurrentResource >= ItemProjectileAttack.ManaCost)
                         {
                             MouseState mouse = Mouse.GetState();
                             Vector2 tempVector = new Vector2(mouse.X, mouse.Y);
                             Vector2 mousePos = Global.Camera.ScreenToWorld(tempVector);
-                            ProjectileAttack4.Use(this, mousePos);
-                            CurrentResource -= ProjectileAttack.ManaCost;
+                            ItemProjectileAttack.Use(this, mousePos);
+                            CurrentResource -= ItemProjectileAttack.ManaCost;
                             actionTimer = 0;
                         }
                         else
