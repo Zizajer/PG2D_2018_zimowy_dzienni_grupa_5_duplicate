@@ -89,6 +89,8 @@ namespace Dungeon_Crawler
                     Global.Gui.WriteToConsole("Berserker Rage healed "+war.Name + " for " + heal);
                 }
             }
+            if (defender is Player)
+                Global.SoundManager.playerHurt.Play();
             
         }
 

@@ -117,6 +117,7 @@ namespace Dungeon_Crawler
             {
                 if (calculateExpForNextLevel(Level + 1) < Experience)
                 {
+                    Global.SoundManager.playerLevelUP.Play();
                     calculateStatistics();
                     CurrentResource = Resource;
                     CurrentHealth = Health;
