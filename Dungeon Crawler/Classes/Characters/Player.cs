@@ -594,7 +594,7 @@ namespace Dungeon_Crawler
                 }
             }
 
-            //Than, check multipliers
+            //Then, check multipliers
             float TotalHealthMultiplier = 1f;
             float TotalDefenseMultiplier = 1f;
             float TotalSpDefenseMultiplier = 1f;

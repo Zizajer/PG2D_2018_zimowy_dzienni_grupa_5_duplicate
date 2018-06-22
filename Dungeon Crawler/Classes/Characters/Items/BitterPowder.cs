@@ -39,15 +39,15 @@ namespace Dungeon_Crawler
         }
         public void Use(Character owner)
         {
-            DefenseMultiplier = 1.3f;
-            SpDefenseMultiplier = 1.3f;
-            AttackMultiplier = 1.3f;
-            SpAttackMultiplier = 1.3f;
-            SpeedMultiplier = 1.3f;
-            TimeBetweenActionsMultiplier = 0.9f;
+            DefenseMultiplier = 2.5f;
+            SpDefenseMultiplier = 2.5f;
+            AttackMultiplier = 2.5f;
+            SpAttackMultiplier = 2.5f;
+            SpeedMultiplier = 2.5f;
+            TimeBetweenActionsMultiplier = 0.5f;
 
             ApplyEffect(owner);
-            TotalEffectTime = 5;
+            TotalEffectTime = 10;
 
             IsCurrentlyInUse = true;
             HasRecentUsageJustFinished = false;
