@@ -53,7 +53,8 @@ namespace Dungeon_Crawler
         public IPositionTargetedAttack ProjectileAttack;
         public IPositionTargetedAttack ProjectileAttack2;
         public IPositionTargetedAttack ProjectileAttack3;
-        public IPositionTargetedAttack ProjectileAttack4; // For item attacks
+        public IPositionTargetedAttack ProjectileAttack4;
+        public IPositionTargetedAttack ItemProjectileAttack;
         public IUnTargetedAttack UnTargetedAttack;
         public IUnTargetedAttack UnTargetedAttack2;
         public IUnTargetedAttack UnTargetedAttack3;
@@ -391,7 +392,7 @@ namespace Dungeon_Crawler
                         if (Item.Category.Contains("PositionTargetedAttackItem"))
                         {
                             String AttackClassName = Item.Category.Split('_')[1];
-                            ProjectileAttack4 = (IPositionTargetedAttack)Activator.CreateInstance(Type.GetType("Dungeon_Crawler." + AttackClassName));
+                            ItemProjectileAttack = (IPositionTargetedAttack)Activator.CreateInstance(Type.GetType("Dungeon_Crawler." + AttackClassName));
                         }
 
                         IsItemTaken = true;
@@ -436,7 +437,7 @@ namespace Dungeon_Crawler
 
                     if (Inventory.ElementAt(i).Category.Contains("PositionTargetedAttackItem"))
                     {
-                        ProjectileAttack4 = null;
+                        ItemProjectileAttack = null;
                     }
 
                     base.DropItem(level, i);
