@@ -104,7 +104,7 @@ namespace Dungeon_Crawler
             {
                 if (wasGameOverSoundPlayed == false)
                 {
-                    Global.SoundManager.playGameOver();
+                    Global.SoundManager.gameover.Play();
                     wasGameOverSoundPlayed = true;
                 }
             }
