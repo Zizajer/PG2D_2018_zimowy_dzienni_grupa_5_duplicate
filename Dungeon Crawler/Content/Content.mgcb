@@ -1433,3 +1433,9 @@
 /processorParam:Quality=Best
 /build:sounds/inventory/takeItem.wav
 
+#begin sounds/warrior/basicAttackAtHit.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/warrior/basicAttackAtHit.ogg
+

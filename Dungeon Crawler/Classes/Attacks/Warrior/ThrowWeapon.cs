@@ -53,7 +53,6 @@ namespace Dungeon_Crawler
 
             Projectile newProjectile = new RotatingPiercingProjectille(this, Attacker, tempVelocity, tempPosition, ProjectileTexture, rotation, Range, VanishDelay);
             Global.CombatManager.PutProjectile(newProjectile);
-            Global.SoundManager.playPew();
 
             return true; //Since accuracy of this attack is 100 and we want to implement this interface correctly.. maybe should change return type to void
         }

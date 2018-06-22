@@ -58,6 +58,7 @@ namespace Dungeon_Crawler
                         ProjectileAttack.Use(this, mousePos);
                         CurrentResource -= ProjectileAttack.ManaCost;
                         actionTimer = 0;
+                        Global.SoundManager.mageBasicAttack.Play();
                     }
                     else
                     {
@@ -83,7 +84,8 @@ namespace Dungeon_Crawler
             {
                 if (CurrentResource >= UnTargetedAttack.ManaCost)
                 {
-                    if(UnTargetedAttack.Use(this))
+                    Global.SoundManager.mageSecondaryAttack.Play();
+                    if (UnTargetedAttack.Use(this))
                         CurrentResource -= UnTargetedAttack.ManaCost;
                 }
                 else
@@ -183,6 +185,7 @@ namespace Dungeon_Crawler
                         }
                         //play red particle
                         Global.CombatManager.SetAnimation("Teleportation2", "MagicAnim2", mx, my);
+                        Global.SoundManager.mageAbillity1.Play();
                         CurrentResource -= teleportResourceCost;
                         Global.Camera.CenterOn(Center);
                     }
@@ -210,6 +213,7 @@ namespace Dungeon_Crawler
                 }
                 if (CurrentResource >= UnTargetedAttack2.ManaCost)
                 {
+                    Global.SoundManager.mageAbillity2.Play();
                     if (UnTargetedAttack2.Use(this))
                         CurrentResource -= UnTargetedAttack2.ManaCost;
                 }
@@ -233,6 +237,7 @@ namespace Dungeon_Crawler
                 }
                 if (CurrentResource >= UnTargetedAttack3.ManaCost)
                 {
+                    Global.SoundManager.mageAbillity3.Play();
                     if (UnTargetedAttack3.Use(this))
                         CurrentResource -= UnTargetedAttack3.ManaCost;
                 }

@@ -82,6 +82,7 @@ namespace Dungeon_Crawler
                 }
                 if (Collision.checkCollision(player.getRectangle(), player, portal, graphicsDevice))
                 {
+                    Global.SoundManager.teleportLevel.Play();
                     finished = true;
                     return;
                 }

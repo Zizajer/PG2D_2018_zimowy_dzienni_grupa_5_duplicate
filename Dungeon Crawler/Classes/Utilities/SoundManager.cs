@@ -19,6 +19,7 @@ namespace Dungeon_Crawler
         public SoundEffect rangerAbillity2 { get; set; }
         public SoundEffect rangerAbillity3 { get; set; }
         public SoundEffect warriorBasicAttack { get; set; }
+        public SoundEffect warriorBasicAttackAtHit { get; set; }
         public SoundEffect warriorSecondaryAttack { get; set; }
         public SoundEffect warriorAbillity1 { get; set; }
         public SoundEffect warriorAbillity2 { get; set; }
@@ -41,18 +42,19 @@ namespace Dungeon_Crawler
             mageBasicAttack = content.Load<SoundEffect>("sounds/mage/basicAttack");
             mageSecondaryAttack = content.Load<SoundEffect>("sounds/mage/secondaryAttack");
             mageAbillity1 = content.Load<SoundEffect>("sounds/mage/abillity1");
-            mageAbillity2 = content.Load<SoundEffect>("sounds/mage/abillity1");
-            mageAbillity3 = content.Load<SoundEffect>("sounds/mage/abillity1");
+            mageAbillity2 = content.Load<SoundEffect>("sounds/mage/abillity2");
+            mageAbillity3 = content.Load<SoundEffect>("sounds/mage/abillity3");
             rangerBasicAttack = content.Load<SoundEffect>("sounds/ranger/basicAttack");
             rangerSecondaryAttack = content.Load<SoundEffect>("sounds/ranger/secondaryAttack");
             rangerAbillity1 = content.Load<SoundEffect>("sounds/ranger/abillity1");
-            rangerAbillity2 = content.Load<SoundEffect>("sounds/ranger/abillity1");
-            rangerAbillity3 = content.Load<SoundEffect>("sounds/ranger/abillity1");
+            rangerAbillity2 = content.Load<SoundEffect>("sounds/ranger/abillity2");
+            rangerAbillity3 = content.Load<SoundEffect>("sounds/ranger/abillity3");
             warriorBasicAttack = content.Load<SoundEffect>("sounds/warrior/basicAttack");
+            warriorBasicAttackAtHit = content.Load<SoundEffect>("sounds/warrior/basicAttackAtHit");
             warriorSecondaryAttack = content.Load<SoundEffect>("sounds/warrior/secondaryAttack");
             warriorAbillity1 = content.Load<SoundEffect>("sounds/warrior/abillity1");
-            warriorAbillity2 = content.Load<SoundEffect>("sounds/warrior/abillity1");
-            warriorAbillity3 = content.Load<SoundEffect>("sounds/warrior/abillity1");
+            warriorAbillity2 = content.Load<SoundEffect>("sounds/warrior/abillity2");
+            warriorAbillity3 = content.Load<SoundEffect>("sounds/warrior/abillity3");
             launchGameClick = content.Load<SoundEffect>("sounds/menu/launchGame");
             buttonClick = content.Load<SoundEffect>("sounds/menu/buttonClick");
             changeInInventory = content.Load<SoundEffect>("sounds/inventory/changeItem");
@@ -62,12 +64,6 @@ namespace Dungeon_Crawler
             playerHurt = content.Load<SoundEffect>("sounds/hurt");
             playerDead = content.Load<SoundEffect>("sounds/dead");
             teleportLevel = content.Load<SoundEffect>("sounds/levelTeleport");
-        }
-
-        public void playPew()
-        {
-            //MediaPlayer.Stop();
-            //MediaPlayer.Play(pew);
         }
     }
 }

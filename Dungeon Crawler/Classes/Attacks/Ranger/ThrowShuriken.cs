@@ -55,7 +55,6 @@ namespace Dungeon_Crawler
 
                 Projectile newProjectile = new RotatingPiercingProjectille(this, Attacker, tempVelocity, tempPosition, ProjectileTexture, rotation, Range, VanishDelay);
                 Global.CombatManager.PutProjectile(newProjectile);
-                Global.SoundManager.playPew();
 
                 return true; //Attack hit
             }
