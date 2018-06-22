@@ -69,7 +69,6 @@ namespace Dungeon_Crawler
                     newLevelTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
                     if (newLevelTimer < newLevelTimerHowLongToShow)
                     {
-                        Global.SoundManager.playerLevelUP.Play();
                         string s = "You advanced from level " + (lm.player.Level-1) + " to " + lm.player.Level;
                         DrawMsgInTheMiddleOfScreen(s, spriteBatch, gameOverX, gameOverY, scale);
                     }else
