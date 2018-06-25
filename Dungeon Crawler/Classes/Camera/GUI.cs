@@ -92,7 +92,7 @@ namespace Dungeon_Crawler
             float scale = Global.Camera.Zoom;
             if (lm.player.CurrentHealth > 0)
             {
-                if (lm.levels[lm.player.CurrentMapLevel].isBossLevel)
+                if (lm.levels[lm.player.CurrentMapLevel] is BossLevel)
                 {
                     //**boss stats**//
                     if (lm.levels[lm.player.CurrentMapLevel].enemies.Count > 0)

@@ -127,7 +127,7 @@ namespace Dungeon_Crawler
 
         public Character EnemyAt(int x, int y)
         {
-            if (currentLevel.isBossLevel)
+            if (currentLevel is BossLevel)
             {
                 if (currentLevel.enemies.Count == 0) return null;
                 Boss boss = (Boss)currentLevel.enemies.ElementAt(0);
@@ -182,7 +182,7 @@ namespace Dungeon_Crawler
 
             List<RogueSharp.Cell> cells = GetCellsInFrontOfCharacter(attaker, cellX, cellY, distance);
 
-            if (currentLevel.isBossLevel)
+            if (currentLevel is BossLevel)
             {
                 if (currentLevel.enemies.Count == 0) return listOfEnemiesAround;
                 Boss boss = (Boss)currentLevel.enemies.ElementAt(0);
@@ -320,7 +320,7 @@ namespace Dungeon_Crawler
         {
             List<Character> listOfEnemiesAround = new List<Character>();
 
-            if (currentLevel.isBossLevel)
+            if (currentLevel is BossLevel)
             {
                 if (currentLevel.enemies.Count == 0) return listOfEnemiesAround;
                 Boss boss = (Boss)currentLevel.enemies.ElementAt(0);

@@ -151,6 +151,7 @@ namespace Dungeon_Crawler
 
         public static bool isCollidingWithRocks(Sprite sprite, Level level, GraphicsDevice graphicsDevice)
         {
+            if (level is BossLevel) return false;
             foreach (Rock rock in level.rocks)
             {
                 if (Vector2.Distance(sprite.Center, rock.Center) < level.cellSize)

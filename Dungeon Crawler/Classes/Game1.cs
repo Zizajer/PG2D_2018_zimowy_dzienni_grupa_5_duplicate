@@ -22,9 +22,13 @@ namespace Dungeon_Crawler
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            /*
             graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             graphics.IsFullScreen = true;
+            */
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 768;
             graphics.ApplyChanges();
             Content.RootDirectory = "Content";
         }
