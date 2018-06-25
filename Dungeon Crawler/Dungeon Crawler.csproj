@@ -120,8 +120,10 @@
     <Compile Include="Classes\Map\Projectile.cs" />
     <Compile Include="Classes\Map\Sprite.cs" />
     <Compile Include="Classes\Map\Portal.cs" />
+    <Compile Include="Classes\Menu\IMenuScreen.cs" />
+    <Compile Include="Classes\Menu\MenuScreen.cs" />
     <Compile Include="Classes\Utilities\StatsAllocationSystem.cs" />
-    <Compile Include="Classes\Utilities\DrawManager.cs" />
+    <Compile Include="Classes\Menu\DrawManager.cs" />
     <Compile Include="Classes\Utilities\SoundManager.cs" />
     <Compile Include="Classes\Utilities\Collision.cs" />
     <Compile Include="Classes\Characters\Enemy.cs" />
