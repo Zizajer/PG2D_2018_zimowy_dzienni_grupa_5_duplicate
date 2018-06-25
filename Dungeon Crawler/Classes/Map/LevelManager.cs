@@ -212,7 +212,7 @@ namespace Dungeon_Crawler
                 };
             }
 
-            levels[0].addPlayer(player);
+            levels[0].AddPlayer(player);
             levels[0].grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
             Global.Camera.CenterOn(randomCell);
 
@@ -259,7 +259,7 @@ namespace Dungeon_Crawler
                 }
             }
 
-            Level level = new Level(map, grid, cellSize, enemies, items, rocks, floors[Global.random.Next(floors.Count)], walls[Global.random.Next(walls.Count)], portal, occupiedCells);
+            Level level = new NormalLevel(map, grid, cellSize, enemies, items, rocks, floors[Global.random.Next(floors.Count)], walls[Global.random.Next(walls.Count)], portal, occupiedCells);
 
             levels.Add(level);
 
@@ -399,7 +399,7 @@ namespace Dungeon_Crawler
                 }
             }
 
-            Level level = new Level(map, grid, cellSize, enemies, items, floors[Global.random.Next(floors.Count)], walls[Global.random.Next(walls.Count)], portal, occupiedCells);
+            Level level = new BossLevel(map, grid, cellSize, enemies, items, floors[Global.random.Next(floors.Count)], walls[Global.random.Next(walls.Count)], portal, occupiedCells);
 
             levels.Add(level);
         }
@@ -566,7 +566,7 @@ namespace Dungeon_Crawler
         public void Update(GameTime gameTime, GraphicsDevice graphicsDevice)
         {
             levels[player.CurrentMapLevel].Update(gameTime, graphicsDevice);
-            if (levels[player.CurrentMapLevel].finished == true)
+            if (levels[player.CurrentMapLevel].Finished == true)
             {
                 if (player.CurrentMapLevel % 3 == 1)
                 {
@@ -579,7 +579,7 @@ namespace Dungeon_Crawler
 
                 player.CurrentMapLevel++;
                 player.currentActionState = Player.ActionState.Standing;
-                levels[player.CurrentMapLevel].addPlayer(player);
+                levels[player.CurrentMapLevel].AddPlayer(player);
                 Vector2 newPlayerPosition = levels[player.CurrentMapLevel].GetRandomEmptyCell();
                 player.Position = newPlayerPosition;
                 Global.Camera.CenterOn(player.Center);

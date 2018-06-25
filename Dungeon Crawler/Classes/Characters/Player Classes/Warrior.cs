@@ -82,7 +82,7 @@ namespace Dungeon_Crawler
                     if (mx < 0 || mx >= level.map.Width || my < 0 || my >= level.map.Height)
                         return;
 
-                    if (level.isBossLevel)
+                    if (level is BossLevel)
                     {
                         if (Global.CombatManager.IsEnemyAt(mx, my))
                         {

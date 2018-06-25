@@ -113,7 +113,9 @@
     <Compile Include="Classes\Controls\Label.cs" />
     <Compile Include="Classes\Controls\Checkbox.cs" />
     <Compile Include="Classes\Controls\Button.cs" />
+    <Compile Include="Classes\Map\BossLevel.cs" />
     <Compile Include="Classes\Map\LichProjectille.cs" />
+    <Compile Include="Classes\Map\NormalLevel.cs" />
     <Compile Include="Classes\Map\RotatingPiercingProjectille.cs" />
     <Compile Include="Classes\Map\PiercingProjectille.cs" />
     <Compile Include="Classes\Map\Trap.cs" />
