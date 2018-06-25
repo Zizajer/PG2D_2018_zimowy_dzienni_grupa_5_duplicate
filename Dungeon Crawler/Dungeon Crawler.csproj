@@ -122,6 +122,7 @@
     <Compile Include="Classes\Map\Portal.cs" />
     <Compile Include="Classes\Menu\IMenuScreen.cs" />
     <Compile Include="Classes\Menu\MenuScreen.cs" />
+    <Compile Include="Classes\Menu\MenuScreenBuilder.cs" />
     <Compile Include="Classes\Utilities\StatsAllocationSystem.cs" />
     <Compile Include="Classes\Menu\DrawManager.cs" />
     <Compile Include="Classes\Utilities\SoundManager.cs" />

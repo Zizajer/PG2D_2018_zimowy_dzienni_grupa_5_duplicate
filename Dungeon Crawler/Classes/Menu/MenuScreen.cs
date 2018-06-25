@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Dungeon_Crawler
 {
-    public abstract class MenuScreen : IMenuScreen
+    public abstract class MenuScreen 
     {
         public List<Button> buttonsInMenu { get; set; }
         public List<Inputbox> inputBoxesInMenu { get; set; }
@@ -17,28 +17,5 @@ namespace Dungeon_Crawler
         public List<Label> labelsInMenu { get; set; }
         public List<Sprite> spriteInMenu { get; set; }
 
-        public void addButton(Vector2 Position, string text)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void addCheckbox(Vector2 Position, string text)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void addIputbox(Vector2 Position, string text)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void addLabel(Vector2 Position, string text)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void addSprite(Vector2 Position, Texture2D texture)
-        {
-            throw new NotImplementedException();
-        }
     }
+}

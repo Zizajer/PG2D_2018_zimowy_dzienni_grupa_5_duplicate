@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Dungeon_Crawler
 {
-    public interface IMenuScreen
+    public interface IMenuScreenBuilder
     {
         List<Button> buttonsInMenu { get; set; }
         List<Inputbox>inputBoxesInMenu { get; set; }
