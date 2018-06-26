@@ -9,13 +9,22 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Dungeon_Crawler
 {
-    public abstract class MenuScreen 
+    public class MenuScreen 
     {
         public List<Button> buttonsInMenu { get; set; }
         public List<Inputbox> inputBoxesInMenu { get; set; }
         public List<Checkbox> checkBoxesInMenu { get; set; }
         public List<Label> labelsInMenu { get; set; }
-        public List<Sprite> spriteInMenu { get; set; }
+        public List<Art> artsInMenu { get; set; }
+
+        public MenuScreen(List<Button> buttonsInMenu, List<Inputbox> inputBoxesInMenu, List<Checkbox> checkBoxesInMenu, List<Label> labelsInMenu, List<Art> artsInMenu)
+        {
+            this.buttonsInMenu = buttonsInMenu;
+            this.inputBoxesInMenu = inputBoxesInMenu;
+            this.checkBoxesInMenu = checkBoxesInMenu;
+            this.labelsInMenu = labelsInMenu;
+            this.artsInMenu = artsInMenu;
+        }
 
     }
 }

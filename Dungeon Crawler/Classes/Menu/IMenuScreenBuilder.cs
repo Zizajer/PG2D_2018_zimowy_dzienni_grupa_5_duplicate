@@ -15,7 +15,7 @@ namespace Dungeon_Crawler
         List<Inputbox>inputBoxesInMenu { get; set; }
         List<Checkbox> checkBoxesInMenu { get; set; }
         List<Label> labelsInMenu { get; set; }
-        List<Sprite> spriteInMenu { get; set; }
+        List<Art> artsInMenu { get; set; }
 
         void addButton(Vector2 Position, String text);
 
@@ -26,6 +26,10 @@ namespace Dungeon_Crawler
         void addLabel(Vector2 Position, String text);
 
         void addSprite(Vector2 Position, Texture2D texture);
+
+        MenuScreen toBuild();
+
+        void clearLists();
 
 
     }

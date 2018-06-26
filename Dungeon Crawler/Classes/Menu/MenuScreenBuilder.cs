@@ -16,16 +16,22 @@ namespace Dungeon_Crawler.Classes
         public List<Inputbox> inputBoxesInMenu { get; set; }
         public List<Checkbox> checkBoxesInMenu { get; set; }
         public List<Label> labelsInMenu { get; set; }
-        public List<Sprite> spriteInMenu { get; set; }
+        public List<Art> artsInMenu { get; set; }
 
         private Texture2D button;
         private SpriteFont buttonFont;
         private SpriteFont smallButtonFont;
 
         public MenuScreenBuilder(ContentManager Content, int screenWidth, int screenHeight) {
-            button = Content.Load<Texture2D>("Controls/button");
-            buttonFont = Content.Load<SpriteFont>("fonts/Chiller");
-            smallButtonFont = Content.Load<SpriteFont>("fonts/smallChiller");
+            this.button = Content.Load<Texture2D>("Controls/button");
+            this.buttonFont = Content.Load<SpriteFont>("fonts/Chiller");
+            this.smallButtonFont = Content.Load<SpriteFont>("fonts/smallChiller");
+            this.buttonsInMenu = new List<Button>();
+            this.checkBoxesInMenu = new List<Checkbox>();
+            this.inputBoxesInMenu = new List<Inputbox>();
+            this.labelsInMenu = new List<Label>();
+            this.artsInMenu = new List<Art>();
+            
         }
 
 
@@ -42,22 +48,45 @@ namespace Dungeon_Crawler.Classes
 
         public void addCheckbox(Vector2 Position, string text)
         {
-            throw new NotImplementedException();
+            checkBoxesInMenu.Add(new Checkbox(button, buttonFont)
+            {
+                Position = Position,
+            }
+            );
         }
 
         public void addIputbox(Vector2 Position, string text)
         {
-            throw new NotImplementedException();
+            inputBoxesInMenu.Add(new Inputbox(button, buttonFont)
+            {
+                Position = Position,
+            }
+            );
         }
 
         public void addLabel(Vector2 Position, string text)
         {
-            throw new NotImplementedException();
+            labelsInMenu.Add(new Label(buttonFont, text, Position));
         }
 
         public void addSprite(Vector2 Position, Texture2D texture)
         {
-            throw new NotImplementedException();
+            artsInMenu.Add(new Art(Position, texture));
+        }
+
+        public MenuScreen toBuild() {
+            MenuScreen menuScreen =  new MenuScreen(buttonsInMenu, inputBoxesInMenu, checkBoxesInMenu, labelsInMenu, artsInMenu);
+            clearLists();
+            return menuScreen;
+        }
+
+        private void clearLists() {
+            this.buttonsInMenu.Clear();
+            this.checkBoxesInMenu.Clear();
+            this.inputBoxesInMenu.Clear();
+            this.labelsInMenu.Clear();
+            this.artsInMenu.Clear();
+
         }
     }
 }
