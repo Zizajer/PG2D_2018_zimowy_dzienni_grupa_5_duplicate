@@ -19,13 +19,13 @@ namespace Dungeon_Crawler
 
         void addButton(Vector2 Position, String text);
 
-        void addIputbox(Vector2 Position, String text);
+        void addInputbox(Vector2 Position);
 
-        void addCheckbox(Vector2 Position, String text);
+        void addCheckbox(Vector2 Position);
 
         void addLabel(Vector2 Position, String text);
 
-        void addSprite(Vector2 Position, Texture2D texture);
+        void addArt(Rectangle rectangle, Texture2D texture);
 
         MenuScreen toBuild();
 

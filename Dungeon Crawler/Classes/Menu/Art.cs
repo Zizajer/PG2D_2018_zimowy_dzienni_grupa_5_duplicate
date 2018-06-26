@@ -8,11 +8,23 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Dungeon_Crawler
 {
-    public class Art : Sprite
+    public class Art
     {
 
-        public Art(Vector2 pos, Texture2D tex) : base(pos, tex)
+        public Rectangle Rectangle { get; set; }
+        public Texture2D Texture { get; set; }
+        public Color Colour { get; set; }
+
+        public Art(Texture2D tex, Rectangle rect)
         {
+            Texture = tex;
+            Rectangle = rect;
+            Colour = Color.White;
+        }
+
+        public void Draw(GameTime gametime, SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Texture, Rectangle, Colour);
         }
     }
 }

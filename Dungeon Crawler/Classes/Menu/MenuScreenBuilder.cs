@@ -18,14 +18,14 @@ namespace Dungeon_Crawler.Classes
         public List<Label> labelsInMenu { get; set; }
         public List<Art> artsInMenu { get; set; }
 
-        private Texture2D button;
-        private SpriteFont buttonFont;
-        private SpriteFont smallButtonFont;
+        private Texture2D buttonTexture;
+        private SpriteFont font;
+        private SpriteFont smallFont;
 
         public MenuScreenBuilder(ContentManager Content, int screenWidth, int screenHeight) {
-            this.button = Content.Load<Texture2D>("Controls/button");
-            this.buttonFont = Content.Load<SpriteFont>("fonts/Chiller");
-            this.smallButtonFont = Content.Load<SpriteFont>("fonts/smallChiller");
+            this.buttonTexture = Content.Load<Texture2D>("Controls/button");
+            this.font = Content.Load<SpriteFont>("fonts/Chiller");
+            this.smallFont = Content.Load<SpriteFont>("fonts/smallChiller");
             this.buttonsInMenu = new List<Button>();
             this.checkBoxesInMenu = new List<Checkbox>();
             this.inputBoxesInMenu = new List<Inputbox>();
@@ -38,7 +38,7 @@ namespace Dungeon_Crawler.Classes
 
         public void addButton(Vector2 Position, string text)
         {
-            buttonsInMenu.Add(new Button(button, buttonFont)
+            buttonsInMenu.Add(new Button(buttonTexture, font)
             {
                 Position = Position,
                 Text = text,
@@ -46,18 +46,18 @@ namespace Dungeon_Crawler.Classes
             );
         }
 
-        public void addCheckbox(Vector2 Position, string text)
+        public void addCheckbox(Vector2 Position)
         {
-            checkBoxesInMenu.Add(new Checkbox(button, buttonFont)
+            checkBoxesInMenu.Add(new Checkbox(buttonTexture, font)
             {
                 Position = Position,
             }
             );
         }
 
-        public void addIputbox(Vector2 Position, string text)
+        public void addInputbox(Vector2 Position)
         {
-            inputBoxesInMenu.Add(new Inputbox(button, buttonFont)
+            inputBoxesInMenu.Add(new Inputbox(buttonTexture, font)
             {
                 Position = Position,
             }
@@ -66,12 +66,12 @@ namespace Dungeon_Crawler.Classes
 
         public void addLabel(Vector2 Position, string text)
         {
-            labelsInMenu.Add(new Label(buttonFont, text, Position));
+            labelsInMenu.Add(new Label(font, text, Position));
         }
 
-        public void addSprite(Vector2 Position, Texture2D texture)
+        public void addArt(Rectangle rectangle, Texture2D texture)
         {
-            artsInMenu.Add(new Art(Position, texture));
+            artsInMenu.Add(new Art(texture, rectangle));
         }
 
         public MenuScreen toBuild() {
@@ -80,13 +80,12 @@ namespace Dungeon_Crawler.Classes
             return menuScreen;
         }
 
-        private void clearLists() {
+        public void clearLists() {
             this.buttonsInMenu.Clear();
             this.checkBoxesInMenu.Clear();
             this.inputBoxesInMenu.Clear();
             this.labelsInMenu.Clear();
             this.artsInMenu.Clear();
-
         }
     }
 }

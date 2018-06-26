@@ -26,5 +26,42 @@ namespace Dungeon_Crawler
             this.artsInMenu = artsInMenu;
         }
 
+
+        public void Update(GameTime gameTime)
+        {
+            foreach (Button button in buttonsInMenu)
+                button.Update(gameTime);
+            foreach (Inputbox inputBox in inputBoxesInMenu)
+                inputBox.Update(gameTime);
+            foreach (Checkbox checkBox in checkBoxesInMenu)
+                checkBox.Update(gameTime);
+        }
+
+        public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, GameTime gameTime)
+        {
+            graphicsDevice.Clear(Color.White);
+
+            spriteBatch.Begin();
+
+            foreach (Button button in buttonsInMenu)
+                button.Draw(gameTime, spriteBatch);
+
+            foreach (Inputbox inputBox in inputBoxesInMenu)
+                inputBox.Draw(gameTime, spriteBatch);
+
+            foreach (Checkbox checkBox in checkBoxesInMenu)
+                checkBox.Draw(gameTime, spriteBatch);
+
+            foreach (Label label in labelsInMenu)
+                label.Draw(gameTime, spriteBatch);
+
+            foreach(Art art in artsInMenu)
+                art.Draw(gameTime, spriteBatch);
+
+            spriteBatch.End();
+        }
+
+
+
     }
 }
