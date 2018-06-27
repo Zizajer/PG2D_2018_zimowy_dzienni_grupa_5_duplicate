@@ -14,6 +14,8 @@ namespace Dungeon_Crawler
         public float timer;
         public Position[] path;
 
+        public override IInventoryManager InventoryManager { get; }
+
         //Attacks
         public ICharacterTargetedAttack BaseAttack;
         public IPositionTargetedAttack RangeAttack;
@@ -35,7 +37,8 @@ namespace Dungeon_Crawler
             currentHealthState = HealthState.Normal;
             Name = name;
             setAttacks();
-            Inventory = new List<Item>();
+
+            InventoryManager = new InventoryManager(this, new List<Item>());
         }
         public abstract void setAttacks();
 

@@ -120,6 +120,10 @@
     <Compile Include="Classes\Map\Projectile.cs" />
     <Compile Include="Classes\Map\Sprite.cs" />
     <Compile Include="Classes\Map\Portal.cs" />
+    <Compile Include="Classes\Utilities\InventoryManager\IInventoryManager.cs" />
+    <Compile Include="Classes\Utilities\InventoryManager\InventoryManager.cs" />
+    <Compile Include="Classes\Utilities\InventoryManager\PlayerInventoryManagerFacade.cs" />
+    <Compile Include="Classes\Utilities\InventoryManager\PlayerInventoryManger.cs" />
     <Compile Include="Classes\Utilities\StatsAllocationSystem.cs" />
     <Compile Include="Classes\Utilities\DrawManager.cs" />
     <Compile Include="Classes\Utilities\SoundManager.cs" />
