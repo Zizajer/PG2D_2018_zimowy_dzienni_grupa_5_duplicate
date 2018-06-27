@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Dungeon_Crawler.Classes
+namespace Dungeon_Crawler
 {
     public class MenuScreenBuilder : IMenuScreenBuilder
     {
@@ -19,10 +19,12 @@ namespace Dungeon_Crawler.Classes
         public List<Art> artsInMenu { get; set; }
 
         private Texture2D buttonTexture;
+        private Texture2D checkboxTexture;
         private SpriteFont font;
         private SpriteFont smallFont;
 
         public MenuScreenBuilder(ContentManager Content, int screenWidth, int screenHeight) {
+            this.checkboxTexture = Content.Load<Texture2D>("Controls/checkbox");
             this.buttonTexture = Content.Load<Texture2D>("Controls/button");
             this.font = Content.Load<SpriteFont>("fonts/Chiller");
             this.smallFont = Content.Load<SpriteFont>("fonts/smallChiller");
@@ -36,23 +38,28 @@ namespace Dungeon_Crawler.Classes
 
 
 
-        public void addButton(Vector2 Position, string text)
+        public void addButton(Vector2 Position, string text,EventHandler name)
         {
-            buttonsInMenu.Add(new Button(buttonTexture, font)
+            var button = new Button(buttonTexture, font)
             {
                 Position = Position,
                 Text = text,
-            }
-            );
+            };
+
+            button.Click += name;
+            buttonsInMenu.Add(button);
         }
 
-        public void addCheckbox(Vector2 Position)
+        public void addCheckbox(Vector2 Position, EventHandler name)
         {
-            checkBoxesInMenu.Add(new Checkbox(buttonTexture, font)
+            var checkbox = new Checkbox(checkboxTexture, font)
             {
                 Position = Position,
-            }
-            );
+            };
+
+            checkbox.Click += name;
+
+            checkBoxesInMenu.Add(checkbox);
         }
 
         public void addInputbox(Vector2 Position)
@@ -81,11 +88,11 @@ namespace Dungeon_Crawler.Classes
         }
 
         public void clearLists() {
-            this.buttonsInMenu.Clear();
-            this.checkBoxesInMenu.Clear();
-            this.inputBoxesInMenu.Clear();
-            this.labelsInMenu.Clear();
-            this.artsInMenu.Clear();
+            this.buttonsInMenu = new List<Button>();
+            this.checkBoxesInMenu = new List<Checkbox>();
+            this.inputBoxesInMenu = new List<Inputbox>();
+            this.labelsInMenu = new List<Label>();
+            this.artsInMenu = new List<Art>();
         }
     }
 }

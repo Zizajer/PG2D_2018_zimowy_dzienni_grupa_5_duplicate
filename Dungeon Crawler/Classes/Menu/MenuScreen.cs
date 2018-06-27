@@ -43,20 +43,20 @@ namespace Dungeon_Crawler
 
             spriteBatch.Begin();
 
-            foreach (Button button in buttonsInMenu)
-                button.Draw(gameTime, spriteBatch);
-
             foreach (Inputbox inputBox in inputBoxesInMenu)
                 inputBox.Draw(gameTime, spriteBatch);
-
-            foreach (Checkbox checkBox in checkBoxesInMenu)
-                checkBox.Draw(gameTime, spriteBatch);
 
             foreach (Label label in labelsInMenu)
                 label.Draw(gameTime, spriteBatch);
 
             foreach(Art art in artsInMenu)
                 art.Draw(gameTime, spriteBatch);
+
+            foreach (Button button in buttonsInMenu)
+                button.Draw(gameTime, spriteBatch);
+
+            foreach (Checkbox checkBox in checkBoxesInMenu)
+                checkBox.Draw(gameTime, spriteBatch);
 
             spriteBatch.End();
         }

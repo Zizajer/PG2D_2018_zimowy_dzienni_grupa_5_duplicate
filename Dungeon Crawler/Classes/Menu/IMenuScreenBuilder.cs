@@ -17,11 +17,11 @@ namespace Dungeon_Crawler
         List<Label> labelsInMenu { get; set; }
         List<Art> artsInMenu { get; set; }
 
-        void addButton(Vector2 Position, String text);
+        void addButton(Vector2 Position, String text, EventHandler name);
 
         void addInputbox(Vector2 Position);
 
-        void addCheckbox(Vector2 Position);
+        void addCheckbox(Vector2 Position, EventHandler name);
 
         void addLabel(Vector2 Position, String text);
 

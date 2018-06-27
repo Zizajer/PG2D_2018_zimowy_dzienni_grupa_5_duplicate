@@ -55,7 +55,7 @@ namespace Dungeon_Crawler
 
             Global.CombatManager = new CombatManager(levelManager);
             Global.SoundManager = new SoundManager(Content);
-            Global.DrawManager = new DrawManager(Content, this, levelManager, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+            Global.MenuManager = new MenuManager(Content, this, levelManager, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             Global.StatsAllocationSystem = new StatsAllocationSystem(Content, levelManager, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
             Global.SoundManager.playMenuSong();
@@ -72,23 +72,23 @@ namespace Dungeon_Crawler
 
             if (Global.CurrentGameState == Global.Gamestates.isMainMenu)
             {
-                Global.DrawManager.UpdateMainMenu(gameTime);
+                Global.MenuManager.MainMenuScreen.Update(gameTime);
             }
             else if (Global.CurrentGameState == Global.Gamestates.isHeroChooseMenu)
             {
-                Global.DrawManager.UpdateChooseHeroMenu(gameTime);
+                Global.MenuManager.ChooseHeroMenuScreen.Update(gameTime);
             }
             else if (Global.CurrentGameState == Global.Gamestates.isClassSpecificMenu)
             {
-                Global.DrawManager.UpdateClassSpecificMenu(gameTime);
+                Global.MenuManager.ClassSpecificMenuScreen.Update(gameTime);
             }
             else if (Global.CurrentGameState == Global.Gamestates.isHelpMenu)
             {
-                Global.DrawManager.UpdateHelpMenu(gameTime);
+                Global.MenuManager.HowToPlayMenuScreen.Update(gameTime);
             }
             else if (Global.CurrentGameState == Global.Gamestates.isAboutMenu)
             {
-                Global.DrawManager.UpdateAboutMenu(gameTime);
+                Global.MenuManager.AboutMenuScreen.Update(gameTime);
             }
             else if (Global.CurrentGameState == Global.Gamestates.isGameActive)
             {
@@ -119,23 +119,23 @@ namespace Dungeon_Crawler
         {
             if (Global.CurrentGameState == Global.Gamestates.isMainMenu)
             {
-                Global.DrawManager.DrawMainMenu(spriteBatch, GraphicsDevice, gameTime);
+                Global.MenuManager.MainMenuScreen.Draw(spriteBatch, GraphicsDevice, gameTime);
             }
             else if (Global.CurrentGameState == Global.Gamestates.isHeroChooseMenu)
             {
-                Global.DrawManager.DrawChooseHeroMenu(spriteBatch, GraphicsDevice, gameTime);
+                Global.MenuManager.ChooseHeroMenuScreen.Draw(spriteBatch, GraphicsDevice, gameTime);
             }
             else if (Global.CurrentGameState == Global.Gamestates.isClassSpecificMenu)
             {
-                Global.DrawManager.DrawClassSpecificMenu(spriteBatch, GraphicsDevice, gameTime);
+                Global.MenuManager.ClassSpecificMenuScreen.Draw(spriteBatch, GraphicsDevice, gameTime);
             }
             else if (Global.CurrentGameState == Global.Gamestates.isHelpMenu)
             {
-                Global.DrawManager.DrawHelpMenu(spriteBatch, GraphicsDevice, gameTime);
+                Global.MenuManager.HowToPlayMenuScreen.Draw(spriteBatch, GraphicsDevice, gameTime);
             }
             else if (Global.CurrentGameState == Global.Gamestates.isAboutMenu)
             {
-                Global.DrawManager.DrawAboutMenu(spriteBatch, GraphicsDevice, gameTime);
+                Global.MenuManager.AboutMenuScreen.Draw(spriteBatch, GraphicsDevice, gameTime);
             }
             else if (Global.CurrentGameState == Global.Gamestates.isGameActive)
             {
