@@ -81,7 +81,7 @@ namespace Dungeon_Crawler
                             if (Global.playerName.Length < 10)
                             {
                                 Global.playerName += key.ToString();
-                                Global.playerName = DrawManager.ToTitleCase(Global.playerName);
+                                Global.playerName = MenuManager.ToTitleCase(Global.playerName);
                             } 
                         }
                     }

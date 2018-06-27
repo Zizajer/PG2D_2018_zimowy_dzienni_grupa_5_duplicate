@@ -12,7 +12,7 @@ namespace Dungeon_Crawler
         public static Gamestates CurrentGameState;
         public static bool hardMode; //false easy | true hard
         public static CombatManager CombatManager;
-        public static DrawManager DrawManager;
+        public static MenuManager MenuManager;
         public static StatsAllocationSystem StatsAllocationSystem;
         public static Effects Effects;
         public static SoundManager SoundManager;
