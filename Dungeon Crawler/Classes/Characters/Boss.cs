@@ -19,6 +19,8 @@ namespace Dungeon_Crawler
 
         Map map;
 
+        public override IInventoryManager InventoryManager { get; }
+
         //Attacks
         public IPositionTargetedAttack ProjectileAttack;
         public IUnTargetedAttack TargetedAttack;
@@ -41,7 +43,7 @@ namespace Dungeon_Crawler
             occupyingCells = cells;
             Name = "Demon Oak";
 
-            Inventory = new List<Item>();
+            InventoryManager = new InventoryManager(this, new List<Item>());
 
             SetAttack();
         }

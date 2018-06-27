@@ -25,15 +25,8 @@ namespace Dungeon_Crawler
         public KeyboardState pastKey3; //3
         public KeyboardState pastKey4; //CTRL
 
-        //Inventory management vars
-        public KeyboardState pastKey5; //F PICKING UP ITEMS
-        public KeyboardState pastKey6; //Z DROPING ITEMS
-        public KeyboardState pastKey7; //R SWAPING ITEMS
-        public KeyboardState pastKey8; //Tab SCROLLING INVENTORY
-        public KeyboardState pastKey9; //E USING ITEMS
-        public KeyboardState pastKey10; //Q EXAMINE SELECTED ITEM
         public KeyboardState pastKey11; //P FIRE EXTUINGISHER
-        public KeyboardState pastKey12; //` Tilde (this shit above tab) stats toggle
+        public KeyboardState pastKey12; //` Tilde stats toggle
 
         public short SelectedItem = -1; // -1 == No item in inventory yet
         public int inventoryPickUpLimit = 5;
@@ -68,6 +61,9 @@ namespace Dungeon_Crawler
         public float normalTimeBetweenActions;
         public float berserkerTimeBetweenActions = 0.3f;
 
+        public override IInventoryManager InventoryManager { get { return InventoryManagerFacade.PlayerInventoryManager; } }
+        public PlayerInventoryManagerFacade InventoryManagerFacade;
+
         public Player(ContentManager content, int cellSize, int playerCurrentMapLevel, string name)
         {
             Level = 1;
@@ -90,8 +86,7 @@ namespace Dungeon_Crawler
             _animationManager = new AnimationManager(_animations.First().Value);
             Name = name;
             normalTimeBetweenActions = timeBetweenActions;
-            Inventory = new List<Item>();
-            ItemsCurrentlyInUse = new List<IUsableUpdatableItem>();
+            InventoryManagerFacade = new PlayerInventoryManagerFacade(this, new List<Item>());
 
             setAttacks();
         }
@@ -255,19 +250,13 @@ namespace Dungeon_Crawler
 
                 ToggleStatsAllocationMenu();
                 ToggleStats();
-                ExamineSelectedItem();
-                DropItem(level, SelectedItem);
-                TakeItem(level, graphicsDevice);
-                SwapItem(level, SelectedItem, graphicsDevice);
-                SelectItem();
-                UseItem(SelectedItem);
 
                 SetAnimations();
                 _animationManager.Update(gameTime);
                 Position += Velocity;
                 Velocity = Vector2.Zero;
             }
-            UpdateItems(gameTime);
+            InventoryManagerFacade.Update(gameTime, graphicsDevice, level);
         }
 
         private int calculateExpForNextLevel(int x)
@@ -379,263 +368,6 @@ namespace Dungeon_Crawler
                 return Directions.Right;
 
             return Directions.None;
-        }
-        public override bool TakeItem(Level level, GraphicsDevice graphicsDevice)
-        {
-            bool IsItemTaken = false;
-            if (Keyboard.GetState().IsKeyDown(Keys.F) && pastKey5.IsKeyUp(Keys.F)) {
-                if (Inventory.Count < inventoryPickUpLimit)
-                {
-                    if (base.TakeItem(level, graphicsDevice))
-                    {
-                        Global.SoundManager.takeToInventory.Play();
-                        Item Item = Inventory.ElementAt(Inventory.Count - 1);
-                        Global.Gui.WriteToConsole("You picked up " + Item.Name);
-
-                        if (Item.Category.Contains("PositionTargetedAttackItem"))
-                        {
-                            String AttackClassName = Item.Category.Split('_')[1];
-                            ItemProjectileAttack = (IPositionTargetedAttack)Activator.CreateInstance(Type.GetType("Dungeon_Crawler." + AttackClassName));
-                        }
-
-                        IsItemTaken = true;
-                        if (SelectedItem == -1)
-                        {
-                            SelectedItem = 0;
-                        }
-                    }
-                    else
-                    {
-                        Global.Gui.WriteToConsole("You cant pick up more items of that kind");
-                    }
-                }
-                else
-                {
-                    Global.Gui.WriteToConsole("You cant pick up more items");
-                }
-               
-            }
-            pastKey5 = Keyboard.GetState();
-            return IsItemTaken;
-        }
-
-        public override void DropItem(Level level, int i)
-        {
-            if (Keyboard.GetState().IsKeyDown(Keys.Z) && pastKey6.IsKeyUp(Keys.Z))
-            {
-                if (SelectedItem != -1)
-                {
-                    if (SelectedItem == 0)
-                    {
-                        if (Inventory.Count == 1)
-                        {
-                            SelectedItem = -1;
-                        }
-                    }
-                    else
-                    {
-                        SelectedItem--;
-                    }
-                    Global.SoundManager.dropFromInventory.Play();
-                    Global.Gui.WriteToConsole("You dropped " + Inventory.ElementAt(i).Name);
-
-                    if (Inventory.ElementAt(i).Category.Contains("PositionTargetedAttackItem"))
-                    {
-                        ItemProjectileAttack = null;
-                    }
-
-                    base.DropItem(level, i);
-                    
-                }
-                else
-                {
-                    Global.Gui.WriteToConsole("You dont have any items to drop");
-                }
-            }
-            pastKey6 = Keyboard.GetState();
-        }
-
-        public void SwapItem(Level level, int i, GraphicsDevice graphicsDevice)
-        {
-            if (Keyboard.GetState().IsKeyDown(Keys.R) && pastKey7.IsKeyUp(Keys.R))
-            {
-                if (SelectedItem != -1)
-                {
-                    if (base.TakeItem(level, graphicsDevice))
-                    {
-                        Global.SoundManager.takeToInventory.Play();
-                        Global.Gui.WriteToConsole("You swapped " + Inventory.ElementAt(i).Name + " for " + Inventory.ElementAt(Inventory.Count - 1).Name);
-                        base.DropItem(level, i);
-                    }
-                    else
-                    {
-                        Global.Gui.WriteToConsole("Nothing on the floor to swap for");
-                    }
-                }
-                else
-                {
-                    Global.Gui.WriteToConsole("You dont have any items");
-                }
-            }
-            pastKey7 = Keyboard.GetState();
-        }
-
-        public void SelectItem()
-        {
-            if (Keyboard.GetState().IsKeyDown(Keys.Tab) && pastKey8.IsKeyUp(Keys.Tab))
-            {
-                if (Inventory.Count > 0)
-                {
-                    Global.SoundManager.changeInInventory.Play();
-                    if (SelectedItem + 1 < Inventory.Count)
-                    {
-                        SelectedItem++;
-                    }
-                    else
-                    {
-                        SelectedItem = 0;
-                    }
-                }
-                else
-                {
-                    Global.Gui.WriteToConsole("You dont have any items");
-                }
-                
-            }
-            pastKey8 = Keyboard.GetState();
-        }
-
-        public override bool UseItem(int i)
-        {
-            bool IsItemUsed = false;
-            if (Keyboard.GetState().IsKeyDown(Keys.E) && pastKey9.IsKeyUp(Keys.E))
-            {
-                if (SelectedItem != -1)
-                {
-                    if (Inventory[i].Category.Equals("Potion"))
-                    {
-                        Global.SoundManager.mixtureDrink.Play();
-                        DrankPotions++;
-                    }
-                    IsItemUsed = base.UseItem(i);
-                    if (!IsItemUsed)
-                    {
-                        if (!(Inventory[i] is IUsableItem))
-                        {
-                            Global.Gui.WriteToConsole("You can't use this item.");
-                        }
-                        else
-                        {
-                            Global.Gui.WriteToConsole("You can't use this item right now.");
-                        }
-                    }
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            pastKey9 = Keyboard.GetState();
-            return IsItemUsed;
-        }
-
-        public override void DeleteItem(int i)
-        {
-            if (SelectedItem == 0)
-            {
-                if (Inventory.Count == 1)
-                {
-                    SelectedItem = -1;
-                }
-            }
-            else
-            {
-                SelectedItem--;
-            }
-            base.DeleteItem(i);
-        }
-
-        public override void DeleteItem(Item item)
-        {
-            if (SelectedItem == 0)
-            {
-                if (Inventory.Count == 1)
-                {
-                    SelectedItem = -1;
-                }
-            }
-            else
-            {
-                SelectedItem--;
-            }
-            base.DeleteItem(item);
-        }
-
-        public void ExamineSelectedItem()
-        {
-            if (Keyboard.GetState().IsKeyDown(Keys.Q) && pastKey10.IsKeyUp(Keys.Q))
-            {
-                if (SelectedItem != -1)
-                {
-                    Global.SoundManager.examineItem.Play();
-                    Global.Gui.WriteToConsole(Inventory.ElementAt(SelectedItem).Description);
-                }
-                else
-                {
-                    Global.Gui.WriteToConsole("Nothing to examine");
-                }
-
-            }
-            pastKey10 = Keyboard.GetState();
-        }
-
-        public override bool IsItemEligibleToBeTaken(Item item)
-        {
-            //At first, check if item is attack giving item
-            if (item.Category.Contains("AttackItem"))
-            {
-                foreach (Item Item in Inventory)
-                {
-                    if (Item.Category.Contains("AttackItem"))
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            //Then, check multipliers
-            float TotalHealthMultiplier = 1f;
-            float TotalDefenseMultiplier = 1f;
-            float TotalSpDefenseMultiplier = 1f;
-            float TotalAttackMultiplier = 1f;
-            float TotalSpAttackMultiplier = 1f;
-            float TotalSpeedMultiplier = 1f;
-            foreach (Item Item in Inventory)
-            {
-                TotalHealthMultiplier *= Item.HealthMultiplier;
-                TotalDefenseMultiplier *= Item.DefenseMultiplier;
-                TotalSpDefenseMultiplier *= Item.SpDefenseMultiplier;
-                TotalAttackMultiplier *= Item.AttackMultiplier;
-                TotalSpAttackMultiplier *= Item.SpAttackMultiplier;
-                TotalSpeedMultiplier *= Item.SpeedMultiplier;
-            }
-
-            TotalHealthMultiplier *= item.HealthMultiplier;
-            TotalDefenseMultiplier *= item.DefenseMultiplier;
-            TotalSpDefenseMultiplier *= item.SpDefenseMultiplier;
-            TotalAttackMultiplier *= item.AttackMultiplier;
-            TotalSpAttackMultiplier *= item.SpAttackMultiplier;
-            TotalSpeedMultiplier *= item.SpeedMultiplier;
-            
-            if (TotalHealthMultiplier > MaxTotalMultiplier || TotalDefenseMultiplier > MaxTotalMultiplier || TotalSpDefenseMultiplier > MaxTotalMultiplier || TotalAttackMultiplier > MaxTotalMultiplier
-                || TotalSpAttackMultiplier > MaxTotalMultiplier || TotalSpeedMultiplier > MaxTotalMultiplier)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
         }
     }
 }

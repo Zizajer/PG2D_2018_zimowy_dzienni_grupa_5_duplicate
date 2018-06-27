@@ -308,7 +308,7 @@ namespace Dungeon_Crawler
                         Position = new Vector2((randomCell.X * cellSize), (randomCell.Y * cellSize))
                     };
                 enemies.Add(tempBoss);
-                tempBoss.TakeItems(BossInventory);
+                tempBoss.InventoryManager.TakeItems(BossInventory);
             }
             else if (whichBossToSpawn == 1)
             {
@@ -323,7 +323,7 @@ namespace Dungeon_Crawler
                         Position = new Vector2((randomCell.X * cellSize + cellSize / 4), (randomCell.Y * cellSize) + cellSize / 4)
                     };
                 enemies.Add(tempBoss);
-                tempBoss.TakeItems(BossInventory);
+                tempBoss.InventoryManager.TakeItems(BossInventory);
 
                 grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
             }
@@ -347,7 +347,7 @@ namespace Dungeon_Crawler
                         Position = new Vector2((randomCell.X * cellSize), (randomCell.Y * cellSize))
                     };
                 enemies.Add(tempBoss);
-                tempBoss.TakeItems(BossInventory);
+                tempBoss.InventoryManager.TakeItems(BossInventory);
             }
             else if (whichBossToSpawn == 3)
             {
@@ -362,7 +362,7 @@ namespace Dungeon_Crawler
                         Position = new Vector2((randomCell.X * cellSize + cellSize / 4), (randomCell.Y * cellSize) + cellSize / 4)
                     };
                 enemies.Add(tempBoss);
-                tempBoss.TakeItems(BossInventory);
+                tempBoss.InventoryManager.TakeItems(BossInventory);
 
                 grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
             }
@@ -386,7 +386,7 @@ namespace Dungeon_Crawler
                         Position = new Vector2((randomCell.X * cellSize), (randomCell.Y * cellSize))
                     };
                 enemies.Add(tempBoss);
-                tempBoss.TakeItems(BossInventory);
+                tempBoss.InventoryManager.TakeItems(BossInventory);
             }
 
             Global.Camera.setParams(map.Width, map.Height, cellSize);
@@ -491,7 +491,7 @@ namespace Dungeon_Crawler
                         Name = BlobNamesList[Global.random.Next(BlobNamesList.Count)],
                         Position = new Vector2((randomCell.X * cellSize + cellSize / 4), (randomCell.Y * cellSize) + cellSize / 4)
                     };
-                    tempEnemy.TakeItems(EnemyInventory);
+                    tempEnemy.InventoryManager.TakeItems(EnemyInventory);
                     enemies.Add(tempEnemy);
                     grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
                 }
@@ -505,7 +505,7 @@ namespace Dungeon_Crawler
                         Name = SkeletonNamesList[Global.random.Next(SkeletonNamesList.Count)],
                         Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
                     };
-                    tempEnemy.TakeItems(EnemyInventory);
+                    tempEnemy.InventoryManager.TakeItems(EnemyInventory);
                     enemies.Add(tempEnemy);
                     grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
                 }
@@ -519,7 +519,7 @@ namespace Dungeon_Crawler
                         Name = SpiderNamesList[Global.random.Next(SpiderNamesList.Count)],
                         Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
                     };
-                    tempEnemy.TakeItems(EnemyInventory);
+                    tempEnemy.InventoryManager.TakeItems(EnemyInventory);
                     enemies.Add(tempEnemy);
                     grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
                 }
@@ -533,7 +533,7 @@ namespace Dungeon_Crawler
                         Name = ZombieNamesList[Global.random.Next(ZombieNamesList.Count)],
                         Position = new Vector2((randomCell.X * cellSize + cellSize / 3), (randomCell.Y * cellSize) + cellSize / 3)
                     };
-                    tempEnemy.TakeItems(EnemyInventory);
+                    tempEnemy.InventoryManager.TakeItems(EnemyInventory);
                     enemies.Add(tempEnemy);
                     grid.SetCellCost(new Position(randomCell.X, randomCell.Y), 5.0f);
                 }

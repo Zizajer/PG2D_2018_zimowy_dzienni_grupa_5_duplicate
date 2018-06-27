@@ -101,7 +101,7 @@ namespace Dungeon_Crawler
                         grid.SetCellCost(new Position(character.CellX, character.CellY), 1.0f);
                         if (character.NextCell != null)
                         grid.SetCellCost(new Position(character.NextCell.X, character.NextCell.Y), 1.0f);
-                        character.DropAllItems(this);
+                        character.InventoryManager.DropAllItems(this);
                         enemies.RemoveAt(i);     
                     }
                 } 
@@ -119,7 +119,7 @@ namespace Dungeon_Crawler
                         {
                             grid.SetCellCost(new Position(enemy.NextCell.X, enemy.NextCell.Y), 1.0f);
                         }
-                        enemy.DropAllItems(this);
+                        enemy.InventoryManager.DropAllItems(this);
                         enemies.RemoveAt(i);
                     }
                 }
